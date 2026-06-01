@@ -36,6 +36,67 @@ def compute_status(open_from, deadline, today):
         return "closed", "high"
     return "open", "high"
 
+def _norm_map(s):
+    """Vrať (text bez whitespace + lowercase, index-mapa na originál).
+    Bez whitespace = odolné vůči PDF řádkování i mezerám v datech (24. 6. 2026 ≈ 24.6.2026)."""
+    out, idx = [], []
+    for i, ch in enumerate(s):
+        if ch.isspace():
+            continue
+        out.append(ch.lower()); idx.append(i)
+    return "".join(out), idx
+
+def resolve_citations(opp):
+    """Pro každé pole v _evidence LOKALIZUJ verbatim citaci ve zdrojích (body stránky +
+    stažené dokumenty) → {field, value, quote, source, char_start, char_end, context, match}.
+    Grounding NEhodnotí (verdikt na člověku) — jen najde místo + označí shodu (exact/fragment/none)."""
+    ev = opp.pop("_evidence", {}) or {}
+    # zdroje k prohledání: body stránky (layer-1) + stažené dokumenty (doc-store)
+    sources = []
+    page = opp.pop("_page_text", None)
+    if page:
+        sources.append({"kind": "page", "ref": opp.get("source_url"), "text": page})
+    for d in opp.get("provenance", {}).get("documents", []):
+        if d.get("txt_path") and os.path.exists(d["txt_path"]):
+            try:
+                sources.append({"kind": "doc", "ref": d["txt_path"], "url": d.get("url"),
+                                "text": open(d["txt_path"], encoding="utf-8", errors="replace").read()})
+            except Exception:
+                pass
+    for s in sources:
+        s["nt"], s["imap"] = _norm_map(s["text"])
+
+    def locate(nq):
+        for s in sources:                                   # 1) přesná shoda (bez whitespace)
+            pos = s["nt"].find(nq)
+            if pos >= 0:
+                return s, pos, len(nq), "exact"
+        if len(nq) >= 30:                                   # 2) fragmentový fallback (drift LLM)
+            frag = nq[len(nq) // 2 - 14: len(nq) // 2 + 14]
+            for s in sources:
+                pos = s["nt"].find(frag)
+                if pos >= 0:
+                    return s, pos, len(frag), "fragment"
+        return None, None, None, "none"
+
+    cites = []
+    for field, quote in ev.items():
+        if not quote or not isinstance(quote, str):
+            continue
+        nq = "".join(quote.lower().split())
+        c = {"field": field, "value": opp.get(field), "quote": quote,
+             "source": None, "ref": None, "char_start": None, "char_end": None, "match": "none"}
+        if len(nq) >= 8:
+            s, pos, ln, match = locate(nq)
+            if s:
+                start = s["imap"][pos]; end = s["imap"][min(pos + ln - 1, len(s["imap"]) - 1)] + 1
+                c.update(source=s["kind"], ref=s.get("url") or s["ref"],
+                         char_start=start, char_end=end, context=s["text"][start:end], match=match)
+        cites.append(c)
+    if cites:
+        opp["citations"] = cites
+    return opp
+
 def canon_key(kind, title, source_url):
     t = re.sub(r"[^a-z0-9á-ž]+", "", (title or "").lower())[:48]
     m = re.search(r"(\d+)\.\s*výzv", (title or "").lower())
@@ -81,10 +142,12 @@ def opp_from_fields(kind, f, prov, today, extra=None):
         "documents": prov.get("documents") or [],     # [{url, txt_path, ext}] stažené podklady
     }
     # Q1 — LOSSLESS: vše nemapované se uloží do extra (nic se nezahodí)
-    over = {k: v for k, v in (f or {}).items() if k not in CANON_FIELDS.get(kind, set()) and v not in (None, "", [], {})}
+    structural = CANON_FIELDS.get(kind, set()) | {"evidence"}
+    over = {k: v for k, v in (f or {}).items() if k not in structural and v not in (None, "", [], {})}
     if extra:
         over.update(extra)
     base["extra"] = over
+    base["_evidence"] = (f or {}).get("evidence") or {}   # {pole: verbatim citace} → resolve_citations()
     return base
 
 # ---------- vstup: extract_wf workflow výstup ----------
@@ -107,10 +170,10 @@ def ingest_extraction(result_path, source, src_dir, harvest_file, today):
         f = it.get("fields")
         if not f:
             continue
-        sp, surl, fid = it.get("path"), None, None
+        sp, surl, fid, page = it.get("path"), None, None, None
         if sp and src_dir and os.path.exists(sp):
             s = json.load(open(sp, encoding="utf-8"))
-            surl = s.get("id"); fid = s.get("_oblast") or s.get("web")
+            surl = s.get("id"); fid = s.get("_oblast") or s.get("web"); page = s.get("body")
         surl = surl or f.get("source_doc")
         rawrec = hidx.get(surl, {})
         # dokumenty z layer-1 raw (URL; txt_path doplní doc-store až bude perzistentní)
@@ -122,7 +185,9 @@ def ingest_extraction(result_path, source, src_dir, harvest_file, today):
         prov = {"source": source, "source_url": surl, "foundation_id": fid,
                 "_layer": 2, "_harvester": "extract_wf",
                 "harvest_file": harvest_file, "documents": docs}
-        yield opp_from_fields(it.get("type", "grant"), f, prov, today, extra=extra)
+        opp = opp_from_fields(it.get("type", "grant"), f, prov, today, extra=extra)
+        opp["_page_text"] = page   # tělo stránky (layer-1) — prohledá resolve_citations
+        yield opp
 
 # ---------- vstup: dsw2 appeals (STRUKTUROVANÉ, bez LLM) ----------
 def ingest_dsw2(path, today):
@@ -171,6 +236,9 @@ def main():
             for d in r.get("provenance", {}).get("documents", []):
                 if d.get("url") in man:
                     d["txt_path"] = man[d["url"]]
+
+    for r in recs:   # evidence (verbatim citace z LLM) → citations (lokalizace v souboru + offset)
+        resolve_citations(r)
 
     # dedup dle id v rámci tohoto běhu + proti existujícímu souboru (append)
     seen = set()

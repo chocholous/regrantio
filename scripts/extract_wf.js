@@ -23,6 +23,8 @@ const SCHEMAS = {
       required_attachments: { type: 'array', items: { type: 'string' } },
       how_to_apply: { type: ['string', 'null'] },
       source_doc: { type: ['string', 'null'] },
+      evidence: { type: 'object', additionalProperties: { type: 'string' },
+        description: 'pro KAŽDÉ vyplněné pole PŘESNÁ doslovná citace ze zdroje (verbatim, ať ji lze najít v textu); klíč = název pole' },
     },
   },
   project: {
@@ -32,6 +34,8 @@ const SCHEMAS = {
       grantee_ico: { type: ['string', 'null'] }, amount: { type: ['string', 'null'] },
       year: { type: ['string', 'null'] }, focus_area: { type: ['string', 'null'] },
       source_doc: { type: ['string', 'null'] },
+      evidence: { type: 'object', additionalProperties: { type: 'string' },
+        description: 'verbatim citace ze zdroje per pole (klíč = název pole)' },
     },
   },
   foundation_mission: {
@@ -41,11 +45,14 @@ const SCHEMAS = {
       support_topics: { type: 'array', items: { type: 'string' } },
       regions: { type: 'array', items: { type: 'string' } },
       source_doc: { type: ['string', 'null'] },
+      evidence: { type: 'object', additionalProperties: { type: 'string' },
+        description: 'verbatim citace ze zdroje per pole (klíč = název pole)' },
     },
   },
 }
 
-const COMMON = `Načti Read tool dokument na zadané cestě. JSON má: title, body (PLNÉ tělo), attachments_md (PLNÝ text VŠECH příloh — vyhlášení/podmínky/žádost), volitelně related_context (raw kontext napojeného programu — GROUNDING, ne přepis). Dívej se VŽDY jen na tuto JEDNU oportunitu. Extrahuj POUZE co je v textu (NEHALUCINUJ); co nejde určit = null. Status NEvyplňuj (dopočítá kód).`
+const COMMON = `Načti Read tool dokument na zadané cestě. JSON má: title, body (PLNÉ tělo), attachments_md (PLNÝ text VŠECH příloh — vyhlášení/podmínky/žádost), volitelně related_context (raw kontext napojeného programu — GROUNDING, ne přepis). Dívej se VŽDY jen na tuto JEDNU oportunitu. Extrahuj POUZE co je v textu (NEHALUCINUJ); co nejde určit = null. Status NEvyplňuj (dopočítá kód).
+DŮLEŽITÉ — EVIDENCE: pro KAŽDÉ vyplněné pole vrať do objektu \`evidence\` PŘESNOU DOSLOVNOU citaci ze zdroje (verbatim — zkopíruj větu/úsek, ze kterého hodnotu bereš, BEZ úprav, ať ji lze najít fulltextem v dokumentu). Klíč = název pole (např. "deadline", "amount"). Když pole odvozuješ z více míst, dej nejvýstižnější citaci. Necituj, co v textu doslova není.`
 
 const SYS = {
   grant: `Jsi extraktor české dotační VÝZVY. ${COMMON}
