@@ -1,5 +1,7 @@
 # Platform playbook — definice rodin, detekce, harvester, metoda
 
+> **Strojová routing tabulka platforma→harvester je `routing.yaml`** (`scripts/routing.py --host <host>` / `--all`). Tenhle dokument je LIDSKÝ popis rodin (podpis, obtížnost, lekce). Cesty harvesterů níž = `scripts/`.
+
 507 hostů, ~83 platforem po re-detekci. **1 CMS rodina = 1 tenký harvester.** Metoda získání grantu
 se sbalí do 5 archetypů: (1) strukturovaný/API, (2) listing→dokumenty→LLM, (3) SPA/postback (Apify),
 (4) WordPress REST, (5) **SPA/grid se skrytým JSON-XHR → odposlech Playwrightem jednou → čistý HTTP replay**
@@ -16,17 +18,17 @@ se sbalí do 5 archetypů: (1) strukturovaný/API, (2) listing→dokumenty→LLM
 
 | Rodina | # | Detekce (podpis) | Přístup | Harvester | Detaily | Status |
 |---|---|---|---|---|---|---|
-| **wordpress** | 88 | `/wp-json`, `/wp-content`, generator Elementor/WP | REST API | `extract/wp_harvest.py` (lossless) | dotacni.info ✅ / jinde Haiku | ✅ data/wp_full |
-| **vismo** | 40 | `webhouse`, `/aspinclude/vismoweb5/`, `.dok`, `/ds-`/`/ms-`/`/d-`, File.ashx | HTML listing + File.ashx přílohy | `extract/vismo.py` + `vismo_detail.py` | status z „Úřední deska od-do" (67%), jinak Haiku | ✅ data/vismo_documents + files |
-| **dsw2_otevrenamesta** | 28 | `var fonds=`, `/explore/fonds`+`/explore/appeals`, `bootstrap-treeview` | inline JS vars | `extract/dsw2.py` + `dsw2_fetch.py` | programy/výzvy discovery; alokace v dok | ✅ data/dsw2_* |
+| **wordpress** | 88 | `/wp-json`, `/wp-content`, generator Elementor/WP | REST API | `scripts/wp_harvest.py` (lossless) | dotacni.info ✅ / jinde Haiku | ✅ data/wp_full |
+| **vismo** | 40 | `webhouse`, `/aspinclude/vismoweb5/`, `.dok`, `/ds-`/`/ms-`/`/d-`, File.ashx | HTML listing + File.ashx přílohy | `scripts/vismo.py` + `vismo_detail.py` | status z „Úřední deska od-do" (67%), jinak Haiku | ✅ data/vismo_documents + files |
+| **dsw2_otevrenamesta** | 28 | `var fonds=`, `/explore/fonds`+`/explore/appeals`, `bootstrap-treeview` | inline JS vars | `scripts/dsw2.py` + `dsw2_fetch.py` | programy/výzvy discovery; alokace v dok | ✅ data/dsw2_* |
 
 ## PROZKOUMANÉ (struktura známá, PoC/část)
 
 | Rodina | # | Detekce | Přístup | Metoda | Detaily |
 |---|---|---|---|---|---|
-| **kentico** | 11 | `CMSPages`, `/getmedia/`, `CMSScript` | 3 šablony! | (A) IROP+dotaceEU=statické inline pole `extract/kentico_irop.py`; (B) MMR/MK/MDČR=hub→próza→getmedia; (C) nadace bespoke | A ✅ deterministicky / B Haiku |
+| **kentico** | 11 | `CMSPages`, `/getmedia/`, `CMSScript` | 3 šablony! | (A) IROP+dotaceEU=statické inline pole `scripts/kentico_irop.py`; (B) MMR/MK/MDČR=hub→próza→getmedia; (C) nadace bespoke | A ✅ deterministicky / B Haiku |
 | **plone** | 22 | generator Plone, `/resolveuid/`, `++theme++ova-theme` | folder→roční detail→.pdf | 1 parser na ostravské obvody | ❌ zásady=33k PDF → Haiku |
-| **aspnet_mv_hzs** | 6 | `/clanek/{slug}.aspx` + `/soubor/` | HZS ploché=lehké / MV WebForms postback=Apify | `extract/mv_cms.py` | PDF/Haiku |
+| **aspnet_mv_hzs** | 6 | `/clanek/{slug}.aspx` + `/soubor/` | HZS ploché=lehké / MV WebForms postback=Apify | `scripts/mv_cms.py` | PDF/Haiku |
 | **grantys** | 5 (~3 reálné) | `ng-app="grantys.client"`, 1808B shell | **SPA gated API** → Apify | /api/project/supported (403 bez session) | data v JSON za bránou |
 | **custom_php (eeagrants)** | (1 ověřen) | `/cs/programy/<oblast>`, `/cs/vyzvy`, server-rendered | statické HTTP, BFS | `scripts/eeagrants.py` (50 str / 480 dok) | ✅ vrstva 2 ověřena (3 výzvy: částka, 7–11 příloh, jak žádat) |
 | **Lewis/Dynamo GrantyPortal** | granty.praha + další města | `/GrantyPortal/`, `SeznamJS`+`ODataSimpleFromSql`, Knockout grid | **JSON-XHR, HTTP replay po Playwright objevu** (NE Apify) | `lewis_discover.py` → `lewis_dynamo.py` | strukturovaně ✅ (112k záznamů); ⚠ jen **rozhodnuté žádosti = `project`**, ne otevřené výzvy |

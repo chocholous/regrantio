@@ -28,7 +28,7 @@ paralelně extrahuje pole. **Maximálně využívá UŽ STAŽENÁ DATA** (viz `d
 
 ### Fáze 0 — Detekce & routing (jednou per zdroj)
 - `scripts/cms_similarity.py` — strukturální otisk (asset cesty + URL vzory + cookie/header) → **CMS rodina** (label-free, robustnější než generator meta).
-- Vyhledej rodinu v `docs/platform_playbook.md` → **harvester + přístupová metoda** (REST / inline-JS / HTML-listing / SPA-headless / WebForms-postback).
+- **Routing = `routing.yaml`** (jediný zdroj pravdy platforma→harvester): `scripts/routing.py --host <host>` vrátí platformu + harvester[] + metodu. `detect_family(host)` → `route(platforma)` → konkrétní skript (default = univerzální `harvest_site.py`). `docs/platform_playbook.md` = lidský popis rodin.
 - **⓪ STRUKTURA PŘED PRÓZOU** (`docs/detection.md`): VŽDY nejdřív zkus strukturovaný endpoint (opendata/award API, inline JS var, šablona, list-XHR, WP REST) → parsuj deterministicky, skip LLM. LLM až když je detail neredukovatelně próza/PDF. **5. přístupová metoda:** SPA/grid se skrytým JSON-XHR → 1× odposlech Playwrightem (`scripts/lewis_discover.py`) → čistý HTTP replay bez Apify (`lewis_dynamo.py`). Ověř, CO endpoint dá (award-DB ≠ otevřené výzvy).
 
 ### Fáze 1 — Harvest (per rodina; PRVNÍ zkus REUSE už stažených dat)
@@ -94,7 +94,8 @@ Cyklus, který je MĚŘENÝ (ne nora):
 - **`scripts/extract_wf.js` / `classify_wf.js`** — Claude-workflow vrstvy 2/1 (Haiku, 1 oportunita/agent, plný text)
 - **`scripts/lewis_discover.py`** — Playwright objev skrytého XHR (SPA/grid) → endpoint pro HTTP replay
 - **`scripts/opportunities.py`** — kanonické úložiště `data/opportunities.jsonl` (jednotné schéma + status + extra lossless + provenance)
-- **`limits.json` + `scripts/limits.py`** — centrální registr VŠECH limitů/capů/ořezů (nic natvrdo v kódu)
+- **`routing.yaml` + `scripts/routing.py`** — platforma→harvester (jediný zdroj pravdy; `--host`/`--platform`/`--all`)
+- **`limits.json` + `scripts/limits.py`** — registr limitů (JEN sondy/safety; data se berou celá)
 - `prompts/classify_type.md` / `extract_grant.md` / `pitfalls.md` — prompty vrstvy 1/2 + vytěžené záludnosti
 - `pipeline.py` — starší in-process driver (reálné fáze 3-4 jedou přes workflow výše)
 - `schema/opportunity_schema.md` — kanonický model (+ extra/provenance)

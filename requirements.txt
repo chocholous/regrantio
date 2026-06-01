@@ -3,3 +3,4 @@
 # (jednorázový headless odposlech XHR SPA/WebForms gridů typu Lewis/Dynamo).
 #   pip install -r requirements.txt && playwright install chromium
 playwright>=1.40
+pyyaml>=6.0   # routing.yaml loader (scripts/routing.py)

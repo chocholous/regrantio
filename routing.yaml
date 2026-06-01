@@ -1,0 +1,72 @@
+# ROUTING — platforma (z platform_map.json) → harvester + přístupová metoda.
+# Fáze 0 receptu: detect_family(host) → platforma → TADY → konkrétní harvester.
+# Jediný zdroj pravdy "platforma → čím harvestovat". Čte scripts/routing.py → route(platforma).
+#
+# Klíče = názvy platforem v platform_map.json. Co tu není → spadne na `default`.
+# Pole: harvester[] (skripty v pořadí volání), method, layer2 (potřeba LLM vrstvy 2?), note.
+# POZOR: routing je VODÍTKO — při sběru se platforma + metoda VŽDY ověří živě (Fáze 0,
+# "struktura před prózou"); label z mapy není pravda (viz docs/detection.md).
+
+families:
+
+  wordpress:
+    harvester: [scripts/wp_harvest.py, scripts/harvest_site.py]
+    method: "WP REST /wp-json/wp/v2 — grant CPT (project/call/programme) jinak posts/pages"
+    layer2: "ano — granty často v pages/posts próze + PDF"
+    note: "harvest_site.py umí WP REST autodetekcí; wp_harvest.py na konkrétní CPT"
+
+  vismo:                       # vismo_classic i vismo_modern
+    harvester: [scripts/vismo.py, scripts/vismo_detail.py]
+    method: "HTML-listing (.dok) → detail d-NNNN → File.ashx přílohy"
+    layer2: "status z 'Úřední deska od-do', jinak Haiku na PDF přílohy"
+
+  dsw2_otevrenamesta:
+    harvester: [scripts/dsw2.py, scripts/dsw2_fetch.py]
+    method: "inline-JS (var fonds + /explore/appeals)"
+    layer2: "NE — strukturované (appeals/programs/projects přímo do schématu)"
+
+  kentico:
+    harvester: [scripts/kentico_irop.py, scripts/harvest_site.py]
+    method: "IROP/dotaceEU = inline pole (kentico_irop); MMR/MK/nadace bespoke = hub→getmedia (harvest_site)"
+    layer2: "IROP ne (deterministicky) / jinde Haiku"
+
+  aspnet_clanek_mvhzs:         # mv_legacy (ASP.NET MV ČR / HZS / radnice)
+    harvester: [scripts/mv_cms.py]
+    method: "/clanek/*.aspx + /soubor přílohy; MV WebForms kapitoly → Apify"
+    layer2: "Haiku na PDF"
+
+  aspnet_webforms:             # Lewis/Dynamo GrantyPortal (granty.praha, zadosti.sfzp…)
+    harvester: [scripts/lewis_discover.py, scripts/lewis_dynamo.py]
+    method: "Playwright objev XHR (ODataSimpleFromSql) → čistý HTTP replay BEZ Apify"
+    layer2: "NE pro award DB (kind=project); otevřené výzvy jsou na navázaných CMS stránkách"
+
+  custom_php:
+    harvester: [scripts/harvest_site.py, scripts/eeagrants.py]
+    method: "server-rendered → statický BFS po grant-podstránkách (harvest_site autodetekuje)"
+    layer2: "ano"
+
+  # server-rendered bespoke rodiny → univerzální harvester (sám pozná WP REST vs statický BFS)
+  drupal:   {harvester: [scripts/harvest_site.py], method: "statický BFS / občas JSON:API", layer2: "ano"}
+  joomla:   {harvester: [scripts/harvest_site.py], method: "statický BFS / občas API", layer2: "ano"}
+  liferay:  {harvester: [scripts/harvest_site.py, scripts/praha_grants.py], method: "server-rendered BFS (praha_grants je Liferay-specific PoC)", layer2: "ano"}
+  plone:    {harvester: [scripts/harvest_site.py], method: "folder→roční detail→.pdf (resolveuid)", layer2: "ano — zásady v PDF"}
+  public4u: {harvester: [scripts/harvest_site.py], method: "statický BFS", layer2: "ano"}
+  bm_cms:   {harvester: [scripts/harvest_site.py], method: "statický BFS", layer2: "ano"}
+
+  # SPA — obsah za JS-XHR; nejdřív zkus odposlech, Apify až last resort
+  custom_spa:    {harvester: [scripts/lewis_discover.py], method: "Playwright objev XHR → HTTP replay / Apify", layer2: "dle obsahu"}
+  nextjs_react:  {harvester: [scripts/lewis_discover.py], method: "Playwright objev XHR → HTTP replay / Apify", layer2: "dle obsahu"}
+  nuxt_vue:      {harvester: [scripts/lewis_discover.py], method: "Playwright objev XHR → HTTP replay / Apify", layer2: "dle obsahu"}
+  angular:       {harvester: [scripts/lewis_discover.py], method: "Playwright objev XHR → HTTP replay / Apify", layer2: "dle obsahu"}
+  grantys:       {harvester: ["Apify"], method: "gated SPA API (/api/... 403 bez session) → headless", layer2: "NE — JSON za bránou"}
+
+  # ne-grantové / problémové
+  gordic_ginis:  {harvester: [], method: "GINIS = registr/úřední deska backend, NE dotace; dotace na hlavním webu kraje (bespoke→harvest_site)", layer2: "—"}
+  ERR_fetch:     {harvester: [], method: "DNS/timeout/WAF → retry / jiná IP / Apify", layer2: "—"}
+  UNKNOWN:       {harvester: [], method: "re-detekce: cms_similarity + save_unknown_evidence + Sonnet (detect_platforms_wf)", layer2: "—"}
+
+# cokoliv nezařazené (bespoke vendor po 1 webu, nové nadace…) → univerzální
+default:
+  harvester: [scripts/harvest_site.py]
+  method: "univerzální — sám detekuje WP REST vs statický BFS vs SPA-flag; SPA → lewis_discover"
+  layer2: "ano (próza/PDF)"
