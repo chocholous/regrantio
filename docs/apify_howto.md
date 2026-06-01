@@ -1,6 +1,8 @@
 # Apify — kdy a jak (jen na to, co statický fetch nezvládne)
 
-Apify NENÍ default. Statický fetch + skripty zvládnou ~80 % zdrojů. Apify jen pro:
+> **⚠ AKTUALIZACE (jak to teď řeší `docs/platform_playbook.md` + `README.md` fáze 0):** Apify je **až POSLEDNÍ možnost**, ne default pro SPA/WebForms. Pořadí: (1) struktura před prózou — hledej strukturovaný endpoint (opendata/inline-JS/WP REST); (2) **SPA/grid se skrytým JSON-XHR → 1× odposlech Playwrightem (`scripts/lewis_discover.py`) → čistý HTTP replay (`lewis_dynamo.py`) BEZ Apify** — ověřeno na granty.praha.eu (`aspnet_webforms`, „postback" → ve skutečnosti `ODataSimpleFromSql` JSON, 112k záznamů čistým HTTP). Apify teprve když ani replay nejde (gated session, antibot). Tj. **„WebForms = Apify" už NEPLATÍ** — většinou jde HTTP replay po Playwright objevu.
+
+Apify NENÍ default. Statický fetch + skripty + Playwright-discover zvládnou ~80 %+ zdrojů. Apify jen pro:
 
 ## Kdy Apify
 1. **SPA (JavaScriptem renderované)** — obsah není v HTML, načítá se z API přes JS:
@@ -26,8 +28,9 @@ Apify NENÍ default. Statický fetch + skripty zvládnou ~80 % zdrojů. Apify je
 ## Rozhodovací strom
 ```
 homepage statický fetch → je obsah v HTML?
-  ANO → skript (REST/HTML/inline-JS)             ← většina
-  NE (1808B shell / ng-app / __NEXT) → Apify SPA render
-  obsah za __doPostBack ?q= → Apify (klikání/render)
+  ANO → skript (REST/HTML/inline-JS)                      ← většina
+  NE (SPA/grid/postback) → 1× Playwright odposlech XHR (lewis_discover.py)
+       → našel JSON endpoint (ODataSimple…) ? → HTTP replay (lewis_dynamo.py)  ← bez Apify
+       → endpoint za gated session / antibot ? → teprve TADY Apify
   403/WAF i s retry → Apify (jiná IP/browser)
 ```

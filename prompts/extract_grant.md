@@ -48,9 +48,14 @@ Vrať JSON. Status NEvyplňuj — dopočítá se z dat.
 ## Varianty per typ
 - **project:** title, grantee, amount (vyúčtovaná), year, focus_area
 - **foundation_mission:** name, mission, support_topics[], regions[]
-- Status doplní `scripts/compute_status.py` (open/closed/announced z dat vs dnešek).
+- Status doplní `scripts/opportunities.py:compute_status` (open/closed/announced z dat vs dnešek), NE LLM.
+
+## Zapojení v receptu (kde tenhle prompt žije — viz `README.md`)
+- **Spouští ho `scripts/extract_wf.js`** = mnou řízené Claude-workflow, **1 oportunita = 1 Haiku agent**.
+- **Vstup = PLNÝ text + plné přílohy z doc-store** (`scripts/docstore.py` → `data/files/<source>/<sha>.txt`, vazba přes `documents[]` URL z vrstvy 1). **NEOŘEZÁVAT** — měřeno: ořez sráží `amount` 27 %→90 %. Limity jen v `limits.json`.
+- **Výstup → `scripts/opportunities.py`** = kanonické úložiště (jednotné schéma + status + `extra` lossless + `provenance`).
 
 ## Validace (POVINNÁ před hromadným během)
-- Otestuj prompt na malém vzorku PROTI ŽIVÉMU ZDROJI (groundedness: je pole reálně v textu?).
-- Ground-truth = dotacni.info (šablona) + IROP (inline) — měř precision/recall per pole.
+- Otestuj prompt na malém vzorku PROTI ŽIVÉMU ZDROJI (groundedness: je pole reálně v textu? — ověřitelné přes `provenance.documents[].txt_path`).
+- Ground-truth = dotacni.info (šablona) + IROP (inline) — měř precision/recall per pole. (Praha aktuální: pokrytí 94–100 %, groundedness 100 %.)
 - Coverage loop (`docs/coverage.md`) doplňuje nové záludnosti do `pitfalls.md`.
