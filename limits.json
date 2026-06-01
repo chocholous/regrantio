@@ -1,0 +1,120 @@
+{
+  "_doc": "CENTRÁLNÍ REGISTR VŠECH limitů / capů / ořezů. PRAVIDLO: žádný limit, ořez ani cap nesmí být natvrdo v kódu nebo promptu MIMO tento soubor. Kód i prompty čtou hodnoty odtud (Python: scripts/limits.py → L('cesta.klic'); JS workflow: čte limits.json). Každý záznam: value (null = ŽÁDNÝ limit), unit, kind, why, used_in[], wired (true = kód reálně čte odtud; false = zatím natvrdo, k migraci).",
+  "_kinds": {
+    "coverage_cap": "ořezává POKRYTÍ (kolik zdrojů/stránek/příloh) — NEBEZPEČNÉ, uříznutí se MUSÍ logovat, nikdy tiše",
+    "truncation": "ořez délky textu před zpracováním — u vstupu do LLM = ZAKÁZÁNO (ořez srazil amount 27%→90%)",
+    "sample_size": "velikost VZORKU pro měření/PoC — NENÍ plné pokrytí, vždy označit",
+    "paging": "velikost stránky při stránkování ve SMYČCE (projde vše) — není strop",
+    "technical_bound": "ochrana proti patologii (velikost souboru, čas) — ne věcný strop",
+    "noise_filter": "zahození zjevného šumu (prázdné/krátké bloky)"
+  },
+
+  "harvest": {
+    "praha_max_pages_per_area": {
+      "value": 150, "unit": "pages", "kind": "coverage_cap",
+      "why": "BFS strop podstránek na oblast (Liferay). Největší známá = sociální 73 → 150 s rezervou. Uříznutí se LOGuje (ne tiše).",
+      "used_in": ["scripts/praha_grants.py:harvest_liferay (--max-pages)"], "wired": true
+    },
+    "eeagrants_max_pages": {
+      "value": 200, "unit": "pages", "kind": "coverage_cap",
+      "why": "BFS strop eeagrants (11 programů × roky výzev). Dřív 60 tiše ořezával → zvýšeno + LOG.",
+      "used_in": ["scripts/eeagrants.py (--max-pages)"], "wired": true
+    },
+    "min_text_block_chars": {
+      "value": 25, "unit": "chars", "kind": "noise_filter",
+      "why": "zahodit bloky <25 znaků (nadpisy/prázdné <p>) z těla; nemění věcný obsah.",
+      "used_in": ["scripts/eeagrants.py:parse_page", "scripts/praha_grants.py:harvest_liferay"], "wired": true
+    },
+    "doc_download_max_mb": {
+      "value": 50, "unit": "MB", "kind": "technical_bound",
+      "why": "strop velikosti JEDNOHO staženého souboru (ochrana proti obřím/patologickým PDF). Větší se přeskočí — RIZIKO ztráty skenu; loguj.",
+      "used_in": ["scripts/dsw2_fetch.py:download (--max-mb)"], "wired": true
+    }
+  },
+
+  "extract_layer2": {
+    "input_truncation": {
+      "value": null, "unit": "chars", "kind": "truncation",
+      "why": "ŽÁDNÝ ořez vstupu do LLM. Plné tělo + plný text VŠECH příloh. Měřeno: ořez srazil pokrytí amount 27%→90%.",
+      "used_in": ["scripts/extract_wf.js", "scripts/classify_wf.js"], "wired": true
+    },
+    "attachments_per_opportunity": {
+      "value": null, "unit": "files", "kind": "coverage_cap",
+      "why": "ŽÁDNÝ strop počtu příloh — agent dostane všechny dokumenty výzvy (dřív [:3] biasoval).",
+      "used_in": ["sample-buildery vrstvy 2"], "wired": true
+    },
+    "opportunities_per_agent": {
+      "value": 1, "unit": "opportunities", "kind": "technical_bound",
+      "why": "1 oportunita = 1 agent (víc by mátlo). Pevné pravidlo, ne ořez dat.",
+      "used_in": ["scripts/extract_wf.js (parallel per dokument)"], "wired": true
+    }
+  },
+
+  "sample": {
+    "quality_per_type": {
+      "value": 30, "unit": "docs", "kind": "sample_size",
+      "why": "vzorek pro MĚŘENÍ kvality vrstvy 2 per typ. NENÍ plné pokrytí — jen měření.",
+      "used_in": ["build_quality_sample (ad-hoc)"], "wired": false
+    },
+    "lewis_demo_max": {
+      "value": 0, "unit": "records", "kind": "sample_size",
+      "why": "0 = stáhni VŠE (default). Při demu se zadá --max N (vědomě, ne tiše).",
+      "used_in": ["scripts/lewis_dynamo.py (--max)"], "wired": true
+    }
+  },
+
+  "lewis": {
+    "page_size": {
+      "value": 100, "unit": "records", "kind": "paging",
+      "why": "velikost stránky ODataSimpleFromSql; stránkuje ve smyčce přes skip/top → projde všech 112k. Není strop.",
+      "used_in": ["scripts/lewis_dynamo.py (--page-size)"], "wired": true
+    },
+    "discover_wait_ms": {
+      "value": 2500, "unit": "ms", "kind": "technical_bound",
+      "why": "čekání na dojetí XHR po networkidle při Playwright odposlechu.",
+      "used_in": ["scripts/lewis_discover.py (--wait)"], "wired": true
+    }
+  },
+
+  "http": {
+    "default_timeout_s": {
+      "value": 20, "unit": "s", "kind": "technical_bound",
+      "why": "default HTTP timeout harvesterů.",
+      "used_in": ["scripts/eeagrants.py", "scripts/praha_grants.py", "scripts/dsw2.py"], "wired": true
+    },
+    "default_retries": {
+      "value": 3, "unit": "attempts", "kind": "technical_bound",
+      "why": "počet pokusů při síťové chybě.",
+      "used_in": ["scripts/dsw2.py (--retries)"], "wired": false
+    }
+  },
+
+  "_legacy_to_migrate": {
+    "_note": "Limity ve STARŠÍCH skriptech, které ještě čtou hodnotu natvrdo. Migrovat na L() / sem. Dokud wired=false, JSOU porušením pravidla — eviduje se vědomě.",
+    "mv_cms.body_text_chars": {
+      "value": 8000, "unit": "chars", "kind": "truncation",
+      "why": "⚠ OŘEZÁVÁ tělo článku na 8000 zn před vrstvou 2 — stejná chyba, co jsme jinde opravili. MIGROVAT na null (plný text).",
+      "used_in": ["scripts/mv_cms.py:57"], "wired": false
+    },
+    "mv_cms.text_excerpt_chars": {
+      "value": 1200, "unit": "chars", "kind": "truncation",
+      "why": "⚠ ořez textu přílohy na 1200 zn. Pro vrstvu 2 číst plný .txt, ne excerpt.",
+      "used_in": ["scripts/mv_cms.py:72"], "wired": false
+    },
+    "vismo.text_excerpt_chars": {
+      "value": 1500, "unit": "chars", "kind": "truncation",
+      "why": "ořez excerptu přílohy; plný text je v txt_path (vrstva 2 čte ten). Excerpt jen pro náhled.",
+      "used_in": ["scripts/vismo_detail.py"], "wired": false
+    },
+    "vismo.max_depth": {
+      "value": 2, "unit": "levels", "kind": "coverage_cap",
+      "why": "hloubka BFS dotační sekce; 12/25 webů má dokumenty hlouběji → CAP tiše ořezává. Migrovat + logovat.",
+      "used_in": ["scripts/vismo.py"], "wired": false
+    },
+    "cms_similarity.asset_tokens": {
+      "value": 30, "unit": "tokens", "kind": "sample_size",
+      "why": "prvních 30 script/css odkazů pro otisk; pro fingerprint dostačující.",
+      "used_in": ["scripts/cms_similarity.py:42,44"], "wired": false
+    }
+  }
+}

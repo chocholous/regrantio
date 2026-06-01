@@ -9,8 +9,10 @@ a vypíše DATA-endpoint + přesný `postedJSON` payload + idSeznamu. Ten se pak
 Setup: pip install playwright && playwright install chromium
 Spuštění: python scripts/lewis_discover.py --url "<SeznamJS URL gridu>"
 """
-import argparse, json
+import argparse, json, os, sys
 from playwright.sync_api import sync_playwright
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from limits import L   # centrální registr limitů (root limits.json)
 
 def discover(url, wait_ms):
     found = []
@@ -32,7 +34,7 @@ def discover(url, wait_ms):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--url", required=True, help="URL gridu (…/LW/Views/Core/SeznamJS?action=get&idSeznamu=…)")
-    ap.add_argument("--wait", type=int, default=2500)
+    ap.add_argument("--wait", type=int, default=L("lewis.discover_wait_ms"))
     args = ap.parse_args()
     calls, cookies = discover(args.url, args.wait)
     print(f"# session cookies: {cookies}")

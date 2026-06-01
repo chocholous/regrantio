@@ -8,7 +8,9 @@ JSON (NazevZadosti, NazevZadatele, IcZadatele, NazevOblasti, NazevStavuZadosti, 
 
 Ověřeno: granty.praha.eu, idSeznamu abad868e-… → 112 907 záznamů.
 """
-import argparse, json, ssl, sys, time, urllib.parse, urllib.request, http.cookiejar
+import argparse, json, os, ssl, sys, time, urllib.parse, urllib.request, http.cookiejar
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from limits import L   # centrální registr limitů (root limits.json)
 
 # payload template zachycený Playwrightem (scripts/lewis_discover.py); měň jen skip/top
 TEMPLATE = {
@@ -32,8 +34,8 @@ def main():
     ap.add_argument("--base", default="https://granty.praha.eu/GrantyPortal/")
     ap.add_argument("--id-seznamu", default="abad868e-1525-4d8c-8bdb-64d608f788fc")
     ap.add_argument("--out", default="data/granty_praha.jsonl")
-    ap.add_argument("--page-size", type=int, default=100)
-    ap.add_argument("--max", type=int, default=0, help="max záznamů (0=vše)")
+    ap.add_argument("--page-size", type=int, default=L("lewis.page_size"))
+    ap.add_argument("--max", type=int, default=L("sample.lewis_demo_max"), help="max záznamů (0=vše)")
     ap.add_argument("--delay", type=float, default=0.3)
     args = ap.parse_args()
 
