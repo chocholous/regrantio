@@ -1,0 +1,876 @@
+{
+  "summary": "Dvouvrstvé pokrytí: (1) typ obsahu + signály/záměny, (2) per typ jeho pole + formulace/záludnosti; saturace obou vrstev",
+  "agentCount": 6,
+  "logs": [],
+  "result": {
+    "batches": 6,
+    "layer1_types": {
+      "grant_open": {
+        "n_docs": 8,
+        "distinct_signals": 32,
+        "distinct_confusables": 11,
+        "saturation": [
+          4,
+          16,
+          20,
+          24,
+          24,
+          32
+        ],
+        "last_new": 8,
+        "signals": [
+          "název 'program přidělování dotací a návratných finančních výpomocí'",
+          "přílohy: žádost o dotaci, rozpočet, vyúčtování — formuláře pro žadatele",
+          "složka 'dotační programy rok 2026'",
+          "zveřejnit od-do: 19.9.2025–31.3.2027 — výzva stále aktivní v okně platnosti",
+          "příjem žádostí od 2026-01-28 do 2026-06-30 — deadline je v budoucnosti (dnes 2026-06-01)",
+          "alokace: 330 000 000 kč",
+          "konkrétní číslo výzvy (104. výzva) a název programu opžp",
+          "src: dotacni.info — agregátor dotačních výzev",
+          "příjem žádostí od 2026-05-13 do 2026-07-10 — stále otevřeno",
+          "min. výše způsobilých výdajů: 250 000 kč",
+          "název výzvy 'mas leader – loucko — technologie pro mas'",
+          "src: dotacni.info",
+          "žádost může být podána 'během celého roku vždy před datem konání akce, nejpozději do 31. 10. 2026'",
+          "odkaz na portál občana — dotační programy pro podání žádosti",
+          "zodpovídá konkrétní úřednice, vytvořeno 23.12.2025 — aktivní výzva pro rok 2026",
+          "src: vismo/mukolin.cz — municipální web",
+          "explicitní 'příjem žádostí od 2026-01-01 do 2026-12-18'",
+          "deadline 2026-12-18 je v budoucnosti (dnes 2026-06-01)",
+          "alokace 2 000 000 kč uvedena",
+          "výčet oprávněných žadatelů: fyzická osoba podnikající, s.r.o., a.s., fyzická osoba",
+          "explicitní 'příjem žádostí od 2023-03-31 do 2028-12-31'",
+          "celková alokace 86,8 mil. eur z efrr",
+          "přeshraniční program eu (interreg)",
+          "výčet oprávněných žadatelů (organizační složky státu, školy, obce)",
+          "příjem žádostí od 2026-06-01 do 2026-09-30 — termín aktivní (od dnešního dne)",
+          "'výše alokace pro tuto výzvu je 43 500 000 kč' — konkrétní finanční rámec",
+          "'oprávněný žadatel' — explicitní definice způsobilosti",
+          "src: dotacni.info — agregátor výzev",
+          "příjem žádostí do 2026-09-30 — termín aktivní",
+          "'dotační program' v názvu",
+          "'na dotační program je stanovena ... předpokládaná částka maximálně 300 000 kč'",
+          "'oprávněný žadatel' — explicitní způsobilost"
+        ],
+        "confusables": [
+          "administrativa: přítomna úřední deska a metadata měú, ale obsah je dotační program s formuláři — ne úřední akt",
+          "grant_announced: dalo by se mýlit kvůli datu zveřejnění 19.9.2025, ale okno zveřejnění běží do 2027, příjem žádostí aktivní",
+          "grant_closed — deadline 30.6.2026 je blízko dnešního data (1.6.2026); při jiném datu hodnocení by byl grant_closed",
+          "grant_announced — výzva ještě nezačala by odpovídala announced; zde ale příjem žádostí už běží od 13.5.2026",
+          "administrativa — stránka je na webu úřadu ve složce 'odbory mú' a má navigaci jako úřední web; ale obsah popisuje aktivní dotační výzvu pro žadatele",
+          "grant_announced — výzva by byla announced pokud by příjem ještě nezačal; zde je ale příjem otevřen celý rok 2026",
+          "grant_closed — strukturou identický s uzavřenými výzvami na dotacni.info; odlišení jen podle aktuálnosti deadline",
+          "grant_announced — program byl vyhlášen, ale příjem žádostí již běží (od 2023-03-31), takže je open",
+          "mise_tema — název programu zní abstraktně, ale jsou zde data příjmu a částka",
+          "grant_announced — datum příjmu od 2026-06-01 mohl před dneškem vypadat jako budoucí otevření; dnes je již otevřeno",
+          "grant_closed — příjem začal 2026-02-15, mohl by vypadat jako historický, ale deadline 2026-09-30 je v budoucnosti"
+        ]
+      },
+      "grant_closed": {
+        "n_docs": 7,
+        "distinct_signals": 25,
+        "distinct_confusables": 11,
+        "saturation": [
+          4,
+          4,
+          14,
+          22,
+          22,
+          25
+        ],
+        "last_new": 3,
+        "signals": [
+          "explicitní 'příjem žádostí od 2023-08-31 do 2024-04-11' — deadline v minulosti",
+          "číslo výzvy op jak 02–23-025",
+          "alokace výzvy 2 000 000 000 kč",
+          "způsobilé výdaje a definice oprávněných žadatelů (výzkumné organizace)",
+          "název 'program přidělování dotací' + formuláře pro žádost a vyúčtování",
+          "zařazeno do složky 'dotační programy rok 2025'",
+          "žádný otevřený příjem žádostí od-do, jen datum zveřejnění a úřední deska",
+          "přílohy: žádost o dotaci, rozpočty, vyúčtování — typická uzavřená výzva",
+          "explicitní 'příjem žádostí od 2025-02-15 do 2025-03-17'",
+          "deadline 2025-03-17 je v minulosti (dnes 2026-06-01)",
+          "alokace 1 200 000 kč",
+          "explicitní 'příjem žádostí od 2019-08-22 do 2019-12-31'",
+          "deadline 2019-12-31 je hluboko v minulosti",
+          "20. výzva iti — strukturovaný název irop výzvy",
+          "příjem žádostí do 2025-10-15 — termín v minulosti (dnes 2026-06-01)",
+          "explicitní 'příjem žádostí od 2025-07-01 do 2025-10-15'",
+          "konkrétní oprávněný žadatel: fyzické osoby vlastníci nemovitostí",
+          "zdroj dotacni.info — agregátor výzev",
+          "dotační program na rok 2025 — dnes 2026",
+          "dokumenty z 16.9.2024, úřední deska do 31.3.2026",
+          "přílohy k žádosti, vyúčtování — strukturovaný dotační program",
+          "zdroj vismo/hodonin.eu — municipální systém",
+          "příjem žádostí do 2023-12-31 — termín v minulosti",
+          "výzva č. npo 2/2023 — rok 2023 v názvu výzvy",
+          "'schváleným ekis pro rok 2023' — způsobilost explicitně pro rok 2023"
+        ],
+        "confusables": [
+          "grant_open: formát záznamu identický jako otevřená výzva na dotacni.info — jediný rozlišovací znak je datum příjmu žádostí v minulosti",
+          "administrativa — úřední deska od-do může evokovat úřední dokument, ale jde o dotační program, ne vyhláška/smlouva",
+          "grant_open — termín na úřední desce 31.3.2026 by mohl zmást, ale to je viditelnost dokumentu, nikoli deadline příjmu",
+          "grant_open — formát identický s open výzvami na dotacni.info; rozlišení jen podle data",
+          "grant_open — stejná šablona dotacni.info jako open výzvy; bez data nelze odlišit",
+          "projekt_done — výzva je uzavřená, ale jde stále o výzvu (call), nikoli o konkrétní projekt/příjemce",
+          "grant_open — kdybychom nevěděli aktuální datum, termín 2025-10-15 by mohl vypadat jako budoucí",
+          "administrativa — obecní dotační program na kanalizační přípojky připomíná technickou vyhlášku",
+          "administrativa — 'úřední deska', 'odbor ekonomiky a financí', pdf/doc přílohy připomínají úřední dokument; ale obsah je dotační program s žádostmi a vyúčtováním",
+          "grant_open — úřední deska platí do 31.3.2026, ale to je lhůta pro zveřejnění, ne pro příjem žádostí; program byl na rok 2025",
+          "grant_open — identická struktura záznamu na dotacni.info jako otevřené výzvy; jediný rozlišovací znak je datum v minulosti"
+        ]
+      },
+      "news": {
+        "n_docs": 9,
+        "distinct_signals": 36,
+        "distinct_confusables": 13,
+        "saturation": [
+          0,
+          4,
+          8,
+          16,
+          32,
+          36
+        ],
+        "last_new": 4,
+        "signals": [
+          "reportáž o konkrétních akcích v září (16.–17.9. schůzka, 19.9. článek v mf dnes)",
+          "výčet dokončených aktivit: manuály, statistická hlášení, nákup dvou aut",
+          "src: maltezskapomoc-cz — organizační web, ne grantový portál",
+          "žádný deadline ani výzva",
+          "pozvánka na konkrétní veřejné akce (vycházky) s termíny, místy, kontakty",
+          "text v přítomném a budoucím čase: 'zveme', 'budeme poznávat'",
+          "konkrétní termíny: pátek 21.6.2019, středa 26.6.2019",
+          "zdroj: birdlife-cz — ochranářská organizace, ne dotační portál",
+          "novinářský text popisující zkušenosti dvou sociálních podniků",
+          "odkaz na článek na externím webu (ceske-socialni-podnikani.cz)",
+          "žádný deadline, žádná částka, žádný žadatel",
+          "zdroj annocr-cz — agregátor novinek",
+          "tisková zpráva o spuštění záchranného programu mžp",
+          "citace ředitele čso zdeňka vermouzka",
+          "popisuje konkrétní událost (schválení záchranného programu)",
+          "zdroj birdlife-cz — ornitologická organizace, ne grantový portál",
+          "popis konkrétní akce (dýňování) s datem 16. října 2016",
+          "reportážní tón v minulém čase — co se stalo",
+          "žádná výzva, žádná částka, žádný deadline",
+          "zdroj maltezskapomoc-cz — charitativní org, aktualitová sekce",
+          "propagační/motivační text o dobrovolnictví — popis aktivity organizace",
+          "přímá citace dobrovolníka benedikta franka (reportážní prvek)",
+          "žádný deadline, žádná výzva, žádná finanční částka",
+          "zdroj maltezskapomoc-cz — aktualitová sekce charitativní org",
+          "pozvánka na přednášku s konkrétním datem 5. listopadu 2025 a místem (vesna, brno)",
+          "oznamovací tón: 'srdečně zvou'",
+          "registrace emailem — akce ještě proběhnout nebo právě proběhla",
+          "zdroj annocr-cz — asociace nno, aktualitová sekce",
+          "pozvánka na seminář/workshop s konkrétním datem 17. prosince 2018 a místem (praha, plzeňský prazdroj)",
+          "program akce: témata, řečníci, výstupy",
+          "zdroj annocr-cz — aktualitová sekce asociace nno",
+          "oznamovací tón: 'pořádá seminář/workshop'",
+          "tisková zpráva k filmové premiéře",
+          "konkrétní datum akce: 'vstoupí do kin 19. března'",
+          "festival jeden svět — oznámení termínů promítání",
+          "cena pavla kouteckého — novinová informace o ocenění"
+        ],
+        "confusables": [
+          "administrativa — zmínka o 'žádostech o dotace na rok 2015' by mohla mást, ale jde jen o jednu větu v aktualitě, ne o výzvu",
+          "mise_tema — organizace birdlife se věnuje ochraně ptáků (poslání), ale tento text je konkrétní pozvánka na akci, nikoli popis poslání",
+          "grant_announced — pozvánky na akce nemají nic společného s granty; záludnost je v environmentálním tématu, které se pojí s dotacemi",
+          "mise_tema — téma sociálního podnikání by mohlo evokovat oblast podpory, ale jde o konkrétní reportáž, ne popis poslání",
+          "administrativa — žádná regulace ani úřední obsah",
+          "grant_announced — zmínka 'díky záchrannému programu bude možné financovat' by mohla evokovat budoucí grant, ale jde o vládní záchranný program, ne výzvu pro žadatele",
+          "mise_tema — ochrana sýčka jako téma, ale text je konkrétní aktualita s datem a citacemi",
+          "projekt_done — jde o aktivitu podpořené organizace, ale text je reportáž/aktualita, nikoli karta projektu s realizátorem a výší podpory",
+          "mise_tema — text popisuje oblast dobrovolnictví obecně, ale jde o konkrétní aktualitu/příběh konkrétního dobrovolníka, nikoli o poslání organizace jako celek",
+          "administrativa — přednáška policie čr jako součást preventivního programu by mohla vypadat úředně, ale jde o oznámení veřejné vzdělávací akce, tedy news",
+          "mise_tema — téma (spolupráce s firmami, csr) by mohlo evokovat tematický článek, ale jde o konkrétní pozvánku na akci s datem a místem",
+          "mise_tema — čso je partnerem, text popisuje poslání ochrany přírody, mohl by vypadat jako programové téma nadace",
+          "projekt_done — film byl uveden na mezinárodních festivalech, zní jako završený projekt"
+        ]
+      },
+      "mise_tema": {
+        "n_docs": 7,
+        "distinct_signals": 27,
+        "distinct_confusables": 14,
+        "saturation": [
+          11,
+          15,
+          19,
+          23,
+          23,
+          27
+        ],
+        "last_new": 4,
+        "signals": [
+          "stránka pro již podpořené účastníky programu, nikoli výzva pro nové žadatele",
+          "harmonogram seminářů a networking materiály — popis průběhu programu",
+          "název 'pro podpořené v programu nebojme se komunální politiky 2024/2025'",
+          "obecný popis systému podpory česko-německých projektů bez konkrétní výzvy",
+          "rolling deadlines pro různé typy projektů (stipendia, renovace, projekty) — systémová informace, ne konkrétní výzva",
+          "pokyny pro podání žádosti, průběžné zprávy, publicitu — metodická stránka programu",
+          "zdroj: fondbudoucnosti-cz — popis grantového fondu",
+          "přehledová stránka nadace nros s popisem filozofie a přístupu za 30 let",
+          "popis více programů (pomozte dětem, správný start) jako trvalých iniciativ",
+          "jazyk: 'jsme tu, abychom podpořili', 'dbáme na transparentnost' — poslání organizace",
+          "žádný deadline, alokace ani formulář pro aktuální výzvu",
+          "popis nabídky organizace (nros) pro firemní dárce — esg, csr, firemní fondy",
+          "strukturovaný výčet 'co nabízíme' bez jakéhokoli deadline nebo výzvy",
+          "obecné téma (filantropie, udržitelný rozvoj) bez konkrétní grantové příležitosti",
+          "src: nros-cz — nadace rozvoje občanské společnosti",
+          "popis stipendijního programu obecně, bez konkrétního deadline nebo výzvy",
+          "text vysvětluje cíle, kdo je oprávněn, výši stipendia — jde o trvalý popis oblasti podpory",
+          "'jährlich vergeben wir acht stipendien' — roční rytmus, ne konkrétní výzva",
+          "žádné datum podání přihlášky",
+          "inzerát hledající dobrovolníky pro nros — popis organizace a jejího poslání",
+          "popis programů nros (pomozte dětem, neziskovka roku)",
+          "žádná výzva, žádný deadline, žádná alokace",
+          "zdroj nros-cz — nadace rozvoje občanské společnosti",
+          "žádný konkrétní termín příjmu žádostí — pouze 'průběžně'",
+          "'každoročně udělujeme osm stipendií' — opakující se program bez fixní výzvy",
+          "'co je pro nás důležité' — popis hodnot a mise fondu",
+          "obecný popis způsobilosti bez aplikačních instrukcí"
+        ],
+        "confusables": [
+          "grant_open: text zmiňuje 'individuální granty, výše 11 000 kč, uzávěrka 15. dubna 2025' — ale to je interní grant pro již vybrané účastníky programu, ne veřejná výzva",
+          "news: datum v názvu a harmonogram by mohly evokovat aktualitu, ale jde o popis programového tématu/obsahu",
+          "grant_open: text uvádí konkrétní datum '30. 6. 2026' jako uzávěrku — ale jde o opakující se rolling termín v systému více programů, nikoli jednu konkrétní výzvu",
+          "grant_announced: termíny jsou uvedeny, ale bez alokace, cílové skupiny pro konkrétní výzvu, čísla výzvy",
+          "grant_open: popis konkrétních programů (pomozte dětem, správný start) mohl být vnímán jako aktuální výzva — ale chybí deadline, číslo výzvy, alokace",
+          "grant_announced: zmiňuje grantové výzvy jako kategorii, ale bez konkrétního vyhlášení",
+          "grant_announced — web nadace mohl obsahovat avízo výzvy, ale text je plně orientován na služby/vizi, nikoli na konkrétní výzvu",
+          "ostatni — mohl by být brán jako marketingový text, ale popis oblasti podpory nadace spadá do mise_tema",
+          "grant_open — uvádí výši stipendia (900/750 eur) a podmínky způsobilosti, což by mohlo evokovat konkrétní výzvu; ale chybí deadline a způsob podání",
+          "grant_announced — program existuje, ale bez otevření konkrétního kola",
+          "ostatni — inzerát na dobrovolníky je spíše hr/kontaktní obsah než popis poslání; ale text obsahuje popis mise organizace a jejích programů",
+          "news — oznámení hledání dobrovolníků by mohlo být aktualitou, ale text je statický a popisuje fungování organizace",
+          "grant_open — uvádí výši stipendia (900/750 eur) a podmínky způsobilosti, strukturou připomíná otevřenou výzvu",
+          "grant_announced — chybí deadline, mohl by vypadat jako výzva, která ještě nezveřejnila termín"
+        ]
+      },
+      "administrativa": {
+        "n_docs": 7,
+        "distinct_signals": 31,
+        "distinct_confusables": 9,
+        "saturation": [
+          5,
+          9,
+          17,
+          17,
+          26,
+          31
+        ],
+        "last_new": 5,
+        "signals": [
+          "název 'dohoda o uznání dluhu a splátkovém kalendáři'",
+          "usnesení rady mč praha 13 s číslem ur 0040/2013",
+          "zákon č. 101/2000 sb. (ochrana osobních údajů) — úřední dokument",
+          "předmět: smluvní pokuta za kupní cenu nemovitosti — žádná grantová složka",
+          "signatáři: starosta + zástupce starosty",
+          "usnesení rady mč s číslem ur 0347/2017",
+          "smlouva o výpůjčce nemovitého majetku — právní/úřední dokument",
+          "odkaz na zákon č. 101/2000 sb. (ochrana osobních údajů)",
+          "src: praha13/decree — explicitně decree (vyhláška/usnesení)",
+          "usnesení rady mč praha 13 (ur 0048/2015)",
+          "předmět: dodatek ke zřizovací listině příspěvkové organizace",
+          "typická struktura: rada i. souhlasí / ii. doporučuje zmč schválit",
+          "žádná dotační alokace, žádný příjem žádostí",
+          "usnesení rady mč praha 13 (ur 0458/2019)",
+          "předmět: pronájem nebytového prostoru (ordinace)",
+          "typická struktura: rada i. schvaluje / ii. ukládá vedoucímu odboru",
+          "žádná dotace, žádný grant, čistě majetkoprávní akt",
+          "usnesení rady mč praha 13 s číslem ur 0556/2012",
+          "zákon č. 101/2000 sb. — gdpr předchůdce, úřední anonymizace",
+          "předmět: stanovisko k nástavbě budovy, souhlas vlastníka pozemku",
+          "zdroj praha13/decree — úřední deska",
+          "podpisy starosty a zástupce, jmenovité úkoly s termínem",
+          "usnesení rady mč praha 13, číslo ur 0543/2012",
+          "předmět: platové úpravy vedoucích odborů — interní personální rozhodnutí",
+          "zákon č. 101/2000 sb., anonymizace",
+          "podpisy starosty a zástupce, jmenovité úkoly",
+          "usnesení číslo uz 0020/2018 — úřední forma",
+          "zastupitelstvo městské části — orgán samosprávy",
+          "'finanční plán zdaňované činnosti' — rozpočtový dokument",
+          "gdpr redakce: 'zveřejněn v upravené podobě'",
+          "podpisy starosty a ověřovatelů — standardní úřední listina"
+        ],
+        "confusables": [
+          "news: usnesení rady by mohlo být prezentováno jako aktualita, ale forma je úřední zápis, ne zpravodajský text",
+          "projekt_open/projekt_done — dokument se týká mateřské školy (veřejná instituce), ale nejde o grantový projekt; jde o půjčku majetku mezi mč a příspěvkovou organizací",
+          "news — usnesení rady by mohlo být prezentováno jako aktualita, ale jde o čistě organizačně-právní akt",
+          "grant_closed — zmínka o 'středisko sociálních služeb' evokuje sociální oblast, ale jde o zřizovací listinu, nikoli dotaci",
+          "news — rozhodnutí rady lze zveřejnit jako aktualitu, ale jde o správní/majetkoprávní akt",
+          "projekt_done — pronájem pro lékařskou ordinaci evokuje sociální infrastrukturu, ale žádné grantové financování není zmíněno",
+          "ostatni — pokud by se zdálo, že jde jen o úřední dokument bez grantové relevance; administrativa je ale přesný typ pro tato usnesení rady mč",
+          "ostatni — čistě interní personální věc bez grantové ani úřední desky relevance; administrativa je přesnější, protože jde o formální usnesení orgánu samosprávy",
+          "news — usnesení zastupitelstva může být prezentováno jako aktualita/zápis ze zasedání"
+        ]
+      },
+      "projekt_done": {
+        "n_docs": 8,
+        "distinct_signals": 34,
+        "distinct_confusables": 11,
+        "saturation": [
+          7,
+          12,
+          16,
+          25,
+          34,
+          34
+        ],
+        "last_new": 0,
+        "signals": [
+          "dsw2/opendata json s poli grantee, amount_to_settle, amount_settled",
+          "amount_settled = amount_to_settle (70 000 kč) — plně vyúčtováno",
+          "appeal_name odkazuje na proběhlou výzvu 'zkvalitnění a údržba sportovišť'",
+          "last_change 20.05.2025 — uzavřený záznam",
+          "amount_settled = amount_to_settle (40 000 kč) — plně vyúčtováno",
+          "appeal_name 'dotační výzva 2021' — historická výzva",
+          "last_change 18.10.2023 — uzavřený záznam",
+          "strukturovaný json s grantee='společenství vlastníků koněvova 902/71' a grantee_ico",
+          "amount_settled=82242.59 — vyúčtování proběhlo (amount_to_settle vs amount_settled)",
+          "appeal_name='dotační výzva 2024' — projekt v rámci existující výzvy",
+          "last_change='30.06.2025' — projekt uzavřen v minulosti",
+          "src: dsw2/opendata",
+          "realizátor: pražský majdan — konkrétní příjemce grantu",
+          "období realizace: 03/2024 – 12/2024 — ukončeno",
+          "projekt byl podpořen částkou: 111 000 kč",
+          "popis výsledků v minulém čase ('projekt pomohl', 'projekt usiloval')",
+          "popis dokončeného projektu s výsledky ('akce přinesla neočekávaný úspěch')",
+          "explicitní 'období realizace: 6/2023 – 11/2023' — projekt skončil",
+          "konkrétní realizátor: michal runčak",
+          "udělená částka: 'projekt byl podpořen částkou 20 000,- kč'",
+          "program: místo kde žijeme; místo: volary, jihočeský kraj",
+          "strukturovaný json z dsw2/opendata se settlement_id",
+          "amount_settled: 15000.0 — vyúčtování proběhlo",
+          "grantee: 'sportovní klub zš jeseniova, z.s.' — konkrétní příjemce",
+          "last_change: 06.09.2021",
+          "explicitní sekce s metadaty projektu: program, grantová výzva, realizátor, místo, období realizace, výše podpory",
+          "období realizace 3/2024 – 10/2024 — projekt skončil",
+          "minulý čas: 'byl zaměřen', 'byl impulsem'",
+          "zdroj nadacevia/project — sekce projektů nadace via",
+          "zmínka spolupráce s kauflandem",
+          "popis realizované akce (benefiční koncert) v minulém čase",
+          "konkrétní výše podpory: 2 500 kč + zdvojnásobení až 15 000 kč",
+          "zdroj nadacevia/project — sekce projektů",
+          "pojmenovaný příjemce: centrum kociánka, organizátor: studenti lf mu brno"
+        ],
+        "confusables": [
+          "projekt_open: pokud by amount_settled < amount_to_settle nebo chybělo, bylo by projekt stále otevřený; při rovnosti jde o dokončený",
+          "projekt_open: identická struktura jako probíhající projekt; klíčový rozlišovač je shoda settled vs to_settle a historičnost appeal_name",
+          "projekt_open — amount_settled je téměř rovno amount_to_settle, což signalizuje dokončení; pokud by settled bylo 0 nebo výrazně nižší, byl by projekt_open",
+          "news — popis projektu mohl být prezentován jako aktualita nadace",
+          "projekt_open — pokud by bylo 'probíhající' a datum bylo aktuální; ale 12/2024 je minulost",
+          "projekt_open — pokud by datum realizace nebylo v textu, mohlo by jít o probíhající projekt",
+          "news — narativní popis úspěchu akce připomíná reportáž, ale obsahuje strukturované pole (program, realizátor, místo, období, částka)",
+          "projekt_open — amount_to_settle (18400) vs amount_settled (15000) by mohlo naznačovat nedokončené vyúčtování, ale pole amount_settled je vyplněno",
+          "projekt_open — datum konce 10/2024 je v minulosti, tedy projekt_done; pokud by bylo období v budoucnosti nebo bez konce, byl by projekt_open",
+          "news — reportáž o benefičním koncertu by mohla vypadat jako aktualita; ale strukturálně jde o kartu podpořeného projektu (výše podpory, příjemce, cíl) v sekci projektů nadace via",
+          "projekt_open — projekt je jednoznačně ukončen (akce proběhla, výtěžek byl zdvojen)"
+        ]
+      },
+      "ostatni": {
+        "n_docs": 5,
+        "distinct_signals": 18,
+        "distinct_confusables": 8,
+        "saturation": [
+          3,
+          11,
+          11,
+          14,
+          18,
+          18
+        ],
+        "last_new": 0,
+        "signals": [
+          "narativní story/reportáž o realizaci divadelního projektu podpořeného grantem",
+          "žádné informace o výzvě, příjemci grantu ve smyslu záznamu, deadline ani alokaci",
+          "popis lidského příběhu a procesu inscenace — feature článek",
+          "podcast epizoda (17. díl série přes plot)",
+          "narativní text o bezdomovectví, žádný formulář ani výzva",
+          "zmínka 'grantovými programy' je jen okrajová sebepropagace, ne popis výzvy",
+          "src: nadacevia-cz — web nadace, ale obsah je pr/media",
+          "faq/poradenský text o pěstounské péči a klokánku",
+          "kontaktní údaje sociální pracovnice (telefon, email, číslo kanceláře)",
+          "src: ricany-cz — web obce, sekce sociálních věcí",
+          "žádný grant, žádná výzva, žádné financování",
+          "registrační formulář na akci (aukci) — pole jméno, příjmení, e-mail, telefon",
+          "pozvánka na konkrétní společenskou akci (8. června)",
+          "žádný grant, žádný projekt, žádné téma podpory",
+          "popis epizody podcastu (přes plot) — média/audio obsah",
+          "příběh komunity jako inspirace, nikoli výzva ani projekt s grantovými daty",
+          "odkaz na streamovací platformy (buzzsprout, itunes, spotify)",
+          "zmínka 'grantovými programy' je okrajová — nepopisuje konkrétní grant"
+        ],
+        "confusables": [
+          "news: mohlo by být zpravodajskou aktualitou, ale chybí datum publikace a formát je spíše feature story / case study výsledku grantu, nikoli zpravodajství",
+          "projekt_done: projekt byl podpořen (implicitně z kontextu nadacevia), ale chybí strukturovaná data příjemce, částky ani settlement",
+          "mise_tema — nadace zmiňuje grantové programy, ale dokument sám o nich nic konkrétního neříká; jde o podcast, ne popis oblasti podpory",
+          "administrativa — text pochází z úřadu a týká se sociálně-právní ochrany dětí (spod); ale jde o poradenský/faq obsah, ne o úřední dokument (smlouvu, usnesení, vyhlášku)",
+          "mise_tema — nadace via je grantová nadace a text by mohl evokovat její aktivity, ale jde o formulář pozvánky na aukci, nikoli popis poslání",
+          "news — oznámení o akci by mohlo být novinkou, ale dominantní obsah je formulář",
+          "news — podcast epizoda je svého druhu aktualita, ale nemá klasické znaky zpravodajství (datum, téma, výsledek); spíše evergreen mediální obsah",
+          "mise_tema — zmínka o podpoře komunit a grantových programech nadace via mohla svádět ke klasifikaci jako mise; ale dominantní obsah je konkrétní podcast příběh"
+        ]
+      }
+    },
+    "layer2_type_fields": {
+      "grant_open::deadline": {
+        "phrasings": [
+          "zveřejnit od-do: 19.9.2025–31.3.2027",
+          "úřední deska od-do: 19.9.2025–31.3.2027",
+          "příjem žádostí od 2026-01-28 do 2026-06-30",
+          "příjem žádostí od 2026-05-13 do 2026-07-10",
+          "nejpozději do 31. 10. 2026",
+          "vždy před datem konání akce",
+          "příjem žádostí od 2026-01-01 do 2026-12-18",
+          "příjem žádostí od 2023-03-31 do 2028-12-31",
+          "'příjem žádostí ... do 2026-09-30'",
+          "'příjem žádostí od 2026-02-15 do 2026-09-30'"
+        ],
+        "pitfalls": [
+          "datum 31.3.2027 je konec zveřejnění dokumentu, nikoli přesný termín příjmu žádostí — skutečný deadline pro podání může být jiný a je uveden v pdf příloze",
+          "program je víceletý 2025–2028, takže může mít více kol",
+          "datum konce příjmu žádostí je 30.6.2026 — jen 29 dní od dnes; edge case pro open vs closed",
+          "deadline je v iso formátu — snadno parsovatelné, ale text je oříznut a maximální výše výdajů není dokončena",
+          "dvojitá podmínka: buď před akcí, nebo 31.10. — skutečný deadline je ten dřívější z obou; průběžné podávání ztěžuje jednoznačné určení deadline",
+          "datum musí být porovnáno s dnešním datem — jinak nelze rozlišit open vs closed; 2026-12-18 > 2026-06-01 → open",
+          "konec 2028-12-31 je velmi vzdálený — může jít o průběžnou výzvu s více koly, nikoli jednorázový deadline",
+          "datum od (2026-06-01) neplést za deadline — deadline je datum do",
+          "datum zahájení (únor) je v minulosti, ale výzva je stále otevřená — rozhoduje datum do, ne od"
+        ]
+      },
+      "grant_open::amount": {
+        "phrasings": [
+          "alokace: 330 000 000 kč",
+          "minimální výše celkových způsobilých výdajů: 250 000 kč",
+          "maximální výše... (oříznut)",
+          "alokace činí 2 000 000 kč",
+          "maximální výše se odvíjí od délky specializačního vzdělávání dané zákonem",
+          "cca 86,8 mil. eur prostředků z efrr",
+          "'výše alokace pro tuto výzvu je 43 500 000 kč'",
+          "'maximálně do výše stanovené pro konkrétní ocenění' — max. dotace závisí na kategorii ocenění, není pevná",
+          "'předpokládaná částka maximálně 300 000 kč' — celková alokace programu"
+        ],
+        "pitfalls": [
+          "výše dotace není uvedena v textu, je pravděpodobně v pdf příloze",
+          "jde o celkovou alokaci výzvy, nikoli max. částku na projekt — je třeba rozlišit",
+          "text je oříznut uprostřed věty o max. výši — extrakce max. částky není možná z tohoto fragmentu",
+          "žádná výše dotace není uvedena — dokument je pouze informační stránka o procesu",
+          "maximální částka na žadatele není fixní — závisí na délce vzdělávání, text je zkrácen ('dané zákon')",
+          "jde o celkovou alokaci programu, ne maximální dotaci pro jednoho žadatele",
+          "alokace celková vs. maximální výše na jednoho žadatele — text uvádí obojí, ale max. na žadatele je vázán na typ ocenění a není číselně uveden",
+          "text neuvádí maximální výši na jednoho žadatele — 300 000 kč je pravděpodobně celková alokace, ne jednotlivý grant",
+          "slovo 'předpokládaná' signalizuje, že částka není garantována"
+        ]
+      },
+      "grant_open::eligible": {
+        "phrasings": [
+          "registrované sociální služby",
+          "podpora projektů rozvoje infrastruktury registrovaných sociálních služeb",
+          "obce, městské části hlavního města prahy, dobrovolné svazky obcí, kraje, veřejnoprávní instituc...",
+          "msp — podnikající fyzická osoba nebo právnická osoba",
+          "české ič",
+          "mikro, mal... (oříznut)",
+          "komise školské a mládeže rady města kolína — implikuje oblast sport/kultura/mládež",
+          "fyzická osoba — podnikající",
+          "právnická osoba — obchodní společnost (a.s., s.r.o., v.o.s., státní podnik)",
+          "fyzická osoba",
+          "organizační složky státu a příspěvkové organizace zřízené organizační složkou státu. školy a školská zařízení. obce",
+          "'obec, která získala jedno z ocenění zlatá stuha, modrá stuha, fialová stuha, oranžová stuha'",
+          "'subjekt provádějící veřejně prospěšné činnosti a soukromé podnikání prospěšné pro město, které napomáhají městu valašské'"
+        ],
+        "pitfalls": [
+          "přesná definice způsobilých žadatelů je v pdf, v textu jen oblast podpory",
+          "text je oříznut — plný výčet způsobilých žadatelů chybí; llm nesmí domýšlet",
+          "výčet způsobilých žadatelů je oříznut — pouze mikro a malé podniky pravděpodobně, ale nelze potvrdit",
+          "způsobilí žadatelé nejsou explicitně vyjmenováni — musí se odvozovat z kontextu komise",
+          "výčet je pravděpodobně neúplný — text snippetu je zkrácen",
+          "text je oříznut ('obce a je...') — seznam žadatelů nemusí být úplný",
+          "text je oříznut ('oranžová stu...') — mohou existovat další stuhy neuvedené v excerpu",
+          "text je oříznut — definice způsobilého žadatele není kompletní",
+          "formulace 'soukromé podnikání prospěšné pro město' je neobvyklá — může zahrnovat i firmy, nejen nno"
+        ]
+      },
+      "grant_open::status": {
+        "phrasings": [
+          "zveřejnit od-do: 19.9.2025–31.3.2027",
+          "dotační programy rok 2026",
+          "příjem žádostí od ... do ...",
+          "příjem žádostí od 2026-05-13 do 2026-07-10",
+          "žádost může být podána během celého roku",
+          "grant_open — deadline v budoucnosti",
+          "příjem žádostí od 2023-03-31 do 2028-12-31",
+          "open — příjem právě zahájen 2026-06-01",
+          "open — deadline 2026-09-30 je v budoucnosti"
+        ],
+        "pitfalls": [
+          "status open odvozujeme z okna platnosti — explicitní stav 'otevřeno/uzavřeno' není uveden",
+          "status se odvozuje porovnáním deadline s dnešním datem — není explicitně uveden",
+          "otevřenost odvozena z datumového rozsahu obsahujícího dnešní datum",
+          "průběžný příjem (rolling) — nelze určit, zda jsou volné prostředky; status 'open' je odvozený",
+          "na dotacni.info jsou open i closed výzvy ve stejném formátu — bez deadline srovnání s dneškem nelze rozlišit",
+          "nutno ověřit aktuální stav — velký časový rozsah naznačuje rolling výzvu"
+        ]
+      },
+      "projekt_done::grantee": {
+        "phrasings": [
+          "grantee: 'orel jednota nové město na moravě'",
+          "grantee_ico: '48895920'",
+          "grantee: 'společnost pro podporu a rozvoj kina aero z.s.'",
+          "grantee_ico: '67775080'",
+          "grantee: společenství vlastníků koněvova 902/71",
+          "grantee_ico: 05709423",
+          "realizátor: pražský majdan",
+          "realizátor: michal runčak",
+          "\"grantee\": \"sportovní klub zš jeseniova, z.s.\"",
+          "realizátor: rc heřmánek, z.s.",
+          "centrum kociánka (příjemce výtěžku)",
+          "skupina studentů lf mu brno (organizátor akce)"
+        ],
+        "pitfalls": [
+          "ico umožňuje ověření identity, ale samotný text neuvádí typ organizace explicitně",
+          "název příjemce může být zkrácen nebo neaktuální vůči registru nno",
+          "ičo je v datech přítomno — spolehlivý identifikátor; u wp textů chybí",
+          "'realizátor' je synonymum pro příjemce (grantee) — slovo 'příjemce' se nemusí vyskytnout",
+          "realizátor je fyzická osoba, ne organizace — může být matoucí při hledání ič",
+          "grantee_ico je null — nelze identifikovat pomocí ič",
+          "realizátor ≠ příjemce grantu vždy — zde jsou totožní",
+          "jsou zde dva subjekty: organizátor akce (studenti) a příjemce podpory/výtěžku (centrum kociánka) — nutno rozlišit"
+        ]
+      },
+      "projekt_done::amount": {
+        "phrasings": [
+          "amount_to_settle: 70000.0",
+          "amount_settled: 70000.0",
+          "amount_to_settle: 40000.0",
+          "amount_settled: 40000.0",
+          "amount_to_settle: 82800 kč",
+          "amount_settled: 82242.59 kč",
+          "projekt byl podpořen částkou: 111 000 kč",
+          "projekt byl podpořen částkou 20 000,- kč",
+          "\"amount_settled\": 15000.0",
+          "\"amount_to_settle\": 18400.0",
+          "projekt byl podpořen částkou: 85 000 kč (včetně poukázky)",
+          "podpořili jsme částkou 2 500 kč",
+          "výtěžek akce zdvojnásobujeme až do výše 15 000 kč"
+        ],
+        "pitfalls": [
+          "dvě pole — to_settle (přiznáno) vs settled (skutečně vyúčtováno) — shoda značí úspěšné vyúčtování; nerovnost by signalizovala problém nebo probíhající projekt",
+          "obě částky v desetinném formátu (float) — při parsování pozor na typ; shoda obou = úspěšné vyúčtování",
+          "rozlišení amount_to_settle (přiznaná) vs amount_settled (skutečně vypořádaná) — pro projekt_done je klíčová ta druhá",
+          "formulace 'projekt byl podpořen částkou' = výše grantu, nikoli náklady projektu celkem",
+          "částka zapsána formátem s mezerou jako oddělovačem tisíců a pomlčkou před kč",
+          "dva různé finance: přiznaná dotace (amount_to_settle) vs skutečně proplacená (amount_settled) — brát amount_settled jako finální",
+          "závorka '(včetně poukázky)' naznačuje, že část podpory není v hotovosti — třeba zachytit",
+          "'až do výše 15 000 kč' je matching cap — skutečná výše závisí na výtěžku koncertu; 2 500 kč je přímá podpora na pořádání akce, 15 000 kč je matching"
+        ]
+      },
+      "projekt_done::year": {
+        "phrasings": [
+          "last_change: '20.05.2025'",
+          "appeal_name: 'dotační výzva 2021'",
+          "dotační výzva 2024",
+          "last_change: 30.06.2025",
+          "období realizace: 03/2024 – 12/2024",
+          "období realizace: 6/2023 – 11/2023",
+          "\"last_change\": \"06.09.2021\"",
+          "období realizace: 3/2024 – 10/2024",
+          "(rok není explicitně uveden v textu)"
+        ],
+        "pitfalls": [
+          "last_change je datum poslední změny záznamu, nikoli rok realizace projektu — rok realizace musíme odvodit z appeal_name nebo detail_url",
+          "rok 2021 je rok výzvy, nikoli nutně rok realizace — projekt mohl probíhat i v 2022",
+          "rok výzvy (2024) ≠ rok vypořádání (2025) — pro vyhledávání je třeba indexovat oba",
+          "projekt přesahuje přelom roku — rok grantu je rok zahájení nebo ukončení? konvence se liší podle poskytovatele",
+          "jde o rozsah měsíc/rok, ne jen rok — při extrakci roku brát 2023",
+          "last_change je datum posledního záznamu, ne rok realizace projektu — rok projektu není explicitní",
+          "projekt trvá přes dvě čtvrtletí jednoho roku — rok lze jednoznačně určit jako 2024",
+          "rok nelze určit z textu samotného — muselo by se odvodit z metadat zdroje"
+        ]
+      },
+      "projekt_done::status": {
+        "phrasings": [
+          "amount_settled = amount_to_settle",
+          "last_change: '18.10.2023'",
+          "amount_settled vyplněno",
+          "last_change v minulosti",
+          "projekt_done — období 03/2024–12/2024 je minulost, popis v minulém čase",
+          "akce, na níž se sešlo téměř 130 lidí",
+          "po dvou měsících",
+          "přinesla neočekávaný úspěch",
+          "appeal_name: null",
+          "projekt byl podpořen",
+          "vyvrcholilo společnou vernisáží",
+          "zahráli",
+          "vybrané prostředky pomohly",
+          "podpořili jsme"
+        ],
+        "pitfalls": [
+          "explicitní pole status chybí — dokončenost se odvozuje ze shody částek",
+          "explicitní pole status chybí — dokončenost odvozena ze shody částek a historičnosti dat",
+          "pole 'status' není explicitní — musí se odvozovat z amount_settled > 0 a porovnání s dnešním datem",
+          "musí být ověřeno vůči dnešnímu datu: 12/2024 < 06/2026 → done",
+          "status 'done' vyplývá z kontextu a data, ne z explicitního slova 'dokončeno'",
+          "status done odvozován z vyplněného amount_settled, nikoli z explicitního stavového pole",
+          "sloveso 'byl podpořen' v minulém čase je klíčový signal ukončení",
+          "minulý čas + úspěšný výsledek = projekt_done; ale chybí explicitní datum ukončení"
+        ]
+      },
+      "administrativa::administrativa": {
+        "phrasings": [
+          "dohoda o uznání dluhu",
+          "smluvní pokuta 96 788 kč",
+          "rada mč — usnesení ur 0040/2013",
+          "smlouva o výpůjčce",
+          "usnesení číslo ur 0347/2017",
+          "rada mč schvaluje",
+          "dodatek č. 6 ke zřizovací listině",
+          "usnesení ur 0048/2015",
+          "rada mč souhlasí / doporučuje zmč schválit",
+          "usnesení ur 0458/2019",
+          "pronájem prostoru sloužícího podnikání",
+          "rada mč schvaluje / ukládá vedoucímu odboru majetkového",
+          "usnesení ur 0556/2012",
+          "rada mč praha 13",
+          "zákon č. 101/2000 sb.",
+          "usnesení ur 0543/2012",
+          "platové úpravy vedoucích odborů",
+          "s účinností od 1. 12. 2012",
+          "žádná grantová pole nejsou relevantní",
+          "typ: usnesení zastupitelstva mč o finančním plánu"
+        ],
+        "pitfalls": [
+          "žádná grantová pole nejsou relevantní — dokument je čistě smluvní/právní povahy bez dotační složky",
+          "absence jakékoli grantové částky nebo žadatele potvrzuje, že se nejedná o grant",
+          "zřizovací listiny příspěvkových organizací nemají žádné grantové parametry — vše je organizačně-právní",
+          "majetkoprávní usnesení rady nemají grantové parametry — výskyt 'částky' (2.222 kč/m2/rok) je nájemné, nikoli grant",
+          "žádná grantová pole — jde o stavební stanovisko, nikoli dotaci",
+          "žádná grantová pole — čistě personálně-správní dokument",
+          "dokument obsahuje číselné hodnoty (finanční plán), ale nejde o alokaci grantu",
+          "mč praha 13 je i poskytovatelem grantů — administrativa od nich může být zaměněna za výzvu"
+        ]
+      },
+      "grant_closed::deadline": {
+        "phrasings": [
+          "příjem žádostí od 2023-08-31 do 2024-04-11",
+          "úřední deska od-do: 16.9.2024-31.3.2026 (viditelnost, nikoli deadline výzvy)",
+          "termín příjmu žádostí explicitně neuveden — výzva uzavřena",
+          "příjem žádostí od 2025-02-15 do 2025-03-17",
+          "příjem žádostí od 2019-08-22 do 2019-12-31",
+          "příjem žádostí od 2025-07-01 do 2025-10-15",
+          "harmonogram programu 2025 [docx]",
+          "úřední deska od-do: 16.9.2024-31.3.2026",
+          "'příjem žádostí od 2023-03-22 do 2023-12-31'"
+        ],
+        "pitfalls": [
+          "datum je iso formát rrrr-mm-dd — pozor na záměnu s evropským formátem dd.mm.rrrr při parsování",
+          "termín 'úřední deska od-do' je termín zveřejnění na úřední desce, nikoli lhůta pro podání žádosti — nelze zaměňovat",
+          "deadline v minulosti → closed; bez srovnání s dneškem nelze určit",
+          "historická výzva z roku 2019 — archiv dotacni.info obsahuje i velmi staré záznamy",
+          "deadline je v minulosti — klíčové pro rozlišení closed vs open",
+          "přesný deadline příjmu žádostí není v textu — je pouze v příloze harmonogram; úřední deska do 31.3.2026 není deadline výzvy",
+          "termín příjmu žádostí skončil, ale záznam stále existuje v databázi — nezaměňovat za aktivní výzvu"
+        ]
+      },
+      "grant_closed::amount": {
+        "phrasings": [
+          "alokace výzvy 2 000 000 000 kč",
+          "minimální výše celkových způsobilých výdajů na projekt: není stanoveno",
+          "výše dotace není v textu explicitně uvedena, je v přiloženém pdf",
+          "1 200 000 kč celkem",
+          "pro účely 1.–3. alokována částka 1 100 000 kč",
+          "celková částka dotace z evropského fondu pro regionální rozvoj a státního rozpočtu (text zkrácen)",
+          "maximální výše dotace poskytnutá poskytovatelem příjemci... (text oříznut)",
+          "(neuvedena v textu — pouze v pdf příloze)",
+          "'alokace finančních prostředků na danou výzvu 50 000 000 kč'",
+          "'maximální výše dotace 1 000 000 kč'"
+        ],
+        "pitfalls": [
+          "alokace je celková pro výzvu, nikoli max. na jeden projekt — maximální výše na projekt je useknutá v textu (truncation)",
+          "částka v přílohách (xls/doc) není v textu — model ji nemůže extrahovat",
+          "celková alokace má podrozčlenění na podprogramy — je třeba extrahovat obě úrovně",
+          "výzva irop má složené financování eu + státní rozpočet — text je zkrácen, konkrétní číslo chybí",
+          "částka je v textu oříznuta — nelze spolehlivě extrahovat",
+          "výše dotace není v html textu, pouze v přiloženém pdf",
+          "dvě různé částky: celková alokace (50m) vs. max. dotace na projekt (1m) — neplést"
+        ]
+      },
+      "grant_closed::eligible": {
+        "phrasings": [
+          "subjekty splňující definici organizace pro výzkum a šíření znalostí dle rámce pro státní podporu výzkumu, vývoje a inovací",
+          "oblast: životní prostředí a zdraví",
+          "typ žadatele neuveden v textu snippetu",
+          "právnické nebo fyzické osoby, se sídlem na území české republiky",
+          "akce se koná na území (jičína, text zkrácen)",
+          "kraje, obce, dobrovolné svazky obcí, organizace zřizované nebo zakládané kraji, organizace zřizované nebo zakládané obcemi",
+          "oprávněným žadatelem jsou pouze fyzické osoby, které: jsou vlastníkem nebo spoluvlastníky",
+          "dotace na podporu registrovaných sociálních služeb",
+          "'subjekt, který je schváleným ekis pro rok 2023'"
+        ],
+        "pitfalls": [
+          "text je oříznut — úplná definice oprávněných žadatelů není viditelná",
+          "oprávnění žadatelé jsou v pdf příloze, ne v textovém výtahu",
+          "podmínka místa akce (teritoriální) je oddělená od podmínky sídla žadatele — obě jsou relevantní",
+          "výčet veřejnoprávních subjektů — typické pro irop infrastrukturní výzvy",
+          "podmínka je oříznuta — zbytek kritérií chybí",
+          "žadatelé nejsou explicitně vyjmenováni v textu — jsou v pdf příloze programu",
+          "ekis je specifický termín (energetické konzultační a informační středisko) — obecný extraktor ho nemusí rozpoznat",
+          "text je oříznut za 'maximální výše způsobilý' — způsobilé výdaje nejsou dokončeny"
+        ]
+      },
+      "grant_closed::status": {
+        "phrasings": [
+          "do 2024-04-11",
+          "grant_closed — příjem žádostí explicitně neoznačen jako otevřený",
+          "grant_closed — příjem žádostí skončil 2025-03-17",
+          "grant_closed — 2019-12-31 je minulost",
+          "do 2025-10-15 — termín vypršel",
+          "program dotace 2025, dnes je 2026",
+          "closed — termín 2023-12-31 prošel"
+        ],
+        "pitfalls": [
+          "status closed je odvozený z minulého data — explicitní označení 'uzavřeno' nemusí být přítomno",
+          "bez explicitního 'příjem žádostí od-do' nelze odlišit grant_open od grant_closed — heuristika: není-li deadline v budoucnosti nebo uveden, klasifikuj jako closed",
+          "dotacni.info archivuje staré výzvy — vždy ověřit deadline",
+          "i velmi staré uzavřené výzvy mají stejný formát jako aktuální open výzvy na dotacni.info",
+          "status closed odvozován z data, není explicitně uvedeno 'výzva uzavřena'",
+          "status closed odvozován z ročníku programu vs aktuálního roku, nikoli z explicitního textu"
+        ]
+      },
+      "mise_tema::mission": {
+        "phrasings": [
+          "program nebojme se komunální politiky",
+          "cesta do komunální politiky",
+          "máte nápady, které posilují a oživují česko-německé sousedství?",
+          "poskytujeme finanční podporu organizacím i jednotlivcům",
+          "pomáhají ohroženým a znevýhodněným skupinám",
+          "podporují lidská práva a demokratické hodnoty",
+          "oživují zájem občanů o místní rozvoj a veřejný život",
+          "rozvoj firemní filantropie",
+          "efektivní naplňování sdg cílů a esg kritérií",
+          "internationaler austausch zwischen deutschen und tschechischen studierenden",
+          "deutsch-tschechische themen",
+          "nros posiluje rozvoj neziskového sektoru, dárcovství a dobrovolnictví, a tím přispívá k rozvoji občanské společnosti",
+          "'akademický svět vždy prosperoval z mezinárodní výměny'",
+          "'umožnit studentům obohatit výzkum o perspektivy ze sousední země'"
+        ],
+        "pitfalls": [
+          "stránka popisuje obsah běžícího programu pro vybrané — nelze z ní zjistit podmínky vstupu do příštího kola",
+          "mise popsána otázkou — nemusí být rozpoznána jako definice poslání",
+          "tři různé oblasti poslání jsou kombinovány — při extrakci je nutné zachovat všechny, ne jen první",
+          "dokument popisuje služby nros firmám — je to mise organizace, ne popis grantového tématu pro žadatele; hranice může být nejasná",
+          "text je německy — nutná jazyková kompetence při parsování",
+          "mise je vložena jako doplněk k inzerátu — mohla by být přehlédnuta jako boilerplate",
+          "fond popisuje i konkrétní finanční hodnoty stipendií — nevytrhávat jako grant_amount bez kontextu výzvy"
+        ]
+      },
+      "mise_tema::topics": {
+        "phrasings": [
+          "komunální politika",
+          "územní rozvoj",
+          "participativní plánování",
+          "klimatická opatření",
+          "dostupné bydlení",
+          "česko-německé sousedství",
+          "renovace památek",
+          "stipendia",
+          "program začínáme",
+          "pomozte dětem — ohrožené děti do 18 let",
+          "správný start — spolupráce s nadačním fondem tesco",
+          "lidská práva a demokratické hodnoty",
+          "firemní fond",
+          "csr/esg",
+          "sociální odpovědnost",
+          "oblast podpory",
+          "geistes- und gesellschaftswissenschaften: geschichte, politik, sozialwissenschaften, jura, wirtschaftswissenschaften, sprachwissenschaft, literaturwissenschaft, kulturwissenschaft, philosophie",
+          "sbírkový projekt pomozte dětem, neziskovka roku, vzdělávací aktivity",
+          "fundraising, projektové řízení, neziskový sektor",
+          "'humanitní a společenskovědní obory (historie, politologie, sociální vědy, právo, ekonomie, jazykověda, literární věda, kulturní studia, filosofie atd.)'",
+          "'česko-německá témata'"
+        ],
+        "pitfalls": [
+          "témata jsou semináře programu, nikoli tematické oblasti grantové výzvy — záměna kontextu",
+          "témata jsou pojmenována programově, ne tematicky — 'renovace památek' je typ projektu, ne téma",
+          "programové názvy (pomozte dětem) jsou brandové, nikoli tematické — téma je třeba extrahovat z popisu, ne z názvu",
+          "témata jsou velmi obecná a nikde není výčet konkrétních oblastí jako u standardní mise nadace",
+          "výčet oborů je ilustrativní ('usw.'), ne uzavřený seznam",
+          "témata jsou zmíněna v kontextu dobrovolnické práce, ne jako grantové priority",
+          "výčet oborů je ilustrativní ('atd.'), není exhaustivní"
+        ]
+      },
+      "mise_tema::regions": {
+        "phrasings": [
+          "praha",
+          "jablonec nad nisou",
+          "česká republika",
+          "česko-německé sousedství",
+          "v české republice",
+          "děti žijící v české republice",
+          "deutschland und tschechien",
+          "grenzüberschreitend",
+          "na václavce 9 v praze 5 — sídlo nros",
+          "'studenti z česka a z německa'",
+          "'české a německé univerzity'"
+        ],
+        "pitfalls": [
+          "místa jsou lokace setkání, nikoli geografická oblast podpory programu",
+          "geografické vymezení je implicitní — explicitně není řečeno 'pouze čr a německo', ale z názvu fondu vyplývá",
+          "region je zmíněn jen u programu pomozte dětem — ostatní programy nemají explicitní geografické omezení v tomto textu",
+          "region není zmíněn — dokument je celostátní/bez omezení",
+          "bilingvní program — region je dvojstranný, nikoli jen cz",
+          "region je pouze sídlo organizace, ne pokrytí podpory",
+          "program je bilaterální cz-de, ne pan-evropský — region je přesně vymezený"
+        ]
+      },
+      "ostatni::administrativa": {
+        "phrasings": [],
+        "pitfalls": [
+          "žádná grantová ani správní pole nejsou extrahovatelná — čistě narativní obsah bez strukturovaných dat",
+          "slova 'grantovými programy' mohou svádět k zařazení jako grant nebo mise_tema — je to jen odkaz v textu podcastu, nikoli popis programu",
+          "zařízení pro děti (klokánek = fond ohrožených dětí) by mohlo svádět k zařazení jako projekt/grantee, ale dokument nepopisuje grant ani příjemce dotace"
+        ]
+      },
+      "news::date": {
+        "phrasings": [
+          "16 – 17.9",
+          "19.9.",
+          "do konce tohoto roku",
+          "pátek 21. 6. 2019",
+          "středa 26. 6. 2019",
+          "termíny průběžně doplňovány",
+          "datum článku není v textu explicitně, pouze odkaz na zdroj",
+          "od dnešního dne má svůj záchranný program i sýček obecný",
+          "16.9.2024 (datum zveřejnění v metadatech zdroje není v tomto textu)",
+          "v neděli 16. října 2016",
+          "(žádné explicitní datum v textu)",
+          "5. listopadu 2025 v 17.30",
+          "17. prosince 2018, 9:30 – 13:00",
+          "'vstoupí do kin 19. března'",
+          "'13. a 15. března' (festival jeden svět praha)",
+          "'v roce 2025 se promítal' (retrospektivní zmínka)"
+        ],
+        "pitfalls": [
+          "rok není v textu explicitně uveden — musí se odvodit z kontextu (mf dnes odkaz na 2014, žádosti na 2015)",
+          "více termínů akcí v jednom dokumentu — datum není jednoznačné; relevantní je datum publikace, nikoli termíny jednotlivých vycházek",
+          "datum není přímo v textu — nutno extrahovat z url nebo metadat zdroje",
+          "datum události je vyjádřeno jako 'od dnešního dne' — relativní reference bez absolutního data v textu",
+          "datum je datum akce, nikoli datum publikace článku — pro news je relevantní oboje, ale jen jedno je explicitní",
+          "datum chybí — muselo by se odvodit z kontextu publikace nebo z metadat webu",
+          "datum 2025 je v budoucnosti od doby zveřejnění — může být archivované pozvání; klasifikace news platí bez ohledu na to, zda akce proběhla",
+          "datum akce = datum v minulosti; dokument je historická aktualita — typ zůstává news",
+          "datum premiéry (19. března) není datum publikace dokumentu — neplést za deadline grantu",
+          "rok není explicitně uveden u premiéry, vyplývá z kontextu (2026)"
+        ]
+      },
+      "ostatni::date": {
+        "phrasings": [
+          "pondělí 8. června od 17:00",
+          "(žádné datum v textu)"
+        ],
+        "pitfalls": [
+          "true_type je mise_tema, ale fakticky jde o registrační formulář — pole pro mise_tema (mission/topics/regions) nelze smysluplně vyplnit",
+          "chybí datum publikace; zmínka o stém výročí republiky (1918+100=2018) jako orientační datace"
+        ]
+      }
+    }
+  }
+}

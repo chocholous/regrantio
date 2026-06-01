@@ -1,0 +1,1906 @@
+{
+  "summary": "Hybridní re-detekce platforem: Sonnet agenti čtou důkazy UNKNOWN webů, sdílejí registr podpisů, pojmenují nové platformy",
+  "agentCount": 21,
+  "logs": [
+    "registr: 75 platforem; round1 klasifikoval 171 hostů"
+  ],
+  "result": {
+    "unknown_hosts": 171,
+    "classified": 171,
+    "still_unknown": 8,
+    "distribution": {
+      "custom_php": 22,
+      "custom_spa": 18,
+      "kentico": 11,
+      "UNKNOWN": 8,
+      "bm_cms": 6,
+      "aspnet_webforms": 5,
+      "custom_php_cms": 4,
+      "nette_custom": 4,
+      "nette": 4,
+      "marwel": 4,
+      "arcgis_hub": 3,
+      "bm_cms_plzen": 3,
+      "custom_codeigniter": 3,
+      "firon": 2,
+      "angular": 2,
+      "edotace_plzen": 2,
+      "aspnet_mvc_custom": 2,
+      "static_html": 2,
+      "webtodate": 2,
+      "ewa_portal": 2,
+      "edee_fgforrest": 2,
+      "visu_cms": 2,
+      "custom_static": 2,
+      "vismo": 2,
+      "origine_solutions": 2,
+      "opencms": 2,
+      "wordpress": 1,
+      "neofema_cms": 1,
+      "comerto": 1,
+      "razor_aspnet_core": 1,
+      "viaaurea_cms": 1,
+      "vizus_cms": 1,
+      "mediawiki": 1,
+      "netservis_cms": 1,
+      "statamic": 1,
+      "aspnet_custom": 1,
+      "react": 1,
+      "muniweb": 1,
+      "custom_govpl_portal": 1,
+      "govuk_publishing_platform": 1,
+      "custom_static_html": 1,
+      "custom_aspnet_mvc": 1,
+      "laravel": 1,
+      "nette_framework": 1,
+      "classic_asp_municipal": 1,
+      "custom_php_codeigniter": 1,
+      "custom_php_laravel": 1,
+      "custom_php_adminlte": 1,
+      "vue_nuxt": 1,
+      "eagri_portal": 1,
+      "multicms": 1,
+      "webbuilder": 1,
+      "cyberfox_cms": 1,
+      "weboo_cms": 1,
+      "cmso1": 1,
+      "nelson_cms": 1,
+      "galileo_corp": 1,
+      "custom_aspnetcore": 1,
+      "antee_ipo": 1,
+      "poski_cms": 1,
+      "fenomio_cms": 1,
+      "comerto_cms": 1,
+      "custom_aspnet": 1,
+      "ciri_mayor": 1,
+      "webnode": 1,
+      "sulu": 1,
+      "eco_bzcompany": 1,
+      "astro": 1,
+      "django": 1,
+      "octobercms": 1,
+      "progres_cms": 1,
+      "webcore": 1,
+      "contens_cms": 1,
+      "solidpixels": 1,
+      "processwire": 1,
+      "custom_is_vut": 1
+    },
+    "novel_platforms": [
+      {
+        "platform": "neofema_cms",
+        "vendor": "Neofema s.r.o.",
+        "count": 1,
+        "hosts": [
+          "aifp.cz"
+        ]
+      },
+      {
+        "platform": "comerto",
+        "vendor": "Comerto",
+        "count": 1,
+        "hosts": [
+          "at-cz.eu"
+        ]
+      },
+      {
+        "platform": "razor_aspnet_core",
+        "vendor": "custom ASP.NET Core",
+        "count": 1,
+        "hosts": [
+          "breclav.eu"
+        ]
+      },
+      {
+        "platform": "viaaurea_cms",
+        "vendor": "Via Aurea",
+        "count": 1,
+        "hosts": [
+          "brno-lisen.cz"
+        ]
+      },
+      {
+        "platform": "custom_php_cms",
+        "vendor": "Orwin s.r.o.",
+        "count": 4,
+        "hosts": [
+          "brno-stred.cz",
+          "cervenykriz.eu",
+          "clovekvtisni.cz",
+          "cuni.cz"
+        ]
+      },
+      {
+        "platform": "custom_spa",
+        "vendor": "OLC Webdesign s.r.o.",
+        "count": 19,
+        "hosts": [
+          "cz-pl.eu",
+          "czechtourism.cz",
+          "czso.cz",
+          "eagri.cz"
+        ]
+      },
+      {
+        "platform": "statamic",
+        "vendor": "Stredly s.r.o.",
+        "count": 1,
+        "hosts": [
+          "czechcentres.cz"
+        ]
+      },
+      {
+        "platform": "kentico",
+        "vendor": "Kentico Software",
+        "count": 11,
+        "hosts": [
+          "czechinvest.org",
+          "dotaceeu.cz",
+          "irop.gov.cz",
+          "kontobariery.cz"
+        ]
+      },
+      {
+        "platform": "custom_php",
+        "vendor": "Nette Framework 3 (custom aplikace Darujme/Nadace)",
+        "count": 21,
+        "hosts": [
+          "darujme.cz",
+          "darujspravne.cz",
+          "databaze.nsmascr.cz",
+          "donorsforum.cz"
+        ]
+      },
+      {
+        "platform": "arcgis_hub",
+        "vendor": "Esri ArcGIS Hub (ArcGIS Open Data Portal)",
+        "count": 3,
+        "hosts": [
+          "data.jmk.cz",
+          "data.pardubickykraj.cz",
+          "datalk.cz"
+        ]
+      },
+      {
+        "platform": "aspnet_webforms",
+        "vendor": "CZI webdesign (http://www.czi.cz)",
+        "count": 5,
+        "hosts": [
+          "deska.pardubickykraj.cz",
+          "dotace.kr-jihomoravsky.cz",
+          "granty.praha.eu",
+          "opd.cz"
+        ]
+      },
+      {
+        "platform": "aspnet_custom",
+        "vendor": "",
+        "count": 1,
+        "hosts": [
+          "dobryskutek.cz"
+        ]
+      },
+      {
+        "platform": "nette_custom",
+        "vendor": "Giant Interactive s.r.o.",
+        "count": 4,
+        "hosts": [
+          "dotace.brno.cz",
+          "mestojablonec.cz",
+          "www.podbrnensko.cz",
+          "www.umprum.cz"
+        ]
+      },
+      {
+        "platform": "firon",
+        "vendor": "UVM interactive",
+        "count": 2,
+        "hosts": [
+          "dotace.kraj-lbc.cz",
+          "kraj-lbc.cz"
+        ]
+      },
+      {
+        "platform": "edotace_plzen",
+        "vendor": "PilsCom",
+        "count": 2,
+        "hosts": [
+          "dotace.plzen.eu",
+          "dotace.plzensky-kraj.cz"
+        ]
+      },
+      {
+        "platform": "aspnet_mvc_custom",
+        "vendor": "NSA (Národní sportovní agentura) — custom dotační portál",
+        "count": 2,
+        "hosts": [
+          "dp.dotacesport.cz",
+          "dpmkportal.mkcr.cz"
+        ]
+      },
+      {
+        "platform": "nette",
+        "vendor": "custom Nette Framework (PHP) — město Plzeň",
+        "count": 4,
+        "hosts": [
+          "dpo-archiv.plzen.eu",
+          "fondkinematografie.cz",
+          "grantovydiar.cz",
+          "vdv.cz"
+        ]
+      },
+      {
+        "platform": "muniweb",
+        "vendor": "Masarykova univerzita / ICS MUNI",
+        "count": 1,
+        "hosts": [
+          "gamu.muni.cz"
+        ]
+      },
+      {
+        "platform": "custom_govpl_portal",
+        "vendor": "Ministerstwo Cyfryzacji (Polsko)",
+        "count": 1,
+        "hosts": [
+          "gov.pl"
+        ]
+      },
+      {
+        "platform": "govuk_publishing_platform",
+        "vendor": "Government Digital Service (UK)",
+        "count": 1,
+        "hosts": [
+          "gov.uk"
+        ]
+      },
+      {
+        "platform": "custom_static_html",
+        "vendor": "tosed",
+        "count": 1,
+        "hosts": [
+          "hlavkovanadace.cz"
+        ]
+      },
+      {
+        "platform": "custom_aspnet_mvc",
+        "vendor": "Hlidac statu z.u.",
+        "count": 1,
+        "hosts": [
+          "hlidacstatu.cz"
+        ]
+      },
+      {
+        "platform": "laravel",
+        "vendor": "neznamy",
+        "count": 1,
+        "hosts": [
+          "interreg-danube.eu"
+        ]
+      },
+      {
+        "platform": "nette_framework",
+        "vendor": "xswd.cz",
+        "count": 1,
+        "hosts": [
+          "isprom.msmt.gov.cz"
+        ]
+      },
+      {
+        "platform": "marwel",
+        "vendor": "Marwel",
+        "count": 4,
+        "hosts": [
+          "karvina.cz",
+          "karvina.org",
+          "msmt.cz",
+          "msmt.gov.cz"
+        ]
+      },
+      {
+        "platform": "custom_php_codeigniter",
+        "vendor": "neznámý",
+        "count": 1,
+        "hosts": [
+          "kr-zlinsky.cz"
+        ]
+      },
+      {
+        "platform": "custom_php_laravel",
+        "vendor": "neznámý",
+        "count": 1,
+        "hosts": [
+          "krasapomoci.cz"
+        ]
+      },
+      {
+        "platform": "custom_php_adminlte",
+        "vendor": "Myhome.CZ",
+        "count": 1,
+        "hosts": [
+          "lags.cz"
+        ]
+      },
+      {
+        "platform": "webtodate",
+        "vendor": "Macron Software",
+        "count": 2,
+        "hosts": [
+          "mocr.army.cz",
+          "mocr.mo.gov.cz"
+        ]
+      },
+      {
+        "platform": "eagri_portal",
+        "vendor": "Ministerstvo zemědělství / eAGRI",
+        "count": 1,
+        "hosts": [
+          "mze.gov.cz"
+        ]
+      },
+      {
+        "platform": "ewa_portal",
+        "vendor": "ICZ a.s. / EWA",
+        "count": 2,
+        "hosts": [
+          "mzv.cz",
+          "mzv.gov.cz"
+        ]
+      },
+      {
+        "platform": "multicms",
+        "vendor": "MultiCMS.net",
+        "count": 1,
+        "hosts": [
+          "nadace-adra.cz"
+        ]
+      },
+      {
+        "platform": "webbuilder",
+        "vendor": "WebBuilder (Aruba CZ)",
+        "count": 1,
+        "hosts": [
+          "nadace.veronica.cz"
+        ]
+      },
+      {
+        "platform": "edee_fgforrest",
+        "vendor": "FG Forrest",
+        "count": 2,
+        "hosts": [
+          "nadacecez.cz",
+          "zadost.online"
+        ]
+      },
+      {
+        "platform": "visu_cms",
+        "vendor": "Visualio",
+        "count": 2,
+        "hosts": [
+          "nadaceo2.cz",
+          "o2chytraskola.cz"
+        ]
+      },
+      {
+        "platform": "cyberfox_cms",
+        "vendor": "Cyber Fox, s.r.o.",
+        "count": 1,
+        "hosts": [
+          "nadaceokd.cz"
+        ]
+      },
+      {
+        "platform": "custom_static",
+        "vendor": "Miroslav Jahoda / polygrafix.cz",
+        "count": 2,
+        "hosts": [
+          "nadacersj.com",
+          "zivot90.cz"
+        ]
+      },
+      {
+        "platform": "weboo_cms",
+        "vendor": "Weboo s.r.o.",
+        "count": 1,
+        "hosts": [
+          "nadacetomasebati.cz"
+        ]
+      },
+      {
+        "platform": "cmso1",
+        "vendor": "Jiří Doubravský (douby.cz)",
+        "count": 1,
+        "hosts": [
+          "olomouc.eu"
+        ]
+      },
+      {
+        "platform": "nelson_cms",
+        "vendor": "Visualio",
+        "count": 1,
+        "hosts": [
+          "osa.cz"
+        ]
+      },
+      {
+        "platform": "custom_aspnetcore",
+        "vendor": "DMP / Ciri Development",
+        "count": 1,
+        "hosts": [
+          "rozvojkhk.cz"
+        ]
+      },
+      {
+        "platform": "fenomio_cms",
+        "vendor": "Fenomio",
+        "count": 1,
+        "hosts": [
+          "smocr.cz"
+        ]
+      },
+      {
+        "platform": "comerto_cms",
+        "vendor": "Comerto",
+        "count": 1,
+        "hosts": [
+          "sn-cz2027.eu"
+        ]
+      },
+      {
+        "platform": "custom_aspnet",
+        "vendor": "město Plzeň / interní",
+        "count": 1,
+        "hosts": [
+          "sport.plzen.cz"
+        ]
+      },
+      {
+        "platform": "ciri_mayor",
+        "vendor": "DMP / CiRi",
+        "count": 1,
+        "hosts": [
+          "starostuj.cz"
+        ]
+      },
+      {
+        "platform": "sulu",
+        "vendor": "Sulu GmbH",
+        "count": 1,
+        "hosts": [
+          "tonejlepsizkhk.cz"
+        ]
+      },
+      {
+        "platform": "eco_bzcompany",
+        "vendor": "BZCompany Internacional s.r.o.",
+        "count": 1,
+        "hosts": [
+          "trzistekhk.cz"
+        ]
+      },
+      {
+        "platform": "bm_cms_plzen",
+        "vendor": "Benes & Michl",
+        "count": 3,
+        "hosts": [
+          "umo1.plzen.eu",
+          "umo10.plzen.eu",
+          "umo2.plzen.eu"
+        ]
+      },
+      {
+        "platform": "bm_cms",
+        "vendor": "Beneš & Michl",
+        "count": 6,
+        "hosts": [
+          "umo3.plzen.eu",
+          "umo4.plzen.eu",
+          "umo6.plzen.eu",
+          "umo7.plzen.eu"
+        ]
+      },
+      {
+        "platform": "astro",
+        "vendor": "neznamy",
+        "count": 1,
+        "hosts": [
+          "visegradfund.org"
+        ]
+      },
+      {
+        "platform": "django",
+        "vendor": "WDF s.r.o.",
+        "count": 1,
+        "hosts": [
+          "www.amu.cz"
+        ]
+      },
+      {
+        "platform": "octobercms",
+        "vendor": "Dynweb",
+        "count": 1,
+        "hosts": [
+          "www.brno-cernovice.cz"
+        ]
+      },
+      {
+        "platform": "progres_cms",
+        "vendor": "Origine solutions",
+        "count": 1,
+        "hosts": [
+          "www.brno-komin.cz"
+        ]
+      },
+      {
+        "platform": "webcore",
+        "vendor": "WebCore (Nette Framework)",
+        "count": 1,
+        "hosts": [
+          "www.czu.cz"
+        ]
+      },
+      {
+        "platform": "contens_cms",
+        "vendor": "CONTENS Software GmbH",
+        "count": 1,
+        "hosts": [
+          "www.goethe.de"
+        ]
+      },
+      {
+        "platform": "origine_solutions",
+        "vendor": "Origine solutions",
+        "count": 2,
+        "hosts": [
+          "www.mcivanovice.cz",
+          "www.mcslatina.cz"
+        ]
+      },
+      {
+        "platform": "opencms",
+        "vendor": "Alkacon Software (OpenCms)",
+        "count": 2,
+        "hosts": [
+          "www.rektorat.zcu.cz",
+          "www.vsb.cz"
+        ]
+      },
+      {
+        "platform": "processwire",
+        "vendor": "",
+        "count": 1,
+        "hosts": [
+          "www.renovabis.de"
+        ]
+      },
+      {
+        "platform": "custom_is_vut",
+        "vendor": "CVIS VUT Brno (in-house IS)",
+        "count": 1,
+        "hosts": [
+          "www.vut.cz"
+        ]
+      },
+      {
+        "platform": "custom_codeigniter",
+        "vendor": "custom (CodeIgniter PHP framework)",
+        "count": 3,
+        "hosts": [
+          "www.zlin.eu",
+          "zlin.eu",
+          "zlinskykraj.cz"
+        ]
+      }
+    ],
+    "registry_size": 75,
+    "canonical_renames": [
+      {
+        "from": "comerto_cms",
+        "to": "comerto"
+      },
+      {
+        "from": "progres_cms",
+        "to": "origine_solutions"
+      },
+      {
+        "from": "custom_php_codeigniter",
+        "to": "custom_codeigniter"
+      }
+    ],
+    "grant_relevant_unknown": [
+      "abakus.cz",
+      "at-cz.eu",
+      "cz-pl.eu",
+      "czechaid.cz",
+      "deska.pardubickykraj.cz",
+      "dotace.brno.cz",
+      "dotace.khk.cz",
+      "dotace.kr-jihomoravsky.cz",
+      "dotace.kraj-lbc.cz",
+      "dotace.olomouc.eu",
+      "dotace.plzen.eu",
+      "dotace.plzensky-kraj.cz",
+      "dotaceeu.cz",
+      "dp.dotacesport.cz",
+      "dpmkportal.mkcr.cz",
+      "dpo-archiv.plzen.eu",
+      "eagri.cz",
+      "eeagrants.cz",
+      "fondkinematografie.cz",
+      "gamu.muni.cz",
+      "gideonklein.cz",
+      "grantovydiar.cz",
+      "granty.praha.eu",
+      "hithit.cz",
+      "hlavkovanadace.cz",
+      "hlidacstatu.cz",
+      "interreg-danube.eu",
+      "irop.gov.cz",
+      "isprom.msmt.gov.cz",
+      "jdp2.mf.gov.cz",
+      "mk.gov.cz",
+      "mmr.gov.cz",
+      "mpsv.gov.cz",
+      "msmt.cz",
+      "msmt.gov.cz",
+      "mze.gov.cz",
+      "nadace-adra.cz",
+      "nadace-agrofert.cz",
+      "nadace.veronica.cz",
+      "nadacecez.cz",
+      "nadaceo2.cz",
+      "nadaceokd.cz",
+      "nadacevodafone.cz",
+      "nadacnifondalbert.cz",
+      "o2chytraskola.cz",
+      "olympic.cz",
+      "opd.cz",
+      "osa.cz",
+      "rozvojkhk.cz",
+      "sgs.cvut.cz",
+      "sn-cz2027.eu",
+      "sport.plzen.cz",
+      "starostuj.cz",
+      "vdv.cz",
+      "visegradfund.org",
+      "www.brno-komin.cz",
+      "www.eeagrants.cz",
+      "www.mk.gov.cz",
+      "www.nadace-agrofert.cz",
+      "www.nfsa.cz",
+      "www.podbrnensko.cz",
+      "www.renovabis.de",
+      "zadost.online",
+      "zadosti.sfzp.cz",
+      "zlinskykraj.cz"
+    ],
+    "per_host": {
+      "abakus.cz": {
+        "platform": "wordpress",
+        "confidence": "high",
+        "vendor": "Elementor Pro",
+        "novel": false,
+        "grant": true
+      },
+      "acf.cz": {
+        "platform": "UNKNOWN",
+        "confidence": "low",
+        "vendor": "vedos.cz parking",
+        "novel": false,
+        "grant": false,
+        "via": "registr"
+      },
+      "aifp.cz": {
+        "platform": "neofema_cms",
+        "confidence": "high",
+        "vendor": "Neofema s.r.o.",
+        "novel": true,
+        "grant": false
+      },
+      "asociacedso.cz": {
+        "platform": "UNKNOWN",
+        "confidence": "low",
+        "vendor": "vedos.cz parking",
+        "novel": false,
+        "grant": false,
+        "via": "registr"
+      },
+      "at-cz.eu": {
+        "platform": "comerto",
+        "confidence": "medium",
+        "vendor": "Comerto",
+        "novel": true,
+        "grant": true
+      },
+      "breclav.eu": {
+        "platform": "razor_aspnet_core",
+        "confidence": "high",
+        "vendor": "custom ASP.NET Core",
+        "novel": true,
+        "grant": false
+      },
+      "brno-lisen.cz": {
+        "platform": "viaaurea_cms",
+        "confidence": "medium",
+        "vendor": "Via Aurea",
+        "novel": true,
+        "grant": false
+      },
+      "brno-stred.cz": {
+        "platform": "custom_php_cms",
+        "confidence": "medium",
+        "vendor": "Orwin s.r.o.",
+        "novel": true,
+        "grant": false
+      },
+      "cervenykriz.eu": {
+        "platform": "custom_php_cms",
+        "confidence": "medium",
+        "vendor": "neznamy",
+        "novel": true,
+        "grant": false
+      },
+      "charita.cz": {
+        "platform": "vizus_cms",
+        "confidence": "high",
+        "vendor": "VIZUS.CZ s.r.o.",
+        "novel": false,
+        "grant": false
+      },
+      "clovekvtisni.cz": {
+        "platform": "custom_php_cms",
+        "confidence": "medium",
+        "vendor": "OLC Webdesign s.r.o.",
+        "novel": true,
+        "grant": false
+      },
+      "cs.wikipedia.org": {
+        "platform": "mediawiki",
+        "confidence": "high",
+        "vendor": "Wikimedia Foundation",
+        "novel": false,
+        "grant": false
+      },
+      "csob.cz": {
+        "platform": "UNKNOWN",
+        "confidence": "low",
+        "vendor": "F5 Networks (WAF/bot-protection)",
+        "novel": false,
+        "grant": false,
+        "via": "registr"
+      },
+      "cuni.cz": {
+        "platform": "custom_php_cms",
+        "confidence": "medium",
+        "vendor": "neznámý (interní vývoj UK)",
+        "novel": true,
+        "grant": false
+      },
+      "cz-pl.eu": {
+        "platform": "custom_spa",
+        "confidence": "high",
+        "vendor": "OLC Webdesign s.r.o.",
+        "novel": true,
+        "grant": true
+      },
+      "czechaid.cz": {
+        "platform": "netservis_cms",
+        "confidence": "high",
+        "vendor": "NETservis s.r.o.",
+        "novel": false,
+        "grant": true
+      },
+      "czechcentres.cz": {
+        "platform": "statamic",
+        "confidence": "high",
+        "vendor": "Stredly s.r.o.",
+        "novel": true,
+        "grant": false
+      },
+      "czechinvest.org": {
+        "platform": "kentico",
+        "confidence": "high",
+        "vendor": "Kentico Software",
+        "novel": false,
+        "grant": false
+      },
+      "czechtourism.cz": {
+        "platform": "custom_spa",
+        "confidence": "high",
+        "vendor": "custom (Vue/Nuxt, Node.js/Express backend)",
+        "novel": false,
+        "grant": false
+      },
+      "czso.cz": {
+        "platform": "custom_spa",
+        "confidence": "high",
+        "vendor": "ČSÚ (Český statistický úřad) — vlastní vývoj s gov.cz Design System",
+        "novel": true,
+        "grant": false
+      },
+      "darujme.cz": {
+        "platform": "custom_php",
+        "confidence": "high",
+        "vendor": "Nette Framework 3 (custom aplikace Darujme/Nadace)",
+        "novel": true,
+        "grant": false
+      },
+      "darujspravne.cz": {
+        "platform": "custom_php",
+        "confidence": "high",
+        "vendor": "Nette Framework (Fórum dárců — vlastní vývoj)",
+        "novel": true,
+        "grant": false
+      },
+      "data.jmk.cz": {
+        "platform": "arcgis_hub",
+        "confidence": "high",
+        "vendor": "Esri ArcGIS Hub (ArcGIS Open Data Portal)",
+        "novel": true,
+        "grant": false
+      },
+      "data.pardubickykraj.cz": {
+        "platform": "arcgis_hub",
+        "confidence": "high",
+        "vendor": "Esri ArcGIS Hub (ArcGIS Open Data Portal)",
+        "novel": true,
+        "grant": false
+      },
+      "databaze.nsmascr.cz": {
+        "platform": "custom_php",
+        "confidence": "medium",
+        "vendor": "NSMAS ČR — vlastní vývoj (Bootstrap/jQuery stack)",
+        "novel": true,
+        "grant": false
+      },
+      "datalk.cz": {
+        "platform": "arcgis_hub",
+        "confidence": "high",
+        "vendor": "Esri ArcGIS Hub (ArcGIS Open Data Portal)",
+        "novel": true,
+        "grant": false
+      },
+      "deska.pardubickykraj.cz": {
+        "platform": "aspnet_webforms",
+        "confidence": "high",
+        "vendor": "CZI webdesign (http://www.czi.cz)",
+        "novel": false,
+        "grant": true
+      },
+      "dobryskutek.cz": {
+        "platform": "aspnet_custom",
+        "confidence": "high",
+        "vendor": "",
+        "novel": true,
+        "grant": false
+      },
+      "donorsforum.cz": {
+        "platform": "custom_php",
+        "confidence": "medium",
+        "vendor": "",
+        "novel": false,
+        "grant": false
+      },
+      "dotace.brno.cz": {
+        "platform": "nette_custom",
+        "confidence": "high",
+        "vendor": "",
+        "novel": true,
+        "grant": true
+      },
+      "dotace.khk.cz": {
+        "platform": "react",
+        "confidence": "high",
+        "vendor": "",
+        "novel": false,
+        "grant": true
+      },
+      "dotace.kr-jihomoravsky.cz": {
+        "platform": "aspnet_webforms",
+        "confidence": "high",
+        "vendor": "",
+        "novel": false,
+        "grant": true
+      },
+      "dotace.kraj-lbc.cz": {
+        "platform": "firon",
+        "confidence": "high",
+        "vendor": "UVM interactive",
+        "novel": true,
+        "grant": true
+      },
+      "dotace.olomouc.eu": {
+        "platform": "angular",
+        "confidence": "high",
+        "vendor": "",
+        "novel": false,
+        "grant": true
+      },
+      "dotace.plzen.eu": {
+        "platform": "edotace_plzen",
+        "confidence": "medium",
+        "vendor": "PilsCom",
+        "novel": true,
+        "grant": true
+      },
+      "dotace.plzensky-kraj.cz": {
+        "platform": "edotace_plzen",
+        "confidence": "high",
+        "vendor": "PilsCom",
+        "novel": true,
+        "grant": true
+      },
+      "dotaceeu.cz": {
+        "platform": "kentico",
+        "confidence": "high",
+        "vendor": "Kentico Software",
+        "novel": false,
+        "grant": true
+      },
+      "dp.dotacesport.cz": {
+        "platform": "aspnet_mvc_custom",
+        "confidence": "high",
+        "vendor": "NSA (Národní sportovní agentura) — custom dotační portál",
+        "novel": true,
+        "grant": true
+      },
+      "dpmkportal.mkcr.cz": {
+        "platform": "aspnet_mvc_custom",
+        "confidence": "high",
+        "vendor": "MK ČR — custom dotační portál (RS_DYNAMO)",
+        "novel": true,
+        "grant": true
+      },
+      "dpo-archiv.plzen.eu": {
+        "platform": "nette",
+        "confidence": "high",
+        "vendor": "custom Nette Framework (PHP) — město Plzeň",
+        "novel": false,
+        "grant": true
+      },
+      "eagri.cz": {
+        "platform": "custom_spa",
+        "confidence": "high",
+        "vendor": "Ministerstvo zemědělství ČR — custom eAGRI portal",
+        "novel": true,
+        "grant": true
+      },
+      "eeagrants.cz": {
+        "platform": "custom_php",
+        "confidence": "medium",
+        "vendor": "Ministerstvo financí ČR — custom CMS",
+        "novel": false,
+        "grant": true
+      },
+      "extranet.kr-vysocina.cz": {
+        "platform": "custom_spa",
+        "confidence": "medium",
+        "vendor": "Kraj Vysočina — custom extranet portál",
+        "novel": true,
+        "grant": false
+      },
+      "fondkinematografie.cz": {
+        "platform": "nette",
+        "confidence": "high",
+        "vendor": "Státní fond audiovize — custom Nette Framework 3",
+        "novel": false,
+        "grant": true
+      },
+      "fondvysociny.cz": {
+        "platform": "UNKNOWN",
+        "confidence": "low",
+        "vendor": "neznamy (WAF F5 BIG-IP blokuje přístup)",
+        "novel": false,
+        "grant": false,
+        "via": "registr"
+      },
+      "fundlift.cz": {
+        "platform": "angular",
+        "confidence": "high",
+        "vendor": "",
+        "novel": false,
+        "grant": false
+      },
+      "gamu.muni.cz": {
+        "platform": "muniweb",
+        "confidence": "high",
+        "vendor": "Masarykova univerzita / ICS MUNI",
+        "novel": true,
+        "grant": true
+      },
+      "gfps.cz": {
+        "platform": "static_html",
+        "confidence": "high",
+        "vendor": "",
+        "novel": false,
+        "grant": false
+      },
+      "gideonklein.cz": {
+        "platform": "static_html",
+        "confidence": "high",
+        "vendor": "",
+        "novel": false,
+        "grant": true
+      },
+      "gov.pl": {
+        "platform": "custom_govpl_portal",
+        "confidence": "high",
+        "vendor": "Ministerstwo Cyfryzacji (Polsko)",
+        "novel": true,
+        "grant": false
+      },
+      "gov.uk": {
+        "platform": "govuk_publishing_platform",
+        "confidence": "high",
+        "vendor": "Government Digital Service (UK)",
+        "novel": true,
+        "grant": false
+      },
+      "grantovydiar.cz": {
+        "platform": "nette",
+        "confidence": "high",
+        "vendor": "Svět neziskovek z.ú. (custom Nette + Vue)",
+        "novel": true,
+        "grant": true
+      },
+      "granty.praha.eu": {
+        "platform": "aspnet_webforms",
+        "confidence": "high",
+        "vendor": "Rosette/GrantyPortal (custom ASP.NET)",
+        "novel": true,
+        "grant": true
+      },
+      "greenpeace.org": {
+        "platform": "custom_spa",
+        "confidence": "medium",
+        "vendor": "",
+        "novel": false,
+        "grant": false
+      },
+      "hithit.cz": {
+        "platform": "custom_spa",
+        "confidence": "high",
+        "vendor": "AspectWorks",
+        "novel": true,
+        "grant": true
+      },
+      "hlavkovanadace.cz": {
+        "platform": "custom_static_html",
+        "confidence": "high",
+        "vendor": "tosed",
+        "novel": true,
+        "grant": true
+      },
+      "hlidacstatu.cz": {
+        "platform": "custom_aspnet_mvc",
+        "confidence": "high",
+        "vendor": "Hlidac statu z.u.",
+        "novel": true,
+        "grant": true
+      },
+      "ifp.cz": {
+        "platform": "custom_php",
+        "confidence": "high",
+        "vendor": "Burn IT, s.r.o.",
+        "novel": true,
+        "grant": false
+      },
+      "interreg-danube.eu": {
+        "platform": "laravel",
+        "confidence": "high",
+        "vendor": "neznamy",
+        "novel": true,
+        "grant": true
+      },
+      "irop.gov.cz": {
+        "platform": "kentico",
+        "confidence": "high",
+        "vendor": "Kentico Software",
+        "novel": false,
+        "grant": true
+      },
+      "isprom.msmt.gov.cz": {
+        "platform": "nette_framework",
+        "confidence": "high",
+        "vendor": "xswd.cz",
+        "novel": true,
+        "grant": true
+      },
+      "jdp2.mf.gov.cz": {
+        "platform": "custom_spa",
+        "confidence": "high",
+        "vendor": "MF CR",
+        "novel": true,
+        "grant": true
+      },
+      "karvina.cz": {
+        "platform": "marwel",
+        "confidence": "high",
+        "vendor": "Marwel",
+        "novel": true,
+        "grant": false
+      },
+      "karvina.org": {
+        "platform": "marwel",
+        "confidence": "high",
+        "vendor": "Marwel",
+        "novel": true,
+        "grant": false
+      },
+      "kbely.eu": {
+        "platform": "UNKNOWN",
+        "confidence": "low",
+        "vendor": "neznámý",
+        "novel": false,
+        "grant": false,
+        "via": "registr"
+      },
+      "klatovy.cz": {
+        "platform": "classic_asp_municipal",
+        "confidence": "high",
+        "vendor": "SumavaNet.CZ",
+        "novel": false,
+        "grant": false
+      },
+      "kontobariery.cz": {
+        "platform": "kentico",
+        "confidence": "high",
+        "vendor": "Kentico (Sprinx Systems)",
+        "novel": true,
+        "grant": false
+      },
+      "kr-zlinsky.cz": {
+        "platform": "custom_php_codeigniter",
+        "confidence": "medium",
+        "vendor": "neznámý",
+        "novel": true,
+        "grant": false
+      },
+      "kraj-lbc.cz": {
+        "platform": "firon",
+        "confidence": "high",
+        "vendor": "Firon 4",
+        "novel": true,
+        "grant": false
+      },
+      "krasapomoci.cz": {
+        "platform": "custom_php_laravel",
+        "confidence": "medium",
+        "vendor": "neznámý",
+        "novel": true,
+        "grant": false
+      },
+      "lags.cz": {
+        "platform": "custom_php_adminlte",
+        "confidence": "high",
+        "vendor": "Myhome.CZ",
+        "novel": true,
+        "grant": false
+      },
+      "martinu.cz": {
+        "platform": "custom_php",
+        "confidence": "medium",
+        "vendor": "neznámý",
+        "novel": false,
+        "grant": false
+      },
+      "mdcr.cz": {
+        "platform": "kentico",
+        "confidence": "high",
+        "vendor": "Kentico Software / Titio s.r.o.",
+        "novel": false,
+        "grant": false
+      },
+      "mestojablonec.cz": {
+        "platform": "nette_custom",
+        "confidence": "high",
+        "vendor": "Giant Interactive s.r.o.",
+        "novel": true,
+        "grant": false
+      },
+      "mf.gov.cz": {
+        "platform": "custom_php",
+        "confidence": "medium",
+        "vendor": "",
+        "novel": true,
+        "grant": false
+      },
+      "mk.gov.cz": {
+        "platform": "kentico",
+        "confidence": "medium",
+        "vendor": "Kentico Software",
+        "novel": false,
+        "grant": true
+      },
+      "mmr.gov.cz": {
+        "platform": "kentico",
+        "confidence": "high",
+        "vendor": "Kentico Software",
+        "novel": false,
+        "grant": true
+      },
+      "mocr.army.cz": {
+        "platform": "webtodate",
+        "confidence": "high",
+        "vendor": "Macron Software",
+        "novel": true,
+        "grant": false
+      },
+      "mocr.mo.gov.cz": {
+        "platform": "webtodate",
+        "confidence": "high",
+        "vendor": "Macron Software",
+        "novel": true,
+        "grant": false
+      },
+      "mpo.gov.cz": {
+        "platform": "custom_php",
+        "confidence": "low",
+        "vendor": "",
+        "novel": true,
+        "grant": false,
+        "via": "registr"
+      },
+      "mpsv.cz": {
+        "platform": "vue_nuxt",
+        "confidence": "high",
+        "vendor": "",
+        "novel": false,
+        "grant": false
+      },
+      "mpsv.gov.cz": {
+        "platform": "custom_spa",
+        "confidence": "medium",
+        "vendor": "gov.cz Design System / Vue+Nuxt",
+        "novel": true,
+        "grant": true
+      },
+      "msmt.cz": {
+        "platform": "marwel",
+        "confidence": "high",
+        "vendor": "QCM s.r.o.",
+        "novel": true,
+        "grant": true
+      },
+      "msmt.gov.cz": {
+        "platform": "marwel",
+        "confidence": "high",
+        "vendor": "QCM s.r.o.",
+        "novel": true,
+        "grant": true
+      },
+      "mze.gov.cz": {
+        "platform": "eagri_portal",
+        "confidence": "high",
+        "vendor": "Ministerstvo zemědělství / eAGRI",
+        "novel": true,
+        "grant": true
+      },
+      "mzv.cz": {
+        "platform": "ewa_portal",
+        "confidence": "high",
+        "vendor": "ICZ a.s. / EWA",
+        "novel": true,
+        "grant": false
+      },
+      "mzv.gov.cz": {
+        "platform": "ewa_portal",
+        "confidence": "high",
+        "vendor": "ICZ a.s. / EWA",
+        "novel": true,
+        "grant": false
+      },
+      "nadace-adra.cz": {
+        "platform": "multicms",
+        "confidence": "high",
+        "vendor": "MultiCMS.net",
+        "novel": true,
+        "grant": true
+      },
+      "nadace-agrofert.cz": {
+        "platform": "custom_php",
+        "confidence": "low",
+        "vendor": "neznámý",
+        "novel": false,
+        "grant": true,
+        "via": "registr"
+      },
+      "nadace.veronica.cz": {
+        "platform": "webbuilder",
+        "confidence": "high",
+        "vendor": "WebBuilder (Aruba CZ)",
+        "novel": true,
+        "grant": true
+      },
+      "nadacecez.cz": {
+        "platform": "edee_fgforrest",
+        "confidence": "high",
+        "vendor": "FG Forrest",
+        "novel": false,
+        "grant": true
+      },
+      "nadacecharty77.cz": {
+        "platform": "kentico",
+        "confidence": "high",
+        "vendor": "Kentico Software / Sprinx Systems",
+        "novel": true,
+        "grant": false
+      },
+      "nadaceo2.cz": {
+        "platform": "visu_cms",
+        "confidence": "high",
+        "vendor": "Visualio",
+        "novel": true,
+        "grant": true
+      },
+      "nadaceokd.cz": {
+        "platform": "cyberfox_cms",
+        "confidence": "high",
+        "vendor": "Cyber Fox, s.r.o.",
+        "novel": true,
+        "grant": true
+      },
+      "nadacersj.com": {
+        "platform": "custom_static",
+        "confidence": "medium",
+        "vendor": "",
+        "novel": false,
+        "grant": false
+      },
+      "nadacetomasebati.cz": {
+        "platform": "weboo_cms",
+        "confidence": "high",
+        "vendor": "Weboo s.r.o.",
+        "novel": true,
+        "grant": false
+      },
+      "nadacevodafone.cz": {
+        "platform": "custom_php",
+        "confidence": "medium",
+        "vendor": "",
+        "novel": false,
+        "grant": true
+      },
+      "nadacnifondalbert.cz": {
+        "platform": "custom_spa",
+        "confidence": "medium",
+        "vendor": "",
+        "novel": false,
+        "grant": true
+      },
+      "nasedite.cz": {
+        "platform": "custom_php",
+        "confidence": "medium",
+        "vendor": "",
+        "novel": false,
+        "grant": false
+      },
+      "norway.no": {
+        "platform": "custom_spa",
+        "confidence": "medium",
+        "vendor": "Norwegian Ministry of Foreign Affairs (in-house)",
+        "novel": true,
+        "grant": false
+      },
+      "o2chytraskola.cz": {
+        "platform": "visu_cms",
+        "confidence": "high",
+        "vendor": "Visualio",
+        "novel": true,
+        "grant": true
+      },
+      "olomouc.eu": {
+        "platform": "cmso1",
+        "confidence": "high",
+        "vendor": "Jiří Doubravský (douby.cz)",
+        "novel": true,
+        "grant": false
+      },
+      "olympic.cz": {
+        "platform": "custom_php",
+        "confidence": "medium",
+        "vendor": "unknown",
+        "novel": true,
+        "grant": true
+      },
+      "opd.cz": {
+        "platform": "aspnet_webforms",
+        "confidence": "high",
+        "vendor": "unknown",
+        "novel": true,
+        "grant": true
+      },
+      "osa.cz": {
+        "platform": "nelson_cms",
+        "confidence": "high",
+        "vendor": "Visualio",
+        "novel": true,
+        "grant": true
+      },
+      "pardubice.eu": {
+        "platform": "UNKNOWN",
+        "confidence": "low",
+        "vendor": "unknown",
+        "novel": false,
+        "grant": false,
+        "via": "registr"
+      },
+      "plzen.eu": {
+        "platform": "custom_php",
+        "confidence": "medium",
+        "vendor": "Správa informačních technologií města Plzně (SITMP)",
+        "novel": true,
+        "grant": false
+      },
+      "praha16.eu": {
+        "platform": "galileo_corp",
+        "confidence": "high",
+        "vendor": "Galileo Corporation",
+        "novel": false,
+        "grant": false
+      },
+      "praha6.cz": {
+        "platform": "vismo",
+        "confidence": "medium",
+        "vendor": "Webhouse",
+        "novel": false,
+        "grant": false
+      },
+      "pribram.eu": {
+        "platform": "vismo",
+        "confidence": "high",
+        "vendor": "Webhouse",
+        "novel": false,
+        "grant": false
+      },
+      "rozvojkhk.cz": {
+        "platform": "custom_aspnetcore",
+        "confidence": "high",
+        "vendor": "DMP / Ciri Development",
+        "novel": true,
+        "grant": true
+      },
+      "sgs.cvut.cz": {
+        "platform": "custom_php",
+        "confidence": "high",
+        "vendor": "CVUT interní",
+        "novel": true,
+        "grant": true
+      },
+      "slezskabrana.cz": {
+        "platform": "antee_ipo",
+        "confidence": "high",
+        "vendor": "Antee s.r.o.",
+        "novel": false,
+        "grant": false
+      },
+      "slezskadiakonie.cz": {
+        "platform": "poski_cms",
+        "confidence": "high",
+        "vendor": "Poski.com s.r.o.",
+        "novel": false,
+        "grant": false
+      },
+      "smocr.cz": {
+        "platform": "fenomio_cms",
+        "confidence": "high",
+        "vendor": "Fenomio",
+        "novel": true,
+        "grant": false
+      },
+      "sn-cz2027.eu": {
+        "platform": "comerto_cms",
+        "confidence": "medium",
+        "vendor": "Comerto",
+        "novel": true,
+        "grant": true
+      },
+      "sport.plzen.cz": {
+        "platform": "custom_aspnet",
+        "confidence": "high",
+        "vendor": "město Plzeň / interní",
+        "novel": true,
+        "grant": true
+      },
+      "starostuj.cz": {
+        "platform": "ciri_mayor",
+        "confidence": "high",
+        "vendor": "DMP / CiRi",
+        "novel": true,
+        "grant": true
+      },
+      "startovac.cz": {
+        "platform": "custom_spa",
+        "confidence": "high",
+        "vendor": "Army of Darkness, s.r.o.",
+        "novel": true,
+        "grant": false
+      },
+      "tc.cz": {
+        "platform": "custom_php",
+        "confidence": "medium",
+        "vendor": "neznamy",
+        "novel": true,
+        "grant": false
+      },
+      "tichysvet.cz": {
+        "platform": "webnode",
+        "confidence": "high",
+        "vendor": "Webnode",
+        "novel": false,
+        "grant": false
+      },
+      "tonejlepsizkhk.cz": {
+        "platform": "sulu",
+        "confidence": "high",
+        "vendor": "Sulu GmbH",
+        "novel": true,
+        "grant": false
+      },
+      "trzistekhk.cz": {
+        "platform": "eco_bzcompany",
+        "confidence": "high",
+        "vendor": "BZCompany Internacional s.r.o.",
+        "novel": true,
+        "grant": false
+      },
+      "umo1.plzen.eu": {
+        "platform": "bm_cms_plzen",
+        "confidence": "high",
+        "vendor": "Benes & Michl",
+        "novel": true,
+        "grant": false
+      },
+      "umo10.plzen.eu": {
+        "platform": "bm_cms_plzen",
+        "confidence": "high",
+        "vendor": "Benes & Michl",
+        "novel": true,
+        "grant": false
+      },
+      "umo2.plzen.eu": {
+        "platform": "bm_cms_plzen",
+        "confidence": "high",
+        "vendor": "Benes & Michl",
+        "novel": true,
+        "grant": false
+      },
+      "umo3.plzen.eu": {
+        "platform": "bm_cms",
+        "confidence": "high",
+        "vendor": "Beneš & Michl",
+        "novel": true,
+        "grant": false
+      },
+      "umo4.plzen.eu": {
+        "platform": "bm_cms",
+        "confidence": "high",
+        "vendor": "Beneš & Michl",
+        "novel": true,
+        "grant": false
+      },
+      "umo6.plzen.eu": {
+        "platform": "bm_cms",
+        "confidence": "high",
+        "vendor": "Beneš & Michl",
+        "novel": true,
+        "grant": false
+      },
+      "umo7.plzen.eu": {
+        "platform": "bm_cms",
+        "confidence": "high",
+        "vendor": "Beneš & Michl",
+        "novel": true,
+        "grant": false
+      },
+      "umo8.plzen.eu": {
+        "platform": "bm_cms",
+        "confidence": "high",
+        "vendor": "Beneš & Michl",
+        "novel": true,
+        "grant": false
+      },
+      "umo9.plzen.eu": {
+        "platform": "bm_cms",
+        "confidence": "high",
+        "vendor": "Beneš & Michl",
+        "novel": true,
+        "grant": false
+      },
+      "vdb.czso.cz": {
+        "platform": "custom_spa",
+        "confidence": "medium",
+        "vendor": "ČSÚ (Český statistický úřad)",
+        "novel": true,
+        "grant": false
+      },
+      "vdv.cz": {
+        "platform": "nette",
+        "confidence": "high",
+        "vendor": "nobrother.cz",
+        "novel": true,
+        "grant": true
+      },
+      "visegradfund.org": {
+        "platform": "astro",
+        "confidence": "high",
+        "vendor": "neznamy",
+        "novel": true,
+        "grant": true
+      },
+      "vlada.gov.cz": {
+        "platform": "custom_php",
+        "confidence": "medium",
+        "vendor": "Úřad vlády ČR (interní)",
+        "novel": true,
+        "grant": false
+      },
+      "www.amu.cz": {
+        "platform": "django",
+        "confidence": "high",
+        "vendor": "WDF s.r.o.",
+        "novel": true,
+        "grant": false
+      },
+      "www.brno-cernovice.cz": {
+        "platform": "octobercms",
+        "confidence": "high",
+        "vendor": "Dynweb",
+        "novel": true,
+        "grant": false
+      },
+      "www.brno-komin.cz": {
+        "platform": "progres_cms",
+        "confidence": "high",
+        "vendor": "Origine solutions",
+        "novel": true,
+        "grant": true
+      },
+      "www.czu.cz": {
+        "platform": "webcore",
+        "confidence": "high",
+        "vendor": "WebCore (Nette Framework)",
+        "novel": true,
+        "grant": false
+      },
+      "www.eeagrants.cz": {
+        "platform": "custom_php",
+        "confidence": "medium",
+        "vendor": "Ministerstvo financí ČR (interní)",
+        "novel": true,
+        "grant": true
+      },
+      "www.goethe.de": {
+        "platform": "contens_cms",
+        "confidence": "high",
+        "vendor": "CONTENS Software GmbH",
+        "novel": true,
+        "grant": false
+      },
+      "www.kb.cz": {
+        "platform": "kentico",
+        "confidence": "high",
+        "vendor": "Kentico Software (Xperience)",
+        "novel": true,
+        "grant": false
+      },
+      "www.kninicky.eu": {
+        "platform": "custom_php",
+        "confidence": "medium",
+        "vendor": "SHERWOOD Media s.r.o.",
+        "novel": true,
+        "grant": false
+      },
+      "www.mcivanovice.cz": {
+        "platform": "origine_solutions",
+        "confidence": "high",
+        "vendor": "Origine solutions",
+        "novel": true,
+        "grant": false
+      },
+      "www.mcslatina.cz": {
+        "platform": "origine_solutions",
+        "confidence": "high",
+        "vendor": "Origine solutions",
+        "novel": true,
+        "grant": false
+      },
+      "www.mdcr.cz": {
+        "platform": "kentico",
+        "confidence": "high",
+        "vendor": "Kentico Software",
+        "novel": false,
+        "grant": false
+      },
+      "www.mk.gov.cz": {
+        "platform": "custom_spa",
+        "confidence": "medium",
+        "vendor": "neznámý",
+        "novel": true,
+        "grant": true
+      },
+      "www.msk.cz": {
+        "platform": "custom_spa",
+        "confidence": "medium",
+        "vendor": "neznámý",
+        "novel": true,
+        "grant": false
+      },
+      "www.nadace-agrofert.cz": {
+        "platform": "custom_php",
+        "confidence": "medium",
+        "vendor": "neznámý",
+        "novel": true,
+        "grant": true
+      },
+      "www.nadaceneuron.cz": {
+        "platform": "solidpixels",
+        "confidence": "high",
+        "vendor": "solidpixels.",
+        "novel": false,
+        "grant": false
+      },
+      "www.nfsa.cz": {
+        "platform": "custom_spa",
+        "confidence": "high",
+        "vendor": "neznámý",
+        "novel": true,
+        "grant": true
+      },
+      "www.osu.cz": {
+        "platform": "custom_php",
+        "confidence": "high",
+        "vendor": "Neoalia",
+        "novel": true,
+        "grant": false
+      },
+      "www.pardubice.eu": {
+        "platform": "UNKNOWN",
+        "confidence": "low",
+        "vendor": "",
+        "novel": false,
+        "grant": false,
+        "via": "registr"
+      },
+      "www.podbrnensko.cz": {
+        "platform": "nette_custom",
+        "confidence": "high",
+        "vendor": "",
+        "novel": true,
+        "grant": true
+      },
+      "www.rektorat.zcu.cz": {
+        "platform": "opencms",
+        "confidence": "high",
+        "vendor": "Alkacon Software (OpenCms)",
+        "novel": true,
+        "grant": false
+      },
+      "www.renovabis.de": {
+        "platform": "processwire",
+        "confidence": "high",
+        "vendor": "",
+        "novel": true,
+        "grant": true
+      },
+      "www.slu.cz": {
+        "platform": "UNKNOWN",
+        "confidence": "low",
+        "vendor": "",
+        "novel": false,
+        "grant": false,
+        "via": "registr"
+      },
+      "www.uhk.cz": {
+        "platform": "custom_spa",
+        "confidence": "medium",
+        "vendor": "",
+        "novel": true,
+        "grant": false
+      },
+      "www.umprum.cz": {
+        "platform": "nette_custom",
+        "confidence": "high",
+        "vendor": "",
+        "novel": true,
+        "grant": false
+      },
+      "www.vinohrady.brno.cz": {
+        "platform": "kentico",
+        "confidence": "high",
+        "vendor": "Pux Media (Kentico/Xperience)",
+        "novel": false,
+        "grant": false
+      },
+      "www.vsb.cz": {
+        "platform": "opencms",
+        "confidence": "medium",
+        "vendor": "Alkacon Software (OpenCms)",
+        "novel": false,
+        "grant": false
+      },
+      "www.vscht.cz": {
+        "platform": "custom_spa",
+        "confidence": "medium",
+        "vendor": "VSCHT internal / cdn.npx.cz",
+        "novel": true,
+        "grant": false
+      },
+      "www.vut.cz": {
+        "platform": "custom_is_vut",
+        "confidence": "high",
+        "vendor": "CVIS VUT Brno (in-house IS)",
+        "novel": true,
+        "grant": false
+      },
+      "www.zlin.eu": {
+        "platform": "custom_codeigniter",
+        "confidence": "high",
+        "vendor": "custom (CodeIgniter PHP framework)",
+        "novel": true,
+        "grant": false
+      },
+      "zadost.online": {
+        "platform": "edee_fgforrest",
+        "confidence": "medium",
+        "vendor": "fgForrest / evitaDB / edee",
+        "novel": true,
+        "grant": true
+      },
+      "zadosti.sfzp.cz": {
+        "platform": "aspnet_webforms",
+        "confidence": "high",
+        "vendor": "AIS SFŽP / Rosette framework (custom ASP.NET)",
+        "novel": true,
+        "grant": true
+      },
+      "zeleznehory.cz": {
+        "platform": "custom_php",
+        "confidence": "medium",
+        "vendor": "Sqedo / FutureCompany",
+        "novel": true,
+        "grant": false
+      },
+      "zivot90.cz": {
+        "platform": "custom_static",
+        "confidence": "high",
+        "vendor": "Miroslav Jahoda / polygrafix.cz",
+        "novel": true,
+        "grant": false
+      },
+      "zlin.eu": {
+        "platform": "custom_codeigniter",
+        "confidence": "high",
+        "vendor": "custom (CodeIgniter PHP framework)",
+        "novel": true,
+        "grant": false
+      },
+      "zlinskykraj.cz": {
+        "platform": "custom_codeigniter",
+        "confidence": "high",
+        "vendor": "custom (CodeIgniter PHP framework)",
+        "novel": true,
+        "grant": true
+      }
+    }
+  }
+}

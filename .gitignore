@@ -1,0 +1,12 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Generovaný výstup pipeline (zdrojová data žijí v rodičovském re-grantio/data/)
+/data/
+*.out.json
+
+# OS
+.DS_Store

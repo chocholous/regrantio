@@ -1,0 +1,794 @@
+[
+ {
+  "size": 34,
+  "shared": [],
+  "members": [
+   "anno-cr.cz",
+   "brno-utechov.cz",
+   "cenia.cz",
+   "ceske-socialni-podnikani.cz",
+   "crr.cz",
+   "dsomsl.cz",
+   "gacr.cz",
+   "mistniakcniskupiny.cz",
+   "nadaceo2.cz",
+   "nadacevia.cz",
+   "nadacevinci.cz",
+   "nchf.cz",
+   "neratov.cz",
+   "novazelenausporam.cz",
+   "o2chytraskola.cz",
+   "opst.cz",
+   "opzp.cz",
+   "osf.cz",
+   "pgrlf.cz",
+   "praha10.cz",
+   "praha7.cz",
+   "regionmtj.cz",
+   "sfdi.cz",
+   "sfdi.gov.cz",
+   "sfpi.cz",
+   "sgs.cvut.cz",
+   "silapacientu.cz",
+   "tacr.cz",
+   "unob.cz",
+   "www.dotacni.info",
+   "www.nadacevia.cz",
+   "www.planobnovy.gov.cz",
+   "www.ujep.cz",
+   "zelenykruh.cz"
+  ]
+ },
+ {
+  "size": 29,
+  "shared": [
+   "js:/js/bootstrap-v.min.js",
+   "js:/js/es6.js",
+   "js:/js/jquery.textarea-auto-expand.js",
+   "js:/js/bootstrap-treeview.min.js",
+   "js:/js/es5.js",
+   "js:/js/popper-v.min.js"
+  ],
+  "members": [
+   "benesov.dsw2.otevrenamesta.cz",
+   "boskovice.dsw2.otevrenamesta.cz",
+   "cernosice.dsw2.otevrenamesta.cz",
+   "dotace.chyne.cz",
+   "dotace.medlanky.cz",
+   "dotace.melnik.cz",
+   "dotace.mestobystrice.cz",
+   "dotace.mestodobris.cz",
+   "dotace.nmnm.cz",
+   "dotace.policenm.cz",
+   "dotace.praha11.cz",
+   "dotace.praha12.cz",
+   "dotace.praha14.cz",
+   "dotace.praha2.cz",
+   "dotace.praha3.cz",
+   "dotace.praha4.cz",
+   "dotace.praha8.cz",
+   "dotace.stepanov.cz",
+   "dotace.tisnov.cz",
+   "dotace.usti-nad-labem.cz",
+   "dotace.usti.cz",
+   "kromeriz.dsw2.otevrenamesta.cz",
+   "libus.dsw2.otevrenamesta.cz",
+   "loket.dsw2.otevrenamesta.cz",
+   "novemestonm.dsw2.otevrenamesta.cz",
+   "ostrava.dsw2.otevrenamesta.cz",
+   "praha6.dsw2.otevrenamesta.cz",
+   "stredoceskykraj.dsw2.otevrenamesta.cz",
+   "tacr.dsw2.otevrenamesta.cz"
+  ]
+ },
+ {
+  "size": 27,
+  "shared": [
+   "url:aspinclude/vismowe",
+   "css:/html/tisk.css",
+   "js:/aspinclude/vismoweb5/html/duplicatescriptsverifier.js",
+   "url:ms-\\d"
+  ],
+  "members": [
+   "hodonin.eu",
+   "hradeckralove.org",
+   "jihlava.cz",
+   "krnov.cz",
+   "letnany.cz",
+   "mb-net.cz",
+   "mc-zbraslav.cz",
+   "melnik.cz",
+   "mesto-most.cz",
+   "mestocheb.cz",
+   "mestokladno.cz",
+   "mestovsetin.cz",
+   "mubruntal.cz",
+   "mucl.cz",
+   "mukolin.cz",
+   "mulitvinov.cz",
+   "novabela.ostrava.cz",
+   "praha15.cz",
+   "sokolov.cz",
+   "taborcz.eu",
+   "trebic.cz",
+   "vyskov-mesto.cz",
+   "www.chrlice.brno.cz",
+   "www.jihlava.cz",
+   "www.kohoutovice.brno.cz",
+   "www.novy-liskovec.cz",
+   "www.zabovresky.cz"
+  ]
+ },
+ {
+  "size": 20,
+  "shared": [
+   "js:/++theme++ova-theme/cookies/iframe/iframemanager.js",
+   "js://cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/v/jquery.form-validator.min.js",
+   "css:/jquery-gray@v/css/gray.min.css",
+   "url:resolveuid",
+   "js:/++theme++ova-theme/js/script.js",
+   "js:/++theme++ova-theme/cookies/iframe/iframemanager-init.js"
+  ],
+  "members": [
+   "hostalkovice.ostrava.cz",
+   "hrabova.ostrava.cz",
+   "lhotka.ostrava.cz",
+   "marianskehory.cz",
+   "martinov.ostrava.cz",
+   "moap.ostrava.cz",
+   "novaves.ostrava.cz",
+   "ovajih.ostrava.cz",
+   "petrkovice.ostrava.cz",
+   "plesna.ostrava.cz",
+   "polanka.cz",
+   "poruba.ostrava.cz",
+   "proskovice.ostrava.cz",
+   "pustkovec.ostrava.cz",
+   "radvanice.ostrava.cz",
+   "slezska.cz",
+   "starabela.ostrava.cz",
+   "svinov.ostrava.cz",
+   "trebovice.ostrava.cz",
+   "vitkovice.ostrava.cz"
+  ]
+ },
+ {
+  "size": 19,
+  "shared": [],
+  "members": [
+   "at-cz.eu",
+   "cuni.cz",
+   "diakonie.cz",
+   "fondkinematografie.cz",
+   "grantovydiar.cz",
+   "kreativnievropa.cz",
+   "mestojablonec.cz",
+   "olkraj.cz",
+   "osa.cz",
+   "pardubice.eu",
+   "sn-cz2027.eu",
+   "spolecenstviobci.gov.cz",
+   "trzistekhk.cz",
+   "www.amu.cz",
+   "www.brno-cernovice.cz",
+   "www.olkraj.cz",
+   "www.pardubice.eu",
+   "www.umprum.cz",
+   "zeleznehory.cz"
+  ]
+ },
+ {
+  "size": 10,
+  "shared": [
+   "css:/css/style.css",
+   "css:/cookieconsent.css",
+   "css:/css/jquery.fancybox-v.css",
+   "js:/gtag/js",
+   "js:/js/custom.js",
+   "js:/js/jquery.bxslider.js"
+  ],
+  "members": [
+   "umo1.plzen.eu",
+   "umo10.plzen.eu",
+   "umo2.plzen.eu",
+   "umo3.plzen.eu",
+   "umo4.plzen.eu",
+   "umo5.plzen.eu",
+   "umo6.plzen.eu",
+   "umo7.plzen.eu",
+   "umo8.plzen.eu",
+   "umo9.plzen.eu"
+  ]
+ },
+ {
+  "size": 8,
+  "shared": [
+   "js:/o/js_loader_config",
+   "js:/fe/objednani/build/bundle.js",
+   "js:/o/js_bundle_config",
+   "js:/o/brno-theme/js/app.min.js",
+   "css:/o/brno-theme/css/app.min.css",
+   "css:/o/brno-theme/css/main.css"
+  ],
+  "members": [
+   "bohunice.brno.cz",
+   "brno.cz",
+   "bystrc.brno.cz",
+   "jundrov.brno.cz",
+   "kralovopole.brno.cz",
+   "medlanky.brno.cz",
+   "www.sever.brno.cz",
+   "www.zidenice.eu"
+  ]
+ },
+ {
+  "size": 8,
+  "shared": [
+   "js:./../js/gallery4u.js",
+   "js:./../js/jquery-ui.js",
+   "js:./../js/redakce.js",
+   "css:/css/gallery.css",
+   "gen:public4u",
+   "js:./../js/jquery.js"
+  ],
+  "members": [
+   "mulouny.cz",
+   "pojizeri.cz",
+   "prerov.eu",
+   "prostejov.eu",
+   "sumperk.cz",
+   "trutnov.cz",
+   "www.bosonohy.cz",
+   "www.staryliskovec.cz"
+  ]
+ },
+ {
+  "size": 7,
+  "shared": [
+   "js:/js/global/v.hash/swipeview.js",
+   "css:/css/global/v.hash/print.css",
+   "js:/js/global/v.hash/lazyload.js",
+   "js:/js/global/wedar/v.hash/vue.min.js",
+   "css:/css/global/v.hash/global.css",
+   "js:/js/global/wedar/v.hash/mustache.js"
+  ],
+  "members": [
+   "brno-jehnice.cz",
+   "mu.kutnahora.cz",
+   "teplice.cz",
+   "trinecko.cz",
+   "www.kr-ustecky.cz",
+   "www.malomerice.cz",
+   "www.zebetin.cz"
+  ]
+ },
+ {
+  "size": 6,
+  "shared": [
+   "js:/js/highslide/highslide-full.packed.js",
+   "js:/bundles/cookiesconsent/js/cookies_consent.js",
+   "js:/js/jquery.migrate/jquery.migrate.min.js",
+   "js:/jsphp/highslide/highslide.cfg.js.php",
+   "css:/bundles/multipage/css/mini-meteorology_alerts.css",
+   "css:/js/highslide/highslide.css"
+  ],
+  "members": [
+   "mesto-beroun.cz",
+   "mesto-zatec.cz",
+   "nsmascr.cz",
+   "praha16.eu",
+   "praha22.cz",
+   "regionpoodri.cz"
+  ]
+ },
+ {
+  "size": 5,
+  "shared": [
+   "js:/wp-includes/js/dist/hooks.min.js",
+   "url:wp-content",
+   "url:wp-json",
+   "js:/wp-includes/js/dist/i18n.min.js"
+  ],
+  "members": [
+   "azvcr.cz",
+   "dotace.ostrava.cz",
+   "fajnovysport.cz",
+   "veda.vse.cz",
+   "www.utb.cz"
+  ]
+ },
+ {
+  "size": 4,
+  "shared": [],
+  "members": [
+   "acf.cz",
+   "asociacedso.cz",
+   "gfps.cz",
+   "praha6.cz"
+  ]
+ },
+ {
+  "size": 4,
+  "shared": [
+   "css:/assets/custom/frontend/css/custom.css",
+   "js:/assets/custom/frontend/js/template.js",
+   "css:/assets/plugins/slick/css/slick-theme.css",
+   "css:/assets/plugins/datetimepicker/css/datetimepicker.css",
+   "css:/assets/plugins/jquerymodal/css/jquerymodal.css",
+   "js:/assets/custom/frontend/js/custom.js"
+  ],
+  "members": [
+   "kr-zlinsky.cz",
+   "www.zlin.eu",
+   "zlin.eu",
+   "zlinskykraj.cz"
+  ]
+ },
+ {
+  "size": 3,
+  "shared": [],
+  "members": [
+   "cs.wikipedia.org",
+   "komarekfoundation.org",
+   "norway.no"
+  ]
+ },
+ {
+  "size": 3,
+  "shared": [
+   "css:/assets/opendata-base.css",
+   "css:/opendata-ui/assets/assets/chunk.32143.hash.css",
+   "css://cdn.rawgit.com/morteza/bootstrap-rtl/v3.v/dist/css/bootstrap-rtl.min.css",
+   "js:/opendata-ui/assets/assets/vendor.hash.js",
+   "js:/opendata-ui/assets/assets/chunk.85484.hash.js",
+   "css:/opendata-ui/assets/assets/opendata-rtl.hash.css"
+  ],
+  "members": [
+   "data.jmk.cz",
+   "data.pardubickykraj.cz",
+   "datalk.cz"
+  ]
+ },
+ {
+  "size": 3,
+  "shared": [
+   "js:bundle/bundle.hash.js",
+   "js:api/config",
+   "css:css/app.hash.css",
+   "url:ng-app"
+  ],
+  "members": [
+   "granty.liberec.cz",
+   "mb.grantys.cz",
+   "mc-zbraslav.grantys.cz"
+  ]
+ },
+ {
+  "size": 3,
+  "shared": [
+   "js:/wp-content/themes/understrap/js/photoswipe.min.js",
+   "js:/wp-content/plugins/slide-anything/lightgallery/plugins/autoplay/lg-autoplay.min.js",
+   "js:/wp-content/plugins/stop-user-enumeration/frontend/js/frontend.js",
+   "js:/wp-content/themes/sfzp_theme/js/script.min.js",
+   "js:/gtag/js",
+   "js:/wp-content/themes/sfzp_theme/js/js.cookie.min.js"
+  ],
+  "members": [
+   "modernizacni-fond.cz",
+   "sfzp.cz",
+   "sfzp.gov.cz"
+  ]
+ },
+ {
+  "size": 3,
+  "shared": [
+   "js:/wp/wp-includes/js/jquery/ui/controlgroup.min.js",
+   "js:/wp/wp-includes/js/jquery/ui/draggable.min.js",
+   "js:/app/plugins/events-manager/includes/js/events-manager.js",
+   "js:/wp/wp-includes/js/jquery/ui/button.min.js",
+   "js:/app/mu-plugins/ys-wp-master/js/scripts.js",
+   "js:/app/plugins/cookies-and-content-security-policy/js/js.cookie.min.js"
+  ],
+  "members": [
+   "pocernice.cz",
+   "praha-kbely.cz",
+   "praha1.cz"
+  ]
+ },
+ {
+  "size": 3,
+  "shared": [
+   "js:/bootstrap/v/js/bootstrap.min.js",
+   "css:/ajax/libs/bootstrap-datepicker/v/css/bootstrap-datepicker.min.css",
+   "css:/bootstrap/v/css/bootstrap.min.css",
+   "js:/ajax/libs/bootstrap-datepicker/v/locales/bootstrap-datepicker.cs.min.js",
+   "js:/ajax/libs/slick-carousel/v/slick.min.js",
+   "js:/ajax/libs/bootstrap-datepicker/v/js/bootstrap-datepicker.min.js"
+  ],
+  "members": [
+   "www.brno-komin.cz",
+   "www.mcivanovice.cz",
+   "www.mcslatina.cz"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "js:/wp-includes/js/dist/vendor/moment.min.js",
+   "js:/wp-includes/js/dist/hooks.min.js",
+   "js:/wp-content/plugins/wordpress-popular-posts/assets/js/wpp.min.js",
+   "xpb:php/7.4.33",
+   "gen:elementor 3.35.7",
+   "css:/wp-content/cache/autoptimize/css/autoptimize_0b641d4ea75c184ec881993ca7246d72.css"
+  ],
+  "members": [
+   "agenturasport.cz",
+   "nsa.gov.cz"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "js:/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447",
+   "js:/recaptcha/api.js",
+   "js:/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js",
+   "url:wp-content",
+   "url:wp-json"
+  ],
+  "members": [
+   "dobryandel.cz",
+   "nrb.cz"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "xpb:asp.net",
+   "js:/gtag/js"
+  ],
+  "members": [
+   "dotace.kr-jihomoravsky.cz",
+   "opd.cz"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "css:/_templates/project_frontend/css/style.css",
+   "js:/_scripts/dist/static_frontend.js",
+   "js:/_scripts/external/manual/bootstrap-bootbox.js",
+   "js:/_scripts/external/manual/moment.min.js",
+   "js:/_scripts/external/manual/moment.lang.cs.js",
+   "js:/_scripts/dist/external_frontend.js"
+  ],
+  "members": [
+   "dotace.kraj-lbc.cz",
+   "kraj-lbc.cz"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "js:/public/portal/mze/script-bundles/-a726-js-h4efgcff/main-script-bundle"
+  ],
+  "members": [
+   "eagri.cz",
+   "mze.gov.cz"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "css:/assets/css/main.css",
+   "css:/assets/css/eeagrants.css",
+   "css:/assets/css/ie.css",
+   "css:/assets/css/cookiebot.css",
+   "js:/assets/script/jquery-v.min.js",
+   "js:/assets/script/main.js"
+  ],
+  "members": [
+   "eeagrants.cz",
+   "www.eeagrants.cz"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "js:/wp-content/cache/autoptimize/js/autoptimize_single_af406e2ef5c637d0274d0cd00823e248.js",
+   "js:/wp-content/cache/autoptimize/js/autoptimize_single_c462909d0476bad08625880511916764.js",
+   "js:/wp-includes/js/jquery/jquery-migrate.min.js",
+   "js:/wp-content/cache/autoptimize/js/autoptimize_single_c5b807d30e0ea0eeb865f0e6ef841fd6.js",
+   "js:/wp-content/cache/autoptimize/js/autoptimize_single_252a7a5bbb2e3dd12f13c550625cc8ba.js",
+   "gen:wordpress 6.8.3"
+  ],
+  "members": [
+   "fondbudoucnosti.cz",
+   "www.fondbudoucnosti.cz"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "url:cmspages",
+   "js:/bootstrap/v/js/bootstrap.min.js",
+   "url:__doPostBack",
+   "js://cdn.datatables.net/v/js/jquery.datatables.js",
+   "js://cdn.datatables.net/plug-ins/v/sorting/numeric-comma.js",
+   "js:/webresource.axd"
+  ],
+  "members": [
+   "irop.gov.cz",
+   "mmr.gov.cz"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "js:/themes/karvina/js/magnific/use-magnific.min.js",
+   "css:/themes/karvina/css/slick.css",
+   "js:/themes/karvina/js/calendar/calendar-setup.js",
+   "js:/init-chatbot.js",
+   "css:/themes/karvina/css/slick-theme.css",
+   "js:/themes/karvina/js/jquery/use-slick.js"
+  ],
+  "members": [
+   "karvina.cz",
+   "karvina.org"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "css://cdnjs.cloudflare.com/ajax/libs/slick-carousel/v/slick.min.css",
+   "js:/cmspages/getresource.ashx",
+   "css:/npm/pretty-checkbox@v/dist/pretty-checkbox.min.css",
+   "js:/ajax/libs/select2/v-rc.0/js/select2.min.js",
+   "js:/ajax/libs/popper.js/v/umd/popper.min.js",
+   "url:__doPostBack"
+  ],
+  "members": [
+   "kontobariery.cz",
+   "nadacecharty77.cz"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "js:/sites/default/files/js/js_gs6nnlsmdpym_adk9vidf0vgc-9gwxsyzhqpuhhshqu.js",
+   "js:/themes/kvkraj/assets/libs/slick/slick.min.js",
+   "js:/themes/kvkraj/assets/libs/lightbox/js/lightbox.js",
+   "js:/themes/kvkraj/assets/js/custom.js",
+   "js:/themes/kvkraj/assets/js/bootstrap/bootstrap.bundle.js",
+   "js:/sites/default/files/js/js_1acazs0y6fq5s7jnjby_cgpxcvtxsljh5lgi2y3tcu8.js"
+  ],
+  "members": [
+   "kr-karlovarsky.cz",
+   "www.kr-karlovarsky.cz"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "js:/sites/default/files/js/js_yxvwuxhd8usxlzqjcjpxik-lrhl5bcwi07fml2hctr8.js",
+   "css:/releases/v6.v/css/all.css",
+   "css:/sites/default/files/css/css_bqjxweimwyagyljiyxg35auqfyxneufwadkjf3zxowa.css",
+   "js:/npm/mathjax@3/es5/tex-mml-chtml.js",
+   "js:/ajax/libs/highlight.js/v/highlight.min.js",
+   "js:/npm/marked/marked.min.js"
+  ],
+  "members": [
+   "kraj-jihocesky.cz",
+   "www.kraj-jihocesky.cz"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "js:/app_themes/mdcr/js/tabs.js",
+   "css:/app_themes/mdcr/css/jquery-ui.css",
+   "css:/app_themes/mdcr/css/main.css",
+   "js:/app_themes/mdcr/js/scroll.js",
+   "js:/gtag/js",
+   "js://platform.twitter.com/widgets.js"
+  ],
+  "members": [
+   "mdcr.cz",
+   "www.mdcr.cz"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "js:/web/assets/bundle/scripts-public.hash.js",
+   "css:/custom/css/noscript-design-support.css",
+   "css:/cookie-consent-external-websites/cookie-consent.css",
+   "css:/web/assets/bundle/styles-public.hash.css",
+   "js:/custom/resources/cookie-consent.js",
+   "js:/web/assets/bundle/scripts-1.hash.js"
+  ],
+  "members": [
+   "mk.gov.cz",
+   "www.mk.gov.cz"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "js:/js/highslide-with-gallery.min.js",
+   "js:/images/jwplayer/jwplayer.js",
+   "css:/js/slick/slick.css",
+   "js:/js/main.js",
+   "css:/css/ext/grids-responsive-old-ie-min.css",
+   "css:/css/vendor/owl.carousel.min.css"
+  ],
+  "members": [
+   "mocr.army.cz",
+   "mocr.mo.gov.cz"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "js:/themes/msmt2017/js/qcm/qcm.js",
+   "js:/themes/msmt2017/js/calendar/lang/calendar-cs.js",
+   "js:/themes/msmt2017/js/magnific/use-magnific.min.js",
+   "css:/themes/msmt2017/css/font/style.css",
+   "css:/themes/msmt2017/css/slick-theme.css",
+   "css:/themes/msmt2017/css/main.css"
+  ],
+  "members": [
+   "msmt.cz",
+   "msmt.gov.cz"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "js://mv.gov.cz/design/js/design-govcz-init.js",
+   "css://mv.gov.cz/design/css/design-govcz-print.min.css",
+   "js://mv.gov.cz/design/js/jquery-v.1.pack.js",
+   "css://mv.gov.cz/design/css/mvcr-screen.css",
+   "css:design/css/mvcr-screen-ie.css",
+   "css://mv.gov.cz/design/css/mvcr-tisk.css"
+  ],
+  "members": [
+   "mv.gov.cz",
+   "mvcr.cz"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "js:/en_us/sdk.js#xfbml=1&version=v18.0",
+   "js:/cse.js",
+   "js:/wp-includes/js/jquery/jquery-migrate.min.js",
+   "js:/wp-content/themes/mzcr/js/jquery.fancybox.min.js",
+   "js:/wp-includes/js/wp-util.min.js",
+   "js:/wp-includes/js/underscore.min.js"
+  ],
+  "members": [
+   "mzcr.cz",
+   "mzd.gov.cz"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "js:/public/a3/10/b5/297997_192886_events.js",
+   "js:/public/ea/1d/ec/1583403_2841264_cookie_notification.js",
+   "js:/static/774-1-mzv/cz/resources/-logic-mzv-resources-simplemaps_data.js",
+   "css:/npm/instantsearch.js@v/dist/instantsearch.min.css",
+   "css:/npm/instantsearch.js@v/dist/instantsearch-theme-algolia.min.css",
+   "js:/public/e0/8e/70/468224_348497_contentslider.js"
+  ],
+  "members": [
+   "mzv.cz",
+   "mzv.gov.cz"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "css:/assets/vendors/jarallax/jarallax.css",
+   "js:/gtag/js",
+   "css:/assets/vendors/bootstrap/css/bootstrap.min.css",
+   "css:/assets/vendors/vegas/vegas.min.css",
+   "css:/assets/vendors/tiny-slider/tiny-slider.min.css",
+   "css:/assets/vendors/jquery-ui/jquery-ui.css"
+  ],
+  "members": [
+   "nadace-agrofert.cz",
+   "www.nadace-agrofert.cz"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "js:/wp-content/plugins/contact-form-7/includes/swv/js/index.js",
+   "js:/wp-includes/js/jquery/jquery-migrate.min.js",
+   "js:/wp-content/themes/betheme/js/plugins/enllax.min.js",
+   "js:/wp-includes/js/dist/hooks.min.js",
+   "js:/wp-includes/js/jquery/ui/tabs.min.js",
+   "js:/wp-content/themes/betheme/js/plugins/debouncedresize.min.js"
+  ],
+  "members": [
+   "nadprahou.eu",
+   "www.program-life.cz"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "js:/wp-includes/js/jquery/jquery-migrate.min.js",
+   "js:/wp-content/themes/divi/core/admin/js/common.js",
+   "js:/wp-content/plugins/diviflash/public/js/df-menu-ext-script.js",
+   "js:/wp-includes/js/jquery/jquery.min.js",
+   "js:/wp-content/plugins/diviflash/scripts/frontend-bundle.min.js",
+   "url:wp-content"
+  ],
+  "members": [
+   "nfdvp.cz",
+   "vinarskyfond.cz"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "css:/components/_common/combine.jsp",
+   "gen:webjet cms",
+   "css:/components/menu/smartmenus/jquery.smartmenus.bootstrap-4.css",
+   "js:/components/_common/combine.jsp",
+   "js:/components/menu/smartmenus/jquery.smartmenus.min.js",
+   "css:/components/gdpr/style.css"
+  ],
+  "members": [
+   "opava-city.cz",
+   "usti-nad-labem.cz"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "js:/wp-includes/js/jquery/ui/button.min.js",
+   "js:/wp-includes/js/jquery/ui/resizable.min.js",
+   "js:/gtag/js",
+   "js:/wp-includes/js/jquery/ui/draggable.min.js",
+   "js:/wp-includes/js/jquery/ui/core.min.js",
+   "url:wp-content"
+  ],
+  "members": [
+   "opjak.cz",
+   "praha5.cz"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "css:/sites/default/files/css/css_nqr3xeubw-e6t4spnb14hargkmq5lod3evpyo70tu8q.css",
+   "js:/sites/default/files/js/js_nby-8m2la5nztk0qiymv9xx-3nozywqk6twtm_jh6y8.js",
+   "css:/sites/default/files/css/css_vscwavpjxk9n7i6fsdgbjhy2fmqgfn1bj2lscdl59m0.css",
+   "css:/npm/@fortawesome/fontawesome-free@v/css/fontawesome.min.css",
+   "css:/releases/v5.v/css/all.css",
+   "css:/npm/entreprise7pro-bootstrap@v/dist/css/bootstrap.min.css"
+  ],
+  "members": [
+   "praha17.cz",
+   "repy.cz"
+  ]
+ },
+ {
+  "size": 2,
+  "shared": [
+   "js:/_content/dmp.cms.core/js/cookies.js",
+   "js:/_content/dmp.cms.core/js/notice-modal.js",
+   "js://translate.google.com/translate_a/element.js",
+   "js:/_content/dmp.cms.core/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js",
+   "js:/assets/js/lib/lightbox/lightbox.js",
+   "js:/assets/js/social-sharing.js"
+  ],
+  "members": [
+   "rozvojkhk.cz",
+   "starostuj.cz"
+  ]
+ }
+]

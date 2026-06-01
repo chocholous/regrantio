@@ -1,0 +1,331 @@
+{
+ "n_records": 24476,
+ "deadline_phrasings": [
+  [
+   "o podávání žádostí o dotace je stanovena",
+   158
+  ],
+  [
+   "žádosti o dotaci lze podávat",
+   34
+  ],
+  [
+   "příjmu projektových záměrů do ps řv bmo",
+   18
+  ],
+  [
+   "termín",
+   14
+  ],
+  [
+   "příjem žádostí",
+   14
+  ],
+  [
+   "podání zor a žop nejpozději",
+   14
+  ],
+  [
+   "termín realizace aktivit",
+   11
+  ],
+  [
+   "ukončení příjmu žádostí je stanoveno",
+   10
+  ],
+  [
+   "příjem návrhů projektů",
+   10
+  ],
+  [
+   "uzávěrka",
+   9
+  ],
+  [
+   "mítnuty v účetnictví příjemce nejpozději",
+   6
+  ],
+  [
+   "zahájení příjmu žádostí",
+   5
+  ],
+  [
+   "nejzazší termín ukončení realizace akce",
+   5
+  ],
+  [
+   "žádost musí být podána nejpozději",
+   5
+  ],
+  [
+   "soutěžní lhůta",
+   5
+  ],
+  [
+   "podání žádostí",
+   5
+  ],
+  [
+   "lhůta pro podávání žádostí je stanovena",
+   5
+  ],
+  [
+   "stanovená výzvou pro podávání žádostí je",
+   5
+  ],
+  [
+   "ukončení příjmu žádostí",
+   4
+  ],
+  [
+   "uzávěrka přihlášek",
+   4
+  ],
+  [
+   "žádost musí být podána",
+   4
+  ],
+  [
+   "příjem žádostí se prodlužuje",
+   4
+  ],
+  [
+   "s termínem ukončení příjmu žádostí",
+   4
+  ],
+  [
+   "hodnotící lhůta",
+   4
+  ],
+  [
+   "termín pro odevzdání dílčích zpráv",
+   3
+  ]
+ ],
+ "amount_phrasings": [
+  [
+   "projekt byl podpořen částkou",
+   1990
+  ],
+  [
+   "",
+   1371
+  ],
+  [
+   "lkových způsobilých výdajů projektu",
+   577
+  ],
+  [
+   "způsobilých výdajů na projekt činí",
+   421
+  ],
+  [
+   "míra podpory",
+   382
+  ],
+  [
+   "celková alokace činí",
+   331
+  ],
+  [
+   "projekt jsme podpořili částkou",
+   246
+  ],
+  [
+   "alokace",
+   228
+  ],
+  [
+   "až",
+   164
+  ],
+  [
+   "a zdvojnásobením výtěžku až do výše",
+   154
+  ],
+  [
+   "ových způsobilých výdajů na projekt",
+   140
+  ],
+  [
+   "antigenním testem stanovena cca u",
+   118
+  ],
+  [
+   "ch způsobilých výdajů na projekt je",
+   108
+  ],
+  [
+   "maximálně",
+   91
+  ],
+  [
+   "činí",
+   91
+  ],
+  [
+   "maximální výše dotace",
+   89
+  ],
+  [
+   "mální výše dotace činí na 1 projekt",
+   87
+  ],
+  [
+   "do",
+   73
+  ],
+  [
+   "záchytech se pohybuje v rozsahu cca",
+   69
+  ],
+  [
+   "způsobilých výdajů na jeden projekt",
+   68
+  ]
+ ],
+ "eligible_phrasings": [
+  [
+   "oprávněným žadatelem",
+   153
+  ],
+  [
+   "žadatel je",
+   147
+  ],
+  [
+   "žadatele je",
+   123
+  ],
+  [
+   "oprávněnými žadateli",
+   109
+  ],
+  [
+   "žadatelem může být",
+   90
+  ],
+  [
+   "oprávněných žadatelů",
+   67
+  ],
+  [
+   "oprávnění žadatelé",
+   63
+  ],
+  [
+   "žadatelem o dotaci může být",
+   58
+  ],
+  [
+   "příjemce dotace je",
+   57
+  ],
+  [
+   "oprávněný žadatel",
+   56
+  ],
+  [
+   "způsobilí žadatelé",
+   43
+  ],
+  [
+   "oprávněného žadatele",
+   29
+  ],
+  [
+   "žadatelem je",
+   26
+  ],
+  [
+   "způsobilými žadateli",
+   24
+  ],
+  [
+   "způsobilým žadatelem",
+   19
+  ],
+  [
+   "oprávněnost žadatele",
+   18
+  ],
+  [
+   "o dotaci mohou žádat",
+   18
+  ],
+  [
+   "způsobilých žadatelů",
+   18
+  ],
+  [
+   "oprávněné žadatele",
+   17
+  ],
+  [
+   "způsobilé žadatele",
+   14
+  ]
+ ],
+ "howto_phrasings": [
+  [
+   "podání žádosti",
+   1368
+  ],
+  [
+   "podání žádostí",
+   278
+  ],
+  [
+   "žádosti je možné",
+   82
+  ],
+  [
+   "žádosti musí být",
+   45
+  ],
+  [
+   "žádost musí být",
+   42
+  ],
+  [
+   "žádosti se podávají",
+   37
+  ],
+  [
+   "žádost lze podat",
+   31
+  ],
+  [
+   "žádost je možné",
+   31
+  ],
+  [
+   "způsob podání",
+   26
+  ],
+  [
+   "žádost se podává",
+   21
+  ],
+  [
+   "žádost podává",
+   18
+  ],
+  [
+   "žádosti lze podat",
+   12
+  ],
+  [
+   "žádosti podávat",
+   11
+  ],
+  [
+   "žádosti je nutno",
+   5
+  ],
+  [
+   "žádostí je možné",
+   4
+  ]
+ ]
+}

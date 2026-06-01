@@ -1,0 +1,3036 @@
+{
+ "final": {
+  "abakus.cz": {
+   "plat": "wordpress",
+   "src": "sonnet",
+   "grant": true
+  },
+  "acf.cz": {
+   "plat": "UNKNOWN",
+   "src": "sonnet",
+   "grant": false
+  },
+  "activecitizensfund.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "adra.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "agendazp.mzp.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "agenturasport.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "agosto-foundation.org": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "aifp.cz": {
+   "plat": "neofema_cms",
+   "src": "sonnet",
+   "grant": false
+  },
+  "anno-cr.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "arnika.org": {
+   "plat": "joomla",
+   "src": "det",
+   "grant": null
+  },
+  "asociacedso.cz": {
+   "plat": "UNKNOWN",
+   "src": "sonnet",
+   "grant": false
+  },
+  "at-cz.eu": {
+   "plat": "comerto",
+   "src": "sonnet",
+   "grant": true
+  },
+  "avu.cz": {
+   "plat": "nuxt_vue",
+   "src": "det",
+   "grant": null
+  },
+  "azvcr.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "benesov.dsw2.otevrenamesta.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "birdlife.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "bmeia.gv.at": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "bohunice.brno.cz": {
+   "plat": "liferay",
+   "src": "det",
+   "grant": null
+  },
+  "bosch-stiftung.de": {
+   "plat": "drupal",
+   "src": "det",
+   "grant": null
+  },
+  "boskovice.dsw2.otevrenamesta.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "breclav.eu": {
+   "plat": "razor_aspnet_core",
+   "src": "sonnet",
+   "grant": false
+  },
+  "britishcouncil.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "brno-jehnice.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "brno-lisen.cz": {
+   "plat": "viaaurea_cms",
+   "src": "sonnet",
+   "grant": false
+  },
+  "brno-stred.cz": {
+   "plat": "custom_php_cms",
+   "src": "sonnet",
+   "grant": false
+  },
+  "brno-utechov.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "brno.cz": {
+   "plat": "liferay",
+   "src": "det",
+   "grant": null
+  },
+  "brontosaurus.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "btha.cz": {
+   "plat": "joomla",
+   "src": "det",
+   "grant": null
+  },
+  "by-cz.eu": {
+   "plat": "typo3",
+   "src": "det",
+   "grant": null
+  },
+  "bystrc.brno.cz": {
+   "plat": "aspnet_clanek_mvhzs",
+   "src": "det",
+   "grant": null
+  },
+  "c-budejovice.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "cenia.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "cernosice.dsw2.otevrenamesta.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "cervenykriz.eu": {
+   "plat": "custom_php_cms",
+   "src": "sonnet",
+   "grant": false
+  },
+  "ceske-socialni-podnikani.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "charita.cz": {
+   "plat": "vizus_cms",
+   "src": "sonnet",
+   "grant": false
+  },
+  "ckrumlov.cz": {
+   "plat": "sharepoint",
+   "src": "det",
+   "grant": null
+  },
+  "clovekvtisni.cz": {
+   "plat": "custom_php_cms",
+   "src": "sonnet",
+   "grant": false
+  },
+  "crr.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "cs.wikipedia.org": {
+   "plat": "mediawiki",
+   "src": "sonnet",
+   "grant": false
+  },
+  "csgfoundation.com": {
+   "plat": "nextjs_react",
+   "src": "det",
+   "grant": null
+  },
+  "csob.cz": {
+   "plat": "UNKNOWN",
+   "src": "sonnet",
+   "grant": false
+  },
+  "cuni.cz": {
+   "plat": "custom_php_cms",
+   "src": "sonnet",
+   "grant": false
+  },
+  "cz-pl.eu": {
+   "plat": "custom_spa",
+   "src": "sonnet",
+   "grant": true
+  },
+  "cz.boell.org": {
+   "plat": "drupal",
+   "src": "det",
+   "grant": null
+  },
+  "cz.usembassy.gov": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "czechaid.cz": {
+   "plat": "netservis_cms",
+   "src": "sonnet",
+   "grant": true
+  },
+  "czechcentres.cz": {
+   "plat": "statamic",
+   "src": "sonnet",
+   "grant": false
+  },
+  "czechinvest.org": {
+   "plat": "kentico",
+   "src": "sonnet",
+   "grant": false
+  },
+  "czechtourism.cz": {
+   "plat": "custom_spa",
+   "src": "sonnet",
+   "grant": false
+  },
+  "czso.cz": {
+   "plat": "custom_spa",
+   "src": "sonnet",
+   "grant": false
+  },
+  "darujme.cz": {
+   "plat": "custom_php",
+   "src": "sonnet",
+   "grant": false
+  },
+  "darujspravne.cz": {
+   "plat": "custom_php",
+   "src": "sonnet",
+   "grant": false
+  },
+  "data.jmk.cz": {
+   "plat": "arcgis_hub",
+   "src": "sonnet",
+   "grant": false
+  },
+  "data.olkraj.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "data.pardubickykraj.cz": {
+   "plat": "arcgis_hub",
+   "src": "sonnet",
+   "grant": false
+  },
+  "databaze.nsmascr.cz": {
+   "plat": "custom_php",
+   "src": "sonnet",
+   "grant": false
+  },
+  "datakhk.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "datalk.cz": {
+   "plat": "arcgis_hub",
+   "src": "sonnet",
+   "grant": false
+  },
+  "deska.pardubickykraj.cz": {
+   "plat": "aspnet_webforms",
+   "src": "sonnet",
+   "grant": true
+  },
+  "diakonie.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "dobryandel.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "dobryskutek.cz": {
+   "plat": "aspnet_custom",
+   "src": "sonnet",
+   "grant": false
+  },
+  "donio.cz": {
+   "plat": "nextjs_react",
+   "src": "det",
+   "grant": null
+  },
+  "donorsforum.cz": {
+   "plat": "custom_php",
+   "src": "sonnet",
+   "grant": false
+  },
+  "dotace.aopk.gov.cz": {
+   "plat": "liferay",
+   "src": "det",
+   "grant": null
+  },
+  "dotace.brno.cz": {
+   "plat": "nette_custom",
+   "src": "sonnet",
+   "grant": true
+  },
+  "dotace.chyne.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "dotace.khk.cz": {
+   "plat": "react",
+   "src": "sonnet",
+   "grant": true
+  },
+  "dotace.kr-jihomoravsky.cz": {
+   "plat": "aspnet_webforms",
+   "src": "sonnet",
+   "grant": true
+  },
+  "dotace.kr-karlovarsky.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "dotace.kr-stredocesky.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "dotace.kraj-lbc.cz": {
+   "plat": "firon",
+   "src": "sonnet",
+   "grant": true
+  },
+  "dotace.medlanky.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "dotace.melnik.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "dotace.mestobystrice.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "dotace.mestodobris.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "dotace.mmhk.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "dotace.nmnm.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "dotace.olomouc.eu": {
+   "plat": "angular",
+   "src": "sonnet",
+   "grant": true
+  },
+  "dotace.ostrava.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "dotace.pardubickykraj.cz": {
+   "plat": "nuxt_vue",
+   "src": "det",
+   "grant": null
+  },
+  "dotace.plzen.eu": {
+   "plat": "edotace_plzen",
+   "src": "sonnet",
+   "grant": true
+  },
+  "dotace.plzensky-kraj.cz": {
+   "plat": "edotace_plzen",
+   "src": "sonnet",
+   "grant": true
+  },
+  "dotace.policenm.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "dotace.praha11.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "dotace.praha12.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "dotace.praha14.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "dotace.praha2.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "dotace.praha3.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "dotace.praha4.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "dotace.praha8.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "dotace.stepanov.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "dotace.tisnov.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "dotace.usti-nad-labem.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "dotace.usti.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "dotaceeu.cz": {
+   "plat": "kentico",
+   "src": "sonnet",
+   "grant": true
+  },
+  "dp.dotacesport.cz": {
+   "plat": "aspnet_mvc_custom",
+   "src": "sonnet",
+   "grant": true
+  },
+  "dpmkportal.mkcr.cz": {
+   "plat": "aspnet_mvc_custom",
+   "src": "sonnet",
+   "grant": true
+  },
+  "dpo-archiv.plzen.eu": {
+   "plat": "nette",
+   "src": "sonnet",
+   "grant": true
+  },
+  "dsomsl.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "dzs.cz": {
+   "plat": "drupal",
+   "src": "det",
+   "grant": null
+  },
+  "eagri.cz": {
+   "plat": "custom_spa",
+   "src": "sonnet",
+   "grant": true
+  },
+  "eeagrants.cz": {
+   "plat": "custom_php",
+   "src": "sonnet",
+   "grant": true
+  },
+  "epodatelna.msk.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "epusa.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "esfcr.cz": {
+   "plat": "liferay",
+   "src": "det",
+   "grant": null
+  },
+  "eufondy.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "evagend.ostrava.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "extranet.kr-vysocina.cz": {
+   "plat": "custom_spa",
+   "src": "sonnet",
+   "grant": false
+  },
+  "fajnovysport.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "fes-cz.org": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "fes-prag.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "fondbudoucnosti.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "fondkinematografie.cz": {
+   "plat": "nette",
+   "src": "sonnet",
+   "grant": true
+  },
+  "fondvysociny.cz": {
+   "plat": "UNKNOWN",
+   "src": "sonnet",
+   "grant": false
+  },
+  "formulare.zlin.eu": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "freiheit.org": {
+   "plat": "drupal",
+   "src": "det",
+   "grant": null
+  },
+  "frydekmistek.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "fundlift.cz": {
+   "plat": "angular",
+   "src": "sonnet",
+   "grant": false
+  },
+  "gacr.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "gaju.jcu.cz": {
+   "plat": "plone",
+   "src": "det",
+   "grant": null
+  },
+  "gamu.muni.cz": {
+   "plat": "muniweb",
+   "src": "sonnet",
+   "grant": true
+  },
+  "gfps.cz": {
+   "plat": "static_html",
+   "src": "sonnet",
+   "grant": false
+  },
+  "gideonklein.cz": {
+   "plat": "static_html",
+   "src": "sonnet",
+   "grant": true
+  },
+  "gitlab.com": {
+   "plat": "nuxt_vue",
+   "src": "det",
+   "grant": null
+  },
+  "gov.pl": {
+   "plat": "custom_govpl_portal",
+   "src": "sonnet",
+   "grant": false
+  },
+  "gov.uk": {
+   "plat": "govuk_publishing_platform",
+   "src": "sonnet",
+   "grant": false
+  },
+  "grantovydiar.cz": {
+   "plat": "nette",
+   "src": "sonnet",
+   "grant": true
+  },
+  "granty.liberec.cz": {
+   "plat": "grantys",
+   "src": "det",
+   "grant": null
+  },
+  "granty.nadace-osf.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "granty.praha.eu": {
+   "plat": "aspnet_webforms",
+   "src": "sonnet",
+   "grant": true
+  },
+  "grantys.praha1.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "greenpeace.org": {
+   "plat": "custom_spa",
+   "src": "sonnet",
+   "grant": false
+  },
+  "havirov-city.cz": {
+   "plat": "drupal",
+   "src": "det",
+   "grant": null
+  },
+  "hithit.cz": {
+   "plat": "custom_spa",
+   "src": "sonnet",
+   "grant": true
+  },
+  "hlavkovanadace.cz": {
+   "plat": "custom_static_html",
+   "src": "sonnet",
+   "grant": true
+  },
+  "hlidacstatu.cz": {
+   "plat": "custom_aspnet_mvc",
+   "src": "sonnet",
+   "grant": true
+  },
+  "hnutiduha.cz": {
+   "plat": "drupal",
+   "src": "det",
+   "grant": null
+  },
+  "hodonin.eu": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "hostalkovice.ostrava.cz": {
+   "plat": "plone",
+   "src": "det",
+   "grant": null
+  },
+  "hrabova.ostrava.cz": {
+   "plat": "plone",
+   "src": "det",
+   "grant": null
+  },
+  "hradeckralove.org": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "hzscr.gov.cz": {
+   "plat": "aspnet_clanek_mvhzs",
+   "src": "det",
+   "grant": null
+  },
+  "ifp.cz": {
+   "plat": "custom_php",
+   "src": "sonnet",
+   "grant": false
+  },
+  "iicpraga.esteri.it": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "info.ricany.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "interreg-danube.eu": {
+   "plat": "laravel",
+   "src": "sonnet",
+   "grant": true
+  },
+  "irop.gov.cz": {
+   "plat": "kentico",
+   "src": "sonnet",
+   "grant": true
+  },
+  "iskp21.mssf.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "isprom.msmt.gov.cz": {
+   "plat": "nette_framework",
+   "src": "sonnet",
+   "grant": true
+  },
+  "itesco.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "janacek-nadace.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "janeckovafond.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "jdp.mf.gov.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "jdp2.mf.gov.cz": {
+   "plat": "custom_spa",
+   "src": "sonnet",
+   "grant": true
+  },
+  "jihlava.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "jundrov.brno.cz": {
+   "plat": "liferay",
+   "src": "det",
+   "grant": null
+  },
+  "karvina.cz": {
+   "plat": "marwel",
+   "src": "sonnet",
+   "grant": false
+  },
+  "karvina.org": {
+   "plat": "marwel",
+   "src": "sonnet",
+   "grant": false
+  },
+  "kas.de": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "kbely.eu": {
+   "plat": "UNKNOWN",
+   "src": "sonnet",
+   "grant": false
+  },
+  "kellnerfoundation.cz": {
+   "plat": "nextjs_react",
+   "src": "det",
+   "grant": null
+  },
+  "khk.cz": {
+   "plat": "drupal",
+   "src": "det",
+   "grant": null
+  },
+  "klatovy.cz": {
+   "plat": "classic_asp_municipal",
+   "src": "sonnet",
+   "grant": false
+  },
+  "komarekfoundation.org": {
+   "plat": "nextjs_react",
+   "src": "det",
+   "grant": null
+  },
+  "kontobariery.cz": {
+   "plat": "kentico",
+   "src": "sonnet",
+   "grant": false
+  },
+  "kr-jihomoravsky.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "kr-karlovarsky.cz": {
+   "plat": "gordic_ginis",
+   "src": "det",
+   "grant": null
+  },
+  "kr-olomoucky.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "kr-stredocesky.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "kr-ustecky.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "kr-zlinsky.cz": {
+   "plat": "custom_php_codeigniter",
+   "src": "sonnet",
+   "grant": false
+  },
+  "kraj-jihocesky.cz": {
+   "plat": "drupal",
+   "src": "det",
+   "grant": null
+  },
+  "kraj-lbc.cz": {
+   "plat": "firon",
+   "src": "sonnet",
+   "grant": false
+  },
+  "kralovopole.brno.cz": {
+   "plat": "liferay",
+   "src": "det",
+   "grant": null
+  },
+  "krasapomoci.cz": {
+   "plat": "custom_php_laravel",
+   "src": "sonnet",
+   "grant": false
+  },
+  "kreativnievropa.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "krnov.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "kromeriz.dsw2.otevrenamesta.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "kulturamazelenou.cz": {
+   "plat": "nuxt_vue",
+   "src": "det",
+   "grant": null
+  },
+  "lags.cz": {
+   "plat": "custom_php_adminlte",
+   "src": "sonnet",
+   "grant": false
+  },
+  "letnany.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "lhotka.ostrava.cz": {
+   "plat": "plone",
+   "src": "det",
+   "grant": null
+  },
+  "liberec.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "libus.dsw2.otevrenamesta.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "litomerice.cz": {
+   "plat": "joomla",
+   "src": "det",
+   "grant": null
+  },
+  "loket.dsw2.otevrenamesta.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "lpr.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "maltezskapomoc.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "marianskehory.cz": {
+   "plat": "plone",
+   "src": "det",
+   "grant": null
+  },
+  "martinov.ostrava.cz": {
+   "plat": "plone",
+   "src": "det",
+   "grant": null
+  },
+  "martinu.cz": {
+   "plat": "custom_php",
+   "src": "sonnet",
+   "grant": false
+  },
+  "mb-net.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "mb.grantys.cz": {
+   "plat": "grantys",
+   "src": "det",
+   "grant": null
+  },
+  "mc-zbraslav.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "mc-zbraslav.grantys.cz": {
+   "plat": "grantys",
+   "src": "det",
+   "grant": null
+  },
+  "mdcr.cz": {
+   "plat": "kentico",
+   "src": "sonnet",
+   "grant": false
+  },
+  "medlanky.brno.cz": {
+   "plat": "liferay",
+   "src": "det",
+   "grant": null
+  },
+  "melnik.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "mesto-beroun.cz": {
+   "plat": "grantys",
+   "src": "det",
+   "grant": null
+  },
+  "mesto-most.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "mesto-uh.cz": {
+   "plat": "drupal",
+   "src": "det",
+   "grant": null
+  },
+  "mesto-zatec.cz": {
+   "plat": "galileo",
+   "src": "det",
+   "grant": null
+  },
+  "mesto.chomutov.cz": {
+   "plat": "drupal",
+   "src": "det",
+   "grant": null
+  },
+  "mestocheb.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "mestojablonec.cz": {
+   "plat": "nette_custom",
+   "src": "sonnet",
+   "grant": false
+  },
+  "mestokladno.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "mestonachod.cz": {
+   "plat": "aspnet_clanek_mvhzs",
+   "src": "det",
+   "grant": null
+  },
+  "mestovsetin.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "mf.gov.cz": {
+   "plat": "custom_php",
+   "src": "sonnet",
+   "grant": false
+  },
+  "michalkovice.eu": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "mikroregion-hranicko.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "mikroregion-hrebeny.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "mikroregionkrnovsko.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "mistniakcniskupiny.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "mk.gov.cz": {
+   "plat": "kentico",
+   "src": "sonnet",
+   "grant": true
+  },
+  "mmbonline.sharepoint.com": {
+   "plat": "sharepoint",
+   "src": "det",
+   "grant": null
+  },
+  "mmdecin.cz": {
+   "plat": "joomla",
+   "src": "det",
+   "grant": null
+  },
+  "mmkv.cz": {
+   "plat": "drupal",
+   "src": "det",
+   "grant": null
+  },
+  "mmr.gov.cz": {
+   "plat": "kentico",
+   "src": "sonnet",
+   "grant": true
+  },
+  "moap.ostrava.cz": {
+   "plat": "plone",
+   "src": "det",
+   "grant": null
+  },
+  "mocr.army.cz": {
+   "plat": "webtodate",
+   "src": "sonnet",
+   "grant": false
+  },
+  "mocr.mo.gov.cz": {
+   "plat": "webtodate",
+   "src": "sonnet",
+   "grant": false
+  },
+  "modernizacni-fond.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "mott.org": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "mpo.gov.cz": {
+   "plat": "custom_php",
+   "src": "sonnet",
+   "grant": false
+  },
+  "mpsv.cz": {
+   "plat": "vue_nuxt",
+   "src": "sonnet",
+   "grant": false
+  },
+  "mpsv.gov.cz": {
+   "plat": "custom_spa",
+   "src": "sonnet",
+   "grant": true
+  },
+  "msk.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "msmt.cz": {
+   "plat": "marwel",
+   "src": "sonnet",
+   "grant": true
+  },
+  "msmt.gov.cz": {
+   "plat": "marwel",
+   "src": "sonnet",
+   "grant": true
+  },
+  "msp.gov.cz": {
+   "plat": "liferay",
+   "src": "det",
+   "grant": null
+  },
+  "mssf.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "mu-st.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "mu.kutnahora.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "mubruntal.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "mucl.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "mukolin.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "mulitvinov.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "mulouny.cz": {
+   "plat": "public4u",
+   "src": "det",
+   "grant": null
+  },
+  "mv.gov.cz": {
+   "plat": "aspnet_clanek_mvhzs",
+   "src": "det",
+   "grant": null
+  },
+  "mvcr.cz": {
+   "plat": "aspnet_clanek_mvhzs",
+   "src": "det",
+   "grant": null
+  },
+  "mvcr.gov.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "mzcr.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "mzd.gov.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "mze.gov.cz": {
+   "plat": "eagri_portal",
+   "src": "sonnet",
+   "grant": true
+  },
+  "mzp.gov.cz": {
+   "plat": "drupal",
+   "src": "det",
+   "grant": null
+  },
+  "mzv.cz": {
+   "plat": "ewa_portal",
+   "src": "sonnet",
+   "grant": false
+  },
+  "mzv.gov.cz": {
+   "plat": "ewa_portal",
+   "src": "sonnet",
+   "grant": false
+  },
+  "mzv.sk": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "nadace-adra.cz": {
+   "plat": "multicms",
+   "src": "sonnet",
+   "grant": true
+  },
+  "nadace-agrofert.cz": {
+   "plat": "custom_php",
+   "src": "sonnet",
+   "grant": true
+  },
+  "nadace-zivot-umelce.cz": {
+   "plat": "wix",
+   "src": "det",
+   "grant": null
+  },
+  "nadace.orlenunipetrol.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "nadace.veronica.cz": {
+   "plat": "webbuilder",
+   "src": "sonnet",
+   "grant": true
+  },
+  "nadacecez.cz": {
+   "plat": "edee_fgforrest",
+   "src": "sonnet",
+   "grant": true
+  },
+  "nadacecharty77.cz": {
+   "plat": "kentico",
+   "src": "sonnet",
+   "grant": false
+  },
+  "nadaceivanadejmala.cz": {
+   "plat": "joomla",
+   "src": "det",
+   "grant": null
+  },
+  "nadaceleontinka.cz": {
+   "plat": "drupal",
+   "src": "det",
+   "grant": null
+  },
+  "nadaceo2.cz": {
+   "plat": "visu_cms",
+   "src": "sonnet",
+   "grant": true
+  },
+  "nadaceokd.cz": {
+   "plat": "cyberfox_cms",
+   "src": "sonnet",
+   "grant": true
+  },
+  "nadacepartnerstvi.cz": {
+   "plat": "grantys",
+   "src": "det",
+   "grant": null
+  },
+  "nadaceppf.cz": {
+   "plat": "nextjs_react",
+   "src": "det",
+   "grant": null
+  },
+  "nadacersj.com": {
+   "plat": "custom_static",
+   "src": "sonnet",
+   "grant": false
+  },
+  "nadacesirius.cz": {
+   "plat": "joomla",
+   "src": "det",
+   "grant": null
+  },
+  "nadacesophia.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "nadacetomasebati.cz": {
+   "plat": "weboo_cms",
+   "src": "sonnet",
+   "grant": false
+  },
+  "nadacevia.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "nadacevinci.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "nadacevodafone.cz": {
+   "plat": "custom_php",
+   "src": "sonnet",
+   "grant": true
+  },
+  "nadacnifondalbert.cz": {
+   "plat": "custom_spa",
+   "src": "sonnet",
+   "grant": true
+  },
+  "nadeje.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "nadprahou.eu": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "narodniprogramzp.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "nasedite.cz": {
+   "plat": "custom_php",
+   "src": "sonnet",
+   "grant": false
+  },
+  "nawa.gov.pl": {
+   "plat": "joomla",
+   "src": "det",
+   "grant": null
+  },
+  "nchf.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "nederlandwereldwijd.nl": {
+   "plat": "nextjs_react",
+   "src": "det",
+   "grant": null
+  },
+  "neratov.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "nfdvp.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "nfnz.cz": {
+   "plat": "nextjs_react",
+   "src": "det",
+   "grant": null
+  },
+  "norway.no": {
+   "plat": "custom_spa",
+   "src": "sonnet",
+   "grant": false
+  },
+  "novabela.ostrava.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "novaves.ostrava.cz": {
+   "plat": "plone",
+   "src": "det",
+   "grant": null
+  },
+  "novazelenausporam.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "novemestonm.dsw2.otevrenamesta.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "npi.cz": {
+   "plat": "joomla",
+   "src": "det",
+   "grant": null
+  },
+  "nrb.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "nros.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "nsa.gov.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "nsmascr.cz": {
+   "plat": "galileo",
+   "src": "det",
+   "grant": null
+  },
+  "o2chytraskola.cz": {
+   "plat": "visu_cms",
+   "src": "sonnet",
+   "grant": true
+  },
+  "olkraj.cz": {
+   "plat": "gordic_ginis",
+   "src": "det",
+   "grant": null
+  },
+  "olomouc.eu": {
+   "plat": "cmso1",
+   "src": "sonnet",
+   "grant": false
+  },
+  "olympic.cz": {
+   "plat": "custom_php",
+   "src": "sonnet",
+   "grant": true
+  },
+  "op-spravedliva-transformace.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "opava-city.cz": {
+   "plat": "joomla",
+   "src": "det",
+   "grant": null
+  },
+  "opd.cz": {
+   "plat": "aspnet_webforms",
+   "src": "sonnet",
+   "grant": true
+  },
+  "opd.gov.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "opendata.praha.eu": {
+   "plat": "nextjs_react",
+   "src": "det",
+   "grant": null
+  },
+  "opjak.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "opst.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "optak.gov.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "opzp.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "osa.cz": {
+   "plat": "nelson_cms",
+   "src": "sonnet",
+   "grant": true
+  },
+  "osf.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "ostrava.cz": {
+   "plat": "plone",
+   "src": "det",
+   "grant": null
+  },
+  "ostrava.dsw2.otevrenamesta.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "ovajih.ostrava.cz": {
+   "plat": "plone",
+   "src": "det",
+   "grant": null
+  },
+  "pacienti.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "pacientskaakademie.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "pacientskeorganizace.mzcr.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "paradnikraj.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "pardubice.eu": {
+   "plat": "UNKNOWN",
+   "src": "sonnet",
+   "grant": false
+  },
+  "pardubickykraj.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "petrkovice.ostrava.cz": {
+   "plat": "plone",
+   "src": "det",
+   "grant": null
+  },
+  "pgrlf.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "plesna.ostrava.cz": {
+   "plat": "plone",
+   "src": "det",
+   "grant": null
+  },
+  "plzen.eu": {
+   "plat": "custom_php",
+   "src": "sonnet",
+   "grant": false
+  },
+  "plzensky-kraj.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "pocernice.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "pojizeri.cz": {
+   "plat": "public4u",
+   "src": "det",
+   "grant": null
+  },
+  "polanka.cz": {
+   "plat": "plone",
+   "src": "det",
+   "grant": null
+  },
+  "porek.mendelu.cz": {
+   "plat": "joomla",
+   "src": "det",
+   "grant": null
+  },
+  "poruba.ostrava.cz": {
+   "plat": "plone",
+   "src": "det",
+   "grant": null
+  },
+  "praha-kbely.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "praha-pocernice.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "praha.eu": {
+   "plat": "liferay",
+   "src": "det",
+   "grant": null
+  },
+  "praha1.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "praha10.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "praha13.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "praha14.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "praha15.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "praha16.eu": {
+   "plat": "galileo_corp",
+   "src": "sonnet",
+   "grant": false
+  },
+  "praha17.cz": {
+   "plat": "drupal",
+   "src": "det",
+   "grant": null
+  },
+  "praha21.cz": {
+   "plat": "joomla",
+   "src": "det",
+   "grant": null
+  },
+  "praha22.cz": {
+   "plat": "galileo",
+   "src": "det",
+   "grant": null
+  },
+  "praha5.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "praha6.cz": {
+   "plat": "vismo",
+   "src": "sonnet",
+   "grant": false
+  },
+  "praha6.dsw2.otevrenamesta.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "praha7.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "praha9.cz": {
+   "plat": "drupal",
+   "src": "det",
+   "grant": null
+  },
+  "prahanarodnostni.eu": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "prerov.eu": {
+   "plat": "public4u",
+   "src": "det",
+   "grant": null
+  },
+  "prevence-praha.cz": {
+   "plat": "joomla",
+   "src": "det",
+   "grant": null
+  },
+  "pribram.eu": {
+   "plat": "vismo",
+   "src": "sonnet",
+   "grant": false
+  },
+  "proskovice.ostrava.cz": {
+   "plat": "plone",
+   "src": "det",
+   "grant": null
+  },
+  "prostejov.eu": {
+   "plat": "public4u",
+   "src": "det",
+   "grant": null
+  },
+  "pupo.kr-vysocina.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "pustkovec.ostrava.cz": {
+   "plat": "plone",
+   "src": "det",
+   "grant": null
+  },
+  "radvanice.ostrava.cz": {
+   "plat": "plone",
+   "src": "det",
+   "grant": null
+  },
+  "rbf.org": {
+   "plat": "drupal",
+   "src": "det",
+   "grant": null
+  },
+  "region-vltava.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "regionkh.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "regionmtj.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "regionpoodri.cz": {
+   "plat": "galileo",
+   "src": "det",
+   "grant": null
+  },
+  "repy.cz": {
+   "plat": "drupal",
+   "src": "det",
+   "grant": null
+  },
+  "rmhcz.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "rozvojkhk.cz": {
+   "plat": "custom_aspnetcore",
+   "src": "sonnet",
+   "grant": true
+  },
+  "sberdat.kr-ustecky.cz": {
+   "plat": "joomla",
+   "src": "det",
+   "grant": null
+  },
+  "sfdi.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "sfdi.gov.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "sfkultury.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "sfkulturyceskerepubliky.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "sfpi.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "sfzp.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "sfzp.gov.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "sgs.cvut.cz": {
+   "plat": "custom_php",
+   "src": "sonnet",
+   "grant": true
+  },
+  "silapacientu.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "sitemap-pt-post-p1-2026-05.xml": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "sk-cz.eu": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "slezska.cz": {
+   "plat": "plone",
+   "src": "det",
+   "grant": null
+  },
+  "slezskabrana.cz": {
+   "plat": "antee_ipo",
+   "src": "sonnet",
+   "grant": false
+  },
+  "slezskadiakonie.cz": {
+   "plat": "poski_cms",
+   "src": "sonnet",
+   "grant": false
+  },
+  "smocr.cz": {
+   "plat": "fenomio_cms",
+   "src": "sonnet",
+   "grant": false
+  },
+  "sn-cz2027.eu": {
+   "plat": "comerto_cms",
+   "src": "sonnet",
+   "grant": true
+  },
+  "socialniportal.kraj-jihocesky.cz": {
+   "plat": "drupal",
+   "src": "det",
+   "grant": null
+  },
+  "sokolov.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "sources.csv": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "spolecenstviobci.gov.cz": {
+   "plat": "joomla",
+   "src": "det",
+   "grant": null
+  },
+  "sport.plzen.cz": {
+   "plat": "custom_aspnet",
+   "src": "sonnet",
+   "grant": true
+  },
+  "starabela.ostrava.cz": {
+   "plat": "plone",
+   "src": "det",
+   "grant": null
+  },
+  "starostuj.cz": {
+   "plat": "ciri_mayor",
+   "src": "sonnet",
+   "grant": true
+  },
+  "startovac.cz": {
+   "plat": "custom_spa",
+   "src": "sonnet",
+   "grant": false
+  },
+  "stredoceskykraj.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "stredoceskykraj.dsw2.otevrenamesta.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "sumperk.cz": {
+   "plat": "gordic_ginis",
+   "src": "det",
+   "grant": null
+  },
+  "svetluska.rozhlas.cz": {
+   "plat": "drupal",
+   "src": "det",
+   "grant": null
+  },
+  "svinov.ostrava.cz": {
+   "plat": "plone",
+   "src": "det",
+   "grant": null
+  },
+  "swedenabroad.se": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "szif.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "szif.gov.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "taborcz.eu": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "tachov-mesto.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "tacr.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "tacr.dsw2.otevrenamesta.cz": {
+   "plat": "dsw2_otevrenamesta",
+   "src": "det",
+   "grant": null
+  },
+  "tc.cz": {
+   "plat": "custom_php",
+   "src": "sonnet",
+   "grant": false
+  },
+  "teplice.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "tichysvet.cz": {
+   "plat": "webnode",
+   "src": "sonnet",
+   "grant": false
+  },
+  "tonejlepsizkhk.cz": {
+   "plat": "sulu",
+   "src": "sonnet",
+   "grant": false
+  },
+  "trebic.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "trebovice.ostrava.cz": {
+   "plat": "plone",
+   "src": "det",
+   "grant": null
+  },
+  "trinecko.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "trutnov.cz": {
+   "plat": "public4u",
+   "src": "det",
+   "grant": null
+  },
+  "trzistekhk.cz": {
+   "plat": "eco_bzcompany",
+   "src": "sonnet",
+   "grant": false
+  },
+  "tschechien.diplo.de": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "umeniprozdravi.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "umo1.plzen.eu": {
+   "plat": "bm_cms_plzen",
+   "src": "sonnet",
+   "grant": false
+  },
+  "umo10.plzen.eu": {
+   "plat": "bm_cms_plzen",
+   "src": "sonnet",
+   "grant": false
+  },
+  "umo2.plzen.eu": {
+   "plat": "bm_cms_plzen",
+   "src": "sonnet",
+   "grant": false
+  },
+  "umo3.plzen.eu": {
+   "plat": "bm_cms",
+   "src": "sonnet",
+   "grant": false
+  },
+  "umo4.plzen.eu": {
+   "plat": "bm_cms",
+   "src": "sonnet",
+   "grant": false
+  },
+  "umo5.plzen.eu": {
+   "plat": "webnode",
+   "src": "det",
+   "grant": null
+  },
+  "umo6.plzen.eu": {
+   "plat": "bm_cms",
+   "src": "sonnet",
+   "grant": false
+  },
+  "umo7.plzen.eu": {
+   "plat": "bm_cms",
+   "src": "sonnet",
+   "grant": false
+  },
+  "umo8.plzen.eu": {
+   "plat": "bm_cms",
+   "src": "sonnet",
+   "grant": false
+  },
+  "umo9.plzen.eu": {
+   "plat": "bm_cms",
+   "src": "sonnet",
+   "grant": false
+  },
+  "unob.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "usti-nad-labem.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "vdb.czso.cz": {
+   "plat": "custom_spa",
+   "src": "sonnet",
+   "grant": false
+  },
+  "vdv.cz": {
+   "plat": "nette",
+   "src": "sonnet",
+   "grant": true
+  },
+  "veda.vse.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "vinarskyfond.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "visegradfund.org": {
+   "plat": "astro",
+   "src": "sonnet",
+   "grant": true
+  },
+  "vitkovice.ostrava.cz": {
+   "plat": "plone",
+   "src": "det",
+   "grant": null
+  },
+  "vize.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "vize97.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "vlada.gov.cz": {
+   "plat": "custom_php",
+   "src": "sonnet",
+   "grant": false
+  },
+  "vyskov-mesto.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "www.amu.cz": {
+   "plat": "django",
+   "src": "sonnet",
+   "grant": false
+  },
+  "www.bosonohy.cz": {
+   "plat": "public4u",
+   "src": "det",
+   "grant": null
+  },
+  "www.brno-cernovice.cz": {
+   "plat": "octobercms",
+   "src": "sonnet",
+   "grant": false
+  },
+  "www.brno-komin.cz": {
+   "plat": "progres_cms",
+   "src": "sonnet",
+   "grant": true
+  },
+  "www.brno-oresin.cz": {
+   "plat": "aspnet_clanek_mvhzs",
+   "src": "det",
+   "grant": null
+  },
+  "www.c-budejovice.cz": {
+   "plat": "drupal",
+   "src": "det",
+   "grant": null
+  },
+  "www.chrlice.brno.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "www.czu.cz": {
+   "plat": "webcore",
+   "src": "sonnet",
+   "grant": false
+  },
+  "www.divokehusy.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "www.dotacni.info": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "www.eeagrants.cz": {
+   "plat": "custom_php",
+   "src": "sonnet",
+   "grant": true
+  },
+  "www.erstestiftung.org": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "www.fondbudoucnosti.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "www.goethe.de": {
+   "plat": "contens_cms",
+   "src": "sonnet",
+   "grant": false
+  },
+  "www.interreg-central.eu": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "www.jamu.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "www.jihlava.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "www.kas.de": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "www.kb.cz": {
+   "plat": "kentico",
+   "src": "sonnet",
+   "grant": false
+  },
+  "www.kninicky.eu": {
+   "plat": "custom_php",
+   "src": "sonnet",
+   "grant": false
+  },
+  "www.kohoutovice.brno.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "www.komunitninadace.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "www.koop.cz": {
+   "plat": "nextjs_react",
+   "src": "det",
+   "grant": null
+  },
+  "www.kr-karlovarsky.cz": {
+   "plat": "gordic_ginis",
+   "src": "det",
+   "grant": null
+  },
+  "www.kr-ustecky.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "www.kraj-jihocesky.cz": {
+   "plat": "drupal",
+   "src": "det",
+   "grant": null
+  },
+  "www.liberec.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "www.malomerice.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "www.mcivanovice.cz": {
+   "plat": "origine_solutions",
+   "src": "sonnet",
+   "grant": false
+  },
+  "www.mcslatina.cz": {
+   "plat": "origine_solutions",
+   "src": "sonnet",
+   "grant": false
+  },
+  "www.mdcr.cz": {
+   "plat": "kentico",
+   "src": "sonnet",
+   "grant": false
+  },
+  "www.mk.gov.cz": {
+   "plat": "custom_spa",
+   "src": "sonnet",
+   "grant": true
+  },
+  "www.msk.cz": {
+   "plat": "custom_spa",
+   "src": "sonnet",
+   "grant": false
+  },
+  "www.nadace-agrofert.cz": {
+   "plat": "custom_php",
+   "src": "sonnet",
+   "grant": true
+  },
+  "www.nadaceneuron.cz": {
+   "plat": "solidpixels",
+   "src": "sonnet",
+   "grant": false
+  },
+  "www.nadacevia.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "www.nfsa.cz": {
+   "plat": "custom_spa",
+   "src": "sonnet",
+   "grant": true
+  },
+  "www.novy-liskovec.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "www.olkraj.cz": {
+   "plat": "gordic_ginis",
+   "src": "det",
+   "grant": null
+  },
+  "www.osu.cz": {
+   "plat": "custom_php",
+   "src": "sonnet",
+   "grant": false
+  },
+  "www.pardubice.eu": {
+   "plat": "UNKNOWN",
+   "src": "sonnet",
+   "grant": false
+  },
+  "www.planobnovy.gov.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "www.podbrnensko.cz": {
+   "plat": "nette_custom",
+   "src": "sonnet",
+   "grant": true
+  },
+  "www.program-life.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "www.reckovice.brno.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "www.rektorat.zcu.cz": {
+   "plat": "opencms",
+   "src": "sonnet",
+   "grant": false
+  },
+  "www.renovabis.de": {
+   "plat": "processwire",
+   "src": "sonnet",
+   "grant": true
+  },
+  "www.sever.brno.cz": {
+   "plat": "liferay",
+   "src": "det",
+   "grant": null
+  },
+  "www.slu.cz": {
+   "plat": "UNKNOWN",
+   "src": "sonnet",
+   "grant": false
+  },
+  "www.staryliskovec.cz": {
+   "plat": "public4u",
+   "src": "det",
+   "grant": null
+  },
+  "www.tul.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "www.turany.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "www.uhk.cz": {
+   "plat": "custom_spa",
+   "src": "sonnet",
+   "grant": false
+  },
+  "www.ujep.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "www.umprum.cz": {
+   "plat": "nette_custom",
+   "src": "sonnet",
+   "grant": false
+  },
+  "www.upce.cz": {
+   "plat": "drupal",
+   "src": "det",
+   "grant": null
+  },
+  "www.upol.cz": {
+   "plat": "typo3",
+   "src": "det",
+   "grant": null
+  },
+  "www.utb.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "www.vetuni.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "www.vinohrady.brno.cz": {
+   "plat": "kentico",
+   "src": "sonnet",
+   "grant": false
+  },
+  "www.vsb.cz": {
+   "plat": "opencms",
+   "src": "sonnet",
+   "grant": false
+  },
+  "www.vscht.cz": {
+   "plat": "custom_spa",
+   "src": "sonnet",
+   "grant": false
+  },
+  "www.vspj.cz": {
+   "plat": "gordic_ginis",
+   "src": "det",
+   "grant": null
+  },
+  "www.vut.cz": {
+   "plat": "custom_is_vut",
+   "src": "sonnet",
+   "grant": false
+  },
+  "www.zabovresky.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "www.zebetin.cz": {
+   "plat": "vismo",
+   "src": "det",
+   "grant": null
+  },
+  "www.zidenice.eu": {
+   "plat": "liferay",
+   "src": "det",
+   "grant": null
+  },
+  "www.zlin.eu": {
+   "plat": "custom_codeigniter",
+   "src": "sonnet",
+   "grant": false
+  },
+  "zadost.online": {
+   "plat": "edee_fgforrest",
+   "src": "sonnet",
+   "grant": true
+  },
+  "zadosti.sfzp.cz": {
+   "plat": "aspnet_webforms",
+   "src": "sonnet",
+   "grant": true
+  },
+  "zdarns.cz": {
+   "plat": "ERR_fetch",
+   "src": "det",
+   "grant": null
+  },
+  "zelenykruh.cz": {
+   "plat": "wordpress",
+   "src": "det",
+   "grant": null
+  },
+  "zeleznehory.cz": {
+   "plat": "custom_php",
+   "src": "sonnet",
+   "grant": false
+  },
+  "zivot90.cz": {
+   "plat": "custom_static",
+   "src": "sonnet",
+   "grant": false
+  },
+  "zlin.eu": {
+   "plat": "custom_codeigniter",
+   "src": "sonnet",
+   "grant": false
+  },
+  "zlinskykraj.cz": {
+   "plat": "custom_codeigniter",
+   "src": "sonnet",
+   "grant": true
+  }
+ },
+ "dist": {
+  "wordpress": 88,
+  "UNKNOWN": 8,
+  "ERR_fetch": 67,
+  "neofema_cms": 1,
+  "joomla": 14,
+  "comerto": 2,
+  "vue_nuxt": 5,
+  "dsw2_otevrenamesta": 28,
+  "liferay": 11,
+  "drupal": 22,
+  "razor_aspnet_core": 1,
+  "vismo": 40,
+  "viaaurea_cms": 1,
+  "custom_php": 29,
+  "typo3": 2,
+  "aspnet_mv_hzs": 6,
+  "vizus_cms": 1,
+  "sharepoint": 2,
+  "mediawiki": 1,
+  "react_nextjs": 9,
+  "custom_spa": 18,
+  "netservis_cms": 1,
+  "statamic": 1,
+  "kentico": 11,
+  "arcgis_hub": 3,
+  "aspnet_webforms": 5,
+  "aspnet_custom": 1,
+  "nette": 9,
+  "react": 1,
+  "firon": 2,
+  "angular": 2,
+  "edotace_plzen": 2,
+  "aspnet_mvc_custom": 2,
+  "plone": 22,
+  "muniweb": 1,
+  "static_html": 2,
+  "custom_govpl_portal": 1,
+  "govuk_publishing_platform": 1,
+  "grantys": 5,
+  "custom_static": 3,
+  "custom_aspnet": 2,
+  "laravel": 1,
+  "marwel": 4,
+  "classic_asp_municipal": 1,
+  "gordic_ginis": 6,
+  "custom_php_codeigniter": 1,
+  "custom_php_laravel": 1,
+  "custom_php_adminlte": 1,
+  "galileo": 4,
+  "webtodate": 2,
+  "public4u": 7,
+  "eagri_portal": 1,
+  "ewa_portal": 2,
+  "multicms": 1,
+  "wix": 1,
+  "webbuilder": 1,
+  "edee_fgforrest": 2,
+  "visu_cms": 2,
+  "cyberfox_cms": 1,
+  "weboo_cms": 1,
+  "cmso1": 1,
+  "nelson_cms": 1,
+  "galileo_corp": 1,
+  "custom_aspnetcore": 1,
+  "antee_ipo": 1,
+  "poski_cms": 1,
+  "fenomio_cms": 1,
+  "ciri_mayor": 1,
+  "webnode": 2,
+  "sulu": 1,
+  "eco_bzcompany": 1,
+  "bm_cms": 9,
+  "astro": 1,
+  "django": 1,
+  "octobercms": 1,
+  "progres_cms": 1,
+  "webcore": 1,
+  "contens_cms": 1,
+  "origine_solutions": 2,
+  "solidpixels": 1,
+  "opencms": 2,
+  "processwire": 1,
+  "custom_is_vut": 1
+ },
+ "grant": {
+  "wordpress": 1,
+  "comerto": 2,
+  "custom_spa": 8,
+  "netservis_cms": 1,
+  "aspnet_webforms": 5,
+  "nette": 7,
+  "react": 1,
+  "firon": 1,
+  "angular": 1,
+  "edotace_plzen": 2,
+  "kentico": 4,
+  "aspnet_mvc_custom": 2,
+  "custom_php": 8,
+  "muniweb": 1,
+  "static_html": 1,
+  "custom_static": 1,
+  "custom_aspnet": 2,
+  "laravel": 1,
+  "marwel": 2,
+  "eagri_portal": 1,
+  "multicms": 1,
+  "webbuilder": 1,
+  "edee_fgforrest": 2,
+  "visu_cms": 2,
+  "cyberfox_cms": 1,
+  "nelson_cms": 1,
+  "custom_aspnetcore": 1,
+  "ciri_mayor": 1,
+  "astro": 1,
+  "progres_cms": 1,
+  "processwire": 1
+ },
+ "examples": {
+  "wordpress": [
+   "abakus.cz",
+   "activecitizensfund.cz",
+   "adra.cz",
+   "agenturasport.cz",
+   "anno-cr.cz",
+   "azvcr.cz"
+  ],
+  "UNKNOWN": [
+   "acf.cz",
+   "asociacedso.cz",
+   "csob.cz",
+   "fondvysociny.cz",
+   "kbely.eu",
+   "pardubice.eu"
+  ],
+  "ERR_fetch": [
+   "agendazp.mzp.cz",
+   "agosto-foundation.org",
+   "bmeia.gv.at",
+   "britishcouncil.cz",
+   "c-budejovice.cz",
+   "cz.usembassy.gov"
+  ],
+  "neofema_cms": [
+   "aifp.cz"
+  ],
+  "joomla": [
+   "arnika.org",
+   "btha.cz",
+   "litomerice.cz",
+   "mmdecin.cz",
+   "nadaceivanadejmala.cz",
+   "nadacesirius.cz"
+  ],
+  "comerto": [
+   "at-cz.eu",
+   "sn-cz2027.eu"
+  ],
+  "vue_nuxt": [
+   "avu.cz",
+   "dotace.pardubickykraj.cz",
+   "gitlab.com",
+   "kulturamazelenou.cz",
+   "mpsv.cz"
+  ],
+  "dsw2_otevrenamesta": [
+   "benesov.dsw2.otevrenamesta.cz",
+   "boskovice.dsw2.otevrenamesta.cz",
+   "cernosice.dsw2.otevrenamesta.cz",
+   "dotace.chyne.cz",
+   "dotace.medlanky.cz",
+   "dotace.mestobystrice.cz"
+  ],
+  "liferay": [
+   "bohunice.brno.cz",
+   "brno.cz",
+   "dotace.aopk.gov.cz",
+   "esfcr.cz",
+   "jundrov.brno.cz",
+   "kralovopole.brno.cz"
+  ],
+  "drupal": [
+   "bosch-stiftung.de",
+   "cz.boell.org",
+   "dzs.cz",
+   "freiheit.org",
+   "havirov-city.cz",
+   "hnutiduha.cz"
+  ],
+  "razor_aspnet_core": [
+   "breclav.eu"
+  ],
+  "vismo": [
+   "brno-jehnice.cz",
+   "dotace.melnik.cz",
+   "dotace.mmhk.cz",
+   "epusa.cz",
+   "hodonin.eu",
+   "hradeckralove.org"
+  ],
+  "viaaurea_cms": [
+   "brno-lisen.cz"
+  ],
+  "custom_php": [
+   "brno-stred.cz",
+   "cervenykriz.eu",
+   "clovekvtisni.cz",
+   "cuni.cz",
+   "darujme.cz",
+   "darujspravne.cz"
+  ],
+  "typo3": [
+   "by-cz.eu",
+   "www.upol.cz"
+  ],
+  "aspnet_mv_hzs": [
+   "bystrc.brno.cz",
+   "hzscr.gov.cz",
+   "mestonachod.cz",
+   "mv.gov.cz",
+   "mvcr.cz",
+   "www.brno-oresin.cz"
+  ],
+  "vizus_cms": [
+   "charita.cz"
+  ],
+  "sharepoint": [
+   "ckrumlov.cz",
+   "mmbonline.sharepoint.com"
+  ],
+  "mediawiki": [
+   "cs.wikipedia.org"
+  ],
+  "react_nextjs": [
+   "csgfoundation.com",
+   "donio.cz",
+   "kellnerfoundation.cz",
+   "komarekfoundation.org",
+   "nadaceppf.cz",
+   "nederlandwereldwijd.nl"
+  ],
+  "custom_spa": [
+   "cz-pl.eu",
+   "czechtourism.cz",
+   "czso.cz",
+   "eagri.cz",
+   "extranet.kr-vysocina.cz",
+   "greenpeace.org"
+  ],
+  "netservis_cms": [
+   "czechaid.cz"
+  ],
+  "statamic": [
+   "czechcentres.cz"
+  ],
+  "kentico": [
+   "czechinvest.org",
+   "dotaceeu.cz",
+   "irop.gov.cz",
+   "kontobariery.cz",
+   "mdcr.cz",
+   "mk.gov.cz"
+  ],
+  "arcgis_hub": [
+   "data.jmk.cz",
+   "data.pardubickykraj.cz",
+   "datalk.cz"
+  ],
+  "aspnet_webforms": [
+   "deska.pardubickykraj.cz",
+   "dotace.kr-jihomoravsky.cz",
+   "granty.praha.eu",
+   "opd.cz",
+   "zadosti.sfzp.cz"
+  ],
+  "aspnet_custom": [
+   "dobryskutek.cz"
+  ],
+  "nette": [
+   "dotace.brno.cz",
+   "dpo-archiv.plzen.eu",
+   "fondkinematografie.cz",
+   "grantovydiar.cz",
+   "isprom.msmt.gov.cz",
+   "mestojablonec.cz"
+  ],
+  "react": [
+   "dotace.khk.cz"
+  ],
+  "firon": [
+   "dotace.kraj-lbc.cz",
+   "kraj-lbc.cz"
+  ],
+  "angular": [
+   "dotace.olomouc.eu",
+   "fundlift.cz"
+  ],
+  "edotace_plzen": [
+   "dotace.plzen.eu",
+   "dotace.plzensky-kraj.cz"
+  ],
+  "aspnet_mvc_custom": [
+   "dp.dotacesport.cz",
+   "dpmkportal.mkcr.cz"
+  ],
+  "plone": [
+   "gaju.jcu.cz",
+   "hostalkovice.ostrava.cz",
+   "hrabova.ostrava.cz",
+   "lhotka.ostrava.cz",
+   "marianskehory.cz",
+   "martinov.ostrava.cz"
+  ],
+  "muniweb": [
+   "gamu.muni.cz"
+  ],
+  "static_html": [
+   "gfps.cz",
+   "gideonklein.cz"
+  ],
+  "custom_govpl_portal": [
+   "gov.pl"
+  ],
+  "govuk_publishing_platform": [
+   "gov.uk"
+  ],
+  "grantys": [
+   "granty.liberec.cz",
+   "mb.grantys.cz",
+   "mc-zbraslav.grantys.cz",
+   "mesto-beroun.cz",
+   "nadacepartnerstvi.cz"
+  ],
+  "custom_static": [
+   "hlavkovanadace.cz",
+   "nadacersj.com",
+   "zivot90.cz"
+  ],
+  "custom_aspnet": [
+   "hlidacstatu.cz",
+   "sport.plzen.cz"
+  ],
+  "laravel": [
+   "interreg-danube.eu"
+  ],
+  "marwel": [
+   "karvina.cz",
+   "karvina.org",
+   "msmt.cz",
+   "msmt.gov.cz"
+  ],
+  "classic_asp_municipal": [
+   "klatovy.cz"
+  ],
+  "gordic_ginis": [
+   "kr-karlovarsky.cz",
+   "olkraj.cz",
+   "sumperk.cz",
+   "www.kr-karlovarsky.cz",
+   "www.olkraj.cz",
+   "www.vspj.cz"
+  ],
+  "custom_php_codeigniter": [
+   "kr-zlinsky.cz"
+  ],
+  "custom_php_laravel": [
+   "krasapomoci.cz"
+  ],
+  "custom_php_adminlte": [
+   "lags.cz"
+  ],
+  "galileo": [
+   "mesto-zatec.cz",
+   "nsmascr.cz",
+   "praha22.cz",
+   "regionpoodri.cz"
+  ],
+  "webtodate": [
+   "mocr.army.cz",
+   "mocr.mo.gov.cz"
+  ],
+  "public4u": [
+   "mulouny.cz",
+   "pojizeri.cz",
+   "prerov.eu",
+   "prostejov.eu",
+   "trutnov.cz",
+   "www.bosonohy.cz"
+  ],
+  "eagri_portal": [
+   "mze.gov.cz"
+  ],
+  "ewa_portal": [
+   "mzv.cz",
+   "mzv.gov.cz"
+  ],
+  "multicms": [
+   "nadace-adra.cz"
+  ],
+  "wix": [
+   "nadace-zivot-umelce.cz"
+  ],
+  "webbuilder": [
+   "nadace.veronica.cz"
+  ],
+  "edee_fgforrest": [
+   "nadacecez.cz",
+   "zadost.online"
+  ],
+  "visu_cms": [
+   "nadaceo2.cz",
+   "o2chytraskola.cz"
+  ],
+  "cyberfox_cms": [
+   "nadaceokd.cz"
+  ],
+  "weboo_cms": [
+   "nadacetomasebati.cz"
+  ],
+  "cmso1": [
+   "olomouc.eu"
+  ],
+  "nelson_cms": [
+   "osa.cz"
+  ],
+  "galileo_corp": [
+   "praha16.eu"
+  ],
+  "custom_aspnetcore": [
+   "rozvojkhk.cz"
+  ],
+  "antee_ipo": [
+   "slezskabrana.cz"
+  ],
+  "poski_cms": [
+   "slezskadiakonie.cz"
+  ],
+  "fenomio_cms": [
+   "smocr.cz"
+  ],
+  "ciri_mayor": [
+   "starostuj.cz"
+  ],
+  "webnode": [
+   "tichysvet.cz",
+   "umo5.plzen.eu"
+  ],
+  "sulu": [
+   "tonejlepsizkhk.cz"
+  ],
+  "eco_bzcompany": [
+   "trzistekhk.cz"
+  ],
+  "bm_cms": [
+   "umo1.plzen.eu",
+   "umo10.plzen.eu",
+   "umo2.plzen.eu",
+   "umo3.plzen.eu",
+   "umo4.plzen.eu",
+   "umo6.plzen.eu"
+  ],
+  "astro": [
+   "visegradfund.org"
+  ],
+  "django": [
+   "www.amu.cz"
+  ],
+  "octobercms": [
+   "www.brno-cernovice.cz"
+  ],
+  "progres_cms": [
+   "www.brno-komin.cz"
+  ],
+  "webcore": [
+   "www.czu.cz"
+  ],
+  "contens_cms": [
+   "www.goethe.de"
+  ],
+  "origine_solutions": [
+   "www.mcivanovice.cz",
+   "www.mcslatina.cz"
+  ],
+  "solidpixels": [
+   "www.nadaceneuron.cz"
+  ],
+  "opencms": [
+   "www.rektorat.zcu.cz",
+   "www.vsb.cz"
+  ],
+  "processwire": [
+   "www.renovabis.de"
+  ],
+  "custom_is_vut": [
+   "www.vut.cz"
+  ]
+ }
+}
