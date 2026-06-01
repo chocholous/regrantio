@@ -47,6 +47,11 @@
       "why": "JEDINÝ filtr při skládání těla z HTML — zahodí bloky <25 zn (prázdné/nav fragmenty). NEZAHAZUJE dokumenty ani odstavce; čistě šum. Plný text dokumentů jde mimo (doc-store).",
       "used_in": ["scripts/harvest_site.py", "scripts/praha_grants.py", "scripts/eeagrants.py"], "wired": true
     },
+    "prefilter_empty_text_max": {
+      "value": 40, "unit": "chars", "kind": "noise_filter",
+      "why": "100%-BEZPEČNÝ strukturální pre-filtr PŘED fází 2: stránka s textem <40 zn A 0 dokumentů = nelze nic extrahovat → drop. Konzervativní práh (grant tam fyzicky není). NIKDY ne content/keyword/density (false-negativy).",
+      "used_in": ["scripts/prefilter.py"], "wired": true
+    },
     "page_size": {
       "value": 100, "unit": "records", "kind": "paging",
       "why": "granularita stránkování (ODataSimpleFromSql, WP REST) — bere VŠE ve smyčce, jen velikost dávky.",

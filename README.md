@@ -42,6 +42,9 @@ paralelně extrahuje pole. **Maximálně využívá UŽ STAŽENÁ DATA** (viz `d
 - **Sjednocuje 2 cesty:** `--from-harvest` materializuje URL-only zdroje (eeagrants/praha); `--index` zaregistruje už stažené `data/vismo_files/`/`dsw2_files/` bez re-downloadu. Vše v jednom manifestu.
 - Skenované PDF → flag na OCR.
 
+### Fáze 2.5 — Strukturální pre-filtr (volitelné, `scripts/prefilter.py`) — 100% bezpečné
+- **Broad harvest je OK, data se berou celá** — obsahový šum (news zmiňující dotace) filtruje až fáze 3 (classify) per-record. Pre-filtr smí odstranit **JEN strukturálně neextrahovatelné**: prázdné (text<`limits.prefilter_empty_text_max` & 0 dok), exact-dup, nav/archiv URL. **NIKDY content/keyword/density** — má false-negativy („veřejná soutěž / výběrové řízení = grant"). Šetří jen volání klasifikátoru (h19 batch: −24 % nula rizika).
+
 ### Fáze 3 — Klasifikace TYPU (Claude-workflow `scripts/classify_wf.js`, Haiku — `prompts/classify_type.md`)
 - Mnou řízené workflow, 1 dokument = 1 Haiku agent, naslepo. Výstup: `base_type ∈ {grant, project, news, foundation_mission, administrative, other}`.
 - **Status NEklasifikuj** — počítá se ve fázi 5.
