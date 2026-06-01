@@ -6,6 +6,8 @@ Plné seznamy: `platform_data/{field,type,divergent}_cov_result.json`.
 
 ## VRSTVA 1 — typové záměny (klasifikace base_type)
 - **grant ↔ administrativa:** úřednědeskový obal (úřední deska, metadata MěÚ, „odbor ekonomiky") NEZNAMENÁ administrativa, když OBSAH je dotační program s žádostí/vyúčtováním. Rozhoduj podle obsahu, ne obalu.
+  - **„veřejná soutěž o účelovou podporu" / „vyhlášeno výběrové řízení na poskytnutí finančních prostředků z rozpočtu" / „Vyhlášena výzva č. X" = GRANT,** ne administrativa (ověřeno: Haiku to vytahuje správně; regex na `výběrové řízení`/`veřejná soutěž` to MYLNĚ řadí do admin → NEKLASIFIKUJ typ regexem, jen LLM podle obsahu).
+  - **program „přidělování dotací a návratných finančních výpomocí (NFV)" = stále grant** (dotační program s vratnou složkou). Samotná NFV/úvěr ≠ dotace, ale PROGRAM s NFV je grant.
 - **grant ↔ mise_tema:** abstraktní název programu vypadá jako poslání — ale má-li datum příjmu + částku, je to grant. A naopak: stránka mise může zmínit konkrétní grant (11 000 Kč, uzávěrka) → to je grant, ne mise.
 - **grant_open ↔ grant_closed:** TEXTOVĚ IDENTICKÉ (zvlášť dotacni.info) — rozlišuje JEN datum. → NEklasifikuj status, dopočítej ho z dat (viz fáze 5).
 - **projekt_open ↔ projekt_done:** identická struktura — rozlišuje vyúčtovaná částka / signál dokončení. → status projektu taky dopočítej.
@@ -56,6 +58,7 @@ NENÍ to:
 - „status_conf" (Kentico) = míra spolehlivosti detekce, ne status.
 - deadline v minulosti bez slova „uzavřeno" = stejně closed (dopočítej).
 - **rolling/kontinuální** výzvy („do vyčerpání alokace / průběžně") = open bez fixního deadline → status open, deadline=null/„průběžně".
+- **ROK V NÁZVU víceletého programu ≠ rok příjmu žádostí** (Praha kultura): „Program podpory … v roce 2025 pro víceleté dotace na léta **2026–2029**" měl příjem žádostí s deadlinem **2024-06-26**. Rozsah let v názvu = období financování, NE okno podání. → „aktuálnost"/open ber VÝHRADNĚ z `deadline` (open_from→deadline okno vs dnešek), nikdy z roku v názvu/URL. Výběr „co je aktuální" podle roku v titulku nadhodnocuje.
 
 ### how_to_apply
 - „kontakt na agregátor (neváhejte nás kontaktovat)" ≠ jak podat u poskytovatele

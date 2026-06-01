@@ -27,8 +27,9 @@ paralelně extrahuje pole. **Maximálně využívá UŽ STAŽENÁ DATA** (viz `d
 ## RECEPT — 7 fází
 
 ### Fáze 0 — Detekce & routing (jednou per zdroj)
-- `scripts/detect_family.py` — strukturální otisk (asset cesty + URL vzory + cookie/header) → **CMS rodina** (label-free, robustnější než generator meta).
+- `scripts/cms_similarity.py` — strukturální otisk (asset cesty + URL vzory + cookie/header) → **CMS rodina** (label-free, robustnější než generator meta).
 - Vyhledej rodinu v `docs/platform_playbook.md` → **harvester + přístupová metoda** (REST / inline-JS / HTML-listing / SPA-headless / WebForms-postback).
+- **⓪ STRUKTURA PŘED PRÓZOU** (`docs/detection.md`): VŽDY nejdřív zkus strukturovaný endpoint (opendata/award API, inline JS var, šablona, list-XHR, WP REST) → parsuj deterministicky, skip LLM. LLM až když je detail neredukovatelně próza/PDF. **5. přístupová metoda:** SPA/grid se skrytým JSON-XHR → 1× odposlech Playwrightem (`scripts/lewis_discover.py`) → čistý HTTP replay bez Apify (`lewis_dynamo.py`). Ověř, CO endpoint dá (award-DB ≠ otevřené výzvy).
 
 ### Fáze 1 — Harvest (per rodina; PRVNÍ zkus REUSE už stažených dat)
 - **REUSE:** `data/wp_full/` (WP, 73k zázn.), `data/vismo_documents.jsonl` + `data/vismo_files/` (vismo + 680 PDF→txt), `data/dsw2_*` , `data/dotacni_structured.json`. Viz `docs/data_reuse.md`.
@@ -36,30 +37,31 @@ paralelně extrahuje pole. **Maximálně využívá UŽ STAŽENÁ DATA** (viz `d
 - **SPA / postback (Apify):** grantys (`ng-app`), aspnet_webforms (granty.praha/SFŽP), custom_spa, MV WebForms kapitoly → Apify `website-content-crawler` (JS rendering) → markdown. Viz `docs/apify_howto.md`.
 - Výstup per zdroj: záznamy `{url, title, date, text/html, document_urls[]}`.
 
-### Fáze 2 — Dokumenty → markdown (univerzální)
-- `extract/dsw2_fetch.py`: `sniff_ext()` (rozpozná typ za handlerem bez přípony) + download + `convert()` (pdftotext pro PDF, textutil pro DOC/DOCX/XLS/ODT na macOS).
-- **REUSE:** už převedené `.txt` v `data/vismo_files/`, `data/dsw2_files/`.
+### Fáze 2 — Doc-store: dokumenty → text (univerzální, `scripts/docstore.py`)
+- **Vazba na vrstvu 1 = `documents[]` URL.** Harvester přílohy jen LISTUJE (lossless), doc-store je MATERIALIZUJE: `dsw2_fetch.sniff_ext()` + download + `convert()` (pdftotext/textutil) → `data/files/<source>/<sha>.{ext,txt}` + `manifest.jsonl` (keyed URL). Idempotentní.
+- **Sjednocuje 2 cesty:** `--from-harvest` materializuje URL-only zdroje (eeagrants/praha); `--index` zaregistruje už stažené `data/vismo_files/`/`dsw2_files/` bez re-downloadu. Vše v jednom manifestu.
 - Skenované PDF → flag na OCR.
 
-### Fáze 3 — Klasifikace TYPU (Sonnet/Haiku — `prompts/classify_type.md`)
-- Vstup: title + text + úryvky dokumentů. Výstup: `base_type ∈ {grant, project, news, foundation_mission, administrative, other}`.
+### Fáze 3 — Klasifikace TYPU (Claude-workflow `scripts/classify_wf.js`, Haiku — `prompts/classify_type.md`)
+- Mnou řízené workflow, 1 dokument = 1 Haiku agent, naslepo. Výstup: `base_type ∈ {grant, project, news, foundation_mission, administrative, other}`.
 - **Status NEklasifikuj** — počítá se ve fázi 5.
-- Pozor na záměny: **úřednědeskový obal** (úřední deska/MěÚ metadata) ≠ administrativa když obsah je dotační program; abstraktní název programu vs mise.
+- Pozor na záměny: **úřednědeskový obal** ≠ administrativa když obsah je dotační program; **„veřejná soutěž / výběrové řízení na poskytnutí prostředků" = grant** (regex by to splet → klasifikuj LLM, ne regexem). Viz `prompts/pitfalls.md`.
 
-### Fáze 4 — Extrakce POLÍ per typ (Haiku, masivně paralelně — `prompts/extract_grant.md`)
+### Fáze 4 — Extrakce POLÍ per typ (Claude-workflow `scripts/extract_wf.js`, Haiku — `prompts/extract_grant.md`)
+- Mnou řízené workflow, **1 oportunita = 1 agent**, plný text + plné přílohy z doc-store.
 - **grant:** focus_area, amount, deadline, open_from, eligible_applicants, required_attachments, how_to_apply.
-- **NEOŘEZÁVAT vstup** (kontext ~200k) — dávat plný markdown obsahu + markdown příloh.
+- **NEOŘEZÁVAT vstup** (kontext ~200k) — měřeno: ořez sráží `amount` 27 %→90 %. Limity jen v `limits.json`.
 - **Aplikuj NEGATIVNÍ pravidla** (vytěžené záludnosti, `prompts/pitfalls.md`): `platnost:`/`realizace`/`vyhlášení výsledků`/`ZoR/ŽoP` ≠ deadline; `úvěr`/`jistina`/`úroky`/`odvod` ≠ dotace; `podpořen částkou` = projekt ne výzva; `cílová skupina` ≠ žadatel; soubory-ke-stažení ≠ povinné přílohy.
 - **projekt:** grantee, amount, year. **mise:** mission, topics, regions.
 
-### Fáze 5 — Výpočet STATUSU (kód, ne LLM — `scripts/compute_status.py`)
-- grant: `open` když open_from ≤ dnes ≤ deadline; `announced` když dnes < open_from; `closed` když dnes > deadline; `unknown` bez data.
-- Preferuj okno „Úřední deska od-do" kde je (high confidence).
-- projekt: `done` když je vyúčtovaná částka / signál dokončení; jinak `open`.
+### Fáze 5 — Úložiště + výpočet STATUSU (kód, ne LLM — `scripts/opportunities.py`)
+- **Kanonické úložiště `data/opportunities.jsonl`** sjednocuje VŠECHNY zdroje (LLM extrakci i strukturované jako dsw2/lewis) do jednoho plochého schématu (`schema/opportunity_schema.md`).
+- **Status v kódu** (`compute_status`, `--today`): grant `open` (open_from ≤ dnes ≤ deadline) / `announced` (dnes < open_from) / `closed` (dnes > deadline) / `unknown`. Rok v názvu ≠ rok podání → ber z `deadline`, ne z titulku.
+- **`extra{}` lossless** (nic se nezahazuje) + **`provenance{}`** (harvest_file/url + `documents[].txt_path` z doc-store) → úplný řetězec pole → soubor.
 
-### Fáze 6 — Dedup & grounding (cross-source — `scripts/dedup_ground.py`)
-- **Dedup:** stejná výzva napříč zdroji (primární + agregátor dotacni.info + úřední deska) → kanonická dle (číslo výzvy / IČO / normalizovaný title).
-- **Grounding:** křížově ověř deadline/amount napříč reprezentacemi; neshodu flagni. Široký základ = redundance = spolehlivost.
+### Fáze 6 — Dedup & grounding (cross-source — TODO)
+- **Dedup:** stejná výzva napříč zdroji (primární + agregátor dotacni.info + úřední deska) → kanonická dle (číslo výzvy / IČO / normalizovaný title; `opportunities.py:canon_key` je první iterace).
+- **Grounding:** křížově ověř deadline/amount napříč reprezentacemi i proti `provenance.documents[].txt_path` souborům; neshodu flagni. Široký základ = redundance = spolehlivost.
 
 ---
 
@@ -75,10 +77,11 @@ Cyklus, který je MĚŘENÝ (ne nora):
 ## Kam co patří
 | Nástroj | Role |
 |---|---|
-| **Apify** | render SPA (grantys) + WebForms postback (aspnet_webforms, MV kapitoly, custom_spa) → markdown |
-| **Skripty** | harvest (REST/HTML/inline-JS), doc→md (pdftotext/textutil), status, dedup, fingerprint |
-| **Sonnet** | klasifikace TYPU, měření coverage/kvality, detekce nových platforem |
-| **Haiku** | masivně paralelní extrakce POLÍ (bulk) |
+| **Skripty** | harvest (REST/HTML/inline-JS), doc-store (`docstore.py`), status+úložiště (`opportunities.py`), fingerprint. Limity jen v `limits.json`. |
+| **Playwright** | JEDNORÁZOVÝ objev skrytého JSON-XHR u SPA/grid (`lewis_discover.py`) → pak čistý HTTP replay (`lewis_dynamo.py`) BEZ Apify |
+| **Apify** | až poslední možnost — gated SPA (grantys API za session), antibot; ne automaticky pro WebForms (často jde HTTP replay) |
+| **Claude-workflow (Haiku)** | mnou řízené: `classify_wf.js` (typ) + `extract_wf.js` (pole, 1 oportunita/agent, plný text) |
+| **Sonnet** | měření coverage/kvality, detekce nových platforem |
 
 ## Soubory
 - `docs/platform_playbook.md` — **definice VŠECH CMS rodin** → podpis/harvester/metoda/jdou-detaily-snadno
@@ -87,9 +90,11 @@ Cyklus, který je MĚŘENÝ (ne nora):
 - `docs/data_reuse.md` — index UŽ STAŽENÝCH dat (html/md/pdf/doc/xls) k reuse
 - `docs/apify_howto.md` — kdy a jak Apify (SPA/postback zdroje)
 - `platform_data/` — **datové mapy** (platform_map, cms_clusters, detect_platforms_result, diversity_candidates, *_cov_result)
-- `scripts/` — detekce (cms_similarity, platform_refingerprint, detect_platforms_wf) + harvestery (wp/vismo/kentico/mv/dsw2) + dsw2_fetch + coverage/diversity
-- `prompts/classify_type.md` — prompt vrstvy 1 (typ)
-- `prompts/extract_grant.md` — prompt vrstvy 2 (pole grantu) s negativními pravidly
-- `prompts/pitfalls.md` — vytěžené záludnosti per pole (do promptů)
-- `pipeline.py` — driver: spojí fáze nad existujícími daty
-- `schema/` → `../schema/opportunity_schema.md` (kanonický model)
+- `scripts/` — detekce (cms_similarity, platform_refingerprint, detect_platforms_wf) + harvestery (wp/vismo/kentico/mv/dsw2/**eeagrants/praha_grants/lewis_dynamo**) + **doc-store** (`docstore.py`) + dsw2_fetch + coverage/diversity
+- **`scripts/extract_wf.js` / `classify_wf.js`** — Claude-workflow vrstvy 2/1 (Haiku, 1 oportunita/agent, plný text)
+- **`scripts/lewis_discover.py`** — Playwright objev skrytého XHR (SPA/grid) → endpoint pro HTTP replay
+- **`scripts/opportunities.py`** — kanonické úložiště `data/opportunities.jsonl` (jednotné schéma + status + extra lossless + provenance)
+- **`limits.json` + `scripts/limits.py`** — centrální registr VŠECH limitů/capů/ořezů (nic natvrdo v kódu)
+- `prompts/classify_type.md` / `extract_grant.md` / `pitfalls.md` — prompty vrstvy 1/2 + vytěžené záludnosti
+- `pipeline.py` — starší in-process driver (reálné fáze 3-4 jedou přes workflow výše)
+- `schema/opportunity_schema.md` — kanonický model (+ extra/provenance)
