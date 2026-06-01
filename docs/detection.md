@@ -38,6 +38,16 @@ abakus.cz=WP-Elementor v UNKNOWN). Workflow: otisk #2 → rodiny → #1 pro gene
 u poskytovatelů ověř ručně.
 
 ## Jak přidat NOVOU platformu (když narazíš)
+
+> **⓪ STRUKTURA PŘED PRÓZOU (doktrína „structure > LLM").** VŽDY nejdřív hledej STRUKTUROVANÝ endpoint —
+> opendata/award API, inline JS var (`var fonds=`), šablonové labely (dotacni.info `<h2>`), list-XHR
+> (`ODataSimpleFromSql`), WP REST CPT. Když existuje → parsuj **deterministicky, skip LLM** (zdarma, přesné, 0 halucinací).
+> LLM vrstva 2 až když je detail **neredukovatelně próza/PDF** (grantová pole nikde nestrukturovaná — `amount`/`eligible`/
+> `required_attachments` jsou věty ve `vyhlášení.pdf`; žádný XHR je nevystaví, protože je zdroj nikdy nestrukturoval).
+> **Ale ověř, CO endpoint dá:** granty.praha award-API = `project`/„kdo dostal", NE otevřené výzvy; Explorer = jen analytika.
+> Pro otevřené pražské výzvy strukturovaný endpoint NEEXISTUJE (ověřeno sondou) → próza+PDF na oblastních CMS je SPRÁVNÁ
+> cesta (zdravotni WP REST + praha.eu Liferay, oboje server-rendered), ne lenost.
+
 1. Spusť `cms_similarity.py` — patří k existující rodině? (1 parser pokryje celou)
 2. Když ne: zjisti přístup (REST? inline-JS? HTML-listing? SPA? postback?) probe homepage + dotační sekce.
    - **Rychlá sonda:** `curl` homepage + spočítej grant-slova (`výzv|dotac|grant|žádost`) ve **statickém** HTML. Hodně hitů (eeagrants 16) ⇒ server-rendered ⇒ stačí čisté HTTP (viz `scripts/eeagrants.py`). Skoro 0 hitů ⇒ JS-rendered ⇒ krok 2b.
