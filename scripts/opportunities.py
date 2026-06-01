@@ -148,6 +148,7 @@ def main():
     ap.add_argument("--harvest-file", help="layer-1 raw jsonl (join dokumentů + lossless extra)")
     ap.add_argument("--from-dsw2", help="data/dsw2_appeals.jsonl (strukturované)")
     ap.add_argument("--out", default=OUT_DEFAULT)
+    ap.add_argument("--link-docs", action="store_true", help="vyplň provenance.documents[].txt_path z doc-store manifestu")
     ap.add_argument("--reset", action="store_true", help="přepiš místo append")
     ap.add_argument("--today", help="referenční datum YYYY-MM-DD (default dnes)")
     args = ap.parse_args()
@@ -158,6 +159,18 @@ def main():
         recs += list(ingest_extraction(args.from_extraction, args.source, args.src_dir, args.harvest_file, today))
     if args.from_dsw2:
         recs += list(ingest_dsw2(args.from_dsw2, today))
+
+    if args.link_docs:   # doplň txt_path z kanonického doc-store manifestu
+        man = {}
+        mf = "data/files/manifest.jsonl"
+        if os.path.exists(mf):
+            for l in open(mf, encoding="utf-8"):
+                try: e = json.loads(l); man[e["url"]] = e.get("txt_path")
+                except Exception: pass
+        for r in recs:
+            for d in r.get("provenance", {}).get("documents", []):
+                if d.get("url") in man:
+                    d["txt_path"] = man[d["url"]]
 
     # dedup dle id v rámci tohoto běhu + proti existujícímu souboru (append)
     seen = set()
