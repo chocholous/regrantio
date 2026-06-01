@@ -53,7 +53,8 @@ Vrať JSON. Status NEvyplňuj — dopočítá se z dat.
 ## Zapojení v receptu (kde tenhle prompt žije — viz `README.md`)
 - **Spouští ho `scripts/extract_wf.js`** = mnou řízené Claude-workflow, **1 oportunita = 1 Haiku agent**.
 - **Vstup = PLNÝ text + plné přílohy z doc-store** (`scripts/docstore.py` → `data/files/<source>/<sha>.txt`, vazba přes `documents[]` URL z vrstvy 1). **NEOŘEZÁVAT** — měřeno: ořez sráží `amount` 27 %→90 %. Limity jen v `limits.json`.
-- **Výstup → `scripts/opportunities.py`** = kanonické úložiště (jednotné schéma + status + `extra` lossless + `provenance`).
+- **Výstup → `scripts/opportunities.py`** = kanonické úložiště (jednotné schéma + status + `extra` lossless + `provenance` + `citations`).
+- **EVIDENCE per pole (povinné):** pro KAŽDÉ vyplněné pole vrať do `evidence{pole: citace}` PŘESNOU DOSLOVNOU citaci ze zdroje (verbatim, ať ji lze najít fulltextem). `resolve_citations` ji pak lokalizuje v souboru (`char_start/end`); necituj, co v textu doslova není (jinak `match=none` = drift → kontrola člověkem).
 
 ## Validace (POVINNÁ před hromadným během)
 - Otestuj prompt na malém vzorku PROTI ŽIVÉMU ZDROJI (groundedness: je pole reálně v textu? — ověřitelné přes `provenance.documents[].txt_path`).

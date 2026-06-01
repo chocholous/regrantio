@@ -116,11 +116,12 @@ foundation (1, vždy)
 4. Model neřeší, čím se pole naplnilo (parser vs LLM) — to je věc pipeline.
 5. Zdroj smí být prázdný na opportunity — foundation s mission/topics a nulou grantů je validní stav.
 
-## Dvě POVINNÁ systémová pole na každé oportunitě (úložiště `data/opportunities.jsonl`)
+## TŘI POVINNÁ systémová pole na každé oportunitě (úložiště `data/opportunities.jsonl`)
 
 Oportunita je **PROJEKCE**, ne jediná kopie dat. Proto každý záznam navíc nese:
 
 - **`extra{}` — LOSSLESS přetékací pole.** Cokoliv ze zdroje, co se nevejde do plochých polí schématu, se uloží sem (dsw2 `related_programs`/`published_note`/`links`, lewis `CisloProjektu`/`CastkaVycerpana`, vismo `uredni_od/do`…). **Nic se nezahazuje** — co schéma neumí, jde do `extra`. Zdroj pravdy zůstává lossless vrstva 1.
-- **`provenance{}` — VAZBA na zdroj** (grounding/audit): `harvest_file` (který `data/*.jsonl` nese raw), `harvest_url` (klíč = web stránka), `documents[].{url, txt_path}` (stažené podklady přes doc-store), `layer` (1=strukturované / 2=LLM), `harvester`.
+- **`provenance{}` — VAZBA na zdroj** (audit): `harvest_file` (který `data/*.jsonl` nese raw), `harvest_url` (klíč = web stránka), `documents[].{url, txt_path}` (stažené podklady přes doc-store), `layer` (1=strukturované / 2=LLM), `harvester`.
+- **`citations[]` — DŮKAZ per pole** (grounding necháváme na člověku, ale dáme mu doklad): `{field, value, quote (verbatim citace z LLM), source (page/doc), ref (soubor/URL), char_start/end, context, match}`. `match=exact|fragment` = lokalizováno (klikni a ověř na pozici); `none` = citace se v žádném zdroji nenašla (LLM drift → kontrola člověkem). LLM vrací `evidence{pole:citace}` (viz `prompts/extract_grant.md`), `scripts/opportunities.py:resolve_citations` ji najde ve zdrojích (whitespace-insensitive + fragment fallback).
 
-Řetězec: `pole` → `provenance.documents[].txt_path` → konkrétní soubor v `data/files/<source>/` → kdykoliv ověřitelný původ. Plní `scripts/opportunities.py` (+ `--link-docs` z doc-store manifestu). Status se i zde POČÍTÁ (`compute_status`, `--today`), ne z LLM.
+Řetězec: `pole` → `citations[].{ref, char_start}` → přesné místo v souboru `data/files/<source>/` → kdykoliv ověřitelný původ. Plní `scripts/opportunities.py` (+ `--link-docs`). Status se i zde POČÍTÁ (`compute_status`, `--today`), ne z LLM.
