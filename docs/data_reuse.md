@@ -6,9 +6,11 @@ Pipeline má fázi 1 (harvest) PŘESKOČIT tam, kde data existují. Cesty relati
 | Zdroj | Soubor | Obsah | Reuse pro |
 |---|---|---|---|
 | WordPress (88 webů) | `data/wp_full/*.jsonl` (127 souborů, 896 MB, ~73k zázn.) | PLNÝ content.rendered (text+html), links, **documents[]**, terms, meta — lossless | fáze 1 WP, fáze 3-4 přímo |
-| vismo (13 webů) | `data/vismo_listing.jsonl` (344 dok) + `data/vismo_documents.jsonl` (185 výzev s detaily) | listing + detail + status + přílohy | fáze 1-2 vismo |
+| vismo (13 webů) | `data/vismo_listing.jsonl` (344 dok) + `data/vismo_documents.jsonl` (185 výzev s detaily) | listing + detail + status + přílohy | fáze 1-2 vismo. ⚠ **přílohy nejsou 100%** — krnov.cz měl 0 v datech, ale 5 na živé stránce (host-specific díra selektoru) → u prázdných `attachments` ověř živě / re-harvest |
 | dotacni.info (agregátor) | `data/dotacni_structured.json` (8127, strukturováno) | title/open_from/deadline/status/amount/eligible | ⭐ GROUND-TRUTH + přímý import |
 | dsw2 (28 měst) | `data/dsw2_programs.jsonl` (274), `dsw2_appeals.jsonl` (67), `dsw2_projects.jsonl` (1325), `dsw2_conditions.jsonl` (15 karet) | programy/výzvy/projekty/rozhodovací karty | fáze 1 dsw2 |
+| eeagrants.cz (custom_php) | `data/eeagrants.jsonl` (50 str / 480 dok URL) | výzvy EHP/Norsko: title+text+documents[] | fáze 1 eeagrants (`scripts/eeagrants.py`); ✅ vrstva 2 ověřena |
+| granty.praha.eu (Lewis/Dynamo) | `data/granty_praha.jsonl` (z 112 907) | strukturované **project/award** (žadatel, IČO, přidělená/vyčerpaná částka, smlouvy, rozpočet) | fáze 1 (`lewis_dynamo.py`); ⚠ rozhodnuté žádosti, ne výzvy |
 
 ## Převedené DOKUMENTY (PDF/DOC/XLS → text) — fáze 2 už hotová
 | Adresář | # .txt | Zdroj | Obsah |

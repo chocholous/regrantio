@@ -55,7 +55,9 @@ python3 scripts/diversity_finder.py      # nejodlišnější nevzorkované zdroj
 4. **NEOŘEZÁVAT vstup do LLM** — plný markdown + přílohy (kontext ~200k).
 5. **Negativní pravidla z `prompts/pitfalls.md`** patří do promptů — vytěžené záměny (`platnost:`/`realizace` ≠ deadline; `úvěr`/`jistina` ≠ dotace; `cílová skupina` ≠ žadatel; soubory-ke-stažení ≠ povinné přílohy).
 
-**LLM fáze v `pipeline.py` jsou STUBY** (`llm_call()` → `NotImplementedError`, `classify_type`/`extract_fields` vrací fallback). Deterministické fáze (reuse dat, doc-konverze, status, dedup) jsou plně funkční. Napojení modelu (Anthropic SDK / Apify) je TODO.
+**LLM vrstva 2 = Claude-řízené WORKFLOW s Haiku agenty** (NE stub): `scripts/classify_wf.js` (klasifikace base_type) + `scripts/extract_wf.js` (extrakce polí per typ, 1 oportunita = 1 agent, plný text). Spouští se nástrojem Workflow uvnitř Claude Code; status dopočítá kód po běhu. (`pipeline.py:llm_call` je starý in-process stub — driver ho zatím nevolá; reálná vrstva 2 jede přes workflow.) Empiricky: na plném textu ~88 % polí grantu; ořez vstupu sráží `amount` na 27 %.
+
+**Přístupové metody vrstvy 1 (5 archetypů):** REST (WP) / inline-JS (dsw2) / HTML-listing (vismo, eeagrants statické HTTP) / SPA-postback (Apify) / **SPA-grid se skrytým JSON-XHR → 1× odposlech Playwrightem (`scripts/lewis_discover.py`) → čistý HTTP replay bez Apify (`lewis_dynamo.py`)**. `requirements.txt` = playwright (jen pro discover).
 
 **Coverage je MĚŘENÝ cyklus, ne hádání** (`docs/coverage.md`): `diversity_finder.py` → coverage workflow → diff proti minulému běhu (vyčísli zisk) → stop při saturaci. Nové záludnosti jdou do `prompts/pitfalls.md`.
 
