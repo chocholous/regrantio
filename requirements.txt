@@ -1,0 +1,5 @@
+# Vrstva 1 harvestery (eeagrants, lewis_dynamo, vismo, dsw2…) běží na stdlib.
+# Playwright je potřeba JEN pro objevovací metodu scripts/lewis_discover.py
+# (jednorázový headless odposlech XHR SPA/WebForms gridů typu Lewis/Dynamo).
+#   pip install -r requirements.txt && playwright install chromium
+playwright>=1.40
