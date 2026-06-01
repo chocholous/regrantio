@@ -37,7 +37,8 @@ paralelně extrahuje pole. **Maximálně využívá UŽ STAŽENÁ DATA** (viz `d
 - **SPA / postback (Apify):** grantys (`ng-app`), aspnet_webforms (granty.praha/SFŽP), custom_spa, MV WebForms kapitoly → Apify `website-content-crawler` (JS rendering) → markdown. Viz `docs/apify_howto.md`.
 - Výstup per zdroj: záznamy `{url, title, date, text/html, document_urls[]}`.
 
-### Fáze 2 — Doc-store: dokumenty → text (univerzální, `scripts/docstore.py`)
+### Fáze 2 — Doc-store: dokumenty → text (= VRSTVA 1, fáze 2; univerzální, `scripts/docstore.py`)
+> Mapování: **vrstva 1** = fáze 1 (harvest) + fáze 2 (dokumenty→text) · **vrstva 2** = fáze 3–4 (classify + extract). Viz `docs/phase2_runbook.md` pro běh v čisté session.
 - **Vazba na vrstvu 1 = `documents[]` URL.** Harvester přílohy jen LISTUJE (lossless), doc-store je MATERIALIZUJE: `dsw2_fetch.sniff_ext()` + download + `convert()` (pdftotext/textutil) → `data/files/<source>/<sha>.{ext,txt}` + `manifest.jsonl` (keyed URL). Idempotentní.
 - **Sjednocuje 2 cesty:** `--from-harvest` materializuje URL-only zdroje (eeagrants/praha); `--index` zaregistruje už stažené `data/vismo_files/`/`dsw2_files/` bez re-downloadu. Vše v jednom manifestu.
 - Skenované PDF → flag na OCR.
