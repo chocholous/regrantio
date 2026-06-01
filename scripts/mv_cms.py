@@ -54,7 +54,7 @@ def process(url, files_dir, do_attachments, timeout, max_bytes):
         return {"url": url, "error": "fetch_fail"}
     host = re.match(r"https?://([^/]+)", url).group(1)
     ca = content_area(h)
-    rec = {"url": url, "host": host, "title": title_of(h), "body_text": to_text(ca)[:8000]}
+    rec = {"url": url, "host": host, "title": title_of(h), "body_text": to_text(ca)}  # plný text, žádný ořez (limits.json acquisition.input_truncation=null)
     atts = []
     for href, titleattr, txt in SOUBOR_RE.findall(ca):
         full = html.unescape(href)

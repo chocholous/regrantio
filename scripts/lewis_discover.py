@@ -34,7 +34,7 @@ def discover(url, wait_ms):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--url", required=True, help="URL gridu (…/LW/Views/Core/SeznamJS?action=get&idSeznamu=…)")
-    ap.add_argument("--wait", type=int, default=L("lewis.discover_wait_ms"))
+    ap.add_argument("--wait", type=int, default=L("probe.discover_wait_ms"))
     args = ap.parse_args()
     calls, cookies = discover(args.url, args.wait)
     print(f"# session cookies: {cookies}")

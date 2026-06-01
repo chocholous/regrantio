@@ -54,8 +54,8 @@ def harvest_wp(timeout):
 def harvest_liferay(area, seed, timeout, delay, max_pages):
     seen, queue, done = set(), [seed], 0
     while queue:
-        if done >= max_pages:                 # NE tichý strop — nahlas uříznutí (zásada "no silent caps")
-            print(f"  ⚠ [{area}] dosažen max_pages={max_pages}, ve frontě zbývá {len(queue)} podstránek (zvyš --max-pages)", file=sys.stderr)
+        if done >= max_pages:                 # runaway-pojistka, ne coverage cap — data se berou celá
+            print(f"  ⚠ [{area}] RUNAWAY-pojistka {max_pages} dosažena (fronta {len(queue)}) — prošetři link-filtr/past", file=sys.stderr)
             break
         url = queue.pop(0)
         if url in seen:
@@ -68,7 +68,7 @@ def harvest_liferay(area, seed, timeout, delay, max_pages):
         title = clean((re.search(r"<h1[^>]*>(.+?)</h1>", html, re.S) or [None, None])[1] or
                       (re.search(r"<title>([^<]+)", html) or [None, ""])[1])
         blocks = re.findall(r"<(?:p|li|h2|h3|td)[^>]*>(.+?)</(?:p|li|h2|h3|td)>", html, re.S)
-        text = "\n".join(t for t in (clean(b) for b in blocks) if len(t) > L("harvest.min_text_block_chars"))
+        text = "\n".join(t for t in (clean(b) for b in blocks) if len(t) > L("acquisition.min_text_block_chars"))
         rec = {"oblast": area, "url": url, "title": title, "text": text, "documents": docs_in(url, html)}
         done += 1
         yield rec   # streamuj rovnou (main zapisuje inkrementálně)
@@ -87,8 +87,8 @@ def main():
     ap.add_argument("--out", default="data/praha_grants.jsonl")
     ap.add_argument("--timeout", type=int, default=L("http.default_timeout_s"))
     ap.add_argument("--delay", type=float, default=0.3)
-    ap.add_argument("--max-pages", type=int, default=L("harvest.praha_max_pages_per_area"),
-                    help="strop podstránek/oblast (limits.json harvest.praha_max_pages_per_area; uříznutí se LOGuje)")
+    ap.add_argument("--max-pages", type=int, default=L("safety.runaway_page_ceiling"),
+                    help="runaway-pojistka (limits.json safety.runaway_page_ceiling); NE coverage cap — data celá")
     args = ap.parse_args()
 
     liferay = {"kultura": "https://praha.eu/web/kultura/dotace",

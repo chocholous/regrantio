@@ -30,7 +30,7 @@ def parse(url, html):
     h1 = re.search(r"<h1[^>]*>(.+?)</h1>", html, re.S)
     title = clean(h1.group(1)) if h1 else clean((re.search(r"<title>([^<]+)", html) or [None, ""])[1])
     blocks = re.findall(r"<(?:p|li|h2|h3|td)[^>]*>(.+?)</(?:p|li|h2|h3|td)>", html, re.S)
-    text = "\n".join(t for t in (clean(b) for b in blocks) if len(t) > L("harvest.min_text_block_chars"))
+    text = "\n".join(t for t in (clean(b) for b in blocks) if len(t) > L("acquisition.min_text_block_chars"))
     return {"url": url, "title": title, "text": text, "documents": docs_in(url, html)}
 
 def is_spa(html):
@@ -64,7 +64,8 @@ def main():
     ap.add_argument("--base", required=True); ap.add_argument("--source", required=True)
     ap.add_argument("--out"); ap.add_argument("--timeout", type=int, default=L("http.default_timeout_s"))
     ap.add_argument("--delay", type=float, default=0.3)
-    ap.add_argument("--max-pages", type=int, default=L("harvest.praha_max_pages_per_area"))
+    ap.add_argument("--max-pages", type=int, default=L("safety.runaway_page_ceiling"),
+                    help="runaway-pojistka (limits.json safety.runaway_page_ceiling); NE coverage cap — data se berou celá")
     args = ap.parse_args()
     out = args.out or f"data/{args.source}.jsonl"
     host = urlparse(args.base).netloc
@@ -92,7 +93,7 @@ def main():
                 queue.append(full.split("#")[0])
         while queue:
             if len(recs) >= args.max_pages:
-                print(f"  ⚠ [{args.source}] max_pages={args.max_pages}, fronta {len(queue)} (zvyš)", file=sys.stderr); break
+                print(f"  ⚠ [{args.source}] RUNAWAY-pojistka {args.max_pages} dosažena (fronta {len(queue)}) — prošetři link-filtr/past, NEzvyšuj naslepo", file=sys.stderr); break
             url = queue.pop(0)
             if url in seen: continue
             seen.add(url)

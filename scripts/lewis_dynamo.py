@@ -34,8 +34,8 @@ def main():
     ap.add_argument("--base", default="https://granty.praha.eu/GrantyPortal/")
     ap.add_argument("--id-seznamu", default="abad868e-1525-4d8c-8bdb-64d608f788fc")
     ap.add_argument("--out", default="data/granty_praha.jsonl")
-    ap.add_argument("--page-size", type=int, default=L("lewis.page_size"))
-    ap.add_argument("--max", type=int, default=L("sample.lewis_demo_max"), help="max záznamů (0=vše)")
+    ap.add_argument("--page-size", type=int, default=L("acquisition.page_size"))
+    ap.add_argument("--max", type=int, default=L("acquisition.lewis_max_records"), help="max záznamů (0=vše)")
     ap.add_argument("--delay", type=float, default=0.3)
     args = ap.parse_args()
 

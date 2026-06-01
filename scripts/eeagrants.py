@@ -28,7 +28,7 @@ def parse_page(url, html):
     title = clean(h1.group(1)) if h1 else None
     # tělo = všechny odstavce + položky seznamů s podstatným textem
     blocks = re.findall(r"<(?:p|li|h2|h3)[^>]*>(.+?)</(?:p|li|h2|h3)>", html, re.S)
-    text = "\n".join(t for t in (clean(b) for b in blocks) if len(t) > L("harvest.min_text_block_chars"))
+    text = "\n".join(t for t in (clean(b) for b in blocks) if len(t) > L("acquisition.min_text_block_chars"))
     # dokumenty (pdf/doc/xls) + interní odkazy pro BFS
     docs = sorted({urljoin(url, H.unescape(u))
                    for u in re.findall(r'href="([^"]+\.(?:pdf|docx?|xlsx?|odt))"', html, re.I)})
@@ -40,7 +40,7 @@ def main():
     ap.add_argument("--out", default="data/eeagrants.jsonl")
     ap.add_argument("--timeout", type=int, default=L("http.default_timeout_s"))
     ap.add_argument("--delay", type=float, default=0.4)
-    ap.add_argument("--max-pages", type=int, default=L("harvest.eeagrants_max_pages"))
+    ap.add_argument("--max-pages", type=int, default=L("safety.runaway_page_ceiling"))
     args = ap.parse_args()
 
     # seed: výpis výzev + 9 programových oblastí (z homepage menu)
@@ -49,8 +49,8 @@ def main():
         "socialni-dialog", "zivotni-prostredi", "lidska-prava", "spravedlnost", "vnitrni-veci")]
     seen, queue, recs = set(), list(seeds), []
     while queue:
-        if len(recs) >= args.max_pages:        # NE tichý strop — nahlas uříznutí (limits.json harvest.eeagrants_max_pages)
-            print(f"  ⚠ dosažen max_pages={args.max_pages}, ve frontě {len(queue)} stránek (zvyš --max-pages)", file=sys.stderr)
+        if len(recs) >= args.max_pages:        # runaway-pojistka, ne coverage cap — data celá
+            print(f"  ⚠ RUNAWAY-pojistka {args.max_pages} dosažena (fronta {len(queue)}) — prošetři link-filtr/past", file=sys.stderr)
             break
         url = queue.pop(0)
         if url in seen:

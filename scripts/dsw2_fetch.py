@@ -24,6 +24,8 @@ import subprocess
 import sys
 import urllib.error
 import urllib.request
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from limits import L   # centrální registr limitů (root limits.json)
 
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/124.0 Safari/537.36"
 # Konverzní nástroje dle přípony (macOS): textutil pro Office/ODF, pdftotext pro PDF.
@@ -118,7 +120,8 @@ def main() -> int:
     ap.add_argument("--out-docs", default="data/dsw2_documents.jsonl")
     ap.add_argument("--out-web", default="data/dsw2_web_urls.json")
     ap.add_argument("--timeout", type=int, default=40)
-    ap.add_argument("--max-mb", type=int, default=50, help="strop velikosti souboru")
+    ap.add_argument("--max-mb", type=int, default=L("safety.doc_download_max_mb"),
+                    help="runaway-pojistka velikosti souboru (limits.json safety.doc_download_max_mb)")
     args = ap.parse_args()
 
     links = [json.loads(l) for l in open(args.links, encoding="utf-8")]
