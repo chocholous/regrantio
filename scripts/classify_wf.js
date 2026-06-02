@@ -17,7 +17,8 @@ const SCHEMA = {
   },
 }
 
-const SYS = `Urči base_type dokumentu (Read JSON: title, body, web) podle toho, CO dokument DĚLÁ — z PRIMÁRNÍHO obsahu TĚLA, ne z titulku, obalu, sidebaru ani formátu. Status (otevřeno/uzavřeno) NEřeš, počítá kód.
+const SYS = `Urči base_type dokumentu (Read JSON: title, body, web, attachments_md = PLNÝ text stažených příloh/PDF) podle toho, CO dokument DĚLÁ — z PRIMÁRNÍHO obsahu, ne z titulku, obalu, sidebaru ani formátu. Status (otevřeno/uzavřeno) NEřeš, počítá kód.
+OBSAH = TĚLO + PŘÍLOHY dohromady: tenká stránka odkazující na „Výzva.pdf" je grant, když to vyhlášení v attachments_md JE výzva. Nehleď jen na body. (Přílohy ber jako obsah té JEDNÉ oportunity; metodika/formulář v příloze ale samy o sobě grant nedělají — viz KOTVA.)
 
 KOTVA — jsou v dokumentu konkrétní peníze pro žadatele? Ať NABÍDKA (budeš moct / můžeš / mohl jsi požádat) nebo UDĚLENÍ („komu kolik dali") → grant.
   Patří sem: výzva i financovaný projekt; průběžný program s pravidly, na který lze žádat (pravidla = popis té nabídky); výsledková listina / tabulka příjemců s částkami / „schválení dotací se jmény".
