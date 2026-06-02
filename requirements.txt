@@ -4,3 +4,11 @@
 #   pip install -r requirements.txt && playwright install chromium
 playwright>=1.40
 pyyaml>=6.0   # routing.yaml loader (scripts/routing.py)
+
+# Vrstva 1 / fáze 2 — dokumenty → markdown (scripts/to_markdown.py):
+#   docling = PDF/DOCX/PPTX → markdown (layout + tabulky); CPU vynuceno (MPS float64 bug → float32 patch v to_markdown.py)
+#   ocrmac  = Apple Vision OCR engine pro skenovaná PDF (přes docling OcrMacOptions, jen macOS)
+#   tabulky (xls/xlsx/ods) → soffice (LibreOffice, system) → CSV; velké/textové PDF → pdftotext (system poppler)
+docling>=2.96
+ocrmac>=1.0        # macOS only
+pymupdf4llm>=1.27  # vyhodnocená alternativa PDF→md (batch ale jede docling/pdftotext)

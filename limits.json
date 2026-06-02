@@ -17,6 +17,11 @@
       "value": 2500, "unit": "ms", "kind": "probe",
       "why": "čekání na XHR při Playwright odposlechu (lewis_discover).",
       "used_in": ["scripts/lewis_discover.py (--wait)"], "wired": true
+    },
+    "scanned_pdf_min_chars_per_page": {
+      "value": 8, "unit": "chars/page", "kind": "probe",
+      "why": "detekce skenovaného PDF (bez textové vrstvy): pdftotext vrátí < práh*stran → OCR (docling+ocrmac). Textové PDF mají stovky zn/stránku, sken ~0.",
+      "used_in": ["scripts/to_markdown.py:pdf_is_scanned"], "wired": true
     }
   },
 
