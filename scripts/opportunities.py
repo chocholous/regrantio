@@ -180,27 +180,33 @@ def _load_classifications(path):
 def ingest_extraction(result_path, source, src_dir, harvest_file, today, classifications=None):
     raw = json.load(open(result_path, encoding="utf-8"))
     items = raw["result"] if isinstance(raw, dict) and "result" in raw else raw
-    hidx = _harvest_index(harvest_file)
     classifications = classifications or {}
+    hcache = {}   # harvest_file → index (multi-source: odvozeno z 'web' per dokument)
+    def _hidx(hf):
+        if hf not in hcache:
+            hcache[hf] = _harvest_index(hf)
+        return hcache[hf]
     for it in items:
         f = it.get("fields")
         if not f:
             continue
-        sp, surl, fid, page = it.get("path"), None, None, None
+        sp, surl, fid, page, web = it.get("path"), None, None, None, None
         if sp and src_dir and os.path.exists(sp):
             s = json.load(open(sp, encoding="utf-8"))
-            surl = s.get("id"); fid = s.get("_oblast") or s.get("web"); page = s.get("body")
+            surl = s.get("id"); web = s.get("web"); fid = s.get("_oblast") or web; page = s.get("body")
         surl = surl or f.get("source_doc")
-        rawrec = hidx.get(surl, {})
+        doc_source = web or source                              # zdroj per dokument
+        hf = (f"data/h19_{web}.jsonl" if web else harvest_file)  # harvest-file per zdroj
+        rawrec = _hidx(hf).get(surl, {})
         # dokumenty z layer-1 raw (URL; txt_path doplní doc-store až bude perzistentní)
         docs = [{"url": u, "txt_path": None} for u in (rawrec.get("documents") or [])]
         # lossless extra z raw (BEZ velkého textu — ten je dohledatelný přes harvest_file+url)
         extra = {k: v for k, v in rawrec.items()
                  if k not in ("url", "title", "text", "html", "documents", "content_html", "content_text")
                  and v not in (None, "", [], {})}
-        prov = {"source": source, "source_url": surl, "foundation_id": fid,
+        prov = {"source": doc_source, "source_url": surl, "foundation_id": fid,
                 "_layer": 2, "_harvester": "extract_wf",
-                "harvest_file": harvest_file, "documents": docs,
+                "harvest_file": hf, "documents": docs,
                 "classification": classifications.get(surl)}   # PROČ zařazeno (base_type+confidence+reasoning)
         opp = opp_from_fields(it.get("type", "grant"), f, prov, today, extra=extra)
         opp["_page_text"] = page   # tělo stránky (layer-1) — prohledá resolve_citations
