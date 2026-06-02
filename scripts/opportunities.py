@@ -98,10 +98,11 @@ def resolve_citations(opp):
     return opp
 
 def canon_key(kind, title, source_url):
+    host = re.sub(r"^https?://(www\.)?", "", source_url or "").split("/")[0]   # dedup v RÁMCI zdroje, ne napříč
     t = re.sub(r"[^a-z0-9á-ž]+", "", (title or "").lower())[:48]
     m = re.search(r"(\d+)\.\s*výzv", (title or "").lower())
     num = (m.group(1) + "|") if m else ""
-    return f"{kind}:{num}{t}" or f"{kind}:{(source_url or '')[-40:]}"
+    return f"{kind}:{host}:{num}{t}"
 
 CANON_FIELDS = {  # co se mapuje do schématu (zbytek → extra, nic se nezahodí)
     "grant": {"title", "focus_area", "open_from", "deadline", "amount", "eligible_applicants",
@@ -228,6 +229,44 @@ def ingest_dsw2(path, today):
                 "_layer": 1, "_harvester": "dsw2.py", "harvest_file": path, "documents": docs}
         yield opp_from_fields("grant", f, prov, today, extra=extra)
 
+# ---------- vstup: dsw2 PROGRAMY (katalog fondů — strukturované, bez LLM) ----------
+def ingest_dsw2_programs(path, today):
+    consumed = {"title", "focus_area", "url", "links", "foundation_id"}
+    for line in open(path, encoding="utf-8"):
+        a = json.loads(line)
+        f = {"title": a.get("title"), "focus_area": a.get("focus_area"),
+             "open_from": None, "deadline": None, "amount": None, "eligible_applicants": None,
+             "required_attachments": [], "how_to_apply": None, "source_doc": a.get("url")}
+        docs = [{"url": u, "txt_path": None} for u in (a.get("links") or [])]
+        extra = {k: v for k, v in a.items() if k not in consumed and v not in (None, "", [], {})}
+        prov = {"source": "dsw2", "source_url": a.get("url"), "foundation_id": a.get("foundation_id"),
+                "_layer": 1, "_harvester": "dsw2.py (programs)", "harvest_file": path, "documents": docs}
+        yield opp_from_fields("grant", f, prov, today, extra=extra)
+
+# ---------- vstup: vismo (úřední deska výzvy — semi-strukturované, status z dat) ----------
+def ingest_vismo(path, today):
+    consumed = {"title", "url", "deadline", "uredni_od", "uredni_do", "status", "status_guess",
+                "status_source", "status_confidence", "attachments", "body_text", "n_attachments"}
+    for line in open(path, encoding="utf-8"):
+        a = json.loads(line)
+        # deadline pro výpočet statusu: explicitní deadline, jinak konec úřední desky
+        dl = a.get("deadline") or a.get("uredni_do")
+        f = {"title": a.get("title"), "focus_area": None,
+             "open_from": a.get("uredni_od"), "deadline": dl, "amount": None,
+             "eligible_applicants": None, "required_attachments": [], "how_to_apply": None,
+             "source_doc": a.get("url")}
+        atts = a.get("attachments") or []
+        docs = [{"url": x.get("url"), "txt_path": x.get("txt_path")} for x in atts if isinstance(x, dict)]
+        extra = {k: v for k, v in a.items() if k not in consumed and v not in (None, "", [], {})}
+        prov = {"source": "vismo", "source_url": a.get("url"),
+                "_layer": 1, "_harvester": "vismo_detail.py", "harvest_file": path, "documents": docs}
+        opp = opp_from_fields("grant", f, prov, today, extra=extra)
+        # vismo status už spočítal harvester z úřední desky (deadline je v Czech formátu, compute_status ho nevezme)
+        if a.get("status") in ("open", "closed", "announced"):
+            opp["status"] = a["status"]; opp["status_confidence"] = a.get("status_confidence") or "high"
+        opp["_page_text"] = a.get("body_text")   # tělo pro resolve_citations
+        yield opp
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--from-extraction", help="extract_wf workflow výstup (JSON)")
@@ -235,6 +274,8 @@ def main():
     ap.add_argument("--src-dir", help="adresář zdrojových per-doc JSON (pro source_url)")
     ap.add_argument("--harvest-file", help="layer-1 raw jsonl (join dokumentů + lossless extra)")
     ap.add_argument("--from-dsw2", help="data/dsw2_appeals.jsonl (strukturované)")
+    ap.add_argument("--from-dsw2-programs", help="data/dsw2_programs.jsonl (katalog fondů → grant)")
+    ap.add_argument("--from-vismo", help="data/vismo_documents.jsonl (úřední deska výzvy → grant)")
     ap.add_argument("--out", default=OUT_DEFAULT)
     ap.add_argument("--link-docs", action="store_true", help="vyplň provenance.documents[].txt_path z doc-store manifestu")
     ap.add_argument("--reset", action="store_true", help="přepiš místo append")
@@ -249,6 +290,10 @@ def main():
         recs += list(ingest_extraction(args.from_extraction, args.source, args.src_dir, args.harvest_file, today, cls))
     if args.from_dsw2:
         recs += list(ingest_dsw2(args.from_dsw2, today))
+    if args.from_dsw2_programs:
+        recs += list(ingest_dsw2_programs(args.from_dsw2_programs, today))
+    if args.from_vismo:
+        recs += list(ingest_vismo(args.from_vismo, today))
 
     if args.link_docs:   # doplň txt_path z kanonického doc-store manifestu
         man = {}
