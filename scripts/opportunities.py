@@ -97,8 +97,11 @@ def resolve_citations(opp):
         opp["citations"] = cites
     return opp
 
+def _host(u):
+    return re.sub(r"^https?://(www\.)?", "", u or "").split("/")[0]
+
 def canon_key(kind, title, source_url):
-    host = re.sub(r"^https?://(www\.)?", "", source_url or "").split("/")[0]   # dedup v RÁMCI zdroje, ne napříč
+    host = _host(source_url)   # dedup v RÁMCI zdroje, ne napříč
     t = re.sub(r"[^a-z0-9á-ž]+", "", (title or "").lower())[:48]
     m = re.search(r"(\d+)\.\s*výzv", (title or "").lower())
     num = (m.group(1) + "|") if m else ""
@@ -142,6 +145,7 @@ def opp_from_fields(kind, f, prov, today, extra=None):
         "harvest_url": prov.get("source_url"),        # klíč do něj (= web stránka)
         "documents": prov.get("documents") or [],     # [{url, txt_path, ext}] stažené podklady
         "classification": prov.get("classification"), # {base_type, confidence, reasoning[]} = PROČ zařazeno (audit)
+        "platform": prov.get("_platform"),            # CMS rodina (vismo/dsw2/…), když zdroj jede přes platformu
     }
     # Q1 — LOSSLESS: vše nemapované se uloží do extra (nic se nezahodí)
     structural = CANON_FIELDS.get(kind, set()) | {"evidence"}
@@ -239,8 +243,9 @@ def ingest_dsw2_programs(path, today):
              "required_attachments": [], "how_to_apply": None, "source_doc": a.get("url")}
         docs = [{"url": u, "txt_path": None} for u in (a.get("links") or [])]
         extra = {k: v for k, v in a.items() if k not in consumed and v not in (None, "", [], {})}
-        prov = {"source": "dsw2", "source_url": a.get("url"), "foundation_id": a.get("foundation_id"),
-                "_layer": 1, "_harvester": "dsw2.py (programs)", "harvest_file": path, "documents": docs}
+        prov = {"source": _host(a.get("url")), "source_url": a.get("url"), "foundation_id": a.get("foundation_id"),
+                "_layer": 1, "_harvester": "dsw2.py (programs)", "_platform": "dsw2",
+                "harvest_file": path, "documents": docs}     # source = POSKYTOVATEL (portál), platforma → _platform
         yield opp_from_fields("grant", f, prov, today, extra=extra)
 
 # ---------- vstup: vismo (úřední deska výzvy — semi-strukturované, status z dat) ----------
@@ -258,8 +263,9 @@ def ingest_vismo(path, today):
         atts = a.get("attachments") or []
         docs = [{"url": x.get("url"), "txt_path": x.get("txt_path")} for x in atts if isinstance(x, dict)]
         extra = {k: v for k, v in a.items() if k not in consumed and v not in (None, "", [], {})}
-        prov = {"source": "vismo", "source_url": a.get("url"),
-                "_layer": 1, "_harvester": "vismo_detail.py", "harvest_file": path, "documents": docs}
+        prov = {"source": a.get("web") or _host(a.get("url")), "source_url": a.get("url"),
+                "_layer": 1, "_harvester": "vismo_detail.py", "_platform": "vismo",
+                "harvest_file": path, "documents": docs}    # source = POSKYTOVATEL (obec), platforma → _platform
         opp = opp_from_fields("grant", f, prov, today, extra=extra)
         # vismo status už spočítal harvester z úřední desky (deadline je v Czech formátu, compute_status ho nevezme)
         if a.get("status") in ("open", "closed", "announced"):
