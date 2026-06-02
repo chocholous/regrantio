@@ -100,9 +100,21 @@ def resolve_citations(opp):
 def _host(u):
     return re.sub(r"^https?://(www\.)?", "", u or "").split("/")[0]
 
-def canon_key(kind, title, source_url):
+def _doc_id(url):
+    # stabilní per-dokument ID v URL (vismo/otevrenamesta: …/d-NNNNNN) = autoritativní identita
+    m = re.search(r"/d-(\d+)", url or "")
+    return m.group(1) if m else None
+
+def canon_key(kind, title, source_url, uid=None):
     host = _host(source_url)   # dedup v RÁMCI zdroje, ne napříč
-    t = re.sub(r"[^a-z0-9á-ž]+", "", (title or "").lower())[:48]
+    # Identita = autoritativní ID, když existuje (NIKDY ne ořezaný titulek — to slévá různé výzvy).
+    if uid:                       # explicitní ID zdroje (dsw2 program_id apod.)
+        return f"{kind}:{host}:{uid}"
+    did = _doc_id(source_url)     # vismo/otevrenamesta /d-NNNNNN
+    if did:
+        return f"{kind}:{host}:d{did}"
+    # fallback: PLNÝ normalizovaný titulek (žádný strop délky — limity jen na sondy/safety)
+    t = re.sub(r"[^a-z0-9á-ž]+", "", (title or "").lower())
     m = re.search(r"(\d+)\.\s*výzv", (title or "").lower())
     num = (m.group(1) + "|") if m else ""
     return f"{kind}:{host}:{num}{t}"
@@ -137,7 +149,8 @@ def opp_from_fields(kind, f, prov, today, extra=None):
     elif kind == "foundation_mission":
         base.update(name=f.get("name"), mission=f.get("mission"),
                     support_topics=f.get("support_topics") or [], regions=f.get("regions") or [])
-    base["id"] = canon_key(kind, base.get("title") or base.get("name"), base.get("source_url"))
+    base["id"] = canon_key(kind, base.get("title") or base.get("name"),
+                           base.get("source_url"), uid=prov.get("_uid"))
     # Q2 — VAZBA na zdroj: layer-1 raw + stažené soubory
     base["provenance"] = {
         "layer": prov.get("_layer", 2), "harvester": prov.get("_harvester"),
@@ -245,6 +258,7 @@ def ingest_dsw2_programs(path, today):
         extra = {k: v for k, v in a.items() if k not in consumed and v not in (None, "", [], {})}
         prov = {"source": _host(a.get("url")), "source_url": a.get("url"), "foundation_id": a.get("foundation_id"),
                 "_layer": 1, "_harvester": "dsw2.py (programs)", "_platform": "dsw2",
+                "_uid": f"pid{a.get('program_id')}" if a.get("program_id") else None,  # autoritativní identita (URL je sdílená /explore/fonds)
                 "harvest_file": path, "documents": docs}     # source = POSKYTOVATEL (portál), platforma → _platform
         yield opp_from_fields("grant", f, prov, today, extra=extra)
 
