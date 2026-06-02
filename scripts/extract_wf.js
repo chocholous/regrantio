@@ -4,8 +4,10 @@ export const meta = {
   phases: [{ title: 'Extract', detail: 'Haiku: pole per typ, 1 dokument/agent' }],
 }
 
-// args = pole cest /tmp/q/<typ>_NN.json; typ se odvodí z názvu (grant_/project_/mission_)
-const PATHS = Array.isArray(args) ? args : (typeof args === 'string' ? JSON.parse(args) : [])
+// args = pole cest /tmp/q/<typ>_NN.json NEBO {paths, model}; typ se odvodí z názvu (grant_/project_/mission_)
+const ARG = (typeof args === 'string') ? JSON.parse(args) : args
+const PATHS = Array.isArray(ARG) ? ARG : ((ARG && ARG.paths) || [])
+const MODEL = (ARG && !Array.isArray(ARG) && ARG.model) || 'haiku'   // extrakce default Haiku (levné); přepiš {paths, model}
 const typeOf = (p) =>
   p.includes('/grant_') ? 'grant' :
   p.includes('/project_') ? 'project' :
@@ -71,7 +73,7 @@ const out = await parallel(PATHS.map((path) => () => {
   const t = typeOf(path)
   return agent(
     `${SYS[t]}\n\nDokument k načtení: ${path}\nExtrahuj pole do schématu.`,
-    { label: `${t}:${path.split('/').pop()}`, phase: 'Extract', schema: SCHEMAS[t], model: 'haiku' }
+    { label: `${t}:${path.split('/').pop()}`, phase: 'Extract', schema: SCHEMAS[t], model: MODEL }
   ).then(fields => ({ path, type: t, fields })).catch(e => ({ path, type: t, fields: null, error: String(e) }))
 }))
 
