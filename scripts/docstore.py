@@ -15,13 +15,15 @@ Použití:
         --url-path attachments[].url --txt-path attachments[].txt_path
   python3 scripts/docstore.py --lookup "<url>"
 """
-import argparse, hashlib, json, os, sys
+import argparse, hashlib, json, os, sys, threading
+from concurrent.futures import ThreadPoolExecutor
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import dsw2_fetch as df
 from limits import L
 
 ROOT = "data/files"
 MANIFEST = os.path.join(ROOT, "manifest.jsonl")
+_LOCK = threading.Lock()   # serializuje mutaci manifestu (dict + append) při paralelním stahování
 
 def sha_of(url):
     return hashlib.sha1((url or "").encode("utf-8")).hexdigest()[:16]
@@ -42,7 +44,8 @@ def _append(entry):
         o.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
 def store_url(url, source, manifest, timeout=25):
-    """Idempotentně stáhni+konvertuj url do data/files/<source>/. Vrať manifest entry."""
+    """Idempotentně stáhni+konvertuj url do data/files/<source>/. Vrať manifest entry.
+    Thread-safe: pomalá část (sniff/download/convert) běží bez zámku, mutace manifestu pod _LOCK."""
     if url in manifest:
         return manifest[url]
     sha = sha_of(url)
@@ -52,7 +55,7 @@ def store_url(url, source, manifest, timeout=25):
     entry = {"url": url, "source": source, "sha": sha, "ext": ext,
              "raw_path": raw, "txt_path": None, "bytes": 0, "chars": 0, "ok": False}
     try:
-        nb, derr = df.download(url, raw, timeout, L("harvest.doc_download_max_mb") * 1024 * 1024)
+        nb, derr = df.download(url, raw, timeout, L("safety.doc_download_max_mb") * 1024 * 1024)
         entry["bytes"] = nb or 0
         if not derr:
             df.convert(raw, ext, txt, 60)
@@ -62,11 +65,13 @@ def store_url(url, source, manifest, timeout=25):
             entry["err"] = derr
     except Exception as e:
         entry["err"] = f"{type(e).__name__}: {str(e)[:60]}"
-    manifest[url] = entry; _append(entry)
+    with _LOCK:
+        manifest[url] = entry; _append(entry)
     return entry
 
-def from_harvest(harvest_file, source, manifest, only_urls=None):
-    n_ok = n_skip = 0
+def from_harvest(harvest_file, source, manifest, only_urls=None, workers=None):
+    workers = workers or L("http.download_workers")
+    seen, urls = set(), []
     for l in open(harvest_file, encoding="utf-8"):
         try: r = json.loads(l)
         except Exception: continue
@@ -74,9 +79,20 @@ def from_harvest(harvest_file, source, manifest, only_urls=None):
             continue
         for u in (r.get("documents") or []):
             u = u.get("url") if isinstance(u, dict) else u
-            e = store_url(u, source, manifest)
-            n_ok += int(e["ok"]); n_skip += int(not e["ok"])
-            print(f"  {'OK ' if e['ok'] else 'ERR'} {e['chars']:>7}z {u[-55:]}", file=sys.stderr)
+            if u and u not in seen:
+                seen.add(u); urls.append(u)
+    todo = [u for u in urls if u not in manifest]   # idempotence: přeskoč už zmaterializované
+    cached = len(urls) - len(todo)
+    n_ok = n_skip = 0
+    def work(u):
+        e = store_url(u, source, manifest)
+        print(f"  {'OK ' if e['ok'] else 'ERR'} {e['chars']:>7}z {u[-55:]}", file=sys.stderr)
+        return e["ok"]
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        for ok in ex.map(work, todo):
+            n_ok += int(ok); n_skip += int(not ok)
+    if cached:
+        print(f"  (cached: {cached} už v manifestu, přeskočeno)", file=sys.stderr)
     return n_ok, n_skip
 
 def index_existing(jsonl, source, manifest):
@@ -100,6 +116,8 @@ def main():
     ap.add_argument("--from-harvest"); ap.add_argument("--source", default="?")
     ap.add_argument("--only-urls", help="soubor s URL (1/řádek) — stáhni jen dokumenty těchto stránek")
     ap.add_argument("--index"); ap.add_argument("--lookup")
+    ap.add_argument("--workers", type=int, default=L("http.download_workers"),
+                    help="paralelních vláken na stahování (default limits.json http.download_workers)")
     args = ap.parse_args()
     manifest = load_manifest()
     if args.lookup:
@@ -111,7 +129,7 @@ def main():
         only = None
         if args.only_urls:
             only = set(l.strip() for l in open(args.only_urls) if l.strip())
-        ok, skip = from_harvest(args.from_harvest, args.source, manifest, only)
+        ok, skip = from_harvest(args.from_harvest, args.source, manifest, only, args.workers)
         print(json.dumps({"MARKER": "DOCSTORE", "stored_ok": ok, "failed": skip,
                           "source": args.source, "manifest": MANIFEST}, ensure_ascii=False))
 

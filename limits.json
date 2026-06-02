@@ -88,6 +88,11 @@
       "value": 3, "unit": "attempts", "kind": "technical",
       "why": "počet pokusů při síťové chybě.",
       "used_in": ["scripts/dsw2.py"], "wired": false
+    },
+    "download_workers": {
+      "value": 16, "unit": "threads", "kind": "technical",
+      "why": "počet paralelních vláken při materializaci dokumentů do doc-store (I/O-bound). NENÍ data cap — jen souběh stahování; manifest se zapisuje pod zámkem.",
+      "used_in": ["scripts/docstore.py:from_harvest (--workers)"], "wired": true
     }
   }
 }

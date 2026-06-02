@@ -24,8 +24,18 @@ import subprocess
 import sys
 import urllib.error
 import urllib.request
+from urllib.parse import urlsplit, urlunsplit, quote
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from limits import L   # centrální registr limitů (root limits.json)
+
+
+def safe_url(url: str) -> str:
+    """Percent-encode path+query (mezery, diakritika v názvech souborů) — urllib jinak
+    spadne na InvalidURL. safe="%..." nepřekóduje už zakódované URL (žádný double-encode)."""
+    p = urlsplit(url)
+    path = quote(p.path, safe="/%:@!$&'()*+,;=~-._")
+    query = quote(p.query, safe="/%:@!$&'()*+,;=~-._?")
+    return urlunsplit((p.scheme, p.netloc, path, query, p.fragment))
 
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/124.0 Safari/537.36"
 # Konverzní nástroje dle přípony (macOS): textutil pro Office/ODF, pdftotext pro PDF.
@@ -51,7 +61,7 @@ def sniff_ext(url: str, timeout: int):
     """Zjistí příponu dokumentu z hlaviček (Content-Type / Content-Disposition).
     Vrací příponu (str) když jde o dokument, jinak None (= je to webová stránka)."""
     try:
-        req = urllib.request.Request(url, headers={"User-Agent": UA})
+        req = urllib.request.Request(safe_url(url), headers={"User-Agent": UA})
         with urllib.request.urlopen(req, timeout=timeout) as r:
             ctype = (r.headers.get("Content-Type") or "").split(";")[0].strip().lower()
             cdisp = r.headers.get("Content-Disposition") or ""
@@ -77,7 +87,7 @@ def ext_of(u: str) -> str:
 
 def download(url: str, dest: str, timeout: int, max_bytes: int):
     try:
-        req = urllib.request.Request(url, headers={"User-Agent": UA})
+        req = urllib.request.Request(safe_url(url), headers={"User-Agent": UA})
         with urllib.request.urlopen(req, timeout=timeout) as r:
             data = r.read(max_bytes + 1)
         if len(data) > max_bytes:
