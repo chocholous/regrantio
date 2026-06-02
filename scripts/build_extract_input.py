@@ -41,8 +41,9 @@ def main():
         for u in (r.get("documents") or []):
             u = urljoin(r.get("url", ""), u if isinstance(u, str) else u.get("url", ""))
             e = docstore.store_url(u, args.source, manifest)   # idempotentní download+convert
-            if e.get("txt_path") and os.path.exists(e["txt_path"]):
-                t = open(e["txt_path"], encoding="utf-8", errors="replace").read()
+            sp = e.get("md_path") or e.get("txt_path")         # preferuj markdown (tabulky), fallback txt
+            if sp and os.path.exists(sp):
+                t = open(sp, encoding="utf-8", errors="replace").read()
                 if t.strip():
                     parts.append(f"[{u.split('/')[-1][:40]}]\n{t}")
         doc = {"id": r.get("url"), "web": args.source, "force_type": args.force_type,

@@ -1,12 +1,10 @@
 export const meta = {
-  name: 'layer1-classify',
-  description: 'Vrstva 1 (LLM): Haiku agenti klasifikují base_type dokumentu naslepo. 1 dokument = 1 agent. Slouží k měření routing accuracy (zejm. odfiltrování news/administrative/other od oportunit).',
-  phases: [{ title: 'Classify', detail: 'Haiku: base_type per dokument' }],
+  name: 'verify-classify',
+  description: 'Cross-model audit klasifikace: každý vzorek překlasifikuje Opus i Sonnet nezávisle (stejný prompt jako classify_wf). Pro porovnání proti Haiku.',
+  phases: [{ title: 'Verify', detail: 'Opus + Sonnet per dokument' }],
 }
 
-const ARG = (typeof args === 'string') ? JSON.parse(args) : args
-const PATHS = Array.isArray(ARG) ? ARG : ((ARG && ARG.paths) || [])
-const MODEL = (ARG && !Array.isArray(ARG) && ARG.model) || 'sonnet'   // produkční model klasifikace (kvalita 91 %); přepiš {paths, model}
+const PATHS = Array.isArray(args) ? args : (typeof args === 'string' ? JSON.parse(args) : [])
 
 const SCHEMA = {
   type: 'object', required: ['base_type', 'confidence'],
@@ -17,6 +15,7 @@ const SCHEMA = {
   },
 }
 
+// IDENTICKÝ prompt jako classify_wf.js (fair cross-model check)
 const SYS = `Urči base_type dokumentu (Read JSON: title, body, web) podle toho, CO dokument DĚLÁ — z PRIMÁRNÍHO obsahu TĚLA, ne z titulku, obalu, sidebaru ani formátu. Status (otevřeno/uzavřeno) NEřeš, počítá kód.
 
 KOTVA — jsou v dokumentu konkrétní peníze pro žadatele? Ať NABÍDKA (budeš moct / můžeš / mohl jsi požádat) nebo UDĚLENÍ („komu kolik dali") → grant.
@@ -36,11 +35,17 @@ KDE SE TO PLETE:
 
 Když nic nesedí jednoznačně → nejbližší + confidence=low. Vrať base_type, confidence a reasoning (body, podle čeho ses rozhodl).`
 
-phase('Classify')
-const out = await parallel(PATHS.map((path) => () => agent(
-  `${SYS}\n\nDokument k načtení: ${path}\nVrať base_type, confidence, reasoning.`,
-  { label: `cls:${path.split('/').pop()}`, phase: 'Classify', schema: SCHEMA, model: MODEL }
-).then(c => ({ path, classify: c })).catch(e => ({ path, classify: null, error: String(e) }))))
+phase('Verify')
+const out = await parallel(PATHS.map((path) => () =>
+  parallel([
+    () => agent(`${SYS}\n\nDokument k načtení: ${path}\nVrať base_type, confidence, reasoning.`,
+      { label: `opus:${path.split('/').slice(-2).join('/')}`, phase: 'Verify', schema: SCHEMA, model: 'opus' })
+      .then(c => c).catch(() => null),
+    () => agent(`${SYS}\n\nDokument k načtení: ${path}\nVrať base_type, confidence, reasoning.`,
+      { label: `sonnet:${path.split('/').slice(-2).join('/')}`, phase: 'Verify', schema: SCHEMA, model: 'sonnet' })
+      .then(c => c).catch(() => null),
+  ]).then(([opus, sonnet]) => ({ path, opus, sonnet }))
+))
 
-log(`hotovo: ${out.filter(r => r.classify).length}/${PATHS.length} klasifikováno`)
+log(`ověřeno: ${out.length} vzorků (Opus+Sonnet)`)
 return out.filter(Boolean)

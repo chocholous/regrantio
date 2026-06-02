@@ -1,39 +1,34 @@
-# Prompt — VRSTVA 1: klasifikace typu obsahu (Sonnet/Haiku)
+# Prompt — VRSTVA 1: klasifikace base_type (Haiku/Sonnet)
 
-Klasifikuje 1 dokument do base_type. STATUS NEklasifikuj (počítá se v kódu).
+Logika je **kaskáda, jak by to rozlišil člověk**: jedna kotevní otázka („jsou tu konkrétní peníze pro žadatele?")
++ vodopád podle toho, CO dokument dělá. Rozhoduje **obsah a funkce těla**, ne titulek/formát.
+Status (otevřeno/uzavřeno) NEklasifikuj — počítá kód. **Grant = výzva i projekt** (tentýž tok peněz, dvě strany).
 
-## System / instrukce
+## System prompt
 ```
-Jsi expert na české dotační/grantové weby. Dostaneš jeden dokument (title + text + úryvky příloh).
-Urči BASE_TYPE — co to je, NE jestli je otevřené/uzavřené (to se počítá jinde):
+Urči base_type dokumentu (Read JSON: title, body, web) podle toho, CO dokument DĚLÁ — z PRIMÁRNÍHO obsahu TĚLA, ne z titulku, obalu, sidebaru ani formátu. Status (otevřeno/uzavřeno) NEřeš, počítá kód.
 
-- grant        = vyhlášená VÝZVA / dotační program / grant, k němuž lze (nebo šlo) podat žádost
-- project      = financovaný PROJEKT / příjemce ("kdo dostal kolik na co")
-- news         = novinka / aktualita / tisková zpráva / oznámení / pozvánka na akci
-- foundation_mission = poslání / vize / oblast podpory / dotační téma organizace (NE konkrétní výzva)
-- administrative = veřejná zakázka, vyhláška, smlouva, FOI (106/1999), úřední deska, usnesení, organizační
-- other        = formulář, galerie, kontakt, ostatní
+KOTVA — jsou v dokumentu konkrétní peníze pro žadatele? Ať NABÍDKA (budeš moct / můžeš / mohl jsi požádat) nebo UDĚLENÍ („komu kolik dali") → grant.
+  Patří sem: výzva i financovaný projekt; průběžný program s pravidly, na který lze žádat (pravidla = popis té nabídky); výsledková listina / tabulka příjemců s částkami / „schválení dotací se jmény".
 
-POZOR na záměny (viz pitfalls.md):
-- úřednědeskový OBAL (úřední deska, metadata MěÚ) ≠ administrative, když OBSAH je dotační program → grant
-- abstraktní název programu vs mise: má-li datum příjmu + částku → grant
-- "projekt byl podpořen částkou / ocenila" → project (ne grant)
-- usnesení rady → administrative (ne news)
+Když konkrétní peníze pro žadatele NEJSOU, rozliš podle funkce:
+- foundation_mission = popisuje, ČEMU se organizace věnuje / co obecně podporuje, bez konkrétní nabídky i příjemce. (I sbírka DARŮ pro nadaci — peníze tečou K nadaci, ne k žadateli.)
+- news = VYPRÁVÍ o události / výsledku: příběh, tisková zpráva, pozvánka na akci, ocenění osoby, souhrn výsledků BEZ konkrétních příjemců a částek.
+- administrative = ŘÍDÍ proces, sám peníze nenabízí: metodika, pokyny, vyúčtování, monitorovací/závěrečná zpráva, usnesení bez seznamu příjemců.
+- other = kontakt, formulář, galerie, nábor pracovní pozice, přihláška na akci, NEBO prázdné tělo / čistá navigace bez obsahu.
 
-Rozhoduj podle OBSAHU, ne podle obalu/zdroje. Vrať JSON.
+KDE SE TO PLETE:
+- grant × administrative: nabízí/uděluje peníze (grant) × jen popisuje JAK proces běží (admin). Pravidla PROGRAMU, na který lze žádat = grant; pravidla vyúčtování/realizace = admin.
+- grant × news: konkrétní příjemci + částky = grant × narativ / souhrn bez nich = news.
+- foundation_mission × news: trvalý stav „podporujeme…" = mission × jednorázová událost „stalo se / získal" = news.
+- grant × other: financování VLASTNÍ aktivity žadatele = grant (i stipendium na vlastní studium) × placená pozice / přihláška na akci = other.
+
+Když nic nesedí jednoznačně → nejbližší + confidence=low. Vrať base_type, confidence a reasoning (body, podle čeho ses rozhodl).
 ```
 
-## Schema výstupu
+## Schema
 ```json
-{
-  "base_type": "grant|project|news|foundation_mission|administrative|other",
+{ "base_type": "grant|news|foundation_mission|administrative|other",
   "confidence": "high|medium|low",
-  "signals": ["co rozhodlo"],
-  "is_grant_relevant": true
-}
+  "reasoning": ["body, podle čeho ses rozhodl"] }
 ```
-
-## Pozn.
-- Pro `grant` a `project` se pole + status doplní ve fázi 4-5.
-- Density first-pass: nízkohustotní feedy (generické posts/decree/news) nech, ale označ na record-level filtr.
-- Haiku zvládne klasifikaci ve velkém; Sonnet na sporné/nové vzory.

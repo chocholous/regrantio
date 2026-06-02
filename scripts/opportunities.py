@@ -140,6 +140,7 @@ def opp_from_fields(kind, f, prov, today, extra=None):
         "harvest_file": prov.get("harvest_file"),     # který data/*.jsonl nese raw záznam
         "harvest_url": prov.get("source_url"),        # klíč do něj (= web stránka)
         "documents": prov.get("documents") or [],     # [{url, txt_path, ext}] stažené podklady
+        "classification": prov.get("classification"), # {base_type, confidence, reasoning[]} = PROČ zařazeno (audit)
     }
     # Q1 — LOSSLESS: vše nemapované se uloží do extra (nic se nezahodí)
     structural = CANON_FIELDS.get(kind, set()) | {"evidence"}
@@ -162,10 +163,25 @@ def _harvest_index(harvest_file):
                 pass
     return idx
 
-def ingest_extraction(result_path, source, src_dir, harvest_file, today):
+def _load_classifications(path):
+    """url → {base_type, confidence, reasoning[]} z data/classifications.jsonl (audit zařazení)."""
+    idx = {}
+    if path and os.path.exists(path):
+        for l in open(path, encoding="utf-8"):
+            try:
+                e = json.loads(l)
+                idx[e["url"]] = {"base_type": e.get("base_type"), "confidence": e.get("confidence"),
+                                 "reasoning": e.get("reasoning") or []}
+            except Exception:
+                pass
+    return idx
+
+
+def ingest_extraction(result_path, source, src_dir, harvest_file, today, classifications=None):
     raw = json.load(open(result_path, encoding="utf-8"))
     items = raw["result"] if isinstance(raw, dict) and "result" in raw else raw
     hidx = _harvest_index(harvest_file)
+    classifications = classifications or {}
     for it in items:
         f = it.get("fields")
         if not f:
@@ -184,7 +200,8 @@ def ingest_extraction(result_path, source, src_dir, harvest_file, today):
                  and v not in (None, "", [], {})}
         prov = {"source": source, "source_url": surl, "foundation_id": fid,
                 "_layer": 2, "_harvester": "extract_wf",
-                "harvest_file": harvest_file, "documents": docs}
+                "harvest_file": harvest_file, "documents": docs,
+                "classification": classifications.get(surl)}   # PROČ zařazeno (base_type+confidence+reasoning)
         opp = opp_from_fields(it.get("type", "grant"), f, prov, today, extra=extra)
         opp["_page_text"] = page   # tělo stránky (layer-1) — prohledá resolve_citations
         yield opp
@@ -216,12 +233,14 @@ def main():
     ap.add_argument("--link-docs", action="store_true", help="vyplň provenance.documents[].txt_path z doc-store manifestu")
     ap.add_argument("--reset", action="store_true", help="přepiš místo append")
     ap.add_argument("--today", help="referenční datum YYYY-MM-DD (default dnes)")
+    ap.add_argument("--classifications", help="data/classifications.jsonl → provenance.classification (PROČ zařazeno)")
     args = ap.parse_args()
     today = _pd(args.today) or date.today()
+    cls = _load_classifications(args.classifications)
 
     recs = []
     if args.from_extraction:
-        recs += list(ingest_extraction(args.from_extraction, args.source, args.src_dir, args.harvest_file, today))
+        recs += list(ingest_extraction(args.from_extraction, args.source, args.src_dir, args.harvest_file, today, cls))
     if args.from_dsw2:
         recs += list(ingest_dsw2(args.from_dsw2, today))
 
