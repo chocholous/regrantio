@@ -242,8 +242,9 @@ def ingest_dsw2(path, today):
              "required_attachments": [], "how_to_apply": None, "source_doc": a.get("source_url")}
         docs = [{"url": u, "txt_path": None} for u in (a.get("links") or [])]
         extra = {k: v for k, v in a.items() if k not in consumed and v not in (None, "", [], {})}
-        prov = {"source": "dsw2", "source_url": a.get("url"), "foundation_id": a.get("foundation_id"),
-                "_layer": 1, "_harvester": "dsw2.py", "harvest_file": path, "documents": docs}
+        prov = {"source": _host(a.get("url")), "source_url": a.get("url"),
+                "foundation_id": a.get("foundation_id"), "_layer": 1, "_harvester": "dsw2.py (appeals)",
+                "_platform": "dsw2", "harvest_file": path, "documents": docs}  # source = POSKYTOVATEL (portál obce)
         yield opp_from_fields("grant", f, prov, today, extra=extra)
 
 # ---------- vstup: dsw2 PROGRAMY (katalog fondů — strukturované, bez LLM) ----------
