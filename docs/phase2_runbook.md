@@ -49,6 +49,28 @@ python3 scripts/opportunities.py --from-extraction <result.json> \
         --harvest-file data/h19_nadacecez.jsonl --link-docs
 ```
 
+### Obohacení STRUKTURNÍCH zdrojů LLM extrakcí (vismo / dsw2 výzvy)
+Strukturní zdroj má část polí spolehlivě (vismo: dokumenty+tělo; dsw2 výzvy: open_from/deadline/status z `/explore/appeals`).
+LLM doplní zbytek; **strukturní datumy mají přednost** (precedence řeší `opportunities.py:ingest_enriched`).
+`build_extract_input.py --source-type` zapíše do vstupu stabilní join-`id` (vismo=url, dsw2-appeals=`foundation_id|title`).
+```bash
+# VISMO (úřední deska): dokumenty = už převedené attachments[].txt_path (bez re-downloadu)
+python3 scripts/build_extract_input.py data/vismo_documents.jsonl \
+        --source-type vismo --source vismo --out-dir /tmp/ei_vismo
+# … extract_wf.js(paths) → <result> ; selhané (obří přílohy) re-run na Sonnetu ({paths,model:'sonnet'}), výsledky slij do jednoho result.json …
+python3 scripts/opportunities.py --enrich vismo --structured data/vismo_documents.jsonl \
+        --from-extraction <result.json> --src-dir /tmp/ei_vismo --link-docs
+
+# DSW2 VÝZVY: nejdřív re-harvest appeals (struktura: deadline/status 100%), pak doc-enrich
+python3 scripts/dsw2.py --no-opendata --no-csu          # → data/dsw2_appeals.jsonl (+ programs/links)
+python3 scripts/build_extract_input.py data/dsw2_appeals.jsonl \
+        --source-type dsw2-appeals --source dsw2 --out-dir /tmp/ei_appeals   # stáhne jen reálné dokumenty (odt/pdf/doc); web listingy skip
+# … extract_wf.js(paths) → <result> …
+python3 scripts/opportunities.py --enrich dsw2-appeals --structured data/dsw2_appeals.jsonl \
+        --from-extraction <result.json> --src-dir /tmp/ei_appeals --link-docs
+```
+> dsw2 KATALOG programů (`--from-dsw2-programs`) je bezdokumentový (title+focus); akční info (deadline) je až ve VÝZVÁCH výše.
+
 ## Konvence (vynucené, viz CLAUDE.md)
 - **Status NIKDY z LLM** (`opportunities.py:compute_status --today`). **NEOŘEZÁVAT** (limity jen sondy/safety).
 - **1 oportunita = 1 agent.** Obsahový šum → classify (per-record); strukturální → prefilter. NIKDY content/density.

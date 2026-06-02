@@ -1,27 +1,53 @@
 #!/usr/bin/env python3
-"""Driver fáze 2 (deterministická část) — vrstva-1 jsonl → vstup pro extract_wf.js.
+"""Driver fáze 2 (deterministická část) — strukturní zdroj → vstup pro extract_wf.js.
 
 Konsoliduje dřívější ad-hoc /tmp lepidlo. Per layer-1 záznam:
-  1) strukturální pre-filtr (prefilter.clean — 100% bezpečné, empty/dup/nav)
-  2) stáhni VŠECHNY documents[] do doc-store (docstore.store_url → data/files/<source>/)
-  3) sestav {id, web, force_type, title, body, attachments_md} = PLNÝ text + PLNÝ text VŠECH příloh
+  1) (jen harvest) strukturální pre-filtr (prefilter.clean — 100% bezpečné, empty/dup/nav)
+  2) materializace dokumentů do doc-store (docstore.store_url → data/files/<source>/)
+     — pro vismo se použijí UŽ převedené attachments[].txt_path (bez re-downloadu)
+  3) sestav {id, web, force_type, title, body, attachments_md} = PLNÝ text + PLNÝ text dokumentů
      (žádný ořez — limits.acquisition.input_truncation=null)
-Výstup: <out-dir>/grant_NN.json + paths.json. Ty pak agent protáhne `extract_wf.js`,
-výsledek → `opportunities.py --from-extraction … --link-docs`.
+Výstup: <out-dir>/grant_NN.json + paths.json. `id` = STABILNÍ klíč pro join zpět
+(harvest/vismo = url; dsw2-appeals = foundation_id|title, protože appeal url je sdílená).
+Ty pak agent protáhne `extract_wf.js`, výsledek → `opportunities.py` (--from-extraction
+nebo --enrich vismo|dsw2-appeals).
 
 Spuštění:
   python3 scripts/build_extract_input.py data/h19_nadacecez.jsonl --source nadacecez --out-dir /tmp/ei_nadacecez
+  python3 scripts/build_extract_input.py data/vismo_documents.jsonl --source-type vismo --source vismo --out-dir /tmp/ei_vismo
+  python3 scripts/build_extract_input.py data/dsw2_appeals.jsonl --source-type dsw2-appeals --source dsw2 --out-dir /tmp/ei_appeals
 """
-import argparse, json, os, sys
+import argparse, json, os, re, sys
 from urllib.parse import urljoin
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import docstore, prefilter
+from dsw2_fetch import DOC_EXT_RE
 from limits import L
+
+def _host(u):
+    return re.sub(r"^https?://(www\.)?", "", u or "").split("/")[0]
+
+def _shape(r, source_type, source):
+    """Vrať (id, web, title, body, [(doc_url, txt_path|None), …]) per tvar zdroje.
+    txt_path != None = už převedeno (vismo) → doc-store se přeskočí."""
+    if source_type == "vismo":
+        docs = [(a.get("url"), a.get("txt_path")) for a in (r.get("attachments") or [])
+                if isinstance(a, dict) and a.get("url")]
+        return r.get("url"), (r.get("web") or _host(r.get("url"))), r.get("title"), r.get("body_text") or "", docs
+    if source_type == "dsw2-appeals":
+        docs = [(u, None) for u in (r.get("links") or []) if DOC_EXT_RE.search(u)]  # jen reálné dokumenty
+        key = f"{r.get('foundation_id')}|{r.get('title')}"                          # appeal url je sdílená /explore/appeals
+        return key, _host(r.get("url")), r.get("title"), r.get("description") or "", docs
+    # harvest (default)
+    docs = [(urljoin(r.get("url", ""), u if isinstance(u, str) else u.get("url", "")), None)
+            for u in (r.get("documents") or [])]
+    return r.get("url"), source, r.get("title"), r.get("text") or "", docs
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("input")                       # layer-1 jsonl {url,title,text,documents[]}
+    ap.add_argument("input")
     ap.add_argument("--source", required=True)
+    ap.add_argument("--source-type", default="harvest", choices=["harvest", "vismo", "dsw2-appeals"])
     ap.add_argument("--out-dir", required=True)
     ap.add_argument("--force-type", default="grant", choices=["grant", "project", "foundation_mission"])
     ap.add_argument("--no-prefilter", action="store_true")
@@ -30,33 +56,41 @@ def main():
     os.system(f"rm -f {args.out_dir}/grant_*.json")
 
     recs = [json.loads(l) for l in open(args.input, encoding="utf-8")]
-    if not args.no_prefilter:
+    # pre-filtr JEN u harvest (strukturní zdroje jsou už čisté)
+    if args.source_type == "harvest" and not args.no_prefilter:
         recs, drop = prefilter.clean(recs, L("acquisition.prefilter_empty_text_max"))
         print(f"  pre-filtr: −{sum(drop.values())} (empty {drop['empty']}, dup {drop['dup']}, nav {drop['nav']})", file=sys.stderr)
 
     manifest = docstore.load_manifest()
     paths = []
     for i, r in enumerate(recs):
+        sid, web, title, body, docs = _shape(r, args.source_type, args.source)
         parts = []
-        for u in (r.get("documents") or []):
-            u = urljoin(r.get("url", ""), u if isinstance(u, str) else u.get("url", ""))
-            e = docstore.store_url(u, args.source, manifest)   # idempotentní download+convert
-            sp = e.get("md_path") or e.get("txt_path")         # preferuj markdown (tabulky), fallback txt
+        for u, txt_path in docs:
+            if txt_path and os.path.exists(txt_path):          # vismo: už převedeno
+                sp = txt_path
+            else:                                              # harvest/appeals: doc-store (download+convert, idempotentní)
+                e = docstore.store_url(u, args.source, manifest)
+                sp = e.get("md_path") or e.get("txt_path")
             if sp and os.path.exists(sp):
                 t = open(sp, encoding="utf-8", errors="replace").read()
                 if t.strip():
-                    parts.append(f"[{u.split('/')[-1][:40]}]\n{t}")
-        doc = {"id": r.get("url"), "web": args.source, "force_type": args.force_type,
-               "title": r.get("title"), "body": r.get("text") or "", "attachments_md": "\n\n".join(parts)}
+                    parts.append(f"[{(u or '').split('/')[-1][:40]}]\n{t}")
+        doc = {"id": sid, "web": web, "force_type": args.force_type,
+               "title": title, "body": body, "attachments_md": "\n\n".join(parts)}
         p = os.path.join(args.out_dir, f"grant_{i:02d}.json")
         json.dump(doc, open(p, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
         paths.append(p)
     json.dump(paths, open(os.path.join(args.out_dir, "paths.json"), "w"), ensure_ascii=False)
-    print(json.dumps({"MARKER": "EXTRACT_INPUT", "source": args.source, "docs": len(paths),
-                      "harvest_file": args.input, "out_dir": args.out_dir,
-                      "next": "agent → extract_wf.js(paths) → opportunities.py --from-extraction <result> "
-                              f"--source {args.source} --src-dir {args.out_dir} --harvest-file {args.input} --link-docs"},
-                     ensure_ascii=False))
+
+    nxt = (f"opportunities.py --enrich {args.source_type} --structured {args.input} "
+           f"--from-extraction <result> --src-dir {args.out_dir} --link-docs"
+           if args.source_type in ("vismo", "dsw2-appeals") else
+           f"opportunities.py --from-extraction <result> --source {args.source} "
+           f"--src-dir {args.out_dir} --harvest-file {args.input} --link-docs")
+    print(json.dumps({"MARKER": "EXTRACT_INPUT", "source": args.source, "source_type": args.source_type,
+                      "docs": len(paths), "harvest_file": args.input, "out_dir": args.out_dir,
+                      "next": f"agent → extract_wf.js(paths) → {nxt}"}, ensure_ascii=False))
 
 if __name__ == "__main__":
     main()

@@ -230,6 +230,72 @@ def ingest_extraction(result_path, source, src_dir, harvest_file, today, classif
         opp["_page_text"] = page   # tělo stránky (layer-1) — prohledá resolve_citations
         yield opp
 
+# ---------- vstup: OBOHACENÍ strukturního zdroje LLM extrakcí (vismo / dsw2 výzvy) ----------
+def _extraction_by_id(result_path, src_dir):
+    """result → {stabilní_id: fields}. id čte z src-dir grant_NN.json (build_extract_input zapsal join-klíč)."""
+    raw = json.load(open(result_path, encoding="utf-8"))
+    items = raw["result"] if isinstance(raw, dict) and "result" in raw else raw
+    out = {}
+    for it in items:
+        f = it.get("fields"); sp = it.get("path")
+        if f and sp and src_dir:
+            ip = sp if os.path.isabs(sp) else os.path.join(src_dir, os.path.basename(sp))
+            if os.path.exists(ip):
+                sid = json.load(open(ip, encoding="utf-8")).get("id")
+                if sid is not None:
+                    out[sid] = f
+    return out
+
+def ingest_enriched(result_path, src_dir, structured_path, mode, today):
+    """Slouč strukturní zdroj (vismo_documents / dsw2_appeals) s LLM extrakcí.
+    Precedence polí dle režimu:
+      vismo        — LLM dává VŠE; status z LLM dat, fallback na harvester status.
+      dsw2-appeals — open_from/deadline STRUKTURNĚ (clean ISO), focus/amount/eligible/přílohy/how z LLM."""
+    fbyid = _extraction_by_id(result_path, src_dir)
+    for line in open(structured_path, encoding="utf-8"):
+        a = json.loads(line)
+        if mode == "vismo":
+            fields = fbyid.get(a.get("url"), {})
+            f = {"title": fields.get("title") or a.get("title"),
+                 "focus_area": fields.get("focus_area"), "open_from": fields.get("open_from"),
+                 "deadline": fields.get("deadline"), "amount": fields.get("amount"),
+                 "eligible_applicants": fields.get("eligible_applicants"),
+                 "required_attachments": fields.get("required_attachments") or [],
+                 "how_to_apply": fields.get("how_to_apply"), "source_doc": a.get("url"),
+                 "evidence": fields.get("evidence") or {}}
+            consumed = {"title", "url", "deadline", "uredni_od", "uredni_do", "status", "status_guess",
+                        "status_source", "status_confidence", "attachments", "body_text", "n_attachments"}
+            docs = [{"url": x.get("url"), "txt_path": x.get("txt_path")}
+                    for x in (a.get("attachments") or []) if isinstance(x, dict)]
+            prov = {"source": a.get("web") or _host(a.get("url")), "source_url": a.get("url"),
+                    "_layer": 2 if fields else 1, "_platform": "vismo",
+                    "_harvester": "vismo_detail.py+extract_wf" if fields else "vismo_detail.py",
+                    "harvest_file": structured_path, "documents": docs}
+            extra = {k: v for k, v in a.items() if k not in consumed and v not in (None, "", [], {})}
+            opp = opp_from_fields("grant", f, prov, today, extra=extra)
+            if opp.get("status") == "unknown" and a.get("status") in ("open", "closed", "announced"):
+                opp["status"] = a["status"]; opp["status_confidence"] = a.get("status_confidence") or "high"
+            opp["_page_text"] = a.get("body_text") or ""
+        else:  # dsw2-appeals
+            fields = fbyid.get(f"{a.get('foundation_id')}|{a.get('title')}", {})
+            f = {"title": a.get("title"), "open_from": a.get("open_from"), "deadline": a.get("deadline"),
+                 "focus_area": fields.get("focus_area"), "amount": fields.get("amount"),
+                 "eligible_applicants": fields.get("eligible_applicants"),
+                 "required_attachments": fields.get("required_attachments") or [],
+                 "how_to_apply": fields.get("how_to_apply"),
+                 "source_doc": a.get("source_url") or a.get("url"), "evidence": fields.get("evidence") or {}}
+            consumed = {"title", "url", "description", "open_from", "deadline", "status",
+                        "source_url", "foundation_id", "links"}
+            docs = [{"url": u, "txt_path": None} for u in (a.get("links") or [])]
+            prov = {"source": _host(a.get("url")), "source_url": a.get("url"),
+                    "foundation_id": a.get("foundation_id"), "_layer": 2 if fields else 1, "_platform": "dsw2",
+                    "_harvester": "dsw2.py (appeals)+extract_wf" if fields else "dsw2.py (appeals)",
+                    "harvest_file": structured_path, "documents": docs}
+            extra = {k: v for k, v in a.items() if k not in consumed and v not in (None, "", [], {})}
+            opp = opp_from_fields("grant", f, prov, today, extra=extra)
+            opp["_page_text"] = a.get("description") or ""
+        yield opp
+
 # ---------- vstup: dsw2 appeals (STRUKTUROVANÉ, bez LLM) ----------
 def ingest_dsw2(path, today):
     consumed = {"title", "focus_area", "open_from", "deadline", "amount", "eligible_applicants",
@@ -297,6 +363,9 @@ def main():
     ap.add_argument("--from-dsw2", help="data/dsw2_appeals.jsonl (strukturované)")
     ap.add_argument("--from-dsw2-programs", help="data/dsw2_programs.jsonl (katalog fondů → grant)")
     ap.add_argument("--from-vismo", help="data/vismo_documents.jsonl (úřední deska výzvy → grant)")
+    ap.add_argument("--enrich", choices=["vismo", "dsw2-appeals"],
+                    help="obohať strukturní zdroj LLM extrakcí (vyžaduje --structured + --from-extraction + --src-dir)")
+    ap.add_argument("--structured", help="strukturní zdroj k obohacení (vismo_documents.jsonl / dsw2_appeals.jsonl)")
     ap.add_argument("--out", default=OUT_DEFAULT)
     ap.add_argument("--link-docs", action="store_true", help="vyplň provenance.documents[].txt_path z doc-store manifestu")
     ap.add_argument("--reset", action="store_true", help="přepiš místo append")
@@ -307,7 +376,11 @@ def main():
     cls = _load_classifications(args.classifications)
 
     recs = []
-    if args.from_extraction:
+    if args.enrich:
+        if not (args.structured and args.from_extraction):
+            ap.error("--enrich vyžaduje --structured a --from-extraction")
+        recs += list(ingest_enriched(args.from_extraction, args.src_dir, args.structured, args.enrich, today))
+    elif args.from_extraction:
         recs += list(ingest_extraction(args.from_extraction, args.source, args.src_dir, args.harvest_file, today, cls))
     if args.from_dsw2:
         recs += list(ingest_dsw2(args.from_dsw2, today))
