@@ -90,11 +90,9 @@ const GROUPS=[{k:'oblast',t:'Oblast podpory',arr:1},{k:'sektor',t:'Sektor žadat
  {k:'spoluucast',t:'Spoluúčast',arr:0},{k:'mira',t:'Míra podpory',arr:0},
  {k:'doctype',t:'Typ dokumentu',arr:1},{k:'vysledky',t:'Výsledková listina',arr:0},{k:'obdobi',t:'Období realizace',arr:0},
  {k:'kind',t:'Typ',arr:0},{k:'status',t:'Status',arr:0}];
-// pevné mapování typ žadatele → sektor (2. úroveň je členství, ne souvýskyt) + poskytovatel → typ
-const SEKTOR_OF={neziskovka:'neziskovy',spolek:'neziskovy',sportovni_klub:'neziskovy',cirkev:'neziskovy',pacientska_organizace:'neziskovy',sdruzeni_obci:'neziskovy',organizator_akci:'neziskovy',
- obec_verejny_subjekt:'verejny',prispevkova_organizace:'verejny',skola_vyzkumna_org:'verejny',
- firma:'podnikatele',osvc_podnikatel:'podnikatele',fyzicka_osoba:'fyzicke_osoby',vlastnik_nemovitosti:'fyzicke_osoby',zakonny_zastupce:'fyzicke_osoby',
- poskytovatel_soc_sluzeb:'poskytovatele_sluzeb',poskytovatel_zdrav_sluzeb:'poskytovatele_sluzeb',spolecenstvi_vlastniku:'vlastnici'};
+// mapování typ žadatele → sektor (2. úroveň hierarchie) — JEDINÁ PRAVDA z data/consolidation_maps.json
+// (sektor_of), aby drill a sektor-rollup nedivergovaly. Injektuje build_app.py.
+const SEKTOR_OF=__SEKTOR_OF__;
 const SRC_TYPE={};
 // zploštění facet bloku do top-level klíčů pro filtr
 DATA.forEach(d=>{const f=d.facets||{};const r=f.region||{};const ex=d.extra||{};
@@ -308,8 +306,12 @@ def main():
     a = ap.parse_args()
     recs = [json.loads(l) for l in open(a.inp, encoding="utf-8")]
     np = len({r.get("source") for r in recs})
+    import os
+    mp = os.path.join(os.path.dirname(a.inp) or ".", "consolidation_maps.json")
+    sektor_of = json.load(open(mp, encoding="utf-8")).get("sektor_of", {}) if os.path.exists(mp) else {}
     html = (TPL.replace("__DATA__", json.dumps(recs, ensure_ascii=False))
                .replace("__LABELS__", json.dumps(LABELS, ensure_ascii=False))
+               .replace("__SEKTOR_OF__", json.dumps(sektor_of, ensure_ascii=False))
                .replace("__ARCH__", arch_html(len(recs), np))
                .replace("__NP__", str(np)).replace("__N__", str(len(recs))))
     open(a.out, "w", encoding="utf-8").write(html)

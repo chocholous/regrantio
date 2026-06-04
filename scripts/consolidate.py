@@ -15,7 +15,8 @@ from collections import Counter
 def norm(s):
     s = unicodedata.normalize("NFD", str(s))
     s = "".join(c for c in s if unicodedata.category(c) != "Mn")
-    return s.lower().strip()
+    # _ a - na mezeru → substring patterny chytají i podtržítkové varianty (bytove_nouzi ~ "bytove nouzi")
+    return s.lower().replace("_", " ").replace("-", " ").strip()
 
 
 def make(m):
@@ -52,6 +53,8 @@ def main():
     M = json.load(open(a.maps, encoding="utf-8"))
     obl = make(M["oblast"]); typz = make(M["typ_zadatele"]); cil = make(M["cilova_skupina"])
     kraj = make(M["kraj"]); pats = M.get("cilova_patterns", []); sektor = M["sektor_of"]
+    forma = make(M["forma_podpory"]); zdroj = make(M["zdroj_financovani"])
+    rezim = make(M["rezim_prijmu"]); delka = make(M["delka"])
 
     recs = [json.loads(l) for l in open(a.inp, encoding="utf-8")]
     before = {k: Counter() for k in ("oblast", "typ_zadatele", "cilova_skupina", "kraj")}
@@ -80,6 +83,14 @@ def main():
         cs = dedup([remap(v, cil[0], cil[1], pats) for v in cs])
         for v in cs: after["cilova_skupina"][v] += 1
         f["cilova_skupina"] = cs
+        # forma_podpory / zdroj_financovani (array) — diakritika-insensitivní remap
+        f["forma_podpory"] = dedup([remap(v, *forma) for v in (f.get("forma_podpory") or [])])
+        f["zdroj_financovani"] = dedup([remap(v, *zdroj) for v in (f.get("zdroj_financovani") or [])])
+        # rezim_prijmu / delka (scalar)
+        if f.get("rezim_prijmu"):
+            f["rezim_prijmu"] = remap(f["rezim_prijmu"], *rezim)
+        if f.get("delka"):
+            f["delka"] = remap(f["delka"], *delka)
         # region.kraj
         reg = f.get("region") or {}
         if reg.get("kraj"):
