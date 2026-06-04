@@ -7,6 +7,27 @@ paralelně extrahuje pole. **Maximálně využívá UŽ STAŽENÁ DATA** (viz `d
 
 ---
 
+## 🔎 Vyzkoušej & dokumentace
+
+- **Živá aplikace (778 oportunit, fasetové filtry + grounding + „Jak sbíráme data"):** → **[chocholous.github.io/regrantio/grants_app.html](https://chocholous.github.io/regrantio/grants_app.html)**
+  Filtry: oblast · sektor/typ žadatele · cílová skupina · poskytovatel · kraj · forma · zdroj · spoluúčast · míra podpory · typ dokumentu · výsledková listina · status · výše. Detail každé oportunity nese doslovné citace (grounding) a odkazy na originální dokumenty. Druhá záložka = vizuální pipeline „jak data sbíráme".
+- **Vygenerovat appku lokálně:** `python3 scripts/build_app.py` → `data/grants_app.html`
+- **Dokumentace:** [docs/platform_playbook.md](docs/platform_playbook.md) (CMS rodiny) · [docs/detection.md](docs/detection.md) · [docs/coverage.md](docs/coverage.md) · [schema/opportunity_schema.md](schema/opportunity_schema.md) · [CLAUDE.md](CLAUDE.md) (operační)
+
+## 📦 Data v repozitáři (reprodukovatelnost)
+
+Raw data jsou komprimovaná v **`data_bundle/`** (~1,9 GB) — rozbal jedním příkazem:
+```bash
+brew install xz zstd      # potřebné kompresory
+./scripts/unpack_data.sh  # data_bundle/*.tar.xz + originals.part-* → data/
+```
+- **core** (3 MB) — `opportunities.jsonl` (778 oportunit), harvest jsonl, configy, app
+- **doctext** (11 MB) — vytěžený TEXT z PDF/xls/doc (pipeline jede i bez originálů)
+- **wpfull** (55 MB) — WordPress korpus
+- **originals** (1,8 GB, split na 95 MB kvůli GitHub limitu 100 MB/soubor) — PDF/xls/doc originály (interně DEFLATE, nekomprimují se)
+
+---
+
 ## Klíčové principy (proč to takhle)
 
 1. **Dvouvrstvý model** — odděl ŠÍŘI od HLOUBKY:

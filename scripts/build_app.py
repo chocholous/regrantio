@@ -292,6 +292,12 @@ def arch_html(n, np):
 <li><b>Grounding</b> — každé pole má doslovnou citaci lokalizovanou ve zdroji; verdikt necháváme na člověku.</li>
 <li><b>Struktura před prózou</b> — nejdřív strukturovaný endpoint (API/XHR/inline-JS), LLM až když je detail neredukovatelně próza/PDF.</li>
 </ul></div>
+
+<div class=princip style="background:#0a1518;border-color:#173a3a"><h3 style=color:#74c2e0>📦 Data v repozitáři (reprodukovatelnost)</h3><ul style=color:#a8cdd0>
+<li>Raw data jsou komprimovaná v <code>data_bundle/</code> (~1,9 GB) — rozbal {lnk('../scripts/unpack_data.sh','unpack_data.sh')} → <code>data/</code>.</li>
+<li><b>core</b> (opportunities.jsonl + harvest jsonl + configy + app) · <b>doctext</b> (vytěžený text z PDF/xls) · <b>wpfull</b> (WP korpus) · <b>originals</b> (PDF/xls/doc originály, split na 95 MB kvůli GitHub limitu 100 MB/soubor).</li>
+<li>PDF originály se nekomprimují (interně DEFLATE) → 1,8 GB; jejich TEXT je ale v <code>doctext</code>, takže pipeline jede i bez nich.</li>
+</ul></div>
 </div>"""
 
 
