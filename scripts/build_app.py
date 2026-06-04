@@ -82,9 +82,9 @@ document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
 const DATA=__DATA__;
 const L=__LABELS__;
 const lab=v=>L[v]||v;
-const GROUPS=[{k:'oblast',t:'Oblast podpory',arr:1},{k:'sektor',t:'Sektor žadatele',arr:1,drill:'typ_zadatele'},
+const GROUPS=[{k:'oblast_super',t:'Oblast podpory',arr:1,drill:'oblast'},{k:'sektor',t:'Sektor žadatele',arr:1,drill:'typ_zadatele'},
  {k:'cilova',t:'Cílová skupina',arr:1},
- {k:'poskytovatel',t:'Poskytovatel',arr:0,drill:'source'},{k:'kraj',t:'Kraj',arr:0},{k:'multireg',t:'Více regionů',arr:0},
+ {k:'poskytovatel',t:'Poskytovatel',arr:0,drill:'source'},{k:'kraj',t:'Kraj',arr:0,drill:'okres'},{k:'multireg',t:'Více regionů',arr:0},
  {k:'forma',t:'Forma podpory',arr:1},{k:'zdroj',t:'Zdroj financování',arr:1},{k:'rezim',t:'Režim příjmu',arr:0},
  {k:'delka',t:'Délka',arr:0},{k:'podani',t:'Způsob podání',arr:1},
  {k:'spoluucast',t:'Spoluúčast',arr:0},{k:'mira',t:'Míra podpory',arr:0},
@@ -93,11 +93,13 @@ const GROUPS=[{k:'oblast',t:'Oblast podpory',arr:1},{k:'sektor',t:'Sektor žadat
 // mapování typ žadatele → sektor (2. úroveň hierarchie) — JEDINÁ PRAVDA z data/consolidation_maps.json
 // (sektor_of), aby drill a sektor-rollup nedivergovaly. Injektuje build_app.py.
 const SEKTOR_OF=__SEKTOR_OF__;
+const OBLAST_SUPER=__OBLAST_SUPER__;
 const SRC_TYPE={};
 // zploštění facet bloku do top-level klíčů pro filtr
 DATA.forEach(d=>{const f=d.facets||{};const r=f.region||{};const ex=d.extra||{};
- d.oblast=f.oblast||[];d.sektor=f.sektor_zadatele||[];d.typ_zadatele=f.typ_zadatele||[];
- d.poskytovatel=f.typ_poskytovatele||null;d.kraj=r.kraj||(r.celostatni?'celostátní':(d.kind==='grant'?'?':null));
+ d.oblast=f.oblast||[];d.oblast_super=[...new Set((f.oblast||[]).map(o=>OBLAST_SUPER[o]).filter(Boolean))];
+ d.sektor=f.sektor_zadatele||[];d.typ_zadatele=f.typ_zadatele||[];
+ d.poskytovatel=f.typ_poskytovatele||null;d.kraj=r.kraj||(r.celostatni?'celostátní':(d.kind==='grant'?'?':null));d.okres=r.okres||null;
  d.kraj_conf=r._conf;d.forma=f.forma_podpory||[];d.zdroj=f.zdroj_financovani||[];d.rezim=f.rezim_prijmu||null;
  d.delka=f.delka||null;d.podani=f.zpusob_podani||[];d.vyse_max=f.vyse_max_zadatel_czk||null;
  // nové facety z bohaté extrakce
@@ -109,7 +111,7 @@ DATA.forEach(d=>{const f=d.facets||{};const r=f.region||{};const ex=d.extra||{};
  d.obdobi=ex.obdobi_realizace?'uvedeno':(d.kind==='grant'?'neuvedeno':null);
  const mp=f.mira_podpory_pct;d.mira=mp==null?null:(mp<=50?'do 50 %':mp<=70?'51–70 %':mp<=90?'71–90 %':'nad 90 %');
  if(d.poskytovatel)SRC_TYPE[d.source]=d.poskytovatel;});
-const sel={};GROUPS.forEach(g=>sel[g.k]=new Set());sel.typ_zadatele=new Set();sel.source=new Set();
+const sel={};GROUPS.forEach(g=>sel[g.k]=new Set());sel.typ_zadatele=new Set();sel.source=new Set();sel.oblast=new Set();sel.okres=new Set();
 const $=s=>document.querySelector(s),esc=s=>(s==null?'':String(s)).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 const fmt=n=>n==null?'':n.toLocaleString('cs-CZ')+' Kč';
 const valsOf=(d,k)=>{const v=d[k];return Array.isArray(v)?v:(v==null?[]:[v])};
@@ -121,6 +123,8 @@ function optHTML(k,v,n,sub){return `<label class="opt ${sub?'sub':''} ${n?'':'of
 // děti dané rodičovské hodnoty: sektor→jeho členské typy; typ poskytovatele→jeho poskytovatelé
 function childrenFor(g,v){
   if(g.drill==='typ_zadatele')return [...new Set(DATA.flatMap(d=>d.typ_zadatele))].filter(t=>SEKTOR_OF[t]===v);
+  if(g.drill==='oblast')return [...new Set(DATA.flatMap(d=>d.oblast))].filter(o=>OBLAST_SUPER[o]===v);
+  if(g.drill==='okres')return [...new Set(DATA.filter(d=>d.kraj===v).map(d=>d.okres).filter(Boolean))];
   if(g.drill==='source')return [...new Set(DATA.filter(d=>SRC_TYPE[d.source]===v).map(d=>d.source))];
   return [];}
 function renderFacets(){$('#facets').innerHTML=GROUPS.map(g=>{const c=counts(g.k,g.k);
@@ -129,7 +133,7 @@ function renderFacets(){$('#facets').innerHTML=GROUPS.map(g=>{const c=counts(g.k
     if(g.drill&&sel[g.k].has(v)){const sc=counts(g.drill,g.drill);
       h+=childrenFor(g,v).filter(s=>sc[s]).sort((a,b)=>sc[b]-sc[a]).map(s=>optHTML(g.drill,s,sc[s],1)).join('');}
     return h;}).join('');
-  return `<details class=fg ${['oblast','sektor','cilova','kraj'].includes(g.k)?'open':''}><summary>${g.t}</summary>${body}</details>`;}).join('');}
+  return `<details class=fg ${['oblast_super','sektor','cilova','kraj'].includes(g.k)?'open':''}><summary>${g.t}</summary>${body}</details>`;}).join('');}
 const GF={grant:['focus_area','open_from','deadline','amount','eligible_applicants','required_attachments','how_to_apply','source_doc'],
  foundation_mission:['mission','support_topics','regions','source_doc']};
 function row(k,v){if(v==null||v===''||(Array.isArray(v)&&!v.length))return '';
@@ -210,6 +214,8 @@ LABELS = {
  "dobrovolnici":"Dobrovolníci","veda_vyzkum_komunita":"Vědecká komunita",
  "pravidla_podminky":"Pravidla/podmínky","vyhlaseni":"Vyhlášení výzvy","formular_zadosti":"Formulář žádosti","vzor_smlouvy":"Vzor smlouvy",
  "vysledky":"Výsledky","metodika":"Metodika","priloha":"Příloha",
+ "lide_socialni":"Lidé a sociální","kultura_vzdelavani":"Kultura a vzdělávání","sport_volny_cas_super":"Sport a volný čas",
+ "prostredi_infra":"Prostředí a infrastruktura","ekonomika_inovace":"Ekonomika a inovace","komunita_ostatni":"Komunita a ostatní","podnikani":"Podnikání",
  "grant":"grant","foundation_mission":"mise"}
 
 def arch_html(n, np):
@@ -308,10 +314,11 @@ def main():
     np = len({r.get("source") for r in recs})
     import os
     mp = os.path.join(os.path.dirname(a.inp) or ".", "consolidation_maps.json")
-    sektor_of = json.load(open(mp, encoding="utf-8")).get("sektor_of", {}) if os.path.exists(mp) else {}
+    M = json.load(open(mp, encoding="utf-8")) if os.path.exists(mp) else {}
     html = (TPL.replace("__DATA__", json.dumps(recs, ensure_ascii=False))
                .replace("__LABELS__", json.dumps(LABELS, ensure_ascii=False))
-               .replace("__SEKTOR_OF__", json.dumps(sektor_of, ensure_ascii=False))
+               .replace("__SEKTOR_OF__", json.dumps(M.get("sektor_of", {}), ensure_ascii=False))
+               .replace("__OBLAST_SUPER__", json.dumps(M.get("oblast_super", {}), ensure_ascii=False))
                .replace("__ARCH__", arch_html(len(recs), np))
                .replace("__NP__", str(np)).replace("__N__", str(len(recs))))
     open(a.out, "w", encoding="utf-8").write(html)
