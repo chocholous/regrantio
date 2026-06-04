@@ -57,5 +57,24 @@ Granty mimo 4 hlavní kategorie: `vdv.cz`, `osa.cz` (autorské), `olympic.cz`, `
 - **Status v kódu**, lossless harvest, grounding — jako u stávajících.
 - Po harvestu: `build_extract_input.py` → vrstva 2 (classify_wf + extract_wf) → `ingest_rich.py` → `consolidate.py` → `build_app.py`.
 
-## Stav (průběžně)
-- [zahájeno] reuse harvestery: Kentico ministerstva (irop/dotaceeu/mk/mmr), WP abakus.
+## Stav
+
+### ✅ Hotovo (větev coverage-expansion, noční běh)
+- **IROP** (`irop.gov.cz`) — 120 výzev (63 OPEN), `kentico_irop.py --enumerate 125` → `ingest_kentico.py`
+- **dotaceEU** (`dotaceeu.cz`) — 13 výzev (12 OPEN), umbrella ESIF
+- → **+133 EU-fund grantů, 75 OPEN** (akční deadliny 2026–2028) — řeší temporální chudobu (dřív 47 budoucích deadlinů). opportunities 778→911.
+- `scripts/ingest_kentico.py` — reusable pro JAKÝKOLI Kentico portál (Czech datum→ISO, oblast z keywords title, typ_zadatele z eligible, region=celostátní, zdroj=eu_fondy).
+
+### ⛔ Vzdáno přes noc (s důvodem — pro denní rozhodnutí)
+- **mk.gov.cz, mmr.gov.cz** (Kentico, ale jen „dotační okruhy" / tematické stránky, NE jednotlivé výzvy s deadliny) → IROP parser nesedí; chce vlastní parser.
+- **SPA „dotace.*" portály** (`dotace.olomouc.eu` angular, `dotace.khk.cz` react, `dotace.brno.cz`, `dotace.plzen.eu`) → jsou to **žádostní systémy** (`/zadost/`, `/zadosti/`), ne veřejné katalogy výzev; API vrací HTML fallback. Veřejné výzvy bývají na hlavním webu kraje/města.
+- **Kraje WebForms** (`dotace.kr-jihomoravsky.cz`, `deska.pardubickykraj.cz`, `granty.praha.eu`, `zadosti.sfzp.cz`) → aspnet postback, žádný JSON/inline → **Apify postback** (viz docs/apify_howto.md).
+- **Nadace** (WP/php) → próza → **LLM vrstva 2** (ne structured easy).
+
+### ▶️ Další kroky (denní, vyžadují rozhodnutí/nástroje)
+1. **Apify postback harvester** pro aspnet WebForms → odemkne kraje + Prahu + SFŽP (velká krajská vrstva). Apify stojí kredity → rozhodnutí uživatele.
+2. **Major OP portály** (OPŽP `opzp.cz`, OPTAK, OPZ `esfcr.cz`) — každý vlastní CMS, per-site tenký parser; stovky EU výzev.
+   - **OPŽP prozkoumáno:** výzvy mají čisté číslované URL `https://opzp.cz/dotace/{N}-vyzva/` (N≈1–110, enumerovatelné jako IROP) → title + status („Příjem žádostí probíhá/ukončen") jdou; ALE deadline/oprávnění/alokace jsou v PRÓZE (ne strukturní bloky) → potřebuje pečlivý field-parser NEBO LLM vrstvu 2. Layer-1 raw harvest (enumerate + plný text) je triviální → pak extract_wf. **Dobrý první denní cíl.**
+3. **edotace_plzen** parser (1 = Plzeň město+kraj).
+4. **Nadace přes LLM vrstvu 2** (rate-limit → dávkově, ne přes noc).
+5. `comerto` (1 parser = at-cz.eu + sn-cz2027.eu, EU přeshraniční).
