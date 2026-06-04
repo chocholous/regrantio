@@ -1,7 +1,7 @@
 export const meta = {
   name: 'layer1-classify',
-  description: 'Vrstva 1 (LLM): Haiku agenti klasifikují base_type dokumentu naslepo. 1 dokument = 1 agent. Slouží k měření routing accuracy (zejm. odfiltrování news/administrative/other od oportunit).',
-  phases: [{ title: 'Classify', detail: 'Haiku: base_type per dokument' }],
+  description: 'Vrstva 1 (LLM): agenti klasifikují base_type dokumentu naslepo (produkční model = Sonnet, default; Haiku pod-rozpoznává granty). 1 dokument = 1 agent. Slouží k routingu/měření accuracy (odfiltrování news/administrative/other od oportunit).',
+  phases: [{ title: 'Classify', detail: 'Sonnet: base_type per dokument' }],
 }
 
 const ARG = (typeof args === 'string') ? JSON.parse(args) : args

@@ -38,8 +38,12 @@ def safe_url(url: str) -> str:
     return urlunsplit((p.scheme, p.netloc, path, query, p.fragment))
 
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/124.0 Safari/537.36"
-# Konverzní nástroje dle přípony (macOS): textutil pro Office/ODF, pdftotext pro PDF.
-TEXTUTIL_EXTS = {"doc", "docx", "odt", "rtf", "xls", "xlsx", "ppt", "pptx"}
+# Konverzní nástroje dle přípony (macOS): textutil pro Office/ODF, pdftotext pro PDF,
+# openpyxl/xlrd pro Excel. POZOR: textutil Excel NEUMÍ (xls/xlsx by přečetl jako syrové byty
+# → balast). Proto xls/xlsx jdou samostatnou větví (sešity bývají multi-sheet → všechny listy).
+TEXTUTIL_EXTS = {"doc", "docx", "odt", "rtf", "ppt", "pptx"}
+SHEET_EXTS = {"xls", "xlsx"}
+DOC_EXTS = TEXTUTIL_EXTS | SHEET_EXTS | {"pdf"}
 DOC_EXT_RE = re.compile(r"\.(pdf|docx?|rtf|odt|ods|xlsx?|pptx?)(?:$|\?)", re.I)
 
 # MIME → přípona: rozpozná dokument schovaný za URL bez přípony (ASP.NET File.ashx
@@ -68,7 +72,7 @@ def sniff_ext(url: str, timeout: int):
         if ctype in MIME_EXT:
             return MIME_EXT[ctype]
         m = re.search(r'filename\*?=(?:UTF-8\'\')?["\']?[^"\';]*\.(\w{2,5})', cdisp, re.I)
-        if m and m.group(1).lower() in (TEXTUTIL_EXTS | {"pdf"}):
+        if m and m.group(1).lower() in DOC_EXTS:
             return m.group(1).lower()
     except Exception:  # noqa: BLE001
         pass
@@ -101,6 +105,31 @@ def download(url: str, dest: str, timeout: int, max_bytes: int):
         return None, f"{type(e).__name__}: {str(e)[:60]}"
 
 
+def _spreadsheet_text(path: str, ext: str) -> str:
+    """xls/xlsx → text VŠECH listů (textutil Excel neumí). openpyxl pro xlsx, xlrd pro xls."""
+    out = []
+    if ext == "xlsx":
+        import openpyxl
+        wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
+        for ws in wb.worksheets:
+            out.append(f"## List: {ws.title}")
+            for row in ws.iter_rows(values_only=True):
+                cells = ["" if c is None else str(c) for c in row]
+                if any(c.strip() for c in cells):
+                    out.append("\t".join(cells).rstrip())
+        wb.close()
+    else:  # xls
+        import xlrd
+        wb = xlrd.open_workbook(path)
+        for sh in wb.sheets():
+            out.append(f"## List: {sh.name}")
+            for r in range(sh.nrows):
+                cells = [("" if v == "" else str(v)) for v in sh.row_values(r)]
+                if any(str(c).strip() for c in cells):
+                    out.append("\t".join(cells).rstrip())
+    return "\n".join(out)
+
+
 def convert(path: str, ext: str, txt_path: str, timeout: int):
     """Vrátí (chars:int|None, err:str|None) a zapíše text do txt_path."""
     try:
@@ -109,6 +138,9 @@ def convert(path: str, ext: str, txt_path: str, timeout: int):
                            timeout=timeout, check=False)
             text = open(txt_path, encoding="utf-8", errors="replace").read() \
                 if os.path.exists(txt_path) else ""
+        elif ext in SHEET_EXTS:                       # Excel: openpyxl/xlrd, NE textutil
+            text = _spreadsheet_text(path, ext)
+            open(txt_path, "w", encoding="utf-8").write(text)
         elif ext in TEXTUTIL_EXTS:
             r = subprocess.run(["textutil", "-convert", "txt", "-stdout", path],
                                capture_output=True, timeout=timeout)
