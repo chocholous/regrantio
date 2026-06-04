@@ -47,6 +47,20 @@ pre{background:#0c0e12;border:1px solid var(--bd);border-radius:6px;padding:8px;
 .tab{background:none;border:none;color:var(--mut);padding:12px 18px;cursor:pointer;font-size:13px;border-bottom:2px solid transparent}
 .tab:hover{color:var(--fg)}.tab.on{color:var(--acc);border-bottom-color:var(--acc)}
 .panel{display:none}.panel.on{display:block}
+.ctl{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.ctl .tg{display:flex;align-items:center;gap:6px;font-size:12.5px;color:#c6cfe0;cursor:pointer}
+.ctl select{width:100%;background:var(--card);color:var(--fg);border:1px solid var(--bd);border-radius:7px;padding:7px 9px;font-size:12.5px}
+.ctl .rng input{font-size:12px}
+.cov{max-width:1000px;margin:0 auto;padding:24px 28px}
+.cov h2{font-size:20px;margin:0 0 4px}.cov h3{font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:var(--acc);margin:22px 0 8px}
+.cov .lead{color:var(--mut);font-size:13px;margin:0 0 6px}
+.cov table{border-collapse:collapse;width:100%;font-size:12.5px;margin:4px 0}
+.cov td,.cov th{text-align:left;padding:4px 8px;border-bottom:1px solid var(--card2)}
+.cov th{color:var(--mut);font-weight:500;font-size:11px;text-transform:uppercase}
+.cov .bar{display:inline-block;height:10px;border-radius:3px;background:var(--acc);vertical-align:middle}
+.cov .bar.lo{background:#e08a8a}.cov .bar.mi{background:#e0cf74}.cov .bar.hi{background:#74e0a8}
+.cov .num{color:var(--mut);font-size:11.5px;margin-left:6px}
+.cov .g-exact{color:#74e0a8}.cov .g-frag{color:#e0cf74}.cov .g-none{color:#e08a8a}
 .arch{max-width:1000px;margin:0 auto;padding:24px 28px}
 .arch h2{font-size:20px;margin:0 0 4px}.arch .lead{color:var(--mut);margin:0 0 20px;font-size:13.5px}
 .arch .stat{display:flex;gap:18px;margin:0 0 22px;flex-wrap:wrap}
@@ -63,16 +77,22 @@ pre{background:#0c0e12;border:1px solid var(--bd);border-radius:6px;padding:8px;
 .princip{background:#15110a;border:1px solid #3a3417;border-radius:10px;padding:13px 16px;margin:18px 0 0}
 .princip h3{margin:0 0 8px;font-size:13px;color:#e0cf74}.princip li{font-size:12.5px;margin:3px 0;color:#d8cda0}
 </style></head><body>
-<div class=tabs><button class="tab on" data-tab=browse>🔎 Vyhledávání</button><button class=tab data-tab=arch>🛠 Jak sbíráme data</button></div>
+<div class=tabs><button class="tab on" data-tab=browse>🔎 Vyhledávání</button><button class=tab data-tab=cov>📊 Analýza extrakce</button><button class=tab data-tab=arch>🛠 Jak sbíráme data</button></div>
 <div id=tab-browse class="panel on"><div class=wrap>
 <aside>
 <h1>Granty</h1><div class=sub>__N__ oportunit · __NP__ poskytovatelů · LLM-fasety</div>
 <input class=q id=q placeholder="hledat ve všem…">
+<div class=ctl>
+<label class=tg><input type=checkbox id=hideclosed checked> skrýt uzavřené / historické</label>
+<select id=sort class=q style="margin:0"><option value=def>řadit: výchozí</option><option value=deadline>deadline (nejbližší)</option><option value=amount>částka (nejvyšší)</option></select>
+<div class=rng><input id=dlfrom type=date title="deadline od"><input id=dlto type=date title="deadline do"></div>
+</div>
 <div id=facets></div>
 <details class=fg open><summary>Max. na žadatele (Kč)</summary><div class=rng><input id=amin type=number placeholder=od><input id=amax type=number placeholder=do></div></details>
 <button class=clr id=clr>× zrušit filtry</button>
 </aside>
 <main><div class=cnt id=cnt></div><div id=list></div></main></div></div>
+<div id=tab-cov class=panel>__COVERAGE__</div>
 <div id=tab-arch class=panel>__ARCH__</div>
 <script>
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
@@ -82,14 +102,14 @@ document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
 const DATA=__DATA__;
 const L=__LABELS__;
 const lab=v=>L[v]||v;
-const GROUPS=[{k:'oblast_super',t:'Oblast podpory',arr:1,drill:'oblast'},{k:'sektor',t:'Sektor žadatele',arr:1,drill:'typ_zadatele'},
- {k:'cilova',t:'Cílová skupina',arr:1},
- {k:'poskytovatel',t:'Poskytovatel',arr:0,drill:'source'},{k:'kraj',t:'Kraj',arr:0,drill:'okres'},{k:'multireg',t:'Více regionů',arr:0},
- {k:'forma',t:'Forma podpory',arr:1},{k:'zdroj',t:'Zdroj financování',arr:1},{k:'rezim',t:'Režim příjmu',arr:0},
- {k:'delka',t:'Délka',arr:0},{k:'podani',t:'Způsob podání',arr:1},
- {k:'spoluucast',t:'Spoluúčast',arr:0},{k:'mira',t:'Míra podpory',arr:0},
- {k:'doctype',t:'Typ dokumentu',arr:1},{k:'vysledky',t:'Výsledková listina',arr:0},{k:'obdobi',t:'Období realizace',arr:0},
- {k:'kind',t:'Typ',arr:0},{k:'status',t:'Status',arr:0}];
+// pořadí dle priority hledače: KDE → KDO může → komu → na co → status, pak rámec, pak nice-to-have
+const GROUPS=[{k:'kraj',t:'Kraj',arr:0,drill:'okres'},{k:'sektor',t:'Sektor žadatele',arr:1,drill:'typ_zadatele'},
+ {k:'cilova',t:'Cílová skupina',arr:1},{k:'oblast_super',t:'Oblast podpory',arr:1,drill:'oblast'},
+ {k:'status',t:'Status',arr:0},
+ {k:'forma',t:'Forma podpory',arr:1},{k:'zdroj',t:'Zdroj financování',arr:1},{k:'rezim',t:'Režim příjmu',arr:0},{k:'delka',t:'Délka',arr:0},
+ {k:'spoluucast',t:'Spoluúčast',arr:0},{k:'doctype',t:'Typ dokumentu',arr:1},{k:'vysledky',t:'Výsledková listina',arr:0},
+ {k:'poskytovatel',t:'Poskytovatel',arr:0,drill:'source'},{k:'kind',t:'Typ',arr:0},
+ {k:'mira',t:'Míra podpory',arr:0},{k:'podani',t:'Způsob podání',arr:1}];
 // mapování typ žadatele → sektor (2. úroveň hierarchie) — JEDINÁ PRAVDA z data/consolidation_maps.json
 // (sektor_of), aby drill a sektor-rollup nedivergovaly. Injektuje build_app.py.
 const SEKTOR_OF=__SEKTOR_OF__;
@@ -99,7 +119,7 @@ const SRC_TYPE={};
 DATA.forEach(d=>{const f=d.facets||{};const r=f.region||{};const ex=d.extra||{};
  d.oblast=f.oblast||[];d.oblast_super=[...new Set((f.oblast||[]).map(o=>OBLAST_SUPER[o]).filter(Boolean))];
  d.sektor=f.sektor_zadatele||[];d.typ_zadatele=f.typ_zadatele||[];
- d.poskytovatel=f.typ_poskytovatele||null;d.kraj=r.kraj||(r.celostatni?'celostátní':(d.kind==='grant'?'?':null));d.okres=r.okres||null;
+ d.poskytovatel=f.typ_poskytovatele||null;d.kraj=r.kraj||(r.celostatni?'celostátní':(d.kind==='grant'?'?':null));d.okres=r.okres||null;d.celostatni=!!r.celostatni;
  d.kraj_conf=r._conf;d.forma=f.forma_podpory||[];d.zdroj=f.zdroj_financovani||[];d.rezim=f.rezim_prijmu||null;
  d.delka=f.delka||null;d.podani=f.zpusob_podani||[];d.vyse_max=f.vyse_max_zadatel_czk||null;
  // nové facety z bohaté extrakce
@@ -115,9 +135,17 @@ const sel={};GROUPS.forEach(g=>sel[g.k]=new Set());sel.typ_zadatele=new Set();se
 const $=s=>document.querySelector(s),esc=s=>(s==null?'':String(s)).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 const fmt=n=>n==null?'':n.toLocaleString('cs-CZ')+' Kč';
 const valsOf=(d,k)=>{const v=d[k];return Array.isArray(v)?v:(v==null?[]:[v])};
+const isDate=s=>/^\d{4}-\d{2}-\d{2}$/.test(s||'');
 function passes(d,except){const q=$('#q').value.toLowerCase();if(q&&!JSON.stringify(d).toLowerCase().includes(q))return false;
- for(const k of Object.keys(sel)){if(k===except||!sel[k].size)continue;if(![...sel[k]].some(v=>valsOf(d,k).includes(v)))return false;}
- if($('#amin').value||$('#amax').value){const a=d.vyse_max,lo=+$('#amin').value||0,hi=+$('#amax').value||Infinity;if(a==null||a<lo||a>hi)return false;}return true;}
+ // skrýt uzavřené + výsledkové listiny (historie) — hledač chce ŽÁDAT
+ if($('#hideclosed').checked&&d.kind==='grant'&&(d.status==='closed'||d.vysledky==='ano'))return false;
+ for(const k of Object.keys(sel)){if(k===except||!sel[k].size)continue;
+  if(k==='kraj'){if(![...sel[k]].some(v=>v===d.kraj)&&!d.celostatni)return false;continue;} // celostátní platí všude
+  if(![...sel[k]].some(v=>valsOf(d,k).includes(v)))return false;}
+ if($('#amin').value||$('#amax').value){const a=d.vyse_max,lo=+$('#amin').value||0,hi=+$('#amax').value||Infinity;if(a==null||a<lo||a>hi)return false;}
+ const df=$('#dlfrom').value,dt=$('#dlto').value;
+ if(df||dt){const dd=(d.deadline||'').slice(0,10);if(!isDate(dd))return false;if(df&&dd<df)return false;if(dt&&dd>dt)return false;}
+ return true;}
 function counts(k,ex){const m={};DATA.filter(d=>passes(d,ex)).forEach(d=>valsOf(d,k).forEach(v=>{if(v!=null)m[v]=(m[v]||0)+1}));return m;}
 function optHTML(k,v,n,sub){return `<label class="opt ${sub?'sub':''} ${n?'':'off'}"><input type=checkbox data-k="${esc(k)}" data-v="${esc(v)}" ${sel[k].has(v)?'checked':''}>${esc(lab(v))}<span class=c>${n||0}</span></label>`;}
 // děti dané rodičovské hodnoty: sektor→jeho členské typy; typ poskytovatele→jeho poskytovatelé
@@ -166,7 +194,11 @@ function detail(d){let h='';
    h+=`<div class=row><div class=k>dok ${i+1}</div><div class=v>${L.join(' · ')||esc(doc.url||'?')}</div></div>`;});}
  h+=`<details><summary style="color:var(--mut);font-size:12px;cursor:pointer">raw JSON</summary><pre>${esc(JSON.stringify(d,null,1))}</pre></details>`;
  return h;}
-function render(){const rows=DATA.filter(d=>passes(d));
+const dlkey=d=>{const s=(d.deadline||'').slice(0,10);return isDate(s)?Date.parse(s):9e15;};  // nedatum/null = nakonec
+function render(){let rows=DATA.filter(d=>passes(d));
+ const so=$('#sort').value;
+ if(so==='deadline')rows=rows.slice().sort((a,b)=>dlkey(a)-dlkey(b));         // nejbližší první
+ else if(so==='amount')rows=rows.slice().sort((a,b)=>(b.vyse_max||-1)-(a.vyse_max||-1));  // nejvyšší první
  $('#cnt').textContent=`${rows.length} / ${DATA.length} · ${new Set(rows.map(d=>d.source)).size} poskytovatelů`;
  $('#list').innerHTML=rows.slice(0,300).map(d=>{const i=DATA.indexOf(d);const sc='s-'+(d.status||'unknown');
   const kc=d.kind==='grant'?'':'b-mise';
@@ -183,8 +215,9 @@ function render(){const rows=DATA.filter(d=>passes(d));
 $('#list').addEventListener('click',e=>{const c=e.target.closest('.card');if(!c||e.target.closest('a'))return;
  c.classList.toggle('open');const b=c.querySelector('.body');if(c.classList.contains('open')&&!b.dataset.f){b.innerHTML=detail(DATA[+c.dataset.i]);b.dataset.f=1;}});
 document.addEventListener('change',e=>{const t=e.target;if(t.dataset&&t.dataset.k&&t.type==='checkbox'){sel[t.dataset.k][t.checked?'add':'delete'](t.dataset.v);render();}});
-['q','amin','amax'].forEach(id=>$('#'+id).addEventListener('input',render));
-$('#clr').onclick=()=>{Object.values(sel).forEach(s=>s.clear());$('#q').value='';$('#amin').value='';$('#amax').value='';render();};
+['q','amin','amax','dlfrom','dlto'].forEach(id=>$('#'+id).addEventListener('input',render));
+['sort','hideclosed'].forEach(id=>$('#'+id).addEventListener('change',render));
+$('#clr').onclick=()=>{Object.values(sel).forEach(s=>s.clear());$('#q').value='';$('#amin').value='';$('#amax').value='';$('#dlfrom').value='';$('#dlto').value='';$('#sort').value='def';$('#hideclosed').checked=true;render();};
 render();
 </script></body></html>"""
 
@@ -305,6 +338,118 @@ def arch_html(n, np):
 </div>"""
 
 
+def coverage_html(recs):
+    """Tab „Analýza extrakce" — pokrytí polí/facet z různých pohledů (pole, grounding, zdroj, oblast, čas, bohatost)."""
+    from collections import Counter
+    g = [r for r in recs if r.get("kind") == "grant"]
+    N = max(len(g), 1)
+    nonempty = lambda v: v not in (None, "", [], {})
+
+    def bar(pct):
+        cls = "lo" if pct < 40 else ("mi" if pct < 70 else "hi")
+        return f'<span class="bar {cls}" style="width:{max(2, round(pct*1.1))}px"></span><span class=num>{pct}%</span>'
+
+    def cov(getter):
+        c = sum(1 for r in g if nonempty(getter(r)))
+        return c, round(100 * c / N)
+
+    # 1) pokrytí polí
+    top = [("deadline", "deadline (lhůta podání)"), ("open_from", "začátek příjmu"),
+           ("eligible_applicants", "kdo může žádat"), ("how_to_apply", "jak podat"),
+           ("required_attachments", "povinné přílohy"), ("focus_area", "zaměření")]
+    fac = [("typ_zadatele", "typ žadatele"), ("cilova_skupina", "cílová skupina"),
+           ("vyse_max_zadatel_czk", "max na žadatele (Kč)"), ("vyse_alokace_czk", "alokace (Kč)"),
+           ("spoluucast", "spoluúčast"), ("mira_podpory_pct", "míra podpory %"),
+           ("rezim_prijmu", "režim příjmu"), ("delka", "délka")]
+    col = [("castky", "částky (sběrač)"), ("deadliny", "deadliny (sběrač)"),
+           ("dokumenty", "dokumenty"), ("prijemci", "příjemci (výsledky)")]
+    rows = ""
+    for k, lab in top:
+        c, p = cov(lambda r, k=k: r.get(k)); rows += f"<tr><td>{lab}</td><td>{bar(p)}</td><td class=num>{c}/{N}</td></tr>"
+    for k, lab in fac:
+        c, p = cov(lambda r, k=k: (r.get('facets', {}) or {}).get(k)); rows += f"<tr><td>{lab}</td><td>{bar(p)}</td><td class=num>{c}/{N}</td></tr>"
+    for k, lab in col:
+        c, p = cov(lambda r, k=k: (r.get('extra', {}) or {}).get(k)); rows += f"<tr><td>{lab}</td><td>{bar(p)}</td><td class=num>{c}/{N}</td></tr>"
+    t_fields = f"<table><tr><th>pole</th><th>pokrytí (% z {N} grantů)</th><th></th></tr>{rows}</table>"
+
+    # 2) grounding per pole
+    gm = Counter()
+    for r in g:
+        for c in r.get("citations", []):
+            gm[(c.get("field"), c.get("match"))] += 1
+    grows = ""
+    for fld in ["deadline", "eligible_applicants", "focus_area", "open_from", "amount", "title"]:
+        e, fr, no = gm.get((fld, "exact"), 0), gm.get((fld, "fragment"), 0), gm.get((fld, "none"), 0)
+        t = e + fr + no
+        if t:
+            grows += (f"<tr><td>{fld}</td><td class=g-exact>{round(100*e/t)}% exact</td>"
+                      f"<td class=g-frag>{round(100*fr/t)}% fragment</td><td class=g-none>{round(100*no/t)}% none</td><td class=num>n={t}</td></tr>")
+    t_ground = f"<table><tr><th>pole</th><th colspan=3>grounding (lokalizace citace ve zdroji)</th><th></th></tr>{grows}</table>"
+
+    # 3) per zdroj (kvalita extrakce dle poskytovatele)
+    src = Counter(r["source"] for r in g)
+    srows = ""
+    for s, c in src.most_common(12):
+        gg = [r for r in g if r["source"] == s]
+        dl = round(100 * sum(1 for r in gg if r.get("deadline")) / c)
+        am = round(100 * sum(1 for r in gg if (r.get('facets', {}) or {}).get('vyse_max_zadatel_czk')) / c)
+        srows += f"<tr><td>{s}</td><td class=num>{c}</td><td>{bar(dl)}</td><td>{bar(am)}</td></tr>"
+    t_src = f"<table><tr><th>poskytovatel</th><th>grantů</th><th>deadline %</th><th>částka %</th></tr>{srows}</table>"
+
+    # 4) per oblast (liší se pokrytí dle domény?)
+    orows = ""
+    obl = Counter()
+    for r in g:
+        for o in ((r.get('facets', {}) or {}).get('oblast') or []):
+            obl[o] += 1
+    for o, c in obl.most_common(10):
+        gg = [r for r in g if o in ((r.get('facets', {}) or {}).get('oblast') or [])]
+        dl = round(100 * sum(1 for r in gg if r.get("deadline")) / c)
+        am = round(100 * sum(1 for r in gg if (r.get('facets', {}) or {}).get('vyse_max_zadatel_czk')) / c)
+        orows += f"<tr><td>{o}</td><td class=num>{c}</td><td>{bar(dl)}</td><td>{bar(am)}</td></tr>"
+    t_obl = f"<table><tr><th>oblast</th><th>grantů</th><th>deadline %</th><th>částka %</th></tr>{orows}</table>"
+
+    # 5) status & temporální použitelnost
+    import re as _re
+    st = Counter(r.get("status") for r in g)
+    fut = past = roll = noparse = 0
+    for r in g:
+        dd = r.get("deadline") or ""
+        if dd in ("průběžně", "rolling"):
+            roll += 1; continue
+        m = _re.match(r"(\d{4})-(\d{2})-(\d{2})", dd)
+        if not m:
+            noparse += 1
+        elif dd >= "2026-06-05":
+            fut += 1
+        else:
+            past += 1
+    t_temp = (f"<p class=lead><b>Status</b> (počítá kód z dat, ne LLM): "
+              + " · ".join(f"{k}={v}" for k, v in st.most_common())
+              + f"</p><p class=lead><b>Deadline</b>: 🟢 v budoucnu (akční) <b>{fut}</b> · průběžně {roll} · 🔴 v minulosti {past} · bez data {noparse}</p>")
+
+    # 6) bohatost facet (distinct + singletony = tříštivost)
+    facets = ["oblast", "typ_zadatele", "cilova_skupina", "forma_podpory", "zdroj_financovani"]
+    frows = ""
+    for fk in facets:
+        cc = Counter()
+        for r in g:
+            for v in ((r.get('facets', {}) or {}).get(fk) or []):
+                cc[v] += 1
+        sing = sum(1 for v, n in cc.items() if n == 1)
+        frows += f"<tr><td>{fk}</td><td class=num>{len(cc)} hodnot</td><td class=num>{sing} singletonů</td></tr>"
+    t_facet = f"<table><tr><th>facet</th><th>distinct</th><th>tříštivost</th></tr>{frows}</table>"
+
+    return (f"<div class=cov><h2>📊 Analýza extrakce</h2>"
+            f"<p class=lead>Pokrytí polí a facet z {N} grantů — z různých pohledů. Bary: 🔴&lt;40 % · 🟡40–70 % · 🟢&gt;70 %.</p>"
+            f"<h3>Pokrytí polí (kolik grantů má danou hodnotu)</h3>{t_fields}"
+            f"<h3>Grounding — verifikovatelnost citací</h3>{t_ground}"
+            f"<h3>Temporální použitelnost (lze ještě žádat?)</h3>{t_temp}"
+            f"<h3>Kvalita extrakce dle poskytovatele</h3>{t_src}"
+            f"<h3>Pokrytí dle oblasti (liší se podle domény?)</h3>{t_obl}"
+            f"<h3>Bohatost / tříštivost facet</h3>{t_facet}</div>")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--in", dest="inp", default="data/opportunities.jsonl")
@@ -320,6 +465,7 @@ def main():
                .replace("__SEKTOR_OF__", json.dumps(M.get("sektor_of", {}), ensure_ascii=False))
                .replace("__OBLAST_SUPER__", json.dumps(M.get("oblast_super", {}), ensure_ascii=False))
                .replace("__ARCH__", arch_html(len(recs), np))
+               .replace("__COVERAGE__", coverage_html(recs))
                .replace("__NP__", str(np)).replace("__N__", str(len(recs))))
     open(a.out, "w", encoding="utf-8").write(html)
     print(json.dumps({"MARKER": "APP", "records": len(recs), "providers": np,
