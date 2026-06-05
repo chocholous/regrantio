@@ -160,3 +160,23 @@ u Liberce, region=kraj). Odstraněny staré Apify-Zlínský duplicity (nahrazeny
 - **Praha** — `eud.praha.eu/pub/rss/...` = plný RSS (ale dominují awards); otevřené výzvy → Apify nad `praha.eu/web/*`
 
 **Stav krajů: 13/14 má reálné OTEVŘENÉ programy z veřejného zdroje** (chybí jen Karlovarský = WAF). open oportunit ~230.
+
+## Posledních 5 zazděných krajů — kreativní průraz (4/5 cracknuto)
+Každý jiným trikem (Playwright na JS/WAF, JSON-XHR, GINIS USU, RSS):
+
+| Kraj | metoda průrazu | programů (open) | pozn. |
+|---|---|---|---|
+| **Ústecký** ✅ | Playwright na vismo dotační kalendář `kr-ustecky.cz/dotacni-kalendar?parent=2` (JS grid) | 94 (13) | s alokacemi; portalobcana JSON API neexistuje |
+| **Středočeský** ✅ | čisté HTML (bez WAF) — rozcestník `prehled-dotaci` → per-fond stránky | 89 (1) | Liferay, ale veřejné HTML; mnoho termínů jen v PDF |
+| **JM** ✅ | Playwright na GINIS USU `eud.jmk.cz` KAT050 (vyhlášení programů, ne awards) | 26 (30*) | KEVIS web je mrtvý archiv 2021; *open dle vývěsky, reálný deadline v PDF |
+| **Praha** ✅ | Playwright render Liferay `praha.eu/web/*` + `eud.praha.eu` RSS (filtr awards) | 15 (announced) | roztříštěno po resortech; termíny/alokace v PDF |
+| **Karlovarský** ⛔ | WEDOS WAF = **IP-reputační blok** (301-loop i přes Playwright/curl_cffi/headed Chrome) | 0 | harvester napsán; projde JEN z rezidenční IP/proxy. edesky deska = jen správní akty, ne programy |
+
+Harvestery: `scripts/{ustecky,stredocesky,jm,praha,karlovarsky}_harvest.py` → `ingest_kraj.py`.
+**Diagnóza Karlovarský:** WAF neposílá JS challenge, jde o čistý 301-loop dle IP reputace (datacentrová IP prostředí
+je flaglá). `karlovarsky_harvest.py --method playwright` proběhne z rezidenční IP. Fallback edesky.cz/76 = úřední
+deska bez dotačních programů (kraj je publikuje na webu za WAF).
+
+### FINÁLNÍ STAV KRAJŮ: 13/14 s reálnými harvestovanými programy
+opportunities 1015 → **1706** za session, **262 otevřených** napříč 12 kraji (Praha/Karlovarský mají termíny/data
+v PDF → status unknown / čeká na rezidenční IP). Jediná zeď: Karlovarský (IP-reputační WAF, řešitelné jinou IP).
