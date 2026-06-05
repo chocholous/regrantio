@@ -19,7 +19,7 @@ from ingest_rich import _facets_grant, _num, CORE_GRANT, _rec_grant  # reuse
 ALLOWED = {"zlinskykraj.cz", "stredoceskykraj.cz", "pardubickykraj.cz", "kr-ustecky.cz",
            "kr-kralovehradecky.cz", "kr-karlovarsky.cz", "kraj-jihocesky.cz", "jihocesky.cz",
            "kr-vysocina.cz", "plzensky-kraj.cz", "olkraj.cz", "msk.cz", "kraj-lbc.cz",
-           "kr-jihomoravsky.cz", "kr-olomoucky.cz",
+           "kr-jihomoravsky.cz", "kr-olomoucky.cz", "dotace.kraj-lbc.cz", "fondvysociny.cz",
            "nadacecez.cz", "nadaceokd.cz", "nros.cz", "nadacevia.cz", "vdv.cz",
            "nadacevodafone.cz", "nadaceo2.cz", "nadace-agrofert.cz"}
 # ČISTÝ katalog/landing/rozcestník/info/news (kdekoli v titulu) → ZAHODIT
@@ -27,10 +27,13 @@ CATALOG = re.compile(r"grantov[áé] (řízení|programy)|pro žadatele|pro méd
                      r"domovská stránka|přehled (výzev|dotací|grant)|webový portál|jak (po)?žádat|"
                      r"aktuálně vyhlášené|nadační příspěvky|seznam (výzev|dotací)|"
                      r"dotační programy (probíhající|v oblasti)|"            # plurál+oblast = listing
+                     r"(krajské|aktuální|ukončené|národní|programové) dotační programy|"  # year/typ listing
+                     r"\bzásady\b|obecné informace|vzorové žádosti|akce podporované|"      # pravidla/info/test
                      r"^\s*(městské |programové )?(granty|dotace)( a projekty| a fondy eu| a granty)?\s*([|—-]|$)", re.I)
 # pojmenovaný konkrétní program/výzva (i bez explicitního deadline) = OPORTUNITA
-NAMED = re.compile(r"program podpory|podprogram|\brp\s?\d|\bmas\s?\d|\bnfv\s?\d|\bsoc\s?\d|\bvýzva\b|"
-                   r"stipendijní program|fond na|dotační (program|titul)\s+\w|příspěvek na", re.I)
+NAMED = re.compile(r"program podpory|program pro |podprogram|\brp\s?\d|\bmas\s?\d|\bnfv\s?\d|\bsoc\s?\d|"
+                   r"\bvýzva\b|stipendijní program|fond na|kotlíkov|dotační (program|titul)\s+\w|"
+                   r"příspěvek na|^\s*\d+\.\d+\s|podpora (jednotek|sdružení|činnosti)", re.I)
 
 
 def is_opportunity(f, title):
