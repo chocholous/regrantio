@@ -139,6 +139,7 @@ const isDate=s=>/^\d{4}-\d{2}-\d{2}$/.test(s||'');
 function passes(d,except){const q=$('#q').value.toLowerCase();if(q&&!JSON.stringify(d).toLowerCase().includes(q))return false;
  // skrýt uzavřené + výsledkové listiny (historie) — hledač chce ŽÁDAT
  if($('#hideclosed').checked&&d.kind==='grant'&&(d.status==='closed'||d.vysledky==='ano'))return false;
+ if($('#hideclosed').checked&&d.kind==='program')return false; // katalog programů (ne časově ohraničená výzva)
  for(const k of Object.keys(sel)){if(k===except||!sel[k].size)continue;
   if(k==='kraj'){if(![...sel[k]].some(v=>v===d.kraj)&&!d.celostatni)return false;continue;} // celostátní platí všude
   if(![...sel[k]].some(v=>valsOf(d,k).includes(v)))return false;}
@@ -163,6 +164,7 @@ function renderFacets(){$('#facets').innerHTML=GROUPS.map(g=>{const c=counts(g.k
     return h;}).join('');
   return `<details class=fg ${['oblast_super','sektor','cilova','kraj'].includes(g.k)?'open':''}><summary>${g.t}</summary>${body}</details>`;}).join('');}
 const GF={grant:['focus_area','open_from','deadline','amount','eligible_applicants','required_attachments','how_to_apply','source_doc'],
+ program:['focus_area','open_from','deadline','eligible_applicants','how_to_apply','source_doc'],
  foundation_mission:['mission','support_topics','regions','source_doc']};
 function row(k,v){if(v==null||v===''||(Array.isArray(v)&&!v.length))return '';
  const vv=Array.isArray(v)?'<ul>'+v.map(x=>`<li>${esc(typeof x==='object'?JSON.stringify(x):x)}</li>`).join('')+'</ul>':esc(v);
@@ -208,7 +210,7 @@ function render(){let rows=DATA.filter(d=>passes(d));
    ...(d.forma||[]).filter(x=>x!=='dotace').map(x=>`<span class=chip>${esc(lab(x))}</span>`)].join('');
   return `<div class=card data-i=${i}><div class=hd><div class=ti>${esc(d.title||d.name||'(bez názvu)')}</div>
    <div class=meta>${esc(d.source)} ${d.deadline?'· do '+esc(d.deadline):''} ${d.vyse_max?'· max '+fmt(d.vyse_max):''}
-    <span class="badge ${d.kind==='grant'?sc:kc}">${esc(d.kind==='grant'?d.status:'mise')}</span></div>
+    <span class="badge ${d.kind==='grant'?sc:kc}">${esc(d.kind==='grant'?d.status:(d.kind==='program'?'program':'mise'))}</span></div>
    <div class=chips>${ch}</div></div><div class=body></div></div>`;}).join('')
    +(rows.length>300?`<div class=empty>… +${rows.length-300} (zúži filtrem)</div>`:'')||'<div class=empty>nic neodpovídá</div>';
  renderFacets();}
@@ -249,7 +251,7 @@ LABELS = {
  "vysledky":"Výsledky","metodika":"Metodika","priloha":"Příloha",
  "lide_socialni":"Lidé a sociální","kultura_vzdelavani":"Kultura a vzdělávání","sport_volny_cas_super":"Sport a volný čas",
  "prostredi_infra":"Prostředí a infrastruktura","ekonomika_inovace":"Ekonomika a inovace","komunita_ostatni":"Komunita a ostatní","podnikani":"Podnikání",
- "grant":"grant","foundation_mission":"mise"}
+ "grant":"výzva","foundation_mission":"mise","program":"program (katalog)"}
 
 def arch_html(n, np):
     """Vizuální README pipeline (self-contained, odkazy relativní z data/ na ../scripts a ../docs)."""

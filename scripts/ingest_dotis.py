@@ -16,34 +16,8 @@ from datetime import date
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from opportunities import compute_status, canon_key, _pd
 
-# program memo (prefix titulu) → oblast (cílový slovník z consolidation_maps)
-MEMO_OBLAST = {
-    "CRG": ["cestovni_ruch"], "DAR": ["ostatni"], "DSO": ["socialni_sluzby"],
-    "INV": ["veda_vyzkum", "podnikani"], "KPG": ["kultura_umeni", "pamatkova_pece"],
-    "MUP": ["ostatni"], "NDZ": ["ostatni"], "NUP": ["ostatni"], "OPK": ["zivotni_prostredi"],
-    "POV": ["bydleni_infrastruktura", "komunitni_rozvoj"], "RGI": ["ostatni"],
-    "RRD": ["bydleni_infrastruktura"], "SMP": ["socialni_sluzby"], "SMR": ["sport_volny_cas"],
-    "SMV": ["vzdelavani_mladez"], "SPT": ["sport_volny_cas"], "SVD": ["socialni_sluzby"],
-    "ZPD": ["zivotni_prostredi"],
-}
-# jemné doladění širokých programů (RRD/MUP/RGI) podle slov v názvu titulu
-NAME_OBLAST = [
-    (r"hasič|JPO|požárn|SDH|protipožár|akceschop", "bezpecnost"),
-    (r"cykl|cyklost|cyklotr", "cestovni_ruch"),
-    (r"sociáln|rodin|ohrožen", "socialni_sluzby"),
-    (r"podnikán|prodejen|ekonomik|farmář", "podnikani"),
-    (r"voda|krajin|zeleň|EVVO|ekolog|včela|myslivost|zemědělsk", "zivotni_prostredi"),
-    (r"kultur|památk|varhan|muze", "kultura_umeni"),
-    (r"sport|tělovýchov", "sport_volny_cas"),
-    (r"vzdělá|škol|nadán", "vzdelavani_mladez"),
-    (r"územní plán|infrastruktur|veřejn.*prostran|mobilit", "bydleni_infrastruktura"),
-]
-
-
-def memo_prefix(memo):
-    """'26RRD12' → 'RRD' (vynech 2 číslice roku, vezmi písmena)."""
-    m = re.match(r"\d{2}([A-Z]+)", memo or "")
-    return (m.group(1)[:3] if m else (memo or "")[:3]).upper()
+# oblast NEklasifikujeme keyword/memo-heuristikou → LLM vrstva 2 (viz ingest_kraj.py).
+# Kód programu (memo) i program_name se ukládají do extra/focus_area, ať z nich LLM může čerpat.
 
 
 def main():
@@ -75,12 +49,6 @@ def main():
             if dl and dl < a.since:
                 old_skip += 1
                 continue
-            pref = memo_prefix(memo)
-            oblast = list(MEMO_OBLAST.get(pref, ["ostatni"]))
-            if pref in ("RRD", "MUP", "RGI", "DAR"):       # široké programy → doladit dle názvu
-                for pat, ob in NAME_OBLAST:
-                    if re.search(pat, name, re.I):
-                        oblast = [ob]; break
             st, conf = compute_status(of, dl, today)
             title = f"{name} ({memo})" if memo else name
             gid = canon_key("grant", title, source + "/" + memo)
@@ -91,7 +59,7 @@ def main():
                 "eligible_applicants": None, "required_attachments": [],
                 "how_to_apply": f"Žádost přes dotační portál {source}", "source_doc": f"https://{source}/", "id": gid,
                 "facets": {
-                    "oblast": oblast, "typ_zadatele": [], "sektor_zadatele": [],
+                    "oblast": [], "typ_zadatele": [], "sektor_zadatele": [],     # ← LLM vrstva 2
                     "typ_poskytovatele": "samosprava_kraj", "forma_podpory": ["dotace"],
                     "zdroj_financovani": ["krajsky"], "rezim_prijmu": None, "delka": None,
                     "zpusob_podani": ["elektronicky_portal"], "cilova_skupina": [], "mira_podpory_pct": None,

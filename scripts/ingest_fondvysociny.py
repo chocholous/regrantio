@@ -11,37 +11,7 @@ from datetime import date
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from opportunities import compute_status, canon_key, _pd
 
-OBLAST = [
-    (r"lékař|zdravotn|stomatolog|pediatr|specializ.*vzděl.*léka|nelékař", "zdravi"),
-    (r"potravinov.*pomoc|sociáln", "socialni_sluzby"),
-    (r"podnikatel|inovac|voucher|digitaliz|maloobchod|prodejen|kybernet", "podnikani"),
-    (r"mistrovstv|sport|tělovýchov", "sport_volny_cas"),
-    (r"talentован|talentovan|mládež", "vzdelavani_mladez"),
-    (r"kultur|památk", "kultura_umeni"),
-    (r"voda|krajin|životní prostř|ekolog|zeleň", "zivotni_prostredi"),
-    (r"stipend|vzděl", "vzdelavani_mladez"),
-]
-TYPZ = [
-    (r"nezisk|spolek|o\.p\.s|nadac|ústav|církev", "neziskovka"),
-    (r"obchodní společnost|a\.s\.|s\.r\.o|podnik|podnikající", "firma"),
-    (r"obec|měst|samospráv|kraj", "obec_verejny_subjekt"),
-    (r"fyzická osoba(?!.*podnik)", "fyzicka_osoba"),
-    (r"škol|univerzit|výzkum", "skola_vyzkumna_org"),
-]
-
-
-def oblast_of(text):
-    t = (text or "").lower()
-    for pat, v in OBLAST:
-        if re.search(pat, t, re.I):
-            return [v]
-    return ["ostatni"]
-
-
-def typ_of(text):
-    t = (text or "")
-    out = [v for pat, v in TYPZ if re.search(pat, t, re.I)]
-    return list(dict.fromkeys(out))
+# oblast / typ_zadatele NEklasifikujeme keyword-heuristikou → LLM vrstva 2 (viz ingest_kraj.py).
 
 
 def _num(s):
@@ -80,7 +50,7 @@ def main():
             "eligible_applicants": eligible, "required_attachments": [],
             "how_to_apply": f"Žádost přes portál {source}", "source_doc": p.get("url"), "id": gid,
             "facets": {
-                "oblast": oblast_of(nazev + " " + popis), "typ_zadatele": typ_of(eligible),
+                "oblast": [], "typ_zadatele": [],     # ← LLM vrstva 2 (ne keyword)
                 "sektor_zadatele": [], "typ_poskytovatele": "samosprava_kraj",
                 "forma_podpory": ["dotace"], "zdroj_financovani": ["krajsky"],
                 "rezim_prijmu": None, "delka": None, "zpusob_podani": ["elektronicky_portal"],

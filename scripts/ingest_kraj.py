@@ -32,45 +32,10 @@ from datetime import date
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from opportunities import compute_status, canon_key, _pd
 
-# univerzální oblast keyword tabulka (cílový slovník consolidation_maps); pořadí = priorita
-OBLAST = [
-    (r"hasič|JPO|požárn|SDH|IZS|bezpečn|kriminalit|prevence rizik", "bezpecnost"),
-    (r"lékař|zdravotn|stomatolog|pediatr|nemocnic|psychiatr|paliativ|zdraví|adiktolog|nelékař", "zdravi"),
-    (r"sociáln|pečovat|senior|handicap|zdravotně postižen|autis|rodin|potravinov.*pomoc", "socialni_sluzby"),
-    (r"cykl|cyklost|turis|cestovn.*ruch|\bTIC\b|infocentr", "cestovni_ruch"),
-    (r"podnikat|inovac|voucher|digitaliz|maloobchod|prodejen|kybernet|průmysl|řemesl|živnost", "podnikani"),
-    (r"sport|tělovýchov|mistrovstv|olympi", "sport_volny_cas"),
-    (r"volný čas|táborov|mládež(?!.*talent)", "sport_volny_cas"),
-    (r"talentovan|nadán|stipend|vzdělá|škol|učeb|gramotnost", "vzdelavani_mladez"),
-    (r"památk|varhan|restaurov|kulturní dědictví|váleč.*hrob", "pamatkova_pece"),
-    (r"kultur|divadl|muze|galeri|knihovn|umě|audiovi|film", "kultura_umeni"),
-    (r"voda|krajin|životní prostř|ekolog|zeleň|včela|myslivost|zemědělsk|odpad|klima|energetick|EVVO|biodiverz|protipovod", "zivotni_prostredi"),
-    (r"územní plán|infrastruktur|veřejn.*prostran|brownfield|revitaliz|obnov.*venkov|místních částí|kanalizac|vodovod", "bydleni_infrastruktura"),
-    (r"výzkum|věd|technolog", "veda_vyzkum"),
-    (r"církev|nábožensk|farnost", "nabozenstvi_cirkve"),
-    (r"menšin|národnostn|integrac|romsk", "komunitni_rozvoj"),
-    (r"spolk|komunitn|neziskov.*činnost|dobrovoln", "komunitni_rozvoj"),
-]
-TYPZ = [
-    (r"nezisk|spolek|o\.p\.s|nadac|ústav|církev|zapsaný|NNO", "neziskovka"),
-    (r"obchodní společnost|a\.s\.|s\.r\.o|v\.o\.s|státní podnik|podnikající|podnikatel|firm", "firma"),
-    (r"\bobec|\bobc[ei]\b|měst[ao]|samospráv|dobrovolný svazek|DSO|svazek obcí", "obec_verejny_subjekt"),
-    (r"příspěvkov|organizace zřízen|PO", "prispevkova_organizace"),
-    (r"fyzick.*osob(?!.*podnik)|občan", "fyzicka_osoba"),
-    (r"škol|univerzit|vysok.*škol|výzkumn.*organizac", "skola_vyzkumna_org"),
-]
-
-
-def oblast_of(text):
-    t = (text or "")
-    for pat, v in OBLAST:
-        if re.search(pat, t, re.I):
-            return [v]
-    return ["ostatni"]
-
-
-def typ_of(text):
-    return list(dict.fromkeys(v for pat, v in TYPZ if re.search(pat, text or "", re.I)))
+# POZN.: oblast / typ_zadatele / cilova_skupina ZÁMĚRNĚ neklasifikujeme keyword-heuristikou.
+# Dle architektury (CLAUDE.md) je klasifikace fazet práce LLM vrstvy 2 (classify nad textem),
+# kód jen počítá status z dat. Strukturní ingest plní jen to, co reálně vytěží (datumy/částka/
+# region/eligible-text) + lossless text; fazety nechává prázdné → doplní LLM vrstva 2.
 
 
 def _num(x):
@@ -131,7 +96,7 @@ def main():
                 "eligible_applicants": eligible, "required_attachments": [],
                 "how_to_apply": f"Žádost přes dotační portál {source}", "source_doc": p.get("url"), "id": gid,
                 "facets": {
-                    "oblast": oblast_of(nazev + " " + popis), "typ_zadatele": typ_of(eligible),
+                    "oblast": [], "typ_zadatele": [],     # ← LLM vrstva 2 (ne keyword)
                     "sektor_zadatele": [], "typ_poskytovatele": poskyt,
                     "forma_podpory": ["dotace"], "zdroj_financovani": [zdroj],
                     "rezim_prijmu": None, "delka": None, "zpusob_podani": ["elektronicky_portal"],

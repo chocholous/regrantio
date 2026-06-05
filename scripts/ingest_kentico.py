@@ -14,48 +14,12 @@ from datetime import date
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from opportunities import compute_status, canon_key, _host, _pd
 
-# oblast z klíčových slov v title (IROP/infrastrukturní programy)
-OBLAST_KW = [
-    (r"zdrav|urgent|nemocnic|záchrann.*zdrav|ambulanc", "zdravi"),
-    (r"záchrann|IZS|hasič|bezpečn|kyber", "bezpecnost"),
-    (r"eGovernment|egov|digital|informačn.*systém|kybernet", "it_digitalizace"),
-    (r"doprav|silnic|cykl|mobilita|tramvaj|drážn|železni|terminál", "doprava_mobilita"),
-    (r"sociál.*byd|sociální byd", "bydleni_infrastruktura"),
-    (r"sociál|deinstitucionaliz|pečovat|komunitní péč", "socialni_sluzby"),
-    (r"vzděl|škol|učeben|gramotnost", "vzdelavani_mladez"),
-    (r"kultur|divadl|knihovn", "kultura_umeni"),
-    (r"památk|kulturní dědictví", "pamatkova_pece"),
-    (r"zeleň|životní prostř|energetick|nízkouhlík|adaptac.*změn|biodiverz|krajin|fotovolta|oběhov.*hospod|recykl|odpad|úspor.*energ|obnoviteln|transformac|emis|voda|protipovod|znečiš", "zivotni_prostredi"),
-    (r"výzkum|inovac|věd|technolog|startup|podnikán|MSP|konkurenceschop", "veda_vyzkum"),
-    (r"bydlen|revitaliz|regenerac|veřejn.*prostranstv|brownfield|infrastruktur", "bydleni_infrastruktura"),
-    (r"cestovn.*ruch|turis", "cestovni_ruch"),
-]
-# typ_zadatele z eligible textu
-TYP_KW = [
-    (r"\bobc[ei]\b|\bobec\b|měst[ao]|samospráv", "obec_verejny_subjekt"),
-    (r"\bkraj", "obec_verejny_subjekt"),
-    (r"církv|nábožensk", "cirkev"),
-    (r"organizace zřizovan|příspěvkov|PO OSS|OSS|zakládan", "prispevkova_organizace"),
-    (r"nestátní neziskov|NNO|spolek|o\.p\.s|nadac|ústav", "neziskovka"),
-    (r"\bškol|univerzit|vysok.*škol|výzkumn", "skola_vyzkumna_org"),
-    (r"podnikatel|firm|s\.r\.o|a\.s\.|MSP|právnick.*osob", "firma"),
-]
+# oblast / typ_zadatele NEklasifikujeme keyword-heuristikou → LLM vrstva 2 (viz ingest_kraj.py).
 
 
 def cz_iso(s):
     m = re.match(r"\s*(\d{1,2})\.\s*(\d{1,2})\.\s*(\d{4})", s or "")
     return f"{int(m[3]):04d}-{int(m[2]):02d}-{int(m[1]):02d}" if m else None
-
-
-def kw(text, table, multi=False):
-    t = (text or "").lower()
-    out = []
-    for pat, val in table:
-        if re.search(pat, t, re.I):
-            out.append(val)
-            if not multi:
-                return [val]
-    return list(dict.fromkeys(out))
 
 
 def main():
@@ -87,8 +51,6 @@ def main():
         if st == "unknown" and r.get("status") in ("open", "closed", "announced"):
             st, conf = r["status"], "high"
         gid = canon_key("grant", title, url)
-        oblast = kw(title, OBLAST_KW, multi=True) or ["bydleni_infrastruktura"]  # IROP default = infrastruktura
-        typz = kw(r.get("eligible"), TYP_KW, multi=True)
         rec = {
             "kind": "grant", "source": a.source, "source_url": url,
             "title": title, "focus_area": None, "open_from": of, "deadline": dl,
@@ -96,7 +58,7 @@ def main():
             "eligible_applicants": r.get("eligible"), "required_attachments": [],
             "how_to_apply": None, "source_doc": url, "id": gid,
             "facets": {
-                "oblast": oblast, "typ_zadatele": typz, "sektor_zadatele": [],
+                "oblast": [], "typ_zadatele": [], "sektor_zadatele": [],     # ← LLM vrstva 2
                 "typ_poskytovatele": a.poskytovatel, "forma_podpory": ["dotace"],
                 "zdroj_financovani": [a.zdroj], "rezim_prijmu": None, "delka": None,
                 "zpusob_podani": [], "cilova_skupina": [], "mira_podpory_pct": None,
