@@ -71,6 +71,27 @@ Granty mimo 4 hlavní kategorie: `vdv.cz`, `osa.cz` (autorské), `olympic.cz`, `
 - **OPPORTUNITY-GATE (`ingest_apify.py`)** dle pravidla „oportunity, ne katalogy": zahodí generické katalogy/rozcestníky/info (titul „Dotace/Granty/grantová řízení/Pro žadatele…"), **news** („Nové dětské hřiště podpoří", „Z programu X půjdou…") a **externí domény** (crawl bloudil na computertrends/litomericko24…). Ponechá jen konkrétní výzvu (deadline/open_from/číslo výzvy / eligible+oblast) nebo misi s „jak požádat". Dropped 26/47.
 - **Praha**: granty.praha.eu = žádostní portál (ne katalog); centrál = Liferay próza za WAF (13/16 URL „Request Rejected"), prošly jen `/web/*` + subdoména `zdravotni.praha.eu` (Dotace 2026 s deadlinem). Městské části (8) už máme. → částečně, WAF-limit.
 
+### 📍 KRAJE — platformy + baseline stav
+Dvojí vzor: **hlavní web** (katalog/výzvy → Apify+LLM+gate) vs **žádostní app-portál** `dotace.{kraj}.cz` (jen podání, NE katalog → vynecháno).
+| Kraj | hlavní web / platforma | app-portál | baseline |
+|---|---|---|---|
+| Zlínský | zlinskykraj.cz (custom, čisté `/dotace/`) | — | ✅ 8 programů |
+| Pardubický | pardubickykraj.cz | dotace.pardubickykraj.cz (WebForms) | ✅ 10 programů |
+| Jihočeský | kraj-jihocesky.cz | — | 🟡 2 |
+| Středočeský | stredoceskykraj.cz (Liferay) + dsw2 instance | dotace.stredoceskykraj.cz | 🟡 4 |
+| Vysočina | kr-vysocina.cz (**vismo** → vismo.py!) | — | ⬜ jen landing (deeper) |
+| MSK | msk.cz (Drupal) | — | ⬜ jen landing |
+| Olomoucký | olkraj.cz | — | ⬜ landing |
+| Liberecký | kraj-lbc.cz | dotace.kraj-lbc.cz (firon) | ⬜ landing |
+| KHK | kr-kralovehradecky.cz | dotace.khk.cz (React) | ⬜ |
+| Plzeňský | plzensky-kraj.cz | dotace.plzensky-kraj.cz (edotace) | ⬜ |
+| Jihomoravský | kr-jihomoravsky.cz | dotace.kr-jihomoravsky.cz (WebForms) | ⬜ |
+| Karlovarský | kr-karlovarsky.cz | dotace.kr-karlovarsky.cz | ⬜ |
+| Ústecký | kr-ustecky.cz | — | ⬜ landing |
+| Praha | praha.eu (Liferay, WAF) | granty.praha.eu | 🟡 viz výše |
+
+**Baseline: 5/14 krajů s reálnými programy (24 oportunit).** Zbylé kraje dají při crawlu jen landing/„Dotační programy v oblasti X" listing → potřebují **depth-3 crawl** (listing oblasti → jednotlivé programy) nebo (Vysočina) **vismo.py**. Apify+LLM+gate pipeline ověřená.
+
 ### ⛔ Vzdáno přes noc (s důvodem — pro denní rozhodnutí)
 - **mk.gov.cz, mmr.gov.cz** (Kentico, ale jen „dotační okruhy" / tematické stránky, NE jednotlivé výzvy s deadliny) → IROP parser nesedí; chce vlastní parser.
 - **SPA „dotace.*" portály** (`dotace.olomouc.eu` angular, `dotace.khk.cz` react, `dotace.brno.cz`, `dotace.plzen.eu`) → jsou to **žádostní systémy** (`/zadost/`, `/zadosti/`), ne veřejné katalogy výzev; API vrací HTML fallback. Veřejné výzvy bývají na hlavním webu kraje/města.
