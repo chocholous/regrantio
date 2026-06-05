@@ -198,3 +198,35 @@ reuse GINIS session (Playwright) → stáhl 32/32 PDF pravidel → pdftotext →
 opportunities **1015 → 1775** za session, **256 otevřených** napříč 13 kraji (Praha má termíny v PDF →
 status announced/unknown; lze dotáhnout stejně jako JM). Jediná platforma, co odolala přímému i Apify
 přístupu: WEDOS WAF (Karlovarský) — obejito přes Wayback.
+
+## MĚSTA — statutární + krajská (paralelní sweep)
+Zjištění: krajská/statutární města publikují dotace na stejných platformách, které už umíme nebo jdou tence parsovat.
+**dsw2/Otevřená města je sdílená platforma** (28 instancí, reuse `dsw2.py`): Ostrava, Ústí nL, Praha MČ 2-14, +menší.
+
+Postaveno 23 tenkých městských harvesterů (paralelně přes subagenty, jednotný kontrakt → `ingest_kraj.py` s `uroven:"obec"`):
+| Město | zdroj | platforma | programů |
+|---|---|---|---|
+| Brno | dotace.brno.cz + brno.cz/w/* | WP/portál/PDF | 38 |
+| Ostrava | dotace.ostrava.cz | WP admin-ajax `get_appeals_data` | 20 |
+| Plzeň | dotace.plzen.eu | edotace jqGrid JSON-XHR | 20 |
+| Olomouc | olomouc.eu/urad-online/dotace | HTML+PDF (datum ve slug) | 19 |
+| Liberec | liberec.cz fondy (grantys=login) | HTML | 7 |
+| Hradec Králové | dotace.mmhk.cz | DOTIS/ProDos | 23 |
+| Pardubice | pardubice.eu/dotace | HTML+PDF | 12 |
+| Karviná | karvina.cz | QCM | 15 |
+| Jablonec n.N. | mestojablonec.cz | Nette | 14 |
+| Česká Lípa | mucl.cz | vismo | 14 |
+| Děčín | portal.mmdecin.cz | VERA inline-JSON | 13 |
+| Jihlava, Teplice, Most, Ml.Boleslav, Třinec, Kladno | *.cz | vismo | ~5-11 each |
+| Karlovy Vary | mmkv.cz | Drupal+PDF | 8 |
+| Chomutov | granty.chomutov.cz | WordPress REST | 11 |
+| Frýdek-Místek | frydekmistek.cz | WordPress REST | 10 |
+| Opava | opava-city.cz | Joomla | 7 |
+| Prostějov, Přerov | *.eu | public4u | 3/9 |
+| Havířov | havirov-city.cz | Drupal (Zásady PDF) | 11 |
+
+**Vzory platforem měst:** vismo (nejčastější), WordPress REST, Drupal, Joomla, public4u, Nette, QCM, edotace,
+DOTIS, VERA inline-JSON, dsw2/Otevřená města. Většina = přímý HTTP (curl/urllib), pár přes Playwright/PDF.
+Status: většina městských programů má příjem žádostí v lednu-únoru → k 2026-06-05 closed; struktura zachycena lossless.
+
+### 🏁 STAV: všech 14 krajů + všech 26 statutárních měst + desítky menších (dsw2) → opportunities ~1015→2164, 315 open, 98 poskytovatelů, 50 měst

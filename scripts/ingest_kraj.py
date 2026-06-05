@@ -36,8 +36,8 @@ from opportunities import compute_status, canon_key, _pd
 OBLAST = [
     (r"hasič|JPO|požárn|SDH|IZS|bezpečn|kriminalit|prevence rizik", "bezpecnost"),
     (r"lékař|zdravotn|stomatolog|pediatr|nemocnic|psychiatr|paliativ|zdraví|adiktolog|nelékař", "zdravi"),
-    (r"sociáln|pečovat|senior|handicap|zdravotně postižen|autis|rodin|ohrožen|potravinov.*pomoc", "socialni_sluzby"),
-    (r"cykl|cyklost|turis|cestovn.*ruch|TIC|infocentr", "cestovni_ruch"),
+    (r"sociáln|pečovat|senior|handicap|zdravotně postižen|autis|rodin|potravinov.*pomoc", "socialni_sluzby"),
+    (r"cykl|cyklost|turis|cestovn.*ruch|\bTIC\b|infocentr", "cestovni_ruch"),
     (r"podnikat|inovac|voucher|digitaliz|maloobchod|prodejen|kybernet|průmysl|řemesl|živnost", "podnikani"),
     (r"sport|tělovýchov|mistrovstv|olympi", "sport_volny_cas"),
     (r"volný čas|táborov|mládež(?!.*talent)", "sport_volny_cas"),
@@ -101,6 +101,16 @@ def main():
         H = json.load(open(inp, encoding="utf-8"))
         source, kraj = H["source"], H["kraj"]
         platform = H.get("platform", "kraj_html")
+        uroven = H.get("uroven", "kraj")           # "kraj" | "obec" (statutární/krajská města)
+        obec = H.get("obec")                        # název města (jen pro uroven=obec)
+        if uroven == "obec":
+            poskyt, zdroj = "samosprava_obec", "obecni"
+            region = {"nazev": obec or kraj, "obec": obec, "okres": None, "kraj": kraj,
+                      "celostatni": False, "_conf": "high"}
+        else:
+            poskyt, zdroj = "samosprava_kraj", "krajsky"
+            region = {"nazev": kraj, "obec": None, "okres": None, "kraj": kraj,
+                      "celostatni": False, "_conf": "high"}
         recs = []
         for p in H["programs"]:
             nazev = (p.get("nazev") or "").strip()
@@ -119,16 +129,15 @@ def main():
                 "title": nazev, "focus_area": popis or None, "open_from": of, "deadline": dl,
                 "status": st, "status_confidence": conf, "amount": _num(p.get("max_czk")),
                 "eligible_applicants": eligible, "required_attachments": [],
-                "how_to_apply": f"Žádost přes portál kraje ({source})", "source_doc": p.get("url"), "id": gid,
+                "how_to_apply": f"Žádost přes dotační portál {source}", "source_doc": p.get("url"), "id": gid,
                 "facets": {
                     "oblast": oblast_of(nazev + " " + popis), "typ_zadatele": typ_of(eligible),
-                    "sektor_zadatele": [], "typ_poskytovatele": "samosprava_kraj",
-                    "forma_podpory": ["dotace"], "zdroj_financovani": ["krajsky"],
+                    "sektor_zadatele": [], "typ_poskytovatele": poskyt,
+                    "forma_podpory": ["dotace"], "zdroj_financovani": [zdroj],
                     "rezim_prijmu": None, "delka": None, "zpusob_podani": ["elektronicky_portal"],
                     "cilova_skupina": [], "mira_podpory_pct": None, "spoluucast": None,
                     "vyse_alokace_czk": _num(p.get("alokace_czk")), "vyse_max_zadatel_czk": _num(p.get("max_czk")),
-                    "region": {"nazev": kraj, "obec": None, "okres": None, "kraj": kraj,
-                               "celostatni": False, "_conf": "high"},
+                    "region": dict(region),
                 },
                 "provenance": {"layer": 1, "harvester": platform, "platform": platform,
                                "harvest_url": p.get("url"), "harvest_file": inp, "documents": []},
