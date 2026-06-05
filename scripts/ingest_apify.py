@@ -20,6 +20,8 @@ ALLOWED = {"zlinskykraj.cz", "stredoceskykraj.cz", "pardubickykraj.cz", "kr-uste
            "kr-kralovehradecky.cz", "kr-karlovarsky.cz", "kraj-jihocesky.cz", "jihocesky.cz",
            "kr-vysocina.cz", "plzensky-kraj.cz", "olkraj.cz", "msk.cz", "kraj-lbc.cz",
            "kr-jihomoravsky.cz", "kr-olomoucky.cz", "dotace.kraj-lbc.cz", "fondvysociny.cz",
+           "dotace.plzensky-kraj.cz", "dotace.khk.cz", "dotace.kr-karlovarsky.cz",
+           "dotace.kr-jihomoravsky.cz", "data.jmk.cz",
            "nadacecez.cz", "nadaceokd.cz", "nros.cz", "nadacevia.cz", "vdv.cz",
            "nadacevodafone.cz", "nadaceo2.cz", "nadace-agrofert.cz"}
 # ČISTÝ katalog/landing/rozcestník/info/news (kdekoli v titulu) → ZAHODIT
