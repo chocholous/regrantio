@@ -65,6 +65,12 @@ Granty mimo 4 hlavní kategorie: `vdv.cz`, `osa.cz` (autorské), `olympic.cz`, `
 - → **+133 EU-fund grantů, 75 OPEN** (akční deadliny 2026–2028) — řeší temporální chudobu (dřív 47 budoucích deadlinů). opportunities 778→911.
 - `scripts/ingest_kentico.py` — reusable pro JAKÝKOLI Kentico portál (Czech datum→ISO, oblast z keywords title, typ_zadatele z eligible, region=celostátní, zdroj=eu_fondy).
 
+### ✅ Hotovo — kraje + nadace přes Apify + LLM (+ opportunity-gate)
+- **Apify** `website-content-crawler` (playwright) → markdown → `build_apify_input.py` → `extract_wf` → `ingest_apify.py`.
+- **Kraje**: Zlínský (7 výzev RP*/MaS*), Středočeský, Pardubický. **Nadace**: ČEZ, VDV (Olga Havlová), Via, AGROFERT, NROS, Vodafone, O2. → **+21 oportunit**, opportunities 911→932, poskytovatelů 53→62.
+- **OPPORTUNITY-GATE (`ingest_apify.py`)** dle pravidla „oportunity, ne katalogy": zahodí generické katalogy/rozcestníky/info (titul „Dotace/Granty/grantová řízení/Pro žadatele…"), **news** („Nové dětské hřiště podpoří", „Z programu X půjdou…") a **externí domény** (crawl bloudil na computertrends/litomericko24…). Ponechá jen konkrétní výzvu (deadline/open_from/číslo výzvy / eligible+oblast) nebo misi s „jak požádat". Dropped 26/47.
+- **Praha**: granty.praha.eu = žádostní portál (ne katalog); centrál = Liferay próza za WAF (13/16 URL „Request Rejected"), prošly jen `/web/*` + subdoména `zdravotni.praha.eu` (Dotace 2026 s deadlinem). Městské části (8) už máme. → částečně, WAF-limit.
+
 ### ⛔ Vzdáno přes noc (s důvodem — pro denní rozhodnutí)
 - **mk.gov.cz, mmr.gov.cz** (Kentico, ale jen „dotační okruhy" / tematické stránky, NE jednotlivé výzvy s deadliny) → IROP parser nesedí; chce vlastní parser.
 - **SPA „dotace.*" portály** (`dotace.olomouc.eu` angular, `dotace.khk.cz` react, `dotace.brno.cz`, `dotace.plzen.eu`) → jsou to **žádostní systémy** (`/zadost/`, `/zadosti/`), ne veřejné katalogy výzev; API vrací HTML fallback. Veřejné výzvy bývají na hlavním webu kraje/města.
