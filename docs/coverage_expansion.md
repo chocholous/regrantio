@@ -134,3 +134,29 @@ Zbylé 3 (Karlovarský/JM/Praha) jsou **auth/WAF/šifrovací zdi**, ne crackable
 obcházení F5 APM / RSA session emulaci (mimo legitimní rozsah). **Region pokrytí: všech 14 krajů má
 v korpusu oportunity** (Karlovarský 4, Olomoucký 8 z prózy/extrakce); KHK+Vysočina mají navíc celý
 krajský program-katalog z vlastního portálu. opportunities 1015→1171.
+
+## KDE kraje publikují dotace → 6 nových HTML harvesterů (+319 programů)
+Systematický průzkum: krajské `dotace.*` jsou žádostní portály; veřejné výzvy jsou na **hlavním webu (SSR HTML)**
+nebo úřední desce. 6 krajů renderuje výzvy přímo do HTML → tenký deterministický harvester (vrstva 1):
+
+| Kraj | zdroj (veřejný listing) | platforma | programů | open |
+|---|---|---|---|---|
+| **Pardubický** | `dotace.pardubickykraj.cz/grants` | Nuxt SSR (data v DOM, neúplný SSL→CERT_NONE) | 105 | 25 |
+| **Liberecký** | `dotace.kraj-lbc.cz/` (18 oblastí) | Firon/Nette, **status Otevřen/Uzavřen v HTML** | 99 | 26 |
+| **MSK** | `msk.cz/temata/dotace` → 9× `?pgid=` | vlastní PHP CMS | 95 | 6 |
+| **Zlínský** | `zlinskykraj.cz/aktualne-vyhlasene-vyzvy...` | SSR HTML (kódy RP/SOC/NFV + alokace) | 10 | 7 |
+| **Jihočeský** | `kraj-jihocesky.cz/cs/ku_dotace/vyhlasene` | SSR accordion | 5 | 4 |
+| **Olomoucký** | `olkraj.cz/.../aktualni-dotacni-programy` | Nette (termíny ve slug detailu) | 5 | 1 |
+
+Harvestery: `scripts/{pardubicky,liberecky,msk,zlinsky,jihocesky,olomoucky}_harvest.py` (stdlib, jednotný
+kontrakt) → `scripts/ingest_kraj.py` (generický: oblast/typ z keywords, status z dat NEBO explicitní web-status
+u Liberce, region=kraj). Odstraněny staré Apify-Zlínský duplicity (nahrazeny bohatšími HTML). opportunities 1171→1482.
+
+### Stále přes Apify/WAF (ne přímý HTTP)
+- **Ústecký** — vismo VISMO 6 blokuje fetch (404/WAF) → Apify nebo `portalobcana.kr-ustecky.cz` JSON API
+- **Středočeský** — Liferay, výzvy roztříštěné po fondech → Apify+LLM (částečně máme)
+- **JM** — `eud.jmk.cz` GINIS USU (postback) + `kr-jihomoravsky.cz` KEVIS render → Apify
+- **Karlovarský** — celá doména WEDOS WAF (301-loop) → jediná cesta `edesky.cz/desky/76` přes Apify
+- **Praha** — `eud.praha.eu/pub/rss/...` = plný RSS (ale dominují awards); otevřené výzvy → Apify nad `praha.eu/web/*`
+
+**Stav krajů: 13/14 má reálné OTEVŘENÉ programy z veřejného zdroje** (chybí jen Karlovarský = WAF). open oportunit ~230.
