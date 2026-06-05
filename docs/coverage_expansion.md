@@ -180,3 +180,21 @@ deska bez dotačních programů (kraj je publikuje na webu za WAF).
 ### FINÁLNÍ STAV KRAJŮ: 13/14 s reálnými harvestovanými programy
 opportunities 1015 → **1706** za session, **262 otevřených** napříč 12 kraji (Praha/Karlovarský mají termíny/data
 v PDF → status unknown / čeká na rezidenční IP). Jediná zeď: Karlovarský (IP-reputační WAF, řešitelné jinou IP).
+
+## Karlovarský dořešen (Wayback) + JM přílohy dotaženy z PDF
+**Karlovarský — WEDOS WAF neprůrazný, ale Wayback ano:** Apify website-content-crawler (residential CZ,
+firefox i chrome) = 0 stránek; Apify rag-web-browser (browser-playwright, residential) = HTTP 500.
+WEDOS Global Protection blokuje i Apify residential. **Řešení: Wayback Machine** (`web/{TS}id_/` raw archiv
+oblast-listingů `/dotace/dotacni-programy-karlovarskeho-kraje/oblast-*`) → `karlovarsky_wayback_harvest.py`:
+**69 programů z 9 oblastí, nejnovější snapshot 2026-05-25** (čerstvé!), 59 s deadlinem, 7 open. Alokace jsou
+jen na detailech (Wayback listing je nemá) → null. opportunities +69.
+
+**JM přílohy — reálné deadliny z PDF:** vývěskové datumy na GINIS USU desce KLAMALY. `jm_pdf_enrich.py`
+reuse GINIS session (Playwright) → stáhl 32/32 PDF pravidel → pdftotext → **16 reálných deadlinů**,
+8 alokací, 4 oprávněné žadatele. Re-ingest: JM open 30→17 (řada programů reálně uzavřená už v únoru).
+7 PDF = naskenované awards bez textové vrstvy (OCR neřešeno, nízká hodnota).
+
+### 🏁 FINÁLNÍ STAV: 14/14 krajů má data, 13/14 aktuálně otevřené programy
+opportunities **1015 → 1775** za session, **256 otevřených** napříč 13 kraji (Praha má termíny v PDF →
+status announced/unknown; lze dotáhnout stejně jako JM). Jediná platforma, co odolala přímému i Apify
+přístupu: WEDOS WAF (Karlovarský) — obejito přes Wayback.
