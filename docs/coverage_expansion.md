@@ -117,3 +117,20 @@ Nástroj: `scripts/xhr_discover.py` (generický Playwright odposlech JSON-XHR; z
 → **Závěr: 9/14 krajů je realistický baseline.** Posledních 5 = JS-API/stateful/WAF portály, které
 odolávají content-crawleru, table-parse i základní XHR-discovery; každý chce bespoke per-portál
 reverse-engineering (interaction-driven XHR / GINIS session / WAF). Nízká priorita vs hodnota.
+
+## Posledních 5 krajů — jeden po druhém (per-portál průzkum)
+Hypotéza usera „možná podobné platformy, nebo jiná platforma" → každý portál zvlášť rozebrán:
+
+| Kraj | platforma | průlom | výsledek |
+|---|---|---|---|
+| **KHK** ✅ | React SPA „DOTIS" (Azure Functions) | `config.js`→`dotisAPIUrl`; veřejný anonymní `POST /api/Data/GetProjectSubprojectCollection {}` vrací CELÝ strom programů→titulů s `dateBeg/dateEnd` | **+142 oportunit** (11 open), `dotis_harvest.py`+`ingest_dotis.py`. DOTIS je mezi kraji jen KHK (proben config.js napříč). |
+| **Vysočina** ✅ | Fond Vysočiny (server-rendered) | správné URL `/dotace/default/aktivni?kat=999` → detail `/dotace/zadosti/{KÓD}` čistě štítkovaný | **+14 programů** (8 open, s alokací+oprávněností), `fondvysociny_harvest.py`. Filtr TEST záznamů. |
+| **Karlovarský** ⛔ | GINIS RAP (Gordic) | app = RSA-šifrovaný stateful (jsencrypt+signalr), POST→400 bez session; hlavní web `kr-karlovarsky.cz` = redirect-loop wall | **zeď** — šifrovaný žádostní app, ne veřejný katalog |
+| **JM** ⛔ | F5 BigIP APM | `kr-jihomoravsky.cz` i `jmk.cz` za F5 APM (logout page); `data.jmk.cz` = ArcGIS opendata, ale obsah = **schválené/udělené dotace (příjemci = awards)**, ne otevřené výzvy | **zeď + awards-only** (awards porušují „oportunity ne katalogy") |
+| **Praha** 🟡 | Liferay + BigIP WAF | 13/16 URL „Request Rejected"; prošly jen `/web/*` + `zdravotni.praha.eu` | **částečně** (WAF), městské části (8) máme |
+
+**Závěr: cracknuty 2 z 5 (KHK, Vysočina) přidáním nových platforem (DOTIS API, Fond Vysočiny listing).**
+Zbylé 3 (Karlovarský/JM/Praha) jsou **auth/WAF/šifrovací zdi**, ne crackable platformy — vyžadovaly by
+obcházení F5 APM / RSA session emulaci (mimo legitimní rozsah). **Region pokrytí: všech 14 krajů má
+v korpusu oportunity** (Karlovarský 4, Olomoucký 8 z prózy/extrakce); KHK+Vysočina mají navíc celý
+krajský program-katalog z vlastního portálu. opportunities 1015→1171.
