@@ -83,7 +83,7 @@ pre{background:#0c0e12;border:1px solid var(--bd);border-radius:6px;padding:8px;
 .princip{background:#15110a;border:1px solid #3a3417;border-radius:10px;padding:13px 16px;margin:18px 0 0}
 .princip h3{margin:0 0 8px;font-size:13px;color:#e0cf74}.princip li{font-size:12.5px;margin:3px 0;color:#d8cda0}
 </style></head><body>
-<div class=tabs><button class="tab on" data-tab=browse>🔎 Vyhledávání</button><button class=tab data-tab=cov>📊 Analýza extrakce</button><button class=tab data-tab=arch>🛠 Jak sbíráme data</button><button class=tab data-tab=extend>🧩 Rozšířit (Claude Code)</button></div>
+<div class=tabs><button class="tab on" data-tab=browse>🔎 Vyhledávání</button><button class=tab data-tab=cov>📊 Analýza extrakce</button><button class=tab data-tab=arch>🛠 Jak sbíráme data</button></div>
 <div id=tab-browse class="panel on"><div class=wrap>
 <aside>
 <h1>Granty</h1><div class=sub>__N__ oportunit · __NP__ poskytovatelů · LLM-fasety</div>
@@ -100,7 +100,6 @@ pre{background:#0c0e12;border:1px solid var(--bd);border-radius:6px;padding:8px;
 <main><div class=cnt id=cnt></div><div id=list></div></main></div></div>
 <div id=tab-cov class=panel>__COVERAGE__</div>
 <div id=tab-arch class=panel>__ARCH__</div>
-<div id=tab-extend class=panel>__EXTEND__</div>
 <script>
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
@@ -461,60 +460,6 @@ def coverage_html(recs):
             f"<h3>Bohatost / tříštivost facet</h3>{t_facet}</div>")
 
 
-def extend_html():
-    """Návod: naklonuj repo a rozšiř pokrytí s Claude Code + Opus."""
-    GH = "https://github.com/chocholous/regrantio"
-    return f"""<div class=arch>
-<h2>🧩 Rozšiř pokrytí s Claude Code + Opus</h2>
-<p class=lead>Repo je veřejné a postavené tak, aby šlo přidávat <b>další zdroje a platformy</b> napůl-automaticky:
-ty řekneš URL, <b>Claude Code (Opus)</b> zjistí platformu, napíše tenký harvester, protáhne data vrstvou 2 a doplní je do appky.
-Celý recept je v {('<a href="../README.md" target=_blank>README.md</a>')} a {('<a href="../CLAUDE.md" target=_blank>CLAUDE.md</a>')} — Claude si je přečte sám.</p>
-
-<div class=stage><div class=num>0</div><h3>Naklonuj &amp; připrav prostředí</h3>
-<pre><span class=c># macOS / Linux, python3.13</span>
-git clone {GH}.git
-cd regrantio/opportunity_pipeline
-python3.13 -m venv .venv &amp;&amp; source .venv/bin/activate
-pip install -r requirements.txt &amp;&amp; playwright install chromium
-bash scripts/unpack_data.sh   <span class=c># rozbalí korpus z data_bundle/ do data/</span></pre></div>
-<div class=arrow>▼</div>
-
-<div class=stage><div class=num>1</div><h3>Spusť Claude Code a přepni na Opus</h3>
-<pre>claude            <span class=c># v kořeni repa</span>
-/model opus       <span class=c># kategorie &amp; filtry dělá Opus</span></pre>
-<div class=ask><b>Řekni Claudovi:</b> „Přečti CLAUDE.md a README.md. Chci přidat nový zdroj grantů: &lt;URL&gt;. Zjisti platformu (struktura, ne label) a navrhni postup — reuse existující harvester, nebo tenký nový."</div></div>
-<div class=arrow>▼</div>
-
-<div class=stage><div class=num>2</div><h3>Vrstva 1 — harvester (jen TEXT + dokumenty, lossless)</h3>
-<p>Claude buď použije existující parser pro danou CMS-rodinu, nebo napíše tenký nový do <code>scripts/</code>. 5 archetypů: REST (WordPress) · inline-JS (dsw2) · HTML-listing (vismo) · Kentico/ASP.NET · SPA-grid → odposlech XHR Playwrightem → čistý HTTP replay.</p>
-<div class=ask><b>Řekni Claudovi:</b> „Naklasifikuj platformu hosta a buď reuse harvester, nebo napiš tenký parser. Drž lossless — nic nezahazuj, žádný ořez textu. Otestuj na sondě a ukaž 5 vzorků."</div></div>
-<div class=arrow>▼</div>
-
-<div class=stage><div class=num>3</div><h3>Vrstva 2 — extrakce polí (LLM workflow)</h3>
-<p>Dokumenty → text (doc-store, dedup) → agent-friendly vstupy → <code>extract_wf.js</code> (Claude Code Workflow, 1 oportunita = 1 agent, plný text+PDF). Pole vytěží levný model (Haiku), <b>kategorie/filtry klasifikuje Opus</b> nad vytěženými daty.</p>
-<pre><span class=c># orientačně, Claude to řídí přes nástroj Workflow:</span>
-build_extract_input.py  →  extract_wf.js  →  repair_out.py  →  opportunities.py</pre>
-<div class=ask><b>Řekni Claudovi:</b> „Stáhni přílohy do doc-store, postav extrakční vstupy a pusť vrstvu 2. Pole klidně Haiku, ale <b>oblast / typ žadatele / cílovku klasifikuj Opusem</b> nad extrakcí (řízený slovník, kanonické hodnoty)."</div></div>
-<div class=arrow>▼</div>
-
-<div class=stage><div class=num>4</div><h3>Konsolidace, kategorie a přestavba appky</h3>
-<p>Sjednocení variant na kanonický slovník + rollup hierarchií (oblast→nadoblast, typ→sektor), pak rebuild této appky.</p>
-<pre>consolidate.py  →  canon_facets.py  →  build_app.py   <span class=c># → data/grants_app.html</span></pre>
-<div class=ask><b>Řekni Claudovi:</b> „Zkonsoliduj fazety, doplň konsolidační mapy o nové varianty (Opus), přestav appku a ověř fill-rate + že žádná hodnota není mimo slovník."</div></div>
-
-<div class=stage style=margin-top:18px><h3>⚠ Pravidla, která drží kvalitu</h3>
-<div class=lane>
- <div class=l><b>Status počítá KÓD</b>, ne LLM (otevřená × uzavřená = jen datum vs. dnešek)</div>
- <div class=l><b>Harvest lossless</b> — žádný strop na stránky/přílohy, žádný ořez (jen safety pojistky)</div>
- <div class=l><b>Kategorie &amp; filtry = Opus</b> nad extrakcí; žádné natvrdo psané keyword-klasifikace</div>
- <div class=l><b>Grounding</b> — každé pole má doslovnou citaci (evidence)</div>
- <div class=l><b>Struktura před prózou</b> — vždy nejdřív zkus API/XHR/inline-JS, LLM až na neredukovatelnou prózu/PDF</div>
-</div></div>
-
-<p class=lead style=margin-top:16px>Kód, recept i data: <a href="{GH}" target=_blank>{GH}</a> · pull requesty s novými zdroji vítány.</p>
-</div>"""
-
-
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--in", dest="inp", default="data/opportunities.jsonl")
@@ -530,7 +475,6 @@ def main():
                .replace("__SEKTOR_OF__", json.dumps(M.get("sektor_of", {}), ensure_ascii=False))
                .replace("__OBLAST_SUPER__", json.dumps(M.get("oblast_super", {}), ensure_ascii=False))
                .replace("__ARCH__", arch_html(len(recs), np))
-               .replace("__EXTEND__", extend_html())
                .replace("__COVERAGE__", coverage_html(recs))
                .replace("__NP__", str(np)).replace("__N__", str(len(recs))))
     open(a.out, "w", encoding="utf-8").write(html)
