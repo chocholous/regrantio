@@ -99,12 +99,42 @@ h1{{font-size:26px;margin:0 0 4px}}.lead{{color:var(--mut);margin:0 0 26px}}
 .guide pre{{background:#0d1016;border:1px solid var(--bd);border-radius:8px;padding:10px 12px;overflow-x:auto;font-size:12px;line-height:1.5;color:#cdd6e4;margin:6px 0}}
 .guide .warn{{background:#15110a;border-left:3px solid #e0cf74;border-radius:0 8px 8px 0;padding:9px 12px;margin:10px 0;font-size:13px;color:#e0d4a8}}
 .guide a{{color:var(--acc)}}
+.flow{{display:flex;flex-direction:column;margin:10px 0 2px}}
+.node{{background:#0d1016;border:1px solid var(--bd);border-radius:10px;padding:10px 13px;position:relative}}
+.node .t{{font-weight:600;font-size:13.5px}}.node .s{{font-size:12px;color:var(--mut);margin-top:2px;padding-right:64px}}
+.node .who{{position:absolute;right:11px;top:10px;font-size:9.5px;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.4px}}
+.who.kod{{background:#173a2a;color:#74e0a8}}.who.haiku{{background:#3a3417;color:#e0cf74}}.who.opus{{background:#1a2e3a;color:#74c2e0}}
+.fa{{text-align:center;color:#3a4257;font-size:17px;line-height:1.15;margin:2px 0}}
+.legend{{display:flex;gap:16px;font-size:12px;color:var(--mut);margin:12px 0 0;flex-wrap:wrap}}
+.legend span{{display:inline-flex;align-items:center;gap:5px}}
+.dot{{width:11px;height:11px;border-radius:3px;display:inline-block}}
 .h2b{{font-size:14px;color:var(--mut);margin:0 0 12px;text-transform:uppercase;letter-spacing:.5px}}
 footer{{color:var(--mut);font-size:12px;margin-top:24px;text-align:center}}
 footer a{{color:var(--mut)}}
 </style></head><body><div class=wrap>
 <h1>🎯 re-grantio</h1>
 <p class=lead>Katalog českých grantů a dotací. Každá větev = vlastní verze aplikace + popis, čím se liší od <b>main</b>.</p>
+
+<div class=guide>
+<h2>⚙️ Logika receptu</h2>
+<p>Dvouvrstvý model: <b>tenké per-CMS harvestery</b> (jen text+dokumenty) → <b>jeden univerzální LLM extraktor</b>. Dělba práce: <b>status &amp; struktura = kód</b>, vytěžení polí = levný model (Haiku), <b>kategorie a kanonizace štítků = Opus</b>. Každé pole má doslovnou citaci (grounding).</p>
+<div class=flow>
+ <div class=node><div class=t>0 · Zdroj &amp; detekce platformy</div><div class=s>grantové weby obcí/krajů/ministerstev/nadací; platformu určí strukturální otisk, ne label</div><span class="who kod">kód</span></div>
+ <div class=fa>▼</div>
+ <div class=node><div class=t>1 · Vrstva 1 — Harvest (lossless)</div><div class=s>5 archetypů: REST (WP) · inline-JS (dsw2) · HTML-listing (vismo) · Kentico/ASP.NET · SPA-grid→XHR replay → jen TEXT + odkazy na dokumenty, nic se nezahazuje</div><span class="who kod">kód</span></div>
+ <div class=fa>▼</div>
+ <div class=node><div class=t>2 · Doc-store — dokumenty → text</div><div class=s>stažení příloh (PDF/Excel/DOC/ODT) + převod na text, deduplikace přes manifest</div><span class="who kod">kód</span></div>
+ <div class=fa>▼</div>
+ <div class=node><div class=t>3 · Vrstva 2 — extrakce polí</div><div class=s>LLM workflow, 1 oportunita = 1 agent, plný text+PDF → pole schématu + evidence (citace). Bez ořezu vstupu.</div><span class="who haiku">Haiku</span></div>
+ <div class=fa>▼</div>
+ <div class=node><div class=t>4 · Kategorie nad extrakcí</div><div class=s>klasifikace oblast / typ žadatele / cílová skupina z vytěžených dat — řízený slovník, kanonické hodnoty</div><span class="who opus">Opus</span></div>
+ <div class=fa>▼</div>
+ <div class=node><div class=t>5 · Kanonizace štítků + hierarchie</div><div class=s>variant→kanon mapy pro všechny facety; rollup oblast→nadoblast a typ→sektor. STATUS (otevřená/uzavřená) dopočítá kód z datumů</div><span class="who opus">Opus</span></div>
+ <div class=fa>▼</div>
+ <div class=node><div class=t>→ opportunities.jsonl → build_app → tato aplikace</div><div class=s>fasetové vyhledávání + bohatý detail + grounding; status v kódu, ne LLM</div><span class="who kod">kód</span></div>
+</div>
+<div class=legend><span><i class="dot" style="background:#74e0a8"></i> kód (deterministicky)</span><span><i class="dot" style="background:#e0cf74"></i> Haiku (vytěžení polí)</span><span><i class="dot" style="background:#74c2e0"></i> Opus (kategorie &amp; kanonizace)</span></div>
+</div>
 
 <div class=guide>
 <h2>🧩 Přidat další data (Claude Code + Opus)</h2>
