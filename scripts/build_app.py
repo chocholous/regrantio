@@ -22,7 +22,10 @@ main{padding:14px 18px;max-width:900px}
 h1{font-size:16px;margin:0 0 4px}.sub{color:var(--mut);font-size:12px;margin-bottom:10px}
 .q{width:100%;background:var(--card);color:var(--fg);border:1px solid var(--bd);border-radius:7px;padding:9px 10px;margin-bottom:10px}
 details.fg{margin-bottom:8px;border-bottom:1px solid var(--bd);padding-bottom:6px}
-details.fg>summary{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--acc);cursor:pointer;padding:2px 0;list-style:none}
+details.fg>summary{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--acc);cursor:pointer;padding:4px 0;list-style:none}
+details.fg>summary::before{content:'▸ ';font-size:9px}details.fg[open]>summary::before{content:'▾ '}
+details.fg>summary .fc{float:right;color:var(--mut);font-size:10px;letter-spacing:0}
+details.fg>summary .fa-n{float:right;background:var(--acc);color:#0b1220;font-size:10px;border-radius:10px;padding:0 6px;letter-spacing:0;font-weight:600}
 .opt{display:flex;align-items:center;gap:7px;padding:2px 4px;border-radius:5px;cursor:pointer;font-size:12.5px}
 .opt:hover{background:var(--card2)}.opt.sub{padding-left:20px;font-size:12px;color:#c6cfe0}
 .opt .c{margin-left:auto;color:var(--mut);font-size:11px}.opt.off{opacity:.3}
@@ -125,7 +128,7 @@ const SRC_TYPE={};
 DATA.forEach(d=>{const f=d.facets||{};const r=f.region||{};const ex=d.extra||{};
  d.oblast=f.oblast||[];d.oblast_super=[...new Set((f.oblast||[]).map(o=>OBLAST_SUPER[o]).filter(Boolean))];
  d.sektor=f.sektor_zadatele||[];d.typ_zadatele=f.typ_zadatele||[];
- d.poskytovatel=f.typ_poskytovatele||null;d.kraj=r.kraj||(r.celostatni?'celostátní':(d.kind==='grant'?'?':null));d.okres=r.okres||null;d.celostatni=!!r.celostatni;
+ d.poskytovatel=f.typ_poskytovatele||null;d.kraj=r.kraj||(r.celostatni?'celostátní':((d.kind==='grant'||d.kind==='program')?'neuvedeno':null));d.okres=r.okres||null;d.celostatni=!!r.celostatni;
  d.kraj_conf=r._conf;d.forma=f.forma_podpory||[];d.zdroj=f.zdroj_financovani||[];d.rezim=f.rezim_prijmu||null;
  d.delka=f.delka||null;d.podani=f.zpusob_podani||[];d.vyse_max=f.vyse_max_zadatel_czk||null;
  // nové facety z bohaté extrakce
@@ -162,13 +165,20 @@ function childrenFor(g,v){
   if(g.drill==='okres')return [...new Set(DATA.filter(d=>d.kraj===v).map(d=>d.okres).filter(Boolean))];
   if(g.drill==='source')return [...new Set(DATA.filter(d=>SRC_TYPE[d.source]===v).map(d=>d.source))];
   return [];}
-function renderFacets(){$('#facets').innerHTML=GROUPS.map(g=>{const c=counts(g.k,g.k);
-  let vals=Object.keys(c).sort((a,b)=>c[b]-c[a]);
+function renderFacets(){const cont=$('#facets'),aside=document.querySelector('aside');
+  const openK=new Set([...cont.querySelectorAll('details[open]')].map(d=>d.dataset.g));  // zachovej rozbalené
+  const firstRender=!cont.children.length, sv=aside?aside.scrollTop:0;
+  const DEF=['oblast_super','sektor','cilova','kraj'];
+  cont.innerHTML=GROUPS.map(g=>{const c=counts(g.k,g.k);
+  let vals=Object.keys(c).sort((a,b)=>(sel[g.k].has(b)-sel[g.k].has(a))||(c[b]-c[a]));  // VYBRANÉ první, pak dle počtu
   let body=vals.map(v=>{let h=optHTML(g.k,v,c[v]);
     if(g.drill&&sel[g.k].has(v)){const sc=counts(g.drill,g.drill);
       h+=childrenFor(g,v).filter(s=>sc[s]).sort((a,b)=>sc[b]-sc[a]).map(s=>optHTML(g.drill,s,sc[s],1)).join('');}
     return h;}).join('');
-  return `<details class=fg ${['oblast_super','sektor','cilova','kraj'].includes(g.k)?'open':''}><summary>${g.t}</summary>${body}</details>`;}).join('');}
+  const isOpen=firstRender?DEF.includes(g.k):(openK.has(g.k)||sel[g.k].size>0);  // drž otevřené + aktivní
+  const act=sel[g.k].size?`<span class=fa-n>${sel[g.k].size}</span>`:`<span class=fc>${vals.length}</span>`;
+  return `<details class=fg data-g="${g.k}" ${isOpen?'open':''}><summary>${esc(g.t)}${act}</summary>${body}</details>`;}).join('');
+  if(aside)aside.scrollTop=sv;}
 const GF={grant:['focus_area','open_from','deadline','amount','eligible_applicants','required_attachments','how_to_apply','source_doc'],
  program:['focus_area','open_from','deadline','eligible_applicants','how_to_apply','source_doc'],
  foundation_mission:['mission','support_topics','regions','source_doc']};
