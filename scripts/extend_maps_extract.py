@@ -110,10 +110,30 @@ CILOVA = {
 }
 
 
+# forma_podpory kanon: dotace, zapujcka_uver, stipendium, cena_soutez, vecny_dar (služby/mise nadací → drop)
+FORMA = {
+ **{k:"stipendium" for k in ["stipendia","sociální stipendia","stipendium"]},
+ **{k:"dotace" for k in ["nadační příspěvky","nadační příspěvky (granty)","nadační příspěvek","grant","granty","finanční granty",
+   "finanční dary","finanční podpora","finanční podpora (operační programy, komunitární programy)","Dotace / granty","kreativní vouchery",
+   "dotace na bilaterální projekty","granty neziskovým organizacím","individuální finanční příspěvky","jednorázové finanční příspěvky",
+   "finanční příspěvky jednotlivcům (přímá podpora žadatelů)","finanční podpora (granty/dary) partnerským organizacím a projektům",
+   "zaměstnanecké granty","mimořádné výzvy","individuální finanční příspěvky"]},
+ **{k:"zapujcka_uver" for k in ["úvěry","záruky","kvazikapitálové nástroje (mezaninové financování, podřízené úvěry)",
+   "finanční nástroje ze zdrojů EU (ESIF, InvestEU)"]},
+ **{k:"cena_soutez" for k in ["novinářská cena"]},
+ **{k:"vecny_dar" for k in ["dárcovské certifikáty"]},
+}
+# rezim_prijmu kanon: jednorazova_vyzva, kolova, prubezna (delka hodnoty mis-zařazené → drop)
+REZIM = {"vyzva":"jednorazova_vyzva","jednorocni":"jednorazova_vyzva","kontinuální":"prubezna","individuální":"prubezna",
+ "mimořádné žádosti":"prubezna","mimořádné žádosti v průběhu roku":"prubezna","rocni_vyzvy":"kolova","hromadne":"kolova"}
+DELKA = {"jednoleté":"jednoleta"}
+
+
 def main():
     m = json.load(open(MAPS, encoding="utf-8"))
-    added = {"oblast": 0, "typ_zadatele": 0, "cilova_skupina": 0}
-    for facet, add in (("oblast", OBLAST), ("typ_zadatele", TYP), ("cilova_skupina", CILOVA)):
+    added = {"oblast": 0, "typ_zadatele": 0, "cilova_skupina": 0, "forma_podpory": 0, "rezim_prijmu": 0, "delka": 0}
+    for facet, add in (("oblast", OBLAST), ("typ_zadatele", TYP), ("cilova_skupina", CILOVA),
+                       ("forma_podpory", FORMA), ("rezim_prijmu", REZIM), ("delka", DELKA)):
         for k, v in add.items():
             if m[facet].get(k) != v:
                 m[facet][k] = v; added[facet] += 1

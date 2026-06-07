@@ -43,6 +43,8 @@ details.fg>summary{font-size:11px;text-transform:uppercase;letter-spacing:.5px;c
 ul{margin:3px 0;padding-left:18px}li{margin:1px 0}a{color:var(--acc);font-size:12px}
 pre{background:#0c0e12;border:1px solid var(--bd);border-radius:6px;padding:8px;overflow:auto;font-size:11px;max-height:320px}
 .empty{color:var(--mut);padding:30px;text-align:center}
+.morebtn{display:block;width:100%;margin:12px 0;padding:12px;cursor:pointer;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--fg);font-size:14px}
+.morebtn:hover{background:var(--bg)}
 .tabs{display:flex;gap:2px;background:#12151c;border-bottom:1px solid var(--bd);padding:0 14px}
 .tab{background:none;border:none;color:var(--mut);padding:12px 18px;cursor:pointer;font-size:13px;border-bottom:2px solid transparent}
 .tab:hover{color:var(--fg)}.tab.on{color:var(--acc);border-bottom-color:var(--acc)}
@@ -197,12 +199,13 @@ function detail(d){let h='';
  h+=`<details><summary style="color:var(--mut);font-size:12px;cursor:pointer">raw JSON</summary><pre>${esc(JSON.stringify(d,null,1))}</pre></details>`;
  return h;}
 const dlkey=d=>{const s=(d.deadline||'').slice(0,10);return isDate(s)?Date.parse(s):9e15;};  // nedatum/null = nakonec
+let SHOWN=300;const STEP=500;const reRender=()=>{SHOWN=300;render();};  // nový filtr = od začátku
 function render(){let rows=DATA.filter(d=>passes(d));
  const so=$('#sort').value;
  if(so==='deadline')rows=rows.slice().sort((a,b)=>dlkey(a)-dlkey(b));         // nejbližší první
  else if(so==='amount')rows=rows.slice().sort((a,b)=>(b.vyse_max||-1)-(a.vyse_max||-1));  // nejvyšší první
  $('#cnt').textContent=`${rows.length} / ${DATA.length} · ${new Set(rows.map(d=>d.source)).size} poskytovatelů`;
- $('#list').innerHTML=rows.slice(0,300).map(d=>{const i=DATA.indexOf(d);const sc='s-'+(d.status||'unknown');
+ $('#list').innerHTML=rows.slice(0,SHOWN).map(d=>{const i=DATA.indexOf(d);const sc='s-'+(d.status||'unknown');
   const kc=d.kind==='grant'?'':'b-mise';
   const ch=[...(d.oblast||[]).map(o=>`<span class="chip ob">${esc(lab(o))}</span>`),
    d.kraj?`<span class="chip kr ${d.kraj_conf==='low'?'low':''}">📍 ${esc(d.kraj)}${d.kraj_conf==='low'?'?':''}</span>`:'',
@@ -212,14 +215,15 @@ function render(){let rows=DATA.filter(d=>passes(d));
    <div class=meta>${esc(d.source)} ${d.deadline?'· do '+esc(d.deadline):''} ${d.vyse_max?'· max '+fmt(d.vyse_max):''}
     <span class="badge ${d.kind==='grant'?sc:kc}">${esc(d.kind==='grant'?d.status:(d.kind==='program'?'program':'mise'))}</span></div>
    <div class=chips>${ch}</div></div><div class=body></div></div>`;}).join('')
-   +(rows.length>300?`<div class=empty>… +${rows.length-300} (zúži filtrem)</div>`:'')||'<div class=empty>nic neodpovídá</div>';
+   +(rows.length>SHOWN?`<button id=more class=morebtn>Zobrazit dalších ${Math.min(STEP,rows.length-SHOWN)} (zbývá ${rows.length-SHOWN})</button>`:'')||'<div class=empty>nic neodpovídá</div>';
  renderFacets();}
-$('#list').addEventListener('click',e=>{const c=e.target.closest('.card');if(!c||e.target.closest('a'))return;
+$('#list').addEventListener('click',e=>{if(e.target.id==='more'){SHOWN+=STEP;render();return;}
+ const c=e.target.closest('.card');if(!c||e.target.closest('a'))return;
  c.classList.toggle('open');const b=c.querySelector('.body');if(c.classList.contains('open')&&!b.dataset.f){b.innerHTML=detail(DATA[+c.dataset.i]);b.dataset.f=1;}});
-document.addEventListener('change',e=>{const t=e.target;if(t.dataset&&t.dataset.k&&t.type==='checkbox'){sel[t.dataset.k][t.checked?'add':'delete'](t.dataset.v);render();}});
-['q','amin','amax','dlfrom','dlto'].forEach(id=>$('#'+id).addEventListener('input',render));
-['sort','hideclosed'].forEach(id=>$('#'+id).addEventListener('change',render));
-$('#clr').onclick=()=>{Object.values(sel).forEach(s=>s.clear());$('#q').value='';$('#amin').value='';$('#amax').value='';$('#dlfrom').value='';$('#dlto').value='';$('#sort').value='def';$('#hideclosed').checked=true;render();};
+document.addEventListener('change',e=>{const t=e.target;if(t.dataset&&t.dataset.k&&t.type==='checkbox'){sel[t.dataset.k][t.checked?'add':'delete'](t.dataset.v);reRender();}});
+['q','amin','amax','dlfrom','dlto'].forEach(id=>$('#'+id).addEventListener('input',reRender));
+['sort','hideclosed'].forEach(id=>$('#'+id).addEventListener('change',reRender));
+$('#clr').onclick=()=>{Object.values(sel).forEach(s=>s.clear());$('#q').value='';$('#amin').value='';$('#amax').value='';$('#dlfrom').value='';$('#dlto').value='';$('#sort').value='def';$('#hideclosed').checked=true;reRender();};
 render();
 </script></body></html>"""
 
