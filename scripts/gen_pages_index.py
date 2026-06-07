@@ -134,6 +134,14 @@ footer a{{color:var(--mut)}}
  <div class=node><div class=t>→ opportunities.jsonl → build_app → tato aplikace</div><div class=s>fasetové vyhledávání + bohatý detail + grounding; status v kódu, ne LLM</div><span class="who kod">kód</span></div>
 </div>
 <div class=legend><span><i class="dot" style="background:#74e0a8"></i> kód (deterministicky)</span><span><i class="dot" style="background:#e0cf74"></i> Haiku (vytěžení polí)</span><span><i class="dot" style="background:#74c2e0"></i> Opus (kategorie &amp; kanonizace)</span></div>
+<p style="margin-top:14px">📚 <b>Celý recept &amp; dokumentace</b> (GitHub):
+<a href="https://github.com/chocholous/regrantio/blob/HEAD/README.md">README</a> ·
+<a href="https://github.com/chocholous/regrantio/blob/HEAD/CLAUDE.md">CLAUDE.md</a> (operační pravidla pro Claude Code) ·
+<a href="https://github.com/chocholous/regrantio/blob/HEAD/docs/platform_playbook.md">platformy</a> ·
+<a href="https://github.com/chocholous/regrantio/blob/HEAD/docs/detection.md">detekce</a> ·
+<a href="https://github.com/chocholous/regrantio/blob/HEAD/docs/coverage.md">coverage</a> ·
+<a href="https://github.com/chocholous/regrantio/blob/HEAD/schema/opportunity_schema.md">schéma</a> ·
+<a href="https://github.com/chocholous/regrantio">celé repo</a></p>
 </div>
 
 <div class=guide>

@@ -9,8 +9,8 @@ paralelně extrahuje pole. **Maximálně využívá UŽ STAŽENÁ DATA** (viz `d
 
 ## 🔎 Vyzkoušej & dokumentace
 
-- **Živá aplikace (778 oportunit, fasetové filtry + grounding + „Jak sbíráme data"):** → **[chocholous.github.io/regrantio/grants_app.html](https://chocholous.github.io/regrantio/grants_app.html)**
-  Filtry: oblast · sektor/typ žadatele · cílová skupina · poskytovatel · kraj · forma · zdroj · spoluúčast · míra podpory · typ dokumentu · výsledková listina · status · výše. Detail každé oportunity nese doslovné citace (grounding) a odkazy na originální dokumenty. Druhá záložka = vizuální pipeline „jak data sbíráme".
+- **Živá aplikace (rozcestník větví + recept):** → **[chocholous.github.io/regrantio](https://chocholous.github.io/regrantio/)**
+  Homepage = diagram logiky receptu + návod „jak přidat další data (Claude Code + Opus)" + seznam větví s merge-statusem. Každá větev má vlastní verzi appky — např. **`coverage-expansion`** = nejnovější (2129 oportunit, 14 krajů + 26 měst + LLM vrstva 2 + Opus kategorie). Filtry: oblast · sektor/typ žadatele · cílová skupina · poskytovatel · kraj · forma · zdroj · spoluúčast · míra · typ dokumentu · status · výše. Detail nese doslovné citace (grounding) + odkazy na originály. Pages se nasazují per-branch přes GitHub Actions (`.github/workflows/pages.yml`).
 - **Vygenerovat appku lokálně:** `python3 scripts/build_app.py` → `data/grants_app.html`
 - **Dokumentace:** [docs/platform_playbook.md](docs/platform_playbook.md) (CMS rodiny) · [docs/detection.md](docs/detection.md) · [docs/coverage.md](docs/coverage.md) · [schema/opportunity_schema.md](schema/opportunity_schema.md) · [CLAUDE.md](CLAUDE.md) (operační)
 
