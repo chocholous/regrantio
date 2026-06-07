@@ -112,13 +112,24 @@ const DATA=__DATA__;
 const L=__LABELS__;
 const lab=v=>L[v]||v;
 // pořadí dle priority hledače: KDE → KDO může → komu → na co → status, pak rámec, pak nice-to-have
-const GROUPS=[{k:'kraj',t:'Kraj',arr:0,drill:'okres'},{k:'sektor',t:'Sektor žadatele',arr:1,drill:'typ_zadatele'},
- {k:'cilova',t:'Cílová skupina',arr:1},{k:'oblast_super',t:'Oblast podpory',arr:1,drill:'oblast'},
+// pořadí dle užitečnosti (fill % + mentální model hledače: kde · co · stihnu · můžu žádat · pro koho · jaká podpora · detail)
+const GROUPS=[
+ {k:'kraj',t:'Kraj / region',arr:0},
+ {k:'oblast_super',t:'Oblast podpory',arr:1,drill:'oblast'},
  {k:'status',t:'Status',arr:0},
- {k:'forma',t:'Forma podpory',arr:1},{k:'zdroj',t:'Zdroj financování',arr:1},{k:'rezim',t:'Režim příjmu',arr:0},{k:'delka',t:'Délka',arr:0},
- {k:'spoluucast',t:'Spoluúčast',arr:0},{k:'doctype',t:'Typ dokumentu',arr:1},{k:'vysledky',t:'Výsledková listina',arr:0},
- {k:'poskytovatel',t:'Poskytovatel',arr:0,drill:'source'},{k:'kind',t:'Typ',arr:0},
- {k:'mira',t:'Míra podpory',arr:0},{k:'podani',t:'Způsob podání',arr:1}];
+ {k:'sektor',t:'Typ žadatele',arr:1,drill:'typ_zadatele'},
+ {k:'cilova',t:'Cílová skupina',arr:1},
+ {k:'forma',t:'Forma podpory',arr:1},
+ {k:'zdroj',t:'Zdroj financování',arr:1},
+ {k:'poskytovatel',t:'Poskytovatel',arr:0,drill:'source'},
+ {k:'rezim',t:'Režim příjmu',arr:0},
+ {k:'podani',t:'Způsob podání',arr:1},
+ {k:'delka',t:'Délka',arr:0},
+ {k:'spoluucast',t:'Spoluúčast',arr:0},
+ {k:'kind',t:'Typ záznamu',arr:0},
+ {k:'doctype',t:'Typ dokumentu',arr:1},
+ {k:'vysledky',t:'Výsledková listina',arr:0},
+ {k:'mira',t:'Míra podpory',arr:0}];
 // mapování typ žadatele → sektor (2. úroveň hierarchie) — JEDINÁ PRAVDA z data/consolidation_maps.json
 // (sektor_of), aby drill a sektor-rollup nedivergovaly. Injektuje build_app.py.
 const SEKTOR_OF=__SEKTOR_OF__;
@@ -140,7 +151,7 @@ DATA.forEach(d=>{const f=d.facets||{};const r=f.region||{};const ex=d.extra||{};
  d.obdobi=ex.obdobi_realizace?'uvedeno':(d.kind==='grant'?'neuvedeno':null);
  const mp=f.mira_podpory_pct;d.mira=mp==null?null:(mp<=50?'do 50 %':mp<=70?'51–70 %':mp<=90?'71–90 %':'nad 90 %');
  if(d.poskytovatel)SRC_TYPE[d.source]=d.poskytovatel;});
-const sel={};GROUPS.forEach(g=>sel[g.k]=new Set());sel.typ_zadatele=new Set();sel.source=new Set();sel.oblast=new Set();sel.okres=new Set();
+const sel={};GROUPS.forEach(g=>sel[g.k]=new Set());sel.typ_zadatele=new Set();sel.source=new Set();sel.oblast=new Set();
 const $=s=>document.querySelector(s),esc=s=>(s==null?'':String(s)).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 const fmt=n=>n==null?'':n.toLocaleString('cs-CZ')+' Kč';
 const valsOf=(d,k)=>{const v=d[k];return Array.isArray(v)?v:(v==null?[]:[v])};
@@ -162,13 +173,12 @@ function optHTML(k,v,n,sub){return `<label class="opt ${sub?'sub':''} ${n?'':'of
 function childrenFor(g,v){
   if(g.drill==='typ_zadatele')return [...new Set(DATA.flatMap(d=>d.typ_zadatele))].filter(t=>SEKTOR_OF[t]===v);
   if(g.drill==='oblast')return [...new Set(DATA.flatMap(d=>d.oblast))].filter(o=>OBLAST_SUPER[o]===v);
-  if(g.drill==='okres')return [...new Set(DATA.filter(d=>d.kraj===v).map(d=>d.okres).filter(Boolean))];
   if(g.drill==='source')return [...new Set(DATA.filter(d=>SRC_TYPE[d.source]===v).map(d=>d.source))];
   return [];}
 function renderFacets(){const cont=$('#facets'),aside=document.querySelector('aside');
   const openK=new Set([...cont.querySelectorAll('details[open]')].map(d=>d.dataset.g));  // zachovej rozbalené
   const firstRender=!cont.children.length, sv=aside?aside.scrollTop:0;
-  const DEF=['oblast_super','sektor','cilova','kraj'];
+  const DEF=['kraj','oblast_super','status','sektor'];
   cont.innerHTML=GROUPS.map(g=>{const c=counts(g.k,g.k);
   let vals=Object.keys(c).sort((a,b)=>(sel[g.k].has(b)-sel[g.k].has(a))||(c[b]-c[a]));  // VYBRANÉ první, pak dle počtu
   let body=vals.map(v=>{let h=optHTML(g.k,v,c[v]);
