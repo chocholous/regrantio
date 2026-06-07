@@ -158,8 +158,9 @@ const valsOf=(d,k)=>{const v=d[k];return Array.isArray(v)?v:(v==null?[]:[v])};
 const isDate=s=>/^\d{4}-\d{2}-\d{2}$/.test(s||'');
 function passes(d,except){const q=$('#q').value.toLowerCase();if(q&&!JSON.stringify(d).toLowerCase().includes(q))return false;
  // skrýt uzavřené + výsledkové listiny (historie) — hledač chce ŽÁDAT
- if($('#hideclosed').checked&&d.kind==='grant'&&(d.status==='closed'||d.vysledky==='ano'))return false;
- if($('#hideclosed').checked&&d.kind==='program')return false; // katalog programů (ne časově ohraničená výzva)
+ // „skrýt uzavřené" se NEuplatní, když si uživatel explicitně vybral status (jinak prázdný výsledek)
+ if($('#hideclosed').checked&&!sel.status.size&&d.kind==='grant'&&(d.status==='closed'||d.vysledky==='ano'))return false;
+ if($('#hideclosed').checked&&!sel.kind.size&&d.kind==='program')return false; // katalog programů skrytý, dokud nevybereš Typ=program
  for(const k of Object.keys(sel)){if(k===except||!sel[k].size)continue;
   if(k==='kraj'){if(![...sel[k]].some(v=>v===d.kraj)&&!d.celostatni)return false;continue;} // celostátní platí všude
   if(![...sel[k]].some(v=>valsOf(d,k).includes(v)))return false;}
