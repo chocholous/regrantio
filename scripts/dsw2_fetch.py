@@ -42,10 +42,14 @@ UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/
 # Konverzní nástroje dle přípony (macOS): textutil pro Office/ODF, pdftotext pro PDF,
 # openpyxl/xlrd pro Excel. POZOR: textutil Excel NEUMÍ (xls/xlsx by přečetl jako syrové byty
 # → balast). Proto xls/xlsx jdou samostatnou větví (sešity bývají multi-sheet → všechny listy).
-TEXTUTIL_EXTS = {"doc", "docx", "odt", "rtf", "ppt", "pptx"}
-SHEET_EXTS = {"xls", "xlsx"}
-DOC_EXTS = TEXTUTIL_EXTS | SHEET_EXTS | {"pdf"}
-DOC_EXT_RE = re.compile(r"\.(pdf|docx?|rtf|odt|ods|xlsx?|pptx?)(?:$|\?)", re.I)
+# POZOR 2 (stejná třída bugu, czechaid 2026-06): textutil PowerPoint také NEUMÍ — pptx →
+# prázdný výstup („convert-fail"), ppt → syrové binární byty tiše označené „ok". Proto
+# ppt/pptx jdou samostatnou větví: pptx → python-pptx, ppt → soffice → pptx → python-pptx.
+TEXTUTIL_EXTS = {"doc", "docx", "odt", "rtf"}
+SHEET_EXTS = {"xls", "xlsx", "xlsm"}   # xlsm = makro-Excel (formuláře žádostí MK) — openpyxl ho čte
+PPT_EXTS = {"ppt", "pptx"}
+DOC_EXTS = TEXTUTIL_EXTS | SHEET_EXTS | PPT_EXTS | {"pdf"}
+DOC_EXT_RE = re.compile(r"\.(pdf|docx?|rtf|odt|ods|xlsx?|xlsm|pptx?)(?:$|\?)", re.I)
 
 # MIME → přípona: rozpozná dokument schovaný za URL bez přípony (ASP.NET File.ashx
 # handler radnic, ?id_dokumenty=… apod.) z Content-Type / Content-Disposition.
@@ -55,6 +59,7 @@ MIME_EXT = {
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "xlsx",
     "application/vnd.ms-excel": "xls",
+    "application/vnd.ms-excel.sheet.macroenabled.12": "xlsm",
     "application/vnd.oasis.opendocument.text": "odt",
     "application/vnd.oasis.opendocument.spreadsheet": "ods",
     "application/vnd.openxmlformats-officedocument.presentationml.presentation": "pptx",
@@ -107,9 +112,9 @@ def download(url: str, dest: str, timeout: int, max_bytes: int):
 
 
 def _spreadsheet_text(path: str, ext: str) -> str:
-    """xls/xlsx → text VŠECH listů (textutil Excel neumí). openpyxl pro xlsx, xlrd pro xls."""
+    """xls/xlsx/xlsm → text VŠECH listů (textutil Excel neumí). openpyxl pro xlsx/xlsm, xlrd pro xls."""
     out = []
-    if ext == "xlsx":
+    if ext in ("xlsx", "xlsm"):
         import openpyxl
         wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
         for ws in wb.worksheets:
@@ -143,6 +148,33 @@ def _docx_text(path: str) -> str:
     return "\n".join(parts)
 
 
+def _ppt_text(path: str, ext: str, timeout: int) -> str:
+    """ppt/pptx → text VŠECH slidů (textutil PowerPoint neumí: pptx→prázdno, ppt→balast).
+    pptx čte python-pptx přímo; legacy ppt nejdřív soffice → pptx (Impress OOXML filtr).
+    Soffice s per-task UserInstallation profilem (žádný single-instance lock, jako to_markdown)."""
+    import tempfile
+    from pptx import Presentation
+    if ext == "ppt":
+        with tempfile.TemporaryDirectory() as wd:
+            subprocess.run(["soffice", "--headless", f"-env:UserInstallation=file://{wd}/lo_profile",
+                            "--convert-to", "pptx", "--outdir", wd, path],
+                           capture_output=True, timeout=timeout)
+            cands = [f for f in os.listdir(wd) if f.endswith(".pptx")]
+            if not cands:
+                raise RuntimeError("soffice-no-pptx")
+            return _ppt_text(os.path.join(wd, cands[0]), "pptx", timeout)
+    out = []
+    for i, slide in enumerate(Presentation(path).slides, 1):
+        out.append(f"## Slide {i}")
+        for shape in slide.shapes:
+            if shape.has_text_frame and shape.text_frame.text.strip():
+                out.append(shape.text_frame.text)
+            if getattr(shape, "has_table", False) and shape.has_table:
+                for row in shape.table.rows:
+                    out.append("\t".join(c.text for c in row.cells).rstrip())
+    return "\n".join(out)
+
+
 def convert(path: str, ext: str, txt_path: str, timeout: int):
     """Vrátí (chars:int|None, err:str|None) a zapíše text do txt_path."""
     try:
@@ -162,7 +194,10 @@ def convert(path: str, ext: str, txt_path: str, timeout: int):
                                    capture_output=True, timeout=timeout)
                 text = r.stdout.decode("utf-8", "replace")
             open(txt_path, "w", encoding="utf-8").write(text)
-        elif ext in TEXTUTIL_EXTS:                    # doc/odt/rtf/ppt/pptx → textutil (macOS-only, audit #10)
+        elif ext in PPT_EXTS:                         # PowerPoint: python-pptx(+soffice), NE textutil
+            text = _ppt_text(path, ext, timeout)
+            open(txt_path, "w", encoding="utf-8").write(text)
+        elif ext in TEXTUTIL_EXTS:                    # doc/odt/rtf → textutil (macOS-only, audit #10)
             r = subprocess.run(["textutil", "-convert", "txt", "-stdout", path],
                                capture_output=True, timeout=timeout)
             text = r.stdout.decode("utf-8", "replace")

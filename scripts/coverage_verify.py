@@ -23,7 +23,7 @@ Spuštění:
 import argparse, gzip, json, os, re, sys
 import urllib.request, urllib.error
 import http_util   # jednotná TLS politika (audit #7/#32)
-from urllib.parse import urlsplit
+from urllib.parse import urljoin, urlsplit
 from concurrent.futures import ThreadPoolExecutor
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from dsw2_fetch import safe_url, UA
@@ -101,7 +101,9 @@ def sitemap_seeds(host):
         for line in body.decode("utf-8", "replace").splitlines():
             m = re.match(r"\s*sitemap\s*:\s*(\S+)", line, re.I)
             if m:
-                seeds.append(m.group(1).strip())
+                # robots.txt smí mít RELATIVNÍ cestu (Plone: „Sitemap: /sitemap.xml.gz")
+                # → absolutizuj, jinak ValueError vypadá jako transientní chyba sítě
+                seeds.append(urljoin(f"https://{host}/", m.group(1).strip()))
     for cand in ("/sitemap.xml", "/sitemap_index.xml", "/wp-sitemap.xml"):
         u = f"https://{host}{cand}"
         if u not in seeds:
