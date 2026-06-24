@@ -13,6 +13,7 @@ Cíl = OTEVŘENÉ/vyhlášené výzvy, NE awards, NE login. Lossless: ukládá p
 Usage: python3 scripts/jablonec_harvest.py --out data/h_mesto_jablonec.json
 """
 import argparse, json, re, sys, urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 BASE = "https://www.mestojablonec.cz"
 CATEGORY = "/zivotni-situace/kategorie/dotace-a-dary"
@@ -29,7 +30,7 @@ DETAIL_RE = re.compile(r'href="(/zivotni-situace/(?!kategorie/)[a-z0-9-]+)"')
 
 def fetch(url):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+    return http_util.urlopen(req, timeout=30).read().decode("utf-8", "replace")
 
 
 def detext(html):

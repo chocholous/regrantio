@@ -24,6 +24,7 @@ Lossless: ukládá parsed pole + plný ucel/pokyny + seznam příloh + epoch + s
 Usage: python3 scripts/decin_harvest.py [--out data/h_mesto_decin.json]
 """
 import argparse, json, re, sys, urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -40,7 +41,7 @@ TZ = ZoneInfo("Europe/Prague")
 
 def fetch(url):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+    return http_util.urlopen(req, timeout=30).read().decode("utf-8", "replace")
 
 
 def iso(ms):

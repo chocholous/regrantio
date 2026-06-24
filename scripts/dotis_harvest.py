@@ -16,11 +16,12 @@ Usage:
   python3 scripts/dotis_harvest.py --api-base https://dotisreactfunctions.azurewebsites.net/api --source dotace.khk.cz --out ...
 """
 import argparse, json, re, sys, urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 
 def fetch_config_apibase(web):
     """Z {web}/config.js vytáhne window.dotisConfig.dotisAPIUrl."""
-    cfg = urllib.request.urlopen(web.rstrip("/") + "/config.js", timeout=20).read().decode("utf-8", "replace")
+    cfg = http_util.urlopen(web.rstrip("/") + "/config.js", timeout=20).read().decode("utf-8", "replace")
     m = re.search(r'dotisAPIUrl\s*:\s*"([^"]+)"', cfg)
     return m.group(1).rstrip("/") if m else None
 
@@ -29,7 +30,7 @@ def post_json(url, payload):
     req = urllib.request.Request(url, data=json.dumps(payload).encode("utf-8"),
                                  headers={"Content-Type": "application/json", "Accept": "application/json"},
                                  method="POST")
-    return json.loads(urllib.request.urlopen(req, timeout=40).read().decode("utf-8", "replace"))
+    return json.loads(http_util.urlopen(req, timeout=40).read().decode("utf-8", "replace"))
 
 
 def main():

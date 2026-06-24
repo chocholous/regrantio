@@ -50,7 +50,8 @@ for f in glob.glob("data/wp_full/*.jsonl"):
             r = json.loads(line)
         except Exception:
             continue
-        scan(web, (r.get("title_text") or "") + " " + (r.get("content_text") or ""))
+        _t = r.get("title"); _t = _t if isinstance(_t, str) else r.get("title_text")  # nové kanonické vs legacy wp_full snapshot (title=raw objekt)
+        scan(web, (_t or "") + " " + (r.get("text") or r.get("content_text") or ""))
 # vismo dokumenty + přílohy
 if os.path.exists("data/vismo_documents.jsonl"):
     for line in open("data/vismo_documents.jsonl", encoding="utf-8"):

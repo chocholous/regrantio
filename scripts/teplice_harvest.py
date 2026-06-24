@@ -24,6 +24,7 @@ Usage:
 import argparse, json, re, sys, time
 import html as H
 import urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 BASE = "https://www.teplice.cz"
 HOME = BASE + "/"
@@ -44,7 +45,7 @@ ALOKACE = re.compile(r"uvolněno\s*([\d  \xa0]+)\s*Kč", re.I)
 
 def fetch_curl(url):
     req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept-Language": "cs"})
-    return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+    return http_util.urlopen(req, timeout=30).read().decode("utf-8", "replace")
 
 
 def fetch_render(url, _pw=[]):

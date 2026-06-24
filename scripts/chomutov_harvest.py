@@ -18,10 +18,8 @@ import argparse, json, re, ssl, sys, urllib.request
 
 BASE = "https://granty.chomutov.cz"
 REST = BASE + "/wp-json/wp/v2/posts"
-# granty.* běží na cert, který curl bez -k odmítá (self-signed v řetězci) → vlastní ctx
-CTX = ssl.create_default_context()
-CTX.check_hostname = False
-CTX.verify_mode = ssl.CERT_NONE
+# granty.* má neúplný cert řetězec → http_util auto-fallback (ověř, při cert chybě opakuj bez ověření)
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 # kategorie → krátký lidský štítek oblasti (jen pro popis/log; faceting řeší ingest_kraj)
 CAT = {20: "cestovní ruch", 2: "kultura", 10: "ostatní", 13: "památková péče",
@@ -33,7 +31,7 @@ SKIP_CAT = {1, 12, 19}
 
 def fetch(url):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (re-grantio harvester)"})
-    return urllib.request.urlopen(req, timeout=40, context=CTX).read().decode("utf-8", "replace")
+    return http_util.urlopen(req, timeout=40).read().decode("utf-8", "replace")
 
 
 def detext(html):

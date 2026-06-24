@@ -19,6 +19,7 @@ Lossless: ukládá parsed pole + plný text landing + plný text Zásad. Uklád�
 Usage: python3 scripts/havirov_harvest.py [--out data/h_mesto_havirov.json] [--today 2026-06-05]
 """
 import argparse, json, os, re, subprocess, sys, tempfile, urllib.request, urllib.parse
+import http_util   # jednotná TLS politika (audit #7/#32)
 from datetime import date
 
 BASE = "https://www.havirov-city.cz"
@@ -43,7 +44,7 @@ OBLASTI = [
 
 def fetch(url):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    return urllib.request.urlopen(req, timeout=30).read()
+    return http_util.urlopen(req, timeout=30).read()
 
 
 def detext(html):

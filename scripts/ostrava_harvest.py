@@ -15,6 +15,7 @@ ingest z termínů (open_from/deadline). Cíl = vyhlášené výzvy/programy, NE
 Usage: python3 scripts/ostrava_harvest.py [--out data/h_mesto_ostrava.json]
 """
 import argparse, json, re, sys, time, urllib.parse, urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 BASE = "https://dotace.ostrava.cz"
 AJAX = BASE + "/wp-admin/admin-ajax.php"
@@ -40,7 +41,7 @@ def fetch(url, data=None, ajax=False):
         if data is not None:
             headers["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8"
     req = urllib.request.Request(url, data=data, headers=headers)
-    return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+    return http_util.urlopen(req, timeout=30).read().decode("utf-8", "replace")
 
 
 def detext(html):

@@ -27,6 +27,7 @@ import urllib.request
 from urllib.parse import urlsplit, urlunsplit, quote
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from limits import L   # centrální registr limitů (root limits.json)
+import http_util       # JEDNOTNÁ TLS politika (audit #7/#32: doc-store musí stahovat se stejnou politikou jako harvestery)
 
 
 def safe_url(url: str) -> str:
@@ -66,7 +67,7 @@ def sniff_ext(url: str, timeout: int):
     Vrací příponu (str) když jde o dokument, jinak None (= je to webová stránka)."""
     try:
         req = urllib.request.Request(safe_url(url), headers={"User-Agent": UA})
-        with urllib.request.urlopen(req, timeout=timeout) as r:
+        with http_util.urlopen(req, timeout=timeout) as r:
             ctype = (r.headers.get("Content-Type") or "").split(";")[0].strip().lower()
             cdisp = r.headers.get("Content-Disposition") or ""
         if ctype in MIME_EXT:
@@ -92,7 +93,7 @@ def ext_of(u: str) -> str:
 def download(url: str, dest: str, timeout: int, max_bytes: int):
     try:
         req = urllib.request.Request(safe_url(url), headers={"User-Agent": UA})
-        with urllib.request.urlopen(req, timeout=timeout) as r:
+        with http_util.urlopen(req, timeout=timeout) as r:
             data = r.read(max_bytes + 1)
         if len(data) > max_bytes:
             return None, "too-big"

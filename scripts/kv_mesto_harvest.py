@@ -28,6 +28,7 @@ Usage: python3 scripts/kv_mesto_harvest.py --out data/h_mesto_kv.json
 """
 import argparse, json, os, re, subprocess, sys, tempfile, urllib.request
 import html as _html
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 LISTING = "https://mmkv.cz/cs/dotace"
 UA = "Mozilla/5.0"
@@ -37,7 +38,7 @@ NAVOD_RE = re.compile(r'href="([^"]+\.pdf)"[^>]*>\s*((?:Návod\s*-\s*)?Dotace[^<
 
 def fetch_bytes(url, timeout=40):
     req = urllib.request.Request(url, headers={"User-Agent": UA})
-    return urllib.request.urlopen(req, timeout=timeout).read()
+    return http_util.urlopen(req, timeout=timeout).read()
 
 
 def fetch_text(url, timeout=40):

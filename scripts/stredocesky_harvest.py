@@ -22,6 +22,7 @@ POZOR: dotace.stredoceskykraj.cz = SPA login → NEPOUŽÍVAT. Vše jede přes s
 Usage: python3 scripts/stredocesky_harvest.py [--out data/h_kraj_stredocesky.json]
 """
 import argparse, json, re, sys, time, urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 BASE = "https://stredoceskykraj.cz"
 ROZCESTNIK = "/web/urad/prehled-dotaci"
@@ -64,7 +65,7 @@ def fetch(url, tries=3):
     for i in range(tries):
         try:
             req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-            return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+            return http_util.urlopen(req, timeout=30).read().decode("utf-8", "replace")
         except Exception as e:
             last = e
             time.sleep(1.5 * (i + 1))

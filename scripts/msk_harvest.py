@@ -13,6 +13,7 @@ Status NEpočítá harvester (dopočítá ingest z open_from/deadline vs. dneše
 Usage: python3 scripts/msk_harvest.py [--out data/h_kraj_msk.json]
 """
 import argparse, json, re, sys, urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 BASE = "https://www.msk.cz"
 INDEX = BASE + "/temata/dotace/index.html"
@@ -41,7 +42,7 @@ DATE_TO_RE = re.compile(r'\bdo\s+(?:dne\s+)?(\d{1,2})\.\s*(\d{1,2})\.\s*(\d{4})'
 
 def fetch(url):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+    return http_util.urlopen(req, timeout=30).read().decode("utf-8", "replace")
 
 
 def detext(html):

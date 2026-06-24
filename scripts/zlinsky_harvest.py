@@ -15,6 +15,7 @@ POZOR: dotace.zlinskykraj.cz je zakázaný subdoména — nepoužívat.
 Usage: python3 scripts/zlinsky_harvest.py [--out data/h_kraj_zlinsky.json]
 """
 import argparse, json, re, sys, urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 BASE = "https://zlinskykraj.cz"
 LISTING = "/aktualne-vyhlasene-vyzvy-dotacnich-programu-zlinskeho-kraje"
@@ -39,7 +40,7 @@ BLOCK_RE = re.compile(
 
 def fetch(url):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+    return http_util.urlopen(req, timeout=30).read().decode("utf-8", "replace")
 
 
 def detext(html):

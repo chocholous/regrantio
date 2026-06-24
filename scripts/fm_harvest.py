@@ -19,6 +19,7 @@ Status NEPOČÍTÁ harvester (počítá ingest z termínů).
 Usage: python3 scripts/fm_harvest.py [--out data/h_mesto_fm.json] [--year 2026]
 """
 import argparse, json, re, sys, urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 BASE = "https://www.frydekmistek.cz"
 API = BASE + "/wp-json/wp/v2/pages"
@@ -42,7 +43,7 @@ ELIGIBLE = re.compile(r"[Oo]právněn\w*\s+žadatel\w*[^.]*\.")
 
 
 def fetch(url):
-    return urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=40).read()
+    return http_util.urlopen(urllib.request.Request(url, headers=UA), timeout=40).read()
 
 
 def all_pages():

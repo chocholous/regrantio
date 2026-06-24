@@ -38,10 +38,21 @@ def _shape(r, source_type, source):
         docs = [(u, None) for u in (r.get("links") or []) if DOC_EXT_RE.search(u)]  # jen reálné dokumenty
         key = f"{r.get('foundation_id')}|{r.get('title')}"                          # appeal url je sdílená /explore/appeals
         return key, _host(r.get("url")), r.get("title"), r.get("description") or "", docs
-    # harvest (default)
-    docs = [(urljoin(r.get("url", ""), u if isinstance(u, str) else u.get("url", "")), None)
-            for u in (r.get("documents") or [])]
-    return r.get("url"), source, r.get("title"), r.get("text") or "", docs
+    # harvest (default) — tolerantní k variantám klíčů napříč VŠEMI layer-1 harvestery
+    # (wp_harvest, harvest_site, eeagrants, mv_cms, kentico_irop), aby žádný neemitoval prázdný title/body:
+    #   title: kanonický `title` (string); fallback `title_text` u legacy wp_full snapshotu (title = raw objekt)
+    #   body:  `text` (wp/harvest_site/eeagrants) | `body_text` (mv_cms/kentico) | `content_text` (legacy wp)
+    #   docs:  `documents[]` (url string nebo dict) | `attachments[]` (dict s url + volitelným txt_path)
+    title = r.get("title")
+    if not isinstance(title, str):
+        title = r.get("title_text")
+    body = r.get("text") or r.get("body_text") or r.get("content_text") or ""
+    docs = []
+    for u in (r.get("documents") or r.get("attachments") or []):
+        du, tp = (u.get("url"), u.get("txt_path")) if isinstance(u, dict) else (u, None)
+        if du:
+            docs.append((urljoin(r.get("url", ""), du), tp))
+    return r.get("url"), source, title, body, docs
 
 def main():
     ap = argparse.ArgumentParser()

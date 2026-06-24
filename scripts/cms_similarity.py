@@ -11,7 +11,7 @@ from concurrent.futures import ThreadPoolExecutor
 from collections import Counter
 
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
-CTX = ssl.create_default_context(); CTX.check_hostname = False; CTX.verify_mode = ssl.CERT_NONE
+import http_util   # jednotná TLS politika (audit #7/#32)
 THRESH = 0.30   # Jaccard práh pro „stejná rodina"
 
 # normalizace asset cesty: zahoď host, hash (8+ hex), cache-busting query, číslo verze
@@ -33,7 +33,7 @@ URL_PATTERNS = [r"/clanek/", r"/soubor/", r"/getmedia/", r"/ds-\d", r"/ms-\d", r
 def fingerprint(base):
     try:
         req = urllib.request.Request(base, headers={"User-Agent": UA})
-        with urllib.request.urlopen(req, timeout=12, context=CTX) as r:
+        with http_util.urlopen(req, timeout=12) as r:
             html = r.read(300000).decode("utf-8", "replace")
             hdrs = {k.lower(): v for k, v in r.headers.items()}
     except Exception:

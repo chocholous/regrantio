@@ -27,6 +27,7 @@ Usage:
   python3 scripts/karlovarsky_harvest.py --method edesky
 """
 import argparse, json, re, sys, urllib.parse, urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 HOST = "kr-karlovarsky.cz"
 KRAJ = "Karlovarský kraj"
@@ -131,7 +132,7 @@ def harvest_playwright():
 
 def fetch(url):
     req = urllib.request.Request(url, headers={"User-Agent": UA})
-    return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+    return http_util.urlopen(req, timeout=30).read().decode("utf-8", "replace")
 
 
 def harvest_edesky(pages=10):

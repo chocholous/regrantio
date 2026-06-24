@@ -11,6 +11,7 @@ Ověřeno: granty.praha.eu, idSeznamu abad868e-… → 112 907 záznamů.
 import argparse, json, os, ssl, sys, time, urllib.parse, urllib.request, http.cookiejar
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from limits import L   # centrální registr limitů (root limits.json)
+import http_util       # jednotná TLS politika (audit #7/#32)
 
 # payload template zachycený Playwrightem (scripts/lewis_discover.py); měň jen skip/top
 TEMPLATE = {
@@ -23,9 +24,9 @@ TEMPLATE = {
 }
 
 def opener():
-    ctx = ssl.create_default_context(); ctx.check_hostname = False; ctx.verify_mode = ssl.CERT_NONE
+    # opener nemá auto-fallback (ten je jen v http_util.urlopen) → bere kontext dle politiky (auto=ověř)
     op = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()),
-                                     urllib.request.HTTPSHandler(context=ctx))
+                                     urllib.request.HTTPSHandler(context=http_util.context()))
     op.addheaders = [("User-Agent", "Mozilla/5.0 (lewis-dynamo-harvest; re-grantio)")]
     return op
 

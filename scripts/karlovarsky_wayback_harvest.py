@@ -23,6 +23,7 @@ programy mají deadline leden–březen 2026 (= už uzavřené); to neřešíme.
 Usage: python3 scripts/karlovarsky_wayback_harvest.py [--out data/h_kraj_karlovarsky.json]
 """
 import argparse, gzip, json, re, sys, urllib.parse, urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 WB = "https://web.archive.org/web"
 CDX = "http://web.archive.org/cdx/search/cdx"
@@ -39,7 +40,7 @@ SKIP_AREAS = {"oblast-skolstvi-sportu"}
 
 def fetch(url, decode=True):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0", "Accept-Encoding": "gzip"})
-    r = urllib.request.urlopen(req, timeout=60)
+    r = http_util.urlopen(req, timeout=60)
     data = r.read()
     if data[:2] == b"\x1f\x8b":
         data = gzip.decompress(data)

@@ -19,6 +19,7 @@ Ukládá průběžně po každém fondu.
 Usage: python3 scripts/liberec_mesto_harvest.py [--out data/h_mesto_liberec.json]
 """
 import argparse, json, re, sys, urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 BASE = "https://www.liberec.cz"
 LISTING = "/cz/mesto-samosprava/granty-dotace/fondy-mesta/"
@@ -32,7 +33,7 @@ UA = {"User-Agent": "Mozilla/5.0"}
 
 def fetch(url):
     req = urllib.request.Request(url, headers=UA)
-    return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+    return http_util.urlopen(req, timeout=30).read().decode("utf-8", "replace")
 
 
 def content_text(html):

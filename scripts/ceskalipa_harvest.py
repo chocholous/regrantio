@@ -23,6 +23,7 @@ Výstup dle KONTRAKTU pro scripts/ingest_kraj.py (uroven=obec). Ukládá průbě
 Usage: python3 scripts/ceskalipa_harvest.py [--out data/h_mesto_ceskalipa.json]
 """
 import argparse, json, re, sys, urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 BASE = "https://www.mucl.cz"
 # vstupní bod = sekce Dary a dotace; z jejího submenu vyčteme detaily programů
@@ -43,7 +44,7 @@ CZ_MONTH = {"ledna": 1, "února": 2, "unora": 2, "března": 3, "brezna": 3, "dub
 
 def fetch(url):
     req = urllib.request.Request(url, headers=UA)
-    return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+    return http_util.urlopen(req, timeout=30).read().decode("utf-8", "replace")
 
 
 def title_name(html):

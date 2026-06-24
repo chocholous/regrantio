@@ -23,6 +23,7 @@ Usage: python3 scripts/prostejov_harvest.py [--out data/h_mesto_prostejov.json]
        (volitelně --no-pdf vypne stahování program-PDF; pak deadline/alokace jen z inline)
 """
 import argparse, json, os, re, subprocess, sys, tempfile, time, urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 from collections import deque
 
 BASE = "https://www.prostejov.eu"
@@ -42,7 +43,7 @@ def fetch(url, minsize=MINSIZE, retries=RETRIES):
     last = ""
     for _ in range(retries):
         try:
-            raw = urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=30).read()
+            raw = http_util.urlopen(urllib.request.Request(url, headers=UA), timeout=30).read()
             last = raw.decode("utf-8", "replace")
             if len(raw) >= minsize:
                 return last
@@ -56,7 +57,7 @@ def fetch(url, minsize=MINSIZE, retries=RETRIES):
 def fetch_bytes(url, retries=4):
     for _ in range(retries):
         try:
-            return urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=60).read()
+            return http_util.urlopen(urllib.request.Request(url, headers=UA), timeout=60).read()
         except Exception as e:
             print(f"  warn pdf {url[-40:]}: {str(e)[:50]}", file=sys.stderr)
             time.sleep(0.8)

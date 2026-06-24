@@ -16,6 +16,7 @@ Usage: python3 scripts/karvina_harvest.py [--out data/h_mesto_karvina.json]
        (spouštěj z kořene repa)
 """
 import argparse, json, re, sys, urllib.request, html as H
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 BASE = "https://www.karvina.cz"
 LISTING = BASE + "/magistrat/poskytovane-mestem"
@@ -45,7 +46,7 @@ ALOKACE_RE = re.compile(r"(?:celková\s+výše|alokac\w*|celkový\s+objem)[^\n]*
 
 def fetch(url):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+    return http_util.urlopen(req, timeout=30).read().decode("utf-8", "replace")
 
 
 def detext(html):

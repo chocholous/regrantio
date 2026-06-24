@@ -26,6 +26,7 @@ import re
 import socket
 import sys
 import urllib.error
+import http_util   # jednotná TLS politika (audit #7/#32)
 import urllib.request
 
 # Standardní dsw2 cesty (konvence platformy, ne projektové hodnoty).
@@ -77,7 +78,7 @@ def fetch(url: str, timeout: int, retries: int, accept: str = "text/html"):
         try:
             req = urllib.request.Request(
                 url, headers={"User-Agent": UA, "Accept": accept})
-            with urllib.request.urlopen(req, timeout=timeout) as r:
+            with http_util.urlopen(req, timeout=timeout) as r:
                 return r.status, r.read(), None
         except urllib.error.HTTPError as e:
             return e.code, b"", None

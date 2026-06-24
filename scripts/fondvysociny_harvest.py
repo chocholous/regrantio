@@ -10,6 +10,7 @@ Lossless: ukládá parsed pole + plný text detailu. Status dopočítá ingest z
 Usage: python3 scripts/fondvysociny_harvest.py --out data/h_fondvysociny.json [--listing aktivni]
 """
 import argparse, json, re, sys, urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 BASE = "https://www.fondvysociny.cz"
 SKIP = re.compile(r"\bTEST\b|NESLOUŽÍ K PODÁVÁNÍ|TEST\d|FV2024112233", re.I)
@@ -25,7 +26,7 @@ LABELS = {
 
 def fetch(url):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+    return http_util.urlopen(req, timeout=30).read().decode("utf-8", "replace")
 
 
 def detext(html):

@@ -20,6 +20,7 @@ Lossless: ukládá parsed pole + plný text <article>. Ukládá průběžně po 
 Usage: python3 scripts/opava_harvest.py [--out data/h_mesto_opava.json] [--year 2026]
 """
 import argparse, datetime, json, re, sys, urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 BASE = "https://www.opava-city.cz"
 LISTING = "/cz/nabidka-temat/dotace/dotacni-programy-{year}/"
@@ -37,7 +38,7 @@ POPIS_RE = re.compile(r"((?:Cílem|Účelem)\s+(?:programu|dotačního\s+titulu)
 
 def fetch(url):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+    return http_util.urlopen(req, timeout=30).read().decode("utf-8", "replace")
 
 
 def strip_html(s):

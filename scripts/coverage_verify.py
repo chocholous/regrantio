@@ -22,6 +22,7 @@ Spuštění:
 """
 import argparse, gzip, json, os, re, sys
 import urllib.request, urllib.error
+import http_util   # jednotná TLS politika (audit #7/#32)
 from urllib.parse import urlsplit
 from concurrent.futures import ThreadPoolExecutor
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -46,7 +47,7 @@ def fetch(url, timeout=25, max_bytes=50 * 1024 * 1024):
     for _ in range(retries):
         try:
             req = urllib.request.Request(safe_url(url), headers={"User-Agent": UA})
-            with urllib.request.urlopen(req, timeout=timeout) as r:
+            with http_util.urlopen(req, timeout=timeout) as r:
                 return r.status, dict(r.headers), r.read(max_bytes), None
         except urllib.error.HTTPError as e:
             err = f"http-{e.code}"

@@ -21,6 +21,7 @@ dle kontraktu scripts/ingest_kraj.py.
 Usage: python3 scripts/praha_harvest.py [--out data/h_kraj_praha.json] [--no-rss] [--no-render]
 """
 import argparse, json, re, sys, urllib.request, xml.etree.ElementTree as ET
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
 
@@ -179,7 +180,7 @@ def harvest_render(out_path, write_cb):
 
 def harvest_rss():
     req = urllib.request.Request(RSS_URL, headers={"User-Agent": UA})
-    raw = urllib.request.urlopen(req, timeout=30).read()
+    raw = http_util.urlopen(req, timeout=30).read()
     x = ET.fromstring(raw)
     out, seen = [], set()
     for it in x.findall(".//item"):

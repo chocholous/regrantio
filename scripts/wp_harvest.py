@@ -3,8 +3,9 @@
 
 Pro daný (base, rest_base, entity) stáhne VŠECHNY položky CPT/typu přes
 `/wp-json/wp/v2/{rest_base}?per_page=100&_embed` a z každé vytáhne:
-  id, foundation_id, type, entity, title, slug, url(link), date, modified, status,
-  excerpt_text, content_text (PLNÝ, bez ořezu), content_html (PLNÉ raw HTML),
+  id, foundation_id, type, entity, title (kanonický stripovaný), title_html (raw HTML titulku),
+  slug, url(link), date, modified, status,
+  excerpt_text, text (PLNÝ stripovaný, bez ořezu; raw HTML je v content.rendered),
   links[] (všechny href z obsahu), documents[] (href s příponou pdf/doc/xls/...),
   images[], terms{taxonomie:[názvy]} (z _embedded wp:term), meta (neprázdné, bez theme cruft).
 
@@ -12,6 +13,7 @@ Nahrazuje 11 ad-hoc skriptů z workflow. Konfigurace přes CLI.
 Pozn.: `_embed` vrací názvy taxonomických termů inline (1 dotaz, bez doplňků).
 """
 import argparse, html, json, os, re, sys, urllib.request, urllib.error
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 UA = "Mozilla/5.0 (compatible; grantio-research/0.1)"
 DOC_RE = re.compile(r"\.(pdf|docx?|rtf|xlsx?|odt|ods|pptx?|zip)(\b|\?|$)", re.I)
@@ -39,7 +41,7 @@ def fetch(url, timeout, retries=3):
     for _ in range(retries):
         try:
             req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/json"})
-            with urllib.request.urlopen(req, timeout=timeout) as r:
+            with http_util.urlopen(req, timeout=timeout) as r:
                 return r.status, r.read(), {k.lower(): v for k, v in r.headers.items()}
         except urllib.error.HTTPError as e:
             return e.code, b"", {}
@@ -87,9 +89,10 @@ def harvest(base, rest_base, entity, timeout, per_page=100):
             rec.update({
                 "foundation_id": fid, "harvest_type": rest_base, "entity": entity,
                 "wp_id": it.get("id"), "url": it.get("link"),
-                "title_text": to_text((it.get("title") or {}).get("rendered", "")),
+                "title": to_text((it.get("title") or {}).get("rendered", "")),  # kanonický stripovaný titulek (konzument build_extract_input._shape)
+                "title_html": (it.get("title") or {}).get("rendered", ""),      # LOSSLESS: raw HTML titulek (kanonický title výše přepsal raw title objekt)
                 "excerpt_text": to_text((it.get("excerpt") or {}).get("rendered", "")),
-                "content_text": to_text(ch),       # PLNÝ stripovaný text (raw HTML je v content.rendered)
+                "text": to_text(ch),               # PLNÝ stripovaný text (raw HTML je v content.rendered)
                 "links": links,
                 "documents": [u for u in links if DOC_RE.search(u)],
                 "images": sorted({html.unescape(u) for u in IMG_RE.findall(ch)}),

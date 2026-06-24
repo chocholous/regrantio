@@ -13,12 +13,12 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from limits import L   # centrální registr limitů (root limits.json)
 
 BASE = "https://www.eeagrants.cz"
-CTX = ssl.create_default_context(); CTX.check_hostname = False; CTX.verify_mode = ssl.CERT_NONE
+import http_util   # jednotná TLS politika (audit #7/#32)
 UA = {"User-Agent": "Mozilla/5.0 (eeagrants-harvest; re-grantio)"}
 
 def fetch(url, timeout):
     req = urllib.request.Request(url, headers=UA)
-    return urllib.request.urlopen(req, timeout=timeout, context=CTX).read().decode("utf-8", "replace")
+    return http_util.urlopen(req, timeout=timeout).read().decode("utf-8", "replace")
 
 def clean(s):
     return re.sub(r"\s+", " ", H.unescape(re.sub(r"<[^>]+>", " ", s or ""))).strip()

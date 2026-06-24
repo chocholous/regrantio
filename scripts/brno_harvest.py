@@ -30,6 +30,7 @@ Jihomoravský kraj, obec=Brno. Ukládá průběžně po každém zdroji do --out
 Usage: python3 scripts/brno_harvest.py [--out data/h_mesto_brno.json]
 """
 import argparse, json, os, re, subprocess, sys, tempfile, urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 # ---------------------------------------------------------------- safety pojistky
 # NE coverage cap — runaway-ochrana; při dosažení ⚠ log = bug, ne strop.
@@ -78,7 +79,7 @@ TERMIN_ANCHORS = re.compile(
 
 def fetch(url, binary=False):
     req = urllib.request.Request(url, headers=UA)
-    data = urllib.request.urlopen(req, timeout=45).read()
+    data = http_util.urlopen(req, timeout=45).read()
     if binary:
         if len(data) > PDF_FETCH_BYTES_MAX:
             print(f"⚠ {url}: {len(data)}B > PDF_FETCH_BYTES_MAX", file=sys.stderr)

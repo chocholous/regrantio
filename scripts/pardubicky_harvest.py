@@ -11,7 +11,7 @@ nese jen UI state) → stačí HTTP fetch HTML, žádný prohlížeč. Každá k
 Programy jsou seskupené po odborech (12 odborů, ~105 programů). Archivované programy
 se dotahují až po kliknutí na toggle (zde záměrně mimo scope — chceme aktivní s termíny).
 
-⚠ SSL chain je neúplný ("unable to verify first certificate") → CERT_NONE kontext.
+⚠ SSL chain je neúplný ("unable to verify first certificate") → http_util auto-fallback (ověř, při cert chybě opakuj bez ověření).
 
 Tenký harvester (vrstva 1): bere jen čistě strukturovaná pole z listingu. alokace_czk,
 eligible, kod NEjsou v listingu strukturované (jen v próze detailu) → null, doplní vrstva 2.
@@ -32,12 +32,12 @@ RANGE_RE = re.compile(
     r'od\s*(\d{1,2})\.\s*(\d{1,2})\.\s*(\d{4})\s*do\s*(\d{1,2})\.\s*(\d{1,2})\.\s*(\d{4})')
 
 
+import http_util   # jednotná TLS politika (audit #7/#32)
+
+
 def fetch(url):
-    ctx = ssl.create_default_context()
-    ctx.check_hostname = False
-    ctx.verify_mode = ssl.CERT_NONE
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    return urllib.request.urlopen(req, context=ctx, timeout=60).read().decode("utf-8", "replace")
+    return http_util.urlopen(req, timeout=60).read().decode("utf-8", "replace")
 
 
 def clean(html_frag):

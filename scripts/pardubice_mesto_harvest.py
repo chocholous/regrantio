@@ -29,6 +29,7 @@ Usage:
   python3 scripts/pardubice_mesto_harvest.py [--out data/h_mesto_pardubice.json]
 """
 import argparse, json, os, re, subprocess, sys, tempfile, urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 BASE = "https://pardubice.eu"
 LISTING = BASE + "/dotace"
@@ -56,7 +57,7 @@ CZ_MONTH = {
 
 def fetch_bytes(url):
     req = urllib.request.Request(url, headers=UA)
-    return urllib.request.urlopen(req, timeout=60).read()
+    return http_util.urlopen(req, timeout=60).read()
 
 
 def fetch_text(url):

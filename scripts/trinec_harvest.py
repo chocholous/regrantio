@@ -18,6 +18,7 @@ Lossless: ukládá parsed pole + perex + breadcrumb. Ukládá průběžně po ka
 Usage: python3 scripts/trinec_harvest.py [--out data/h_mesto_trinec.json] [--root /dotace]
 """
 import argparse, html as H, json, re, subprocess, sys, urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 from collections import deque
 
 BASE = "https://www.trinecko.cz"
@@ -41,7 +42,7 @@ def fetch(url):
     """urllib s fallbackem na curl (vismo občas blokuje fetchery)."""
     try:
         req = urllib.request.Request(url, headers={"User-Agent": UA})
-        return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+        return http_util.urlopen(req, timeout=30).read().decode("utf-8", "replace")
     except Exception as e:
         print(f"  urllib fail {url}: {str(e)[:50]} → curl", file=sys.stderr)
         r = subprocess.run(["curl", "-sSL", "-A", UA, "--max-time", "40", url],

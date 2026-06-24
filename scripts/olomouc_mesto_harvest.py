@@ -16,6 +16,7 @@ Lossless: ukládá nazev + datumy + kod + URL PDF + krátký kontext. Ukládá p
 Usage: python3 scripts/olomouc_mesto_harvest.py [--out data/h_mesto_olomouc.json] [--year 2026]
 """
 import argparse, html, json, re, sys, urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 BASE = "https://www.olomouc.eu"
 LISTING = "/urad-online/dotace"
@@ -28,7 +29,7 @@ PDF_RE = re.compile(
 
 def fetch(url):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+    return http_util.urlopen(req, timeout=30).read().decode("utf-8", "replace")
 
 
 def _iso8(s):

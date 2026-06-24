@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import dsw2_fetch as df
 
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
-CTX = ssl.create_default_context(); CTX.check_hostname = False; CTX.verify_mode = ssl.CERT_NONE
+import http_util   # jednotná TLS politika (audit #7/#32)
 SOUBOR_RE = re.compile(r'<a[^>]+href="([^"]*/soubor/[^"]+)"[^>]*?(?:title="([^"]*)")?[^>]*>(.*?)</a>', re.S)
 
 
@@ -16,7 +16,7 @@ def fetch(url, tries=3, timeout=20):
     for i in range(tries):
         try:
             req = urllib.request.Request(url, headers={"User-Agent": UA})
-            with urllib.request.urlopen(req, timeout=timeout, context=CTX) as r:
+            with http_util.urlopen(req, timeout=timeout) as r:
                 return r.read().decode(r.headers.get_content_charset() or "utf-8", "replace"), r.geturl()
         except Exception:  # noqa: BLE001
             time.sleep(1.0 * (i + 1))

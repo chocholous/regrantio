@@ -65,6 +65,8 @@ def store_url(url, source, manifest, timeout=25):
             entry["err"] = derr
     except Exception as e:
         entry["err"] = f"{type(e).__name__}: {str(e)[:60]}"
+    if not entry["ok"]:   # audit #32: nestažený/prázdný dokument NAHLAS, ne jen tiché ok:false
+        print(f"⚠ doc-store: {url} → {entry.get('err') or 'prázdný převod (0 znaků)'}", file=sys.stderr)
     with _LOCK:
         manifest[url] = entry; _append(entry)
     return entry

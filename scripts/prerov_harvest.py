@@ -17,6 +17,7 @@ Usage: python3 scripts/prerov_harvest.py [--out data/h_mesto_prerov.json]
   (spouštěj z kořene repa)
 """
 import argparse, json, re, sys, time, urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 BASE = "https://www.prerov.eu"
 ROOT = "/cs/magistrat/dotacni-programy/dotacni-programy-statutarniho-mesta-prerova/"
@@ -31,7 +32,7 @@ CZ_MONTHS = {"ledna": 1, "února": 2, "unora": 2, "března": 3, "brezna": 3, "du
 
 def fetch(url):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    return urllib.request.urlopen(req, timeout=40).read().decode("utf-8", "replace")
+    return http_util.urlopen(req, timeout=40).read().decode("utf-8", "replace")
 
 
 def article(html):

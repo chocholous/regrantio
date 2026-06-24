@@ -39,8 +39,9 @@ def harvest_reuse(host):
                 r = json.loads(l)
             except Exception:
                 continue
-            recs.append({"url": r.get("url"), "title": r.get("title_text"),
-                         "date": r.get("date"), "text": r.get("content_text"),
+            _t = r.get("title")  # nové kanonické vs legacy wp_full snapshot (title=raw objekt)
+            recs.append({"url": r.get("url"), "title": _t if isinstance(_t, str) else r.get("title_text"),
+                         "date": r.get("date"), "text": r.get("text") or r.get("content_text"),
                          "html": r.get("content_html"), "documents": r.get("documents", []),
                          "entity_hint": r.get("entity")})
     # vismo

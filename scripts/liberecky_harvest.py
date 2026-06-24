@@ -13,6 +13,7 @@ Oblasti se NEhardcodují — parsují se z odkazů homepage. Dedup napříč obl
 Usage: python3 scripts/liberecky_harvest.py [--out data/h_kraj_liberecky.json] [--no-detail]
 """
 import argparse, html as htmllib, json, re, sys, urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 BASE = "https://dotace.kraj-lbc.cz"
 # Oblastní podstránky = relativní odkazy /slug bez tečky/dvojtečky (ne getFile, ne externí, ne kotva).
@@ -28,7 +29,7 @@ DATE_LABELS = {"open_from": r"Zahájení:\s*([\d.]+)", "deadline": r"Ukončení:
 
 def fetch(url):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+    return http_util.urlopen(req, timeout=30).read().decode("utf-8", "replace")
 
 
 def detext(html):

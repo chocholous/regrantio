@@ -12,12 +12,12 @@ from urllib.parse import urljoin, urlparse
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from limits import L
 
-CTX = ssl.create_default_context(); CTX.check_hostname = False; CTX.verify_mode = ssl.CERT_NONE
+import http_util       # jednotná TLS politika (audit #7/#32)
 UA = {"User-Agent": "Mozilla/5.0 (regrantio-harvest)"}
 GRANT = re.compile(r"grant|dotac|výzv|vyzv|program|žádost|zadost|podpor|nadační příspěv|nadacni-prispev|jak-zadat|jak-ziskat|pro-zadatele|kdo-muze", re.I)
 
 def fetch(url, timeout):
-    return urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=timeout, context=CTX).read().decode("utf-8", "replace")
+    return http_util.urlopen(urllib.request.Request(url, headers=UA), timeout=timeout).read().decode("utf-8", "replace")
 
 def clean(s):
     return re.sub(r"\s+", " ", H.unescape(re.sub(r"<[^>]+>", " ", s or ""))).strip()

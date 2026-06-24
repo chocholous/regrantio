@@ -7,7 +7,7 @@ import json, re, ssl, os, time, urllib.request
 from urllib.parse import urlparse
 
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
-CTX = ssl.create_default_context(); CTX.check_hostname = False; CTX.verify_mode = ssl.CERT_NONE
+import http_util   # jednotná TLS politika (audit #7/#32)
 OUT = "platform_evidence"
 os.makedirs(OUT, exist_ok=True)
 
@@ -15,7 +15,7 @@ os.makedirs(OUT, exist_ok=True)
 def fetch(url, timeout=12):
     try:
         req = urllib.request.Request(url, headers={"User-Agent": UA})
-        with urllib.request.urlopen(req, timeout=timeout, context=CTX) as r:
+        with http_util.urlopen(req, timeout=timeout) as r:
             return r.read(300000).decode("utf-8", "replace"), dict(r.headers), r.status
     except Exception as e:  # noqa: BLE001
         return f"__ERR__ {type(e).__name__}: {str(e)[:50]}", {}, None

@@ -6,6 +6,8 @@ playwright>=1.40
 pyyaml>=6.0   # routing.yaml loader (scripts/routing.py)
 openpyxl>=3.1  # xlsx → text (scripts/dsw2_fetch.py convert; textutil Excel neumí)
 xlrd>=2.0      # xls (legacy BIFF) → text (scripts/dsw2_fetch.py, scripts/fix_docs.py)
+json-repair>=0.25  # kanonizace JSON výstupů vrstvy 2 (scripts/repair_out.py: import json_repair)
+certifi>=2024.2    # CA trust store pro jednotnou TLS politiku (scripts/http_util.py; audit #7/#32)
 
 # Vrstva 1 / fáze 2 — dokumenty → markdown (scripts/to_markdown.py):
 #   docling = PDF/DOCX/PPTX → markdown (layout + tabulky); CPU vynuceno (MPS float64 bug → float32 patch v to_markdown.py)

@@ -17,6 +17,7 @@ Cíl = vyhlášené VÝZVY (dotační tituly) s termíny, NE žádostní login, 
 Usage: python3 scripts/plzen_mesto_harvest.py [--out data/h_mesto_plzen.json]
 """
 import argparse, json, re, sys, urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 BASE = "https://dotace.plzen.eu"
 GRID = BASE + "/verejnost/dotacni-tituly/?_name=Tituly"
@@ -35,7 +36,7 @@ def fetch(url, as_json=False):
         headers["X-Requested-With"] = "XMLHttpRequest"
         headers["Accept"] = "application/json"
     req = urllib.request.Request(url, headers=headers)
-    raw = urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+    raw = http_util.urlopen(req, timeout=30).read().decode("utf-8", "replace")
     return json.loads(raw) if as_json else raw
 
 

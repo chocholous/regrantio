@@ -12,6 +12,7 @@ z listingu (alokace, popis, eligible, max) = null — nevymýšlí se.
 Usage: python3 scripts/olomoucky_harvest.py [--out data/h_kraj_olomoucky.json]
 """
 import argparse, json, re, sys, urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 URL = ("https://www.olkraj.cz/dotace-granty-prispevky-krajske-dotacni-programy-2026"
        "/aktualni-dotacni-programy")
@@ -23,7 +24,7 @@ CODE_RE = re.compile(r"^(\d{2}_\d{2}(?:_\d{2})?)_?\s*(.+)$")
 
 def fetch(url):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+    return http_util.urlopen(req, timeout=30).read().decode("utf-8", "replace")
 
 
 def clean(s):

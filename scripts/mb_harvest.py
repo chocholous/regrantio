@@ -20,6 +20,7 @@ Usage:
   python3 scripts/mb_harvest.py [--out data/h_mesto_mb.json] [--article <url>]
 """
 import argparse, json, os, re, shutil, subprocess, sys, tempfile, urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 BASE = "https://www.mb-net.cz"
 ARTICLE = f"{BASE}/podpora-skolstvi-kultura-a-volny-cas/d-819/p1=63313"
@@ -38,7 +39,7 @@ def fetch_html(url):
     """vismo: zkus curl-UA, fallback Playwright (vismo občas blokuje urllib)."""
     try:
         req = urllib.request.Request(url, headers={"User-Agent": UA})
-        return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+        return http_util.urlopen(req, timeout=30).read().decode("utf-8", "replace")
     except Exception as e:
         print(f"  urllib selhalo ({str(e)[:50]}), zkouším Playwright", file=sys.stderr)
         return fetch_playwright(url)
@@ -59,7 +60,7 @@ def fetch_bytes(url):
     """Stáhni dokument: curl-UA, fallback Playwright request context."""
     try:
         req = urllib.request.Request(url, headers={"User-Agent": UA})
-        return urllib.request.urlopen(req, timeout=60).read()
+        return http_util.urlopen(req, timeout=60).read()
     except Exception as e:
         print(f"  doc urllib selhalo ({str(e)[:50]}), Playwright", file=sys.stderr)
         from playwright.sync_api import sync_playwright

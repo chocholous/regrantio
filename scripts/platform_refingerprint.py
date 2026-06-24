@@ -9,7 +9,7 @@ from urllib.parse import urlparse
 from collections import Counter
 
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
-CTX = ssl.create_default_context(); CTX.check_hostname = False; CTX.verify_mode = ssl.CERT_NONE
+import http_util   # jednotná TLS politika (audit #7/#32)
 LOG = "platform_refingerprint.log"
 
 # podpisy: (název, regexy v HTML/headers). Pořadí = priorita (specifické dřív).
@@ -39,7 +39,7 @@ SIGS = [
 def fetch(url, timeout=12):
     try:
         req = urllib.request.Request(url, headers={"User-Agent": UA})
-        with urllib.request.urlopen(req, timeout=timeout, context=CTX) as r:
+        with http_util.urlopen(req, timeout=timeout) as r:
             body = r.read(400000).decode("utf-8", "replace")
             hdrs = " ".join(f"{k}:{v}" for k, v in r.headers.items())
             return body + "\n" + hdrs, r.status

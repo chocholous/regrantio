@@ -15,6 +15,7 @@ metodiky, novinky Interreg) — žádné samostatné otevřené krajské výzvy 
 Usage: python3 scripts/jihocesky_harvest.py [--out data/h_kraj_jihocesky.json]
 """
 import argparse, json, re, sys, urllib.request
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 LISTING = "https://www.kraj-jihocesky.cz/cs/ku_dotace/vyhlasene"
 
@@ -24,7 +25,7 @@ SKIP = re.compile(r"poskytnut|schválen|příjemc|registr příjemc|seznam pří
 
 def fetch(url):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+    return http_util.urlopen(req, timeout=30).read().decode("utf-8", "replace")
 
 
 def unescape(s):

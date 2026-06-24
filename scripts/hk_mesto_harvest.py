@@ -19,6 +19,7 @@ curl/urllib stačí (žádný WAF). Playwright fallback dostupný přes --playwr
 Usage: python3 scripts/hk_mesto_harvest.py --out data/h_mesto_hk.json
 """
 import argparse, json, re, sys, urllib.request, html as _html
+import http_util   # jednotná TLS politika (audit #7/#32)
 
 BASE = "https://dotace.mmhk.cz/Modules/DOTISMMHK/Pages/Public"
 HOME = BASE + "/GrantPrograms.aspx"
@@ -27,7 +28,7 @@ UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML,
 
 def fetch(url):
     req = urllib.request.Request(url, headers={"User-Agent": UA})
-    return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+    return http_util.urlopen(req, timeout=30).read().decode("utf-8", "replace")
 
 
 def fetch_pw(url):
