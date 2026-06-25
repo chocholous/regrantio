@@ -131,6 +131,18 @@ def _spreadsheet_text(path: str, ext: str) -> str:
     return "\n".join(out)
 
 
+def _docx_text(path: str) -> str:
+    """docx → text PLATFORMOVĚ NEZÁVISLE (python-docx). Pokryje i soubory s příponou .doc,
+    které jsou ve skutečnosti OOXML (časté u MŠMT). Audit #10: textutil je jen macOS."""
+    from docx import Document
+    doc = Document(path)
+    parts = [p.text for p in doc.paragraphs]
+    for tbl in doc.tables:
+        for row in tbl.rows:
+            parts.append("\t".join(c.text for c in row.cells))
+    return "\n".join(parts)
+
+
 def convert(path: str, ext: str, txt_path: str, timeout: int):
     """Vrátí (chars:int|None, err:str|None) a zapíše text do txt_path."""
     try:
@@ -142,7 +154,15 @@ def convert(path: str, ext: str, txt_path: str, timeout: int):
         elif ext in SHEET_EXTS:                       # Excel: openpyxl/xlrd, NE textutil
             text = _spreadsheet_text(path, ext)
             open(txt_path, "w", encoding="utf-8").write(text)
-        elif ext in TEXTUTIL_EXTS:
+        elif ext == "docx":                           # cross-platform (python-docx); fallback textutil (macOS)
+            try:
+                text = _docx_text(path)
+            except Exception:
+                r = subprocess.run(["textutil", "-convert", "txt", "-stdout", path],
+                                   capture_output=True, timeout=timeout)
+                text = r.stdout.decode("utf-8", "replace")
+            open(txt_path, "w", encoding="utf-8").write(text)
+        elif ext in TEXTUTIL_EXTS:                    # doc/odt/rtf/ppt/pptx → textutil (macOS-only, audit #10)
             r = subprocess.run(["textutil", "-convert", "txt", "-stdout", path],
                                capture_output=True, timeout=timeout)
             text = r.stdout.decode("utf-8", "replace")

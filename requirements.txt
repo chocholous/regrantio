@@ -16,3 +16,4 @@ certifi>=2024.2    # CA trust store pro jednotnou TLS politiku (scripts/http_uti
 docling>=2.96
 ocrmac>=1.0        # macOS only
 pymupdf4llm>=1.27  # vyhodnocená alternativa PDF→md (batch ale jede docling/pdftotext)
+python-docx>=1.1  # docx → text cross-platform (scripts/dsw2_fetch.py; audit #10, textutil je jen macOS)

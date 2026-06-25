@@ -35,6 +35,11 @@ families:
     method: "/clanek/*.aspx + /soubor přílohy; MV WebForms kapitoly → Apify"
     layer2: "Haiku na PDF"
 
+  marwel:                      # Marwel CMS (MŠMT msmt.gov.cz/msmt.cz)
+    harvester: [scripts/marwel.py]
+    method: "článek <div id=article> (perex+content) + /file/NNNNN přílohy (handler bez přípony); seed-driven"
+    layer2: "ano — Výzva detail je v PDF přílohách (pdftotext); článek nese perex"
+
   aspnet_webforms:             # Lewis/Dynamo GrantyPortal (granty.praha, zadosti.sfzp…)
     harvester: [scripts/lewis_discover.py, scripts/lewis_dynamo.py]
     method: "Playwright objev XHR (ODataSimpleFromSql) → čistý HTTP replay BEZ Apify"

@@ -151,6 +151,8 @@ def main():
     ap.add_argument("--provider-types", default="data/provider_types.json")
     ap.add_argument("--out", default="data/opportunities_v2.jsonl")
     ap.add_argument("--today", default="2026-06-01")
+    ap.add_argument("--harvest-file", nargs="*", default=[], help="layer-1 jsonl s přílohami (url→attachments) — grounding citací z dokumentů (audit #11)")
+    ap.add_argument("--manifest", default="data/files/manifest.jsonl", help="doc-store manifest (url→txt_path)")
     a = ap.parse_args()
     today = _pd(a.today) or date.today()
     _rec_grant.ptypes = _provider_types(a.provider_types)
@@ -174,6 +176,34 @@ def main():
         except Exception:
             pass
 
+    # audit #11: grounding citací z PŘÍLOH → naplň provenance.documents[].txt_path
+    # (url přílohy z layer-1 harvest jsonl × txt_path z doc-store manifestu)
+    hatt = {}
+    for hf in a.harvest_file:
+        if os.path.exists(hf):
+            for l in open(hf, encoding="utf-8"):
+                try:
+                    r = json.loads(l); hatt[r.get("url")] = r.get("attachments") or r.get("documents") or []
+                except Exception:
+                    pass
+    man = {}
+    if os.path.exists(a.manifest):
+        for l in open(a.manifest, encoding="utf-8"):
+            try:
+                e = json.loads(l)
+                if e.get("txt_path"):
+                    man[e["url"]] = e["txt_path"]
+            except Exception:
+                pass
+
+    def _docs_for(gid):
+        out = []
+        for att in hatt.get(gid, []):
+            u = att.get("url") if isinstance(att, dict) else att
+            if u:
+                out.append({"url": u, "txt_path": man.get(u)})
+        return out
+
     rich_ids, out_recs, miss_src, miss_id = set(), [], 0, 0
     for fp in sorted(glob.glob(a.out_dir + "/grant_*.json")) + sorted(glob.glob(a.out_dir + "/mission_*.json")):
         base = os.path.basename(fp)
@@ -187,6 +217,9 @@ def main():
             continue
         old = existing.get(gid, {})
         prov = old.get("provenance") or {"layer": 2, "harvester": "extract_wf", "documents": []}
+        docs = _docs_for(gid)
+        if docs:                       # audit #11: přepiš dokumenty čerstvými (s txt_path) → resolve_citations je prohledá
+            prov = {**prov, "documents": docs}
         surl = old.get("source_url") or gid
         is_mission = base.startswith("mission_")
         rec = (_rec_mission(f, gid, host, surl, prov, body) if is_mission
