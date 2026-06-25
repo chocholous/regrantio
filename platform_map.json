@@ -1213,12 +1213,12 @@
   "mv.gov.cz": {
    "plat": "aspnet_clanek_mvhzs",
    "src": "det",
-   "grant": null
+   "grant": true
   },
   "mvcr.cz": {
    "plat": "aspnet_clanek_mvhzs",
    "src": "det",
-   "grant": null
+   "grant": true
   },
   "mvcr.gov.cz": {
    "plat": "ERR_fetch",

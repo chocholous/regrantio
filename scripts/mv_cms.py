@@ -39,6 +39,14 @@ def content_area(h):
 
 
 def title_of(h):
+    # Preferuj článkový <h1> v obsahové oblasti — robustní napříč variantami <title>
+    # (MV mv.gov.cz: <title> je "Název článku - Ministerstvo vnitra ČR", tj. název PRVNÍ →
+    #  původní split-poslední-segment vracel jméno organizace).
+    ca = content_area(h)
+    for hm in re.findall(r"<h1[^>]*>(.*?)</h1>", ca, re.S):
+        t = to_text(hm)
+        if t and "ministerstvo vnitra" not in t.lower():
+            return t
     m = re.search(r"<title>(.*?)</title>", h, re.S)
     if not m:
         return None
