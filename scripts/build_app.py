@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Generovátko fasetové aplikace nad data/opportunities.jsonl (self-contained HTML/JS, offline).
+"""Generovátko fasetové aplikace nad data/opportunities_v2.jsonl (self-contained HTML/JS, offline).
 
 Sloučí fasetové vyhledávání (z facets bloku — oblast, sektor→typ žadatele, poskytovatel,
 kraj, forma/zdroj/režim/délka/způsob podání, výše-range, status, fulltext) s bohatým
 detailem každé oportunity: VŠECHNA strukturovaná pole + facety + klasifikace (proč zařazeno)
 + grounding citace (exact/fragment/none) + provenance/dokumenty + extra (lossless) + raw JSON.
 
-  python3 scripts/build_app.py  [--in data/opportunities.jsonl] [--out data/grants_app.html]
+  python3 scripts/build_app.py  [--in data/opportunities_v2.jsonl] [--out data/grants_app.html]
 """
 import argparse, json
 
@@ -483,7 +483,7 @@ def coverage_html(recs):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--in", dest="inp", default="data/opportunities.jsonl")
+    ap.add_argument("--in", dest="inp", default="data/opportunities_v2.jsonl")  # rich app-ready (ingest_rich); flat opportunities.jsonl nemá facets (audit #1)
     ap.add_argument("--out", default="data/grants_app.html")
     a = ap.parse_args()
     recs = [json.loads(l) for l in open(a.inp, encoding="utf-8")]

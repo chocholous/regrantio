@@ -21,8 +21,11 @@ def clean(records, empty_max):
     seen, out = set(), []
     drop = {"empty": 0, "dup": 0, "nav": 0}
     for r in records:
-        text = (r.get("text") or "").strip()
-        docs = r.get("documents") or []
+        # tolerantní k variantám klíčů napříč VŠEMI layer-1 harvestery (shodně s build_extract_input._shape):
+        # text = text(wp/harvest_site/eeagrants) | body_text(mv_cms/kentico/vismo) | content_text(legacy wp)
+        # docs = documents[] | attachments[]  → jinak by se body_text/attachments zdroje mylně dropovaly jako „empty"
+        text = (r.get("text") or r.get("body_text") or r.get("content_text") or "").strip()
+        docs = r.get("documents") or r.get("attachments") or []
         if len(text) < empty_max and not docs:
             drop["empty"] += 1; continue
         if NAV.search(r.get("url") or ""):
