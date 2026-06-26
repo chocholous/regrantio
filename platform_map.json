@@ -2123,7 +2123,7 @@
   "vinarskyfond.cz": {
    "plat": "wordpress",
    "src": "det",
-   "grant": null
+   "grant": true
   },
   "visegradfund.org": {
    "plat": "astro",
