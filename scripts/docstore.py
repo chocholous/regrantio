@@ -58,9 +58,11 @@ def store_url(url, source, manifest, timeout=25):
         nb, derr = df.download(url, raw, timeout, L("safety.doc_download_max_mb") * 1024 * 1024)
         entry["bytes"] = nb or 0
         if not derr:
-            df.convert(raw, ext, txt, 60)
-            if os.path.exists(txt):
+            chars, cerr = df.convert(raw, ext, txt, 60)   # NEignoruj návrat: konverze může selhat
+            if chars and os.path.exists(txt):              # (chybějící pdftotext, rozbitý soubor…) →
                 entry["txt_path"] = txt; entry["chars"] = os.path.getsize(txt); entry["ok"] = True
+            elif cerr:                                     # surface chybu, ne ji maskovat jako 'prázdný převod'
+                entry["err"] = cerr
         else:
             entry["err"] = derr
     except Exception as e:

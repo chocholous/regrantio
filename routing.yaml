@@ -51,7 +51,7 @@ families:
     layer2: "ano"
 
   # server-rendered bespoke rodiny → univerzální harvester (sám pozná WP REST vs statický BFS)
-  drupal:   {harvester: [scripts/harvest_site.py], method: "statický BFS / občas JSON:API", layer2: "ano"}
+  drupal:   {harvester: [scripts/harvest_site.py], method: "statický BFS / občas JSON:API (velký víceagendový web ministerstva → harvest_site --scope-path /cz/.../prehled-dotaci, jinak 'program/dotace' matchuje celý web); MŽP mzp.gov.cz potvrzeno", layer2: "ano"}
   joomla:   {harvester: [scripts/harvest_site.py], method: "statický BFS / občas API", layer2: "ano"}
   liferay:  {harvester: [scripts/harvest_site.py, scripts/praha_grants.py], method: "server-rendered BFS (praha_grants je Liferay-specific PoC)", layer2: "ano"}
   plone:    {harvester: [scripts/harvest_site.py], method: "folder→roční detail→.pdf (resolveuid)", layer2: "ano — zásady v PDF"}

@@ -66,9 +66,17 @@ def main():
     ap.add_argument("--delay", type=float, default=0.3)
     ap.add_argument("--max-pages", type=int, default=L("safety.runaway_page_ceiling"),
                     help="runaway-pojistka (limits.json safety.runaway_page_ceiling); NE coverage cap — data se berou celá")
+    ap.add_argument("--scope-path", default=None,
+                    help="omez BFS na URL-podstrom (prefix path), např. /cz/agenda/prehled-dotaci. "
+                         "Relevanční filtr (jako GRANT regex), NE coverage cap — pro velké víceagendové weby "
+                         "(ministerstva), kde 'program/dotace' matchuje celý web mimo dotační sekci.")
     args = ap.parse_args()
     out = args.out or f"data/{args.source}.jsonl"
     host = urlparse(args.base).netloc
+
+    def in_scope(full):
+        return urlparse(full).netloc == host and GRANT.search(full) and (
+            args.scope_path is None or urlparse(full).path.startswith(args.scope_path))
 
     # 0) homepage + SPA detekce
     try:
@@ -89,7 +97,7 @@ def main():
         seen, queue = set(), [args.base]
         for u in re.findall(r'href="([^"]+)"', home):
             full = urljoin(args.base, H.unescape(u))
-            if urlparse(full).netloc == host and GRANT.search(full):
+            if in_scope(full):
                 queue.append(full.split("#")[0])
         while queue:
             if len(recs) >= args.max_pages:
@@ -104,7 +112,7 @@ def main():
             recs.append(parse(url, h))
             for u in re.findall(r'href="([^"]+)"', h):
                 full = urljoin(url, H.unescape(u)).split("#")[0]
-                if urlparse(full).netloc == host and GRANT.search(full) and full not in seen and len(seen) + len(queue) < args.max_pages * 2:
+                if in_scope(full) and full not in seen and len(seen) + len(queue) < args.max_pages * 2:
                     queue.append(full)
             time.sleep(args.delay)
 

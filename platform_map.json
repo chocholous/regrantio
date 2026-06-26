@@ -1243,7 +1243,7 @@
   "mzp.gov.cz": {
    "plat": "drupal",
    "src": "det",
-   "grant": null
+   "grant": true
   },
   "mzv.cz": {
    "plat": "ewa_portal",
