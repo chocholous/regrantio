@@ -580,6 +580,11 @@
    "src": "sonnet",
    "grant": true
   },
+  "sfa.gov.cz": {
+   "plat": "sfa_portal",
+   "src": "det",
+   "grant": true
+  },
   "fondvysociny.cz": {
    "plat": "UNKNOWN",
    "src": "sonnet",
