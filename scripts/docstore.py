@@ -81,7 +81,7 @@ def from_harvest(harvest_file, source, manifest, only_urls=None, workers=None):
         except Exception: continue
         if only_urls is not None and r.get("url") not in only_urls:
             continue
-        for u in (r.get("documents") or []):
+        for u in (r.get("documents") or r.get("attachments") or []):   # harvest_site=documents, marwel/eagri/mv=attachments
             u = u.get("url") if isinstance(u, dict) else u
             if u and u not in seen:
                 seen.add(u); urls.append(u)

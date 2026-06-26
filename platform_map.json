@@ -516,7 +516,7 @@
    "grant": null
   },
   "eagri.cz": {
-   "plat": "custom_spa",
+   "plat": "eagri_portal",
    "src": "sonnet",
    "grant": true
   },

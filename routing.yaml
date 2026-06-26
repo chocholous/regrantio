@@ -40,6 +40,11 @@ families:
     method: "článek <div id=article> (perex+content) + /file/NNNNN přílohy (handler bez přípony); seed-driven"
     layer2: "ano — Výzva detail je v PDF přílohách (pdftotext); článek nese perex"
 
+  eagri_portal:                # eAGRI portál (Ministerstvo zemědělství mze.gov.cz / eagri.cz)
+    harvester: [scripts/eagri.py]
+    method: "ea-* design-systém, server-rendered (POZOR: detekce hlásí custom_spa — MÝLKA); obsah v ea-content-block po <h1>, zbytek <main> je menu. Přílohy = handler /public/portal/mze/-aNNNNN---HASH (bez přípony, typ z Content-Type). Seed-driven (národní dotace)"
+    layer2: "ano — grantové podmínky (lhůta/částka/žadatel) jsou v příloze Zásady (docx/pdf), ne v textu stránky"
+
   aspnet_webforms:             # Lewis/Dynamo GrantyPortal (granty.praha, zadosti.sfzp…)
     harvester: [scripts/lewis_discover.py, scripts/lewis_dynamo.py]
     method: "Playwright objev XHR (ODataSimpleFromSql) → čistý HTTP replay BEZ Apify"
