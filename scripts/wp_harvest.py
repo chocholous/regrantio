@@ -59,11 +59,14 @@ def terms_from_embed(item):
     return out
 
 
-def harvest(base, rest_base, entity, timeout, per_page=100):
+def harvest(base, rest_base, entity, timeout, per_page=100, categories=None):
+    """categories: volitelný seznam WP category ID → REST scope `&categories=a,b,c`
+    (vrací posty v KTERÉKOLI z nich = OR) → cílený sběr dotační sekce místo celého webu."""
     fid = slug_of(base)
+    cat_q = f"&categories={','.join(str(c) for c in categories)}" if categories else ""
     items, page = [], 1
     while page <= 100:
-        st, body, hdr = fetch(f"{base}/wp-json/wp/v2/{rest_base}?per_page={per_page}&page={page}&_embed", timeout)
+        st, body, hdr = fetch(f"{base}/wp-json/wp/v2/{rest_base}?per_page={per_page}&page={page}&_embed{cat_q}", timeout)
         # někteří poskytovatelé stropují per_page → status 200 ale PRÁZDNÉ tělo: sniž a zkus znovu
         if st == 200 and not body and per_page > 10:
             per_page = max(10, per_page // 2)
@@ -117,16 +120,20 @@ def main():
     ap.add_argument("--out-dir", default="data/wp_full")
     ap.add_argument("--timeout", type=int, default=25)
     ap.add_argument("--per-page", type=int, default=100)
+    ap.add_argument("--categories", help="čárkou oddělené WP category ID — sběr jen z těchto kategorií (OR), místo celého webu")
     args = ap.parse_args()
     os.makedirs(args.out_dir, exist_ok=True)
-    items = harvest(args.base, args.rest_base, args.entity, args.timeout, args.per_page)
+    cats = [c.strip() for c in args.categories.split(",") if c.strip()] if args.categories else None
+    items = harvest(args.base, args.rest_base, args.entity, args.timeout, args.per_page, cats)
     fid = slug_of(args.base)
-    path = os.path.join(args.out_dir, f"{fid}__{args.rest_base}.jsonl")
+    suffix = f"__{args.rest_base}" + (f"__cat-{'-'.join(cats)}" if cats and len(cats) <= 6 else ("__cat" if cats else ""))
+    path = os.path.join(args.out_dir, f"{fid}{suffix}.jsonl")
     with open(path, "w", encoding="utf-8") as o:
         for it in items:
             o.write(json.dumps(it, ensure_ascii=False) + "\n")
     print(json.dumps({"MARKER": "WP_FULL", "base": args.base, "rest_base": args.rest_base,
-                      "items": len(items), "with_documents": sum(1 for it in items if it["documents"]),
+                      "categories": cats, "items": len(items),
+                      "with_documents": sum(1 for it in items if it["documents"]),
                       "total_documents": sum(len(it["documents"]) for it in items), "out": path},
                      ensure_ascii=False))
 

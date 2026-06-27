@@ -13,12 +13,17 @@ families:
     harvester: [scripts/wp_harvest.py, scripts/harvest_site.py]
     method: "WP REST /wp-json/wp/v2 — grant CPT (project/call/programme) jinak posts/pages"
     layer2: "ano — granty často v pages/posts próze + PDF"
-    note: "harvest_site.py umí WP REST autodetekcí; wp_harvest.py na konkrétní CPT"
+    note: "harvest_site.py umí WP REST autodetekcí; wp_harvest.py na konkrétní CPT.
+      Plochý WP web (vše na rootu /<slug>/, např. mzd.gov.cz) → BFS je šum (3353 stránek
+      → ~3 % grantů); místo toho wp_harvest.py --categories <id,..> cílí dotační kategorie
+      (categories?search=dotac → strom dotace-a-programove-financovani + výzkum/EU výzvy)."
 
   vismo:                       # vismo_classic i vismo_modern
     harvester: [scripts/vismo.py, scripts/vismo_detail.py]
     method: "HTML-listing (.dok) → detail d-NNNN → File.ashx přílohy"
     layer2: "status z 'Úřední deska od-do', jinak Haiku na PDF přílohy"
+    note: "část webů migrovala na slug URL bez d-čísla (letnany) → vismo.py má slug_mode
+      (discovery 'homepage-slug' + sběr dotačně-sluggovaných odkazů); d- weby beze změny"
 
   dsw2_otevrenamesta:
     harvester: [scripts/dsw2.py, scripts/dsw2_fetch.py]
