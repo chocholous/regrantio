@@ -23,10 +23,18 @@ Spuštění z kořene repa:
    python3 scripts/fix_dataset.py            # in-place, vytvoří .bak
    python3 scripts/fix_dataset.py --dry-run  # jen report
 """
-import argparse, json, os, shutil, collections
+import argparse, json, os, shutil, collections, sys
+from datetime import date
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from opportunities import compute_status  # kanonický výpočet statusu (sdílený s pipeline)
 
 # Zdroj, jehož KAŽDÝ záznam je duplicitní/nekonzistentní kopií jiného zdroje → smazat.
 DROP_SOURCES = {"dotace.usti.cz"}  # = duplicitní Ústí (kind=program fonds + ne-extrahované appeals)
+
+# Varianta poskytovatele sklizená 2× (bohatší extract_wf pod bare-slug vs chudší apify pod <slug>.cz).
+# Když TÝŽ (normalizovaný) titul existuje pod bare-slug, .cz kopie je duplicitní → drop.
+# (Ostatní .cz varianty nesou DISTINKTNÍ granty — nemažou se; jen agrofert má překryv titulů.)
+VARIANT_DEDUP = {"nadace-agrofert.cz": "nadace-agrofert"}
 
 # Ruční mapa zdroj→typ poskytovatele pro all-null zdroje (ověřeno z titulků/URL záznamů).
 # slovník hodnot = canon facet vocab (ministerstvo / statni_fond / nadace / firemni_nadace / nadacni_fond).
@@ -71,8 +79,10 @@ def majority_types(recs):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--in", dest="inp", default="data/opportunities_v2.jsonl")
+    ap.add_argument("--today", default=date.today().isoformat(), help="práh pro výpočet statusu (default dnešek)")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
+    today = date.fromisoformat(a.today)
 
     recs = load(a.inp)
     n0 = len(recs)
@@ -81,6 +91,20 @@ def main():
     # ---- A) DROP duplicitních zdrojů ----
     dropped = [r for r in recs if r.get("source") in DROP_SOURCES]
     recs = [r for r in recs if r.get("source") not in DROP_SOURCES]
+
+    # ---- A2) variant dedup (agrofert: .cz apify kopie překrývající bohatší bare-slug) ----
+    def ntitle(r):
+        return "".join((r.get("title") or "").lower().split())
+    variant_dropped = []
+    for cz, bare in VARIANT_DEDUP.items():
+        bare_titles = {ntitle(r) for r in recs if r.get("source") == bare and r.get("title")}
+        keep = []
+        for r in recs:
+            if r.get("source") == cz and ntitle(r) in bare_titles:
+                variant_dropped.append(r)
+            else:
+                keep.append(r)
+        recs = keep
 
     # ---- B) reclasifikace typ_poskytovatele=null ----
     maj = majority_types(recs)
@@ -99,12 +123,30 @@ def main():
         else:
             unresolved[s] += 1
 
+    # ---- C) přepočet statusu k dnešku (status v KÓDU, ne LLM) ----
+    # jen kind=grant; foundation_mission nemá časový status (zůstává None).
+    transitions = collections.Counter()
+    st_before = collections.Counter(r.get("status") for r in recs)
+    for r in recs:
+        if r.get("kind") != "grant":
+            continue
+        old = r.get("status")
+        new, conf = compute_status(r.get("open_from"), r.get("deadline"), today)
+        if new != old:
+            transitions[f"{old}→{new}"] += 1
+        r["status"], r["status_confidence"] = new, conf
+    st_after = collections.Counter(r.get("status") for r in recs)
+
     # ---- report ----
     print("=== A) ÚSTÍ / duplicitní zdroje ===")
     dd = collections.Counter(r.get("source") for r in dropped)
     for s, c in dd.most_common():
         print(f"  DROP {s}: {c} záznamů")
     print(f"  celkem smazáno: {len(dropped)}")
+    if variant_dropped:
+        print("\n=== A2) variant dedup (.cz apify kopie) ===")
+        for s, c in collections.Counter(r.get("source") for r in variant_dropped).most_common():
+            print(f"  DROP {s}: {c} (duplicitní titul existuje pod bohatším bare-slug)")
     print("\n=== B) reclasifikace typ_poskytovatele=null ===")
     for k, c in sorted(filled.items()):
         print(f"  +{c:3}  {k}")
@@ -113,6 +155,12 @@ def main():
         print("  ⚠ NEVYŘEŠENO (chybí v mapě i v majoritě):")
         for s, c in unresolved.most_common():
             print(f"      {s}: {c}")
+
+    print(f"\n=== C) přepočet statusu k {today.isoformat()} ===")
+    for k, c in sorted(transitions.items(), key=lambda x: -x[1]):
+        print(f"  {k}: {c}")
+    print(f"  před:  " + " · ".join(f"{k}={v}" for k, v in st_before.most_common()))
+    print(f"  po:    " + " · ".join(f"{k}={v}" for k, v in st_after.most_common()))
 
     nulls_after = sum(1 for r in recs if not (r.get("facets") or {}).get("typ_poskytovatele"))
     print("\n=== souhrn ===")
