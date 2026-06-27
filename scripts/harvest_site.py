@@ -23,7 +23,7 @@ def clean(s):
     return re.sub(r"\s+", " ", H.unescape(re.sub(r"<[^>]+>", " ", s or ""))).strip()
 
 def docs_in(url, html):
-    return sorted({urljoin(url, H.unescape(u)) for u in re.findall(r'href="([^"]+\.(?:pdf|docx?|xlsx?|odt))"', html, re.I)}
+    return sorted({urljoin(url, H.unescape(u)) for u in re.findall(r'href="([^"]+\.(?:pdf|docx?|xlsx?|pptx?|odt|ods|rtf|zip))"', html, re.I)}
                   | {urljoin(url, H.unescape(u)) for u in re.findall(r'href="([^"]*/documents/d/[^"#?]+)"', html)})
 
 def parse(url, html):

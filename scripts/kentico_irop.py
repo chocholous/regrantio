@@ -88,7 +88,7 @@ def process(url, files_dir, do_att, timeout, max_bytes):
             continue
         seen.add(full)
         att = {"url": full, "name": to_text(name)[:100]}
-        if do_att and len(atts) < 8:  # cap na PoC
+        if do_att:  # audit #13: žádný cap na přílohy (acquisition = unbounded)
             ext = df.sniff_ext(full, timeout) or "bin"
             sha = hashlib.sha1(full.encode()).hexdigest()[:16]
             d = os.path.join(files_dir, df.host_of(full)); os.makedirs(d, exist_ok=True)

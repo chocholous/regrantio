@@ -52,7 +52,7 @@ def base_of(u: str) -> str:
 
 
 def slug_of(u: str) -> str:
-    host = re.sub(r"^https?://", "", base_of(u)).lstrip("www.")
+    host = re.sub(r"^www\.", "", re.sub(r"^https?://", "", base_of(u)))
     return re.sub(r"[^a-z0-9]+", "-", host.lower()).strip("-")
 
 

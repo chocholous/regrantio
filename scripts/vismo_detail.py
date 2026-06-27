@@ -91,7 +91,7 @@ def process(call, files_dir, do_attachments, timeout, max_bytes):
         "vytvoreno": v.group(1).replace(" ", "") if v else None,
         "zmeneno": v.group(2).replace(" ", "") if v else None,
         "zodpovida": z.group(1).strip() if z else None,
-        "body_text": body[:8000],
+        "body_text": body,
     })
     # přílohy
     atts = []

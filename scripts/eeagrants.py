@@ -31,7 +31,7 @@ def parse_page(url, html):
     text = "\n".join(t for t in (clean(b) for b in blocks) if len(t) > L("acquisition.min_text_block_chars"))
     # dokumenty (pdf/doc/xls) + interní odkazy pro BFS
     docs = sorted({urljoin(url, H.unescape(u))
-                   for u in re.findall(r'href="([^"]+\.(?:pdf|docx?|xlsx?|odt))"', html, re.I)})
+                   for u in re.findall(r'href="([^"]+\.(?:pdf|docx?|xlsx?|pptx?|odt|ods|rtf|zip))"', html, re.I)})
     links = {urljoin(url, H.unescape(u)) for u in re.findall(r'href="(/cs/(?:programy|vyzvy)/[^"#?]+)"', html)}
     return {"url": url, "title": title, "text": text, "documents": docs}, links
 

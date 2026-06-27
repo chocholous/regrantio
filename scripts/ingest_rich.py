@@ -150,7 +150,7 @@ def main():
     ap.add_argument("--existing", default="data/opportunities.jsonl")
     ap.add_argument("--provider-types", default="data/provider_types.json")
     ap.add_argument("--out", default="data/opportunities_v2.jsonl")
-    ap.add_argument("--today", default="2026-06-01")
+    ap.add_argument("--today", default=date.today().isoformat())  # audit #4: dnešek defaultně reálné today, ne natvrdo 2026-06-01
     ap.add_argument("--harvest-file", nargs="*", default=[], help="layer-1 jsonl s přílohami (url→attachments) — grounding citací z dokumentů (audit #11)")
     ap.add_argument("--manifest", default="data/files/manifest.jsonl", help="doc-store manifest (url→txt_path)")
     a = ap.parse_args()

@@ -59,8 +59,12 @@ def store_url(url, source, manifest, timeout=25):
         entry["bytes"] = nb or 0
         if not derr:
             chars, cerr = df.convert(raw, ext, txt, 60)   # NEignoruj návrat: konverze může selhat
-            if chars and os.path.exists(txt):              # (chybějící pdftotext, rozbitý soubor…) →
-                entry["txt_path"] = txt; entry["chars"] = os.path.getsize(txt); entry["ok"] = True
+            real = 0
+            if os.path.exists(txt):
+                try: real = len(open(txt, encoding="utf-8", errors="ignore").read().strip())
+                except Exception: real = 0
+            if real > 0:                                   # audit #30: měř SKUTEČNÝ text (ne getsize) — sken→pdftotext
+                entry["txt_path"] = txt; entry["chars"] = real; entry["ok"] = True   # dá jen \f → 0 znaků → ok:False → ⚠
             elif cerr:                                     # surface chybu, ne ji maskovat jako 'prázdný převod'
                 entry["err"] = cerr
         else:

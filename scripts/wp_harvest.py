@@ -14,6 +14,7 @@ Pozn.: `_embed` vrací názvy taxonomických termů inline (1 dotaz, bez doplňk
 """
 import argparse, html, json, os, re, sys, urllib.request, urllib.error
 import http_util   # jednotná TLS politika (audit #7/#32)
+from limits import L
 
 UA = "Mozilla/5.0 (compatible; grantio-research/0.1)"
 DOC_RE = re.compile(r"\.(pdf|docx?|rtf|xlsx?|odt|ods|pptx?|zip)(\b|\?|$)", re.I)
@@ -64,8 +65,9 @@ def harvest(base, rest_base, entity, timeout, per_page=100, categories=None):
     (vrací posty v KTERÉKOLI z nich = OR) → cílený sběr dotační sekce místo celého webu."""
     fid = slug_of(base)
     cat_q = f"&categories={','.join(str(c) for c in categories)}" if categories else ""
+    ceiling = L("safety.runaway_page_ceiling")   # audit #19: strop z limits.json, ne natvrdo 100
     items, page = [], 1
-    while page <= 100:
+    while page <= ceiling:
         st, body, hdr = fetch(f"{base}/wp-json/wp/v2/{rest_base}?per_page={per_page}&page={page}&_embed{cat_q}", timeout)
         # někteří poskytovatelé stropují per_page → status 200 ale PRÁZDNÉ tělo: sniž a zkus znovu
         if st == 200 and not body and per_page > 10:
@@ -109,6 +111,8 @@ def harvest(base, rest_base, entity, timeout, per_page=100, categories=None):
         if page >= total_pages:
             break
         page += 1
+    if page > ceiling:                            # audit #19: runaway strop dosažen → NAHLAS
+        print(f"⚠ wp_harvest: dosažen strop {ceiling} stran u {base}/{rest_base} — prošetři", file=sys.stderr)
     return items
 
 

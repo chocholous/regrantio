@@ -9,6 +9,7 @@ detailem každé oportunity: VŠECHNA strukturovaná pole + facety + klasifikace
   python3 scripts/build_app.py  [--in data/opportunities_v2.jsonl] [--out data/grants_app.html]
 """
 import argparse, json
+from datetime import date
 
 TPL = r"""<!doctype html><html lang=cs><head><meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1">
@@ -451,7 +452,7 @@ def coverage_html(recs):
         m = _re.match(r"(\d{4})-(\d{2})-(\d{2})", dd)
         if not m:
             noparse += 1
-        elif dd >= "2026-06-05":
+        elif dd >= date.today().isoformat():   # audit #4: práh = reálné dnešek, ne natvrdo 2026-06-05
             fut += 1
         else:
             past += 1

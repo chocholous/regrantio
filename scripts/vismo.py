@@ -13,6 +13,7 @@ from collections import deque
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
 import os; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import http_util   # jednotná TLS politika (audit #7/#32)
+from limits import L
 # POZOR: 'dotac' nematchuje 'dotační' (č≠c)! → dota[cč] chytí dotace i dotační
 DOTACE_RE = re.compile(r"dota[cč]|grant|příspěv|prispev|fond", re.I)   # pro DISCOVERY (široké)
 RECURSE_RE = re.compile(r"dota[cč]|grant|výzv|vyzv", re.I)             # pro REKURZI (úzké — ne 'příspěvkové org')
@@ -79,7 +80,7 @@ DOC_RELEVANT = re.compile(r"dota[cč]|grant|výzv|vyzv|příspěv|prispev|progra
 SLUG_DOC_HREF = re.compile(r"dota[cč]|grant|vyzv|výzv|stipend", re.I)
 
 
-def harvest_listing(base, start_url, max_pages=40, max_depth=2, slug_mode=False):
+def harvest_listing(base, start_url, max_pages=None, max_depth=2, slug_mode=False):
     """BFS přes ds-/ms- dotační podsložky (do max_depth), sesbírej d- dokumenty
     z .dok listingu I z obsahu (#hlobsah) — některé weby nelistují přes .dok.
     slug_mode=True: web migroval na slug URL (bez d-čísla) → ber i dotačně-sluggované
@@ -87,6 +88,8 @@ def harvest_listing(base, start_url, max_pages=40, max_depth=2, slug_mode=False)
     host = urlparse(base).netloc
     seen_pages, seen_docs = set(), {}
     docs = []
+    if max_pages is None:                        # audit #16: strop z limits.json (safety), ne natvrdo 40
+        max_pages = L("safety.runaway_page_ceiling")
     q = deque([(start_url, "", 0)])
     pages = 0
     while q and pages < max_pages:
@@ -145,6 +148,8 @@ def harvest_listing(base, start_url, max_pages=40, max_depth=2, slug_mode=False)
             full = urljoin(url, html.unescape(href))
             if urlparse(full).netloc == host and full not in seen_pages:
                 q.append((full, t, depth + 1))
+    if pages >= max_pages:                       # audit #16: runaway strop dosažen → NAHLAS (bug, ne tiché uříznutí)
+        print(f"⚠ vismo: dosažen strop {max_pages} stran u {base} — prošetři (NEzvyšuj naslepo)", file=sys.stderr)
     return docs, pages, len(seen_pages)
 
 

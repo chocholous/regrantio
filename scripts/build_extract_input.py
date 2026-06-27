@@ -17,7 +17,7 @@ Spuštění:
   python3 scripts/build_extract_input.py data/vismo_documents.jsonl --source-type vismo --source vismo --out-dir /tmp/ei_vismo
   python3 scripts/build_extract_input.py data/dsw2_appeals.jsonl --source-type dsw2-appeals --source dsw2 --out-dir /tmp/ei_appeals
 """
-import argparse, json, os, re, sys
+import argparse, glob, json, os, re, sys
 from urllib.parse import urljoin
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import docstore, prefilter
@@ -64,7 +64,8 @@ def main():
     ap.add_argument("--no-prefilter", action="store_true")
     args = ap.parse_args()
     os.makedirs(args.out_dir, exist_ok=True)
-    os.system(f"rm -f {args.out_dir}/grant_*.json")
+    for _p in glob.glob(os.path.join(args.out_dir, "grant_*.json")):  # audit #6: portable + bezpečné (ne os.system shell glob)
+        os.remove(_p)
 
     recs = [json.loads(l) for l in open(args.input, encoding="utf-8")]
     # pre-filtr JEN u harvest (strukturní zdroje jsou už čisté)

@@ -27,7 +27,7 @@ def clean(s):
 
 def docs_in(url, html):
     return sorted({urljoin(url, H.unescape(u)) for u in
-                   re.findall(r'href="([^"]+\.(?:pdf|docx?|xlsx?|odt))"', html, re.I)} |
+                   re.findall(r'href="([^"]+\.(?:pdf|docx?|xlsx?|pptx?|odt|ods|rtf|zip))"', html, re.I)} |
                   {urljoin(url, H.unescape(u)) for u in
                    re.findall(r'href="(/documents/d/[^"#?]+)"', html)})
 
