@@ -13,6 +13,3 @@ __pycache__/
 
 # Claude Code runtime (locks, scheduled tasks)
 .claude/
-
-# Audit
-audit.md
