@@ -1338,7 +1338,7 @@
   "nadacesirius.cz": {
    "plat": "joomla",
    "src": "det",
-   "grant": null
+   "grant": true
   },
   "nadacesophia.cz": {
    "plat": "ERR_fetch",
