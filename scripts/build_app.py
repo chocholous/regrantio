@@ -112,6 +112,18 @@ document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
 const DATA=__DATA__;
 const L=__LABELS__;
 const lab=v=>L[v]||v;
+// STATUS se počítá KLIENTSKY při načtení (status v kódu, ne LLM) — zrcadlí scripts/opportunities.py
+// compute_status, ale prahem je REÁLNÝ dnešek prohlížeče → badge/filtr nikdy nezestárnou (uložené
+// status pole je jen snapshot z build-time). ISO 'YYYY-MM-DD' se porovnává lexikograficky = chronologicky.
+const TODAY=new Date().toISOString().slice(0,10);
+const _pd=s=>{const m=/^(\d{4}-\d{2}-\d{2})/.exec(s||'');return m?m[1]:null;};
+function computeStatus(open_from,deadline){
+ if(deadline==='průběžně'||deadline==='rolling')return 'open';   // rolling = otevřeno
+ const dl=_pd(deadline),of=_pd(open_from);
+ if(!dl)return 'unknown';
+ if(of&&TODAY<of)return 'announced';
+ if(TODAY>dl)return 'closed';
+ return 'open';}
 // pořadí dle priority hledače: KDE → KDO může → komu → na co → status, pak rámec, pak nice-to-have
 // pořadí dle užitečnosti (fill % + mentální model hledače: kde · co · stihnu · můžu žádat · pro koho · jaká podpora · detail)
 const GROUPS=[
@@ -138,6 +150,7 @@ const OBLAST_SUPER=__OBLAST_SUPER__;
 const SRC_TYPE={};
 // zploštění facet bloku do top-level klíčů pro filtr
 DATA.forEach(d=>{const f=d.facets||{};const r=f.region||{};const ex=d.extra||{};
+ if(d.kind==='grant')d.status=computeStatus(d.open_from,d.deadline);  // přepočet k dnešku (anti-stale)
  d.oblast=f.oblast||[];d.oblast_super=[...new Set((f.oblast||[]).map(o=>OBLAST_SUPER[o]).filter(Boolean))];
  d.sektor=f.sektor_zadatele||[];d.typ_zadatele=f.typ_zadatele||[];
  d.poskytovatel=f.typ_poskytovatele||null;d.kraj=r.kraj||(r.celostatni?'celostátní':((d.kind==='grant'||d.kind==='program')?'neuvedeno':null));d.okres=r.okres||null;d.celostatni=!!r.celostatni;

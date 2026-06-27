@@ -31,6 +31,10 @@ python3 scripts/dsw2.py              # /explore/fonds + /explore/appeals (inline
 python3 scripts/kentico_irop.py      # IROP/dotaceEU Kentico inline
 python3 scripts/mv_cms.py            # ASP.NET /clanek/*.aspx
 
+# gov.cz portálový CMS (server-rendered, NE SPA) — MZe + MPSV sdílí jeden harvester
+python3 scripts/eagri.py --seeds <JSON>   # MZe/eAGRI národní dotace (ea-content-block + příloha Zásady)
+python3 scripts/mpsv.py                    # MPSV (mpsv.gov.cz) — reuse eagri.process + rozcestník→detail discovery
+
 # Univerzální doc→text (vrstva 2) — používají harvestery i pipeline
 python3 scripts/dsw2_fetch.py        # sniff_ext + pdftotext/textutil (PDF/DOC/DOCX/XLS/ODT)
 
@@ -38,6 +42,10 @@ python3 scripts/dsw2_fetch.py        # sniff_ext + pdftotext/textutil (PDF/DOC/D
 python3 scripts/cms_similarity.py        # strukturální shlukování otisků → 1 shluk = 1 parser
 python3 scripts/platform_refingerprint.py
 python3 scripts/diversity_finder.py      # nejodlišnější nevzorkované zdroje
+
+# Kvalita datasetu + build prohlížecí appky (nad data/opportunities_v2.jsonl)
+python3 scripts/fix_dataset.py            # deterministická oprava: dedup (Ústí/variant) + reclasifikace null poskytovatele + přepočet statusu k --today (default dnešek); idempotentní, .bak
+python3 scripts/build_app.py              # → data/grants_app.html (fasetový prohlížeč; STATUS se počítá KLIENTSKY k dnešku, nezastará)
 ```
 
 **`scripts/*.js` NEJSOU node skripty** — jsou to **Claude Code Workflow** definice (`export const meta`, `agent()`, `parallel()`). Spouští se nástrojem Workflow uvnitř Claude Code, ne `node coverage_wf.js`. Jsou to LLM orchestrace pro coverage (`coverage_wf.js`, `type_coverage_wf.js`) a re-detekci platforem (`detect_platforms_wf.js`).
@@ -49,8 +57,8 @@ python3 scripts/diversity_finder.py      # nejodlišnější nevzorkované zdroj
 - **Vrstva 2 (extrakce, LLM):** JEDEN univerzální extraktor próza+PDF → opportunity schema. Společné napříč zdroji. `dsw2_fetch.py` (doc→md) je taky univerzální napříč všemi handlery (`File.ashx`, `/soubor`, `/getmedia`, přímé `.pdf`).
 
 **Pevná pravidla, která se snadno poruší:**
-1. **STATUS se POČÍTÁ v kódu, ne LLM** (`pipeline.py:compute_status`). Otevřená a uzavřená výzva jsou textově identické — liší se jen datem vs. dnešek. LLM klasifikuje TYP, kód počítá status. `TODAY` je v `pipeline.py` natvrdo (`date(2026,6,1)`) — při reálném běhu vyřeš.
-2. **Nevěř platform labelu** z detekce — ověř strukturální otisk (`cms_similarity.py`). Labely `mv_legacy`/`gordic_ginis` slévaly 3 různé CMS; ~65 grantových zdrojů bylo schováno v `UNKNOWN`.
+1. **STATUS se POČÍTÁ v kódu, ne LLM.** Otevřená a uzavřená výzva jsou textově identické — liší se jen datem vs. dnešek. LLM klasifikuje TYP, kód počítá status. Kanonická funkce je `scripts/opportunities.py:compute_status(open_from, deadline, today)` (pozor: `pipeline.py:compute_status(fields, rec)` je starší VARIANTA s jiným podpisem a natvrdo `date(2026,6,1)` — nepoužívej ji jako zdroj pravdy). Uložené `status` v `opportunities_v2.jsonl` je SNAPSHOT z build-time (`fix_dataset.py --today`, default dnešek); **appka ho ignoruje a počítá status KLIENTSKY k reálnému dnešku** (`build_app.py:computeStatus`, zrcadlí `opportunities.py`), takže badge/filtr nezastarají.
+2. **Nevěř platform labelu** z detekce — ověř strukturální otisk (`cms_similarity.py`). Labely `mv_legacy`/`gordic_ginis` slévaly 3 různé CMS; ~65 grantových zdrojů bylo schováno v `UNKNOWN`. Příklad záměny: `mpsv.gov.cz` byl detekcí označen `custom_spa` (protože stará homepage `www.mpsv.cz` JE Nuxt SPA) — ve skutečnosti je dotační portál server-rendered gov.cz CMS jako MZe → opraveno na `eagri_portal` (harvestuje `eagri.py`/`mpsv.py`).
 3. **Dvě vrstvy obsahu, v pořadí:** nejdřív TYP (`prompts/classify_type.md` → grant/project/news/foundation_mission/administrative/other), pak POLE typu (`prompts/extract_grant.md`).
 4. **NEOŘEZÁVAT vstup do LLM** — plný markdown + přílohy (kontext ~200k).
 5. **Negativní pravidla z `prompts/pitfalls.md`** patří do promptů — vytěžené záměny (`platnost:`/`realizace` ≠ deadline; `úvěr`/`jistina` ≠ dotace; `cílová skupina` ≠ žadatel; soubory-ke-stažení ≠ povinné přílohy).

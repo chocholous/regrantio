@@ -45,10 +45,10 @@ families:
     method: "článek <div id=article> (perex+content) + /file/NNNNN přílohy (handler bez přípony); seed-driven"
     layer2: "ano — Výzva detail je v PDF přílohách (pdftotext); článek nese perex"
 
-  eagri_portal:                # eAGRI portál (Ministerstvo zemědělství mze.gov.cz / eagri.cz)
-    harvester: [scripts/eagri.py]
-    method: "ea-* design-systém, server-rendered (POZOR: detekce hlásí custom_spa — MÝLKA); obsah v ea-content-block po <h1>, zbytek <main> je menu. Přílohy = handler /public/portal/mze/-aNNNNN---HASH (bez přípony, typ z Content-Type). Seed-driven (národní dotace)"
-    layer2: "ano — grantové podmínky (lhůta/částka/žadatel) jsou v příloze Zásady (docx/pdf), ne v textu stránky"
+  eagri_portal:                # gov.cz portálový CMS: MZe (mze.gov.cz/eagri.cz) + MPSV (mpsv.gov.cz)
+    harvester: [scripts/eagri.py, scripts/mpsv.py]
+    method: "server-rendered gov.cz portál (POZOR: detekce hlásí custom_spa — MÝLKA; mpsv.gov.cz byl takto mylně označen, viz níže). MZe: obsah v ea-content-block po <h1>, přílohy = handler /public/portal/mze/-aNNNNN---HASH (bez přípony). MPSV: stejný CMS, přílohy = /cms/documents/<uuid>/<soubor>.pdf; scripts/mpsv.py reuseuje eagri.process + MPSV rozcestník→detail discovery (seed hubs: dotacni-rizeni, vyzvy1, narodni-dotacni-tituly, rodina, socialni-sluzby)"
+    layer2: "ano — grantové podmínky (lhůta/částka/žadatel) jsou v příloze Zásady (docx/pdf), ne v textu stránky. POZOR MPSV: starý 'harvest' sklidil jen Nuxt SPA homepage www.mpsv.cz (0 výzev) → vždy cílit mpsv.gov.cz, NE www.mpsv.cz"
 
   aspnet_webforms:             # Lewis/Dynamo GrantyPortal (granty.praha, zadosti.sfzp…)
     harvester: [scripts/lewis_discover.py, scripts/lewis_dynamo.py]
