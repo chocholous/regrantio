@@ -49,10 +49,17 @@ def find_dotace(base):
     """Vrať URL dotační sekce: známá / homepage odkaz / sitemap fallback."""
     home, _ = fetch(base)
     if home:
-        # odkaz v textu obsahující dotac/grant
-        for href, txt in re.findall(r'<a[^>]+href="([^"]+)"[^>]*>([^<]+)</a>', home):
+        anchors = re.findall(r'<a[^>]+href="([^"]+)"[^>]*>([^<]+)</a>', home)
+        # 1) preferuj kanonickou vismo sekci (ds/ms/d-NNNN) s dotačním textem
+        for href, txt in anchors:
             if DOTACE_RE.search(txt) and re.search(r"/(ds|ms|d)-\d+", href):
                 return urljoin(base + "/", href), "homepage"
+        # 2) fallback: sluggovaný hub (BEZ ds/ms/d čísla) — některé vismo weby migrovaly
+        #    na slug URL (např. letnany /dotace-granty-1). Ber jen když dotační je
+        #    text I href (úzké → nevybere náhodný odkaz se slovem „dotace" v textu).
+        for href, txt in anchors:
+            if DOTACE_RE.search(txt) and DOTACE_RE.search(href):
+                return urljoin(base + "/", href), "homepage-slug"
     # fallback: sitemap.xml
     for sm in ("/sitemap.xml", "/mapa-webu", "/mapa-stranek"):
         s, _ = fetch(base + sm)
@@ -68,11 +75,15 @@ def find_dotace(base):
 NAV_JUNK = re.compile(r"^(Hlavní|Vypnout|Přeskočit|Klikací rozpočet|Realizované projekty)", re.I)
 # pro d- dokumenty MIMO .dok blok (obsah obsahuje i nav) — ber jen dotačně relevantní názvy
 DOC_RELEVANT = re.compile(r"dota[cč]|grant|výzv|vyzv|příspěv|prispev|program|fond|stipend|\b20\d\d\b", re.I)
+# slug-režim (vismo migrované na slug URL, např. letnany): dotačně relevantní CESTA bez d-čísla
+SLUG_DOC_HREF = re.compile(r"dota[cč]|grant|vyzv|výzv|stipend", re.I)
 
 
-def harvest_listing(base, start_url, max_pages=40, max_depth=2):
+def harvest_listing(base, start_url, max_pages=40, max_depth=2, slug_mode=False):
     """BFS přes ds-/ms- dotační podsložky (do max_depth), sesbírej d- dokumenty
-    z .dok listingu I z obsahu (#hlobsah) — některé weby nelistují přes .dok."""
+    z .dok listingu I z obsahu (#hlobsah) — některé weby nelistují přes .dok.
+    slug_mode=True: web migroval na slug URL (bez d-čísla) → ber i dotačně-sluggované
+    odkazy (zapíná se jen pro discovery 'homepage-slug', aby se neměnily d- weby)."""
     host = urlparse(base).netloc
     seen_pages, seen_docs = set(), {}
     docs = []
@@ -91,11 +102,13 @@ def harvest_listing(base, start_url, max_pages=40, max_depth=2):
         hm = re.search(r"<h1[^>]*>(.*?)</h1>", ca, re.S)
         sec_title = clean(hm.group(1)) if hm else section
 
-        def add_doc(full, title, li_html):
+        def add_doc(full, title, li_html, allow_slug=False):
             t = clean(title)
             if not t or NAV_JUNK.match(t) or full in seen_docs:
                 return
-            if urlparse(full).netloc != host or not re.search(r"/d-\d+", full):
+            if urlparse(full).netloc != host:
+                return
+            if not re.search(r"/d-\d+", full) and not (allow_slug and SLUG_DOC_HREF.search(urlparse(full).path)):
                 return
             dm = DATE_RE.search(li_html)
             seen_docs[full] = 1
@@ -114,6 +127,13 @@ def harvest_listing(base, start_url, max_pages=40, max_depth=2):
         for href, txt in LI_A.findall(ca):
             if re.search(r"/d-\d+", href) and DOC_RELEVANT.search(clean(txt)):
                 add_doc(urljoin(url, html.unescape(href)), txt, "")
+        # 1c) SLUG režim (jen homepage-slug discovery): dotace dokumenty bez d-čísla —
+        #     ber odkazy s dotačním SLUGEM a dotačně relevantním textem (results/smlouvy
+        #     se mohou přibrat → odfiltruje je vrstva 2 klasifikace, stejně jako u d- webů).
+        if slug_mode:
+            for href, txt in LI_A.findall(ca):
+                if SLUG_DOC_HREF.search(href) and DOC_RELEVANT.search(clean(txt)):
+                    add_doc(urljoin(url, html.unescape(href)), txt, "", allow_slug=True)
         # 2) podsložky (ds-/ms-) k rekurzi — do max_depth, scan CELÉ stránky (vč. submenu),
         #    jen úzce dotačně relevantní text (vyřadí globální nav i 'příspěvkové organizace')
         if depth >= max_depth:
@@ -141,7 +161,7 @@ def main():
     if not start:
         print(json.dumps({"MARKER": "VISMO", "base": args.base, "discovery": "FAIL", "docs": 0}, ensure_ascii=False))
         return
-    docs, pages, npages = harvest_listing(args.base, start)
+    docs, pages, npages = harvest_listing(args.base, start, slug_mode=(how == "homepage-slug"))
     with open(args.out, "a", encoding="utf-8") as o:
         for d in docs:
             o.write(json.dumps(d, ensure_ascii=False) + "\n")
