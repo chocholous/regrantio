@@ -1323,7 +1323,7 @@
   "nadacepartnerstvi.cz": {
    "plat": "grantys",
    "src": "det",
-   "grant": null
+   "grant": true
   },
   "nadaceppf.cz": {
    "plat": "nextjs_react",
