@@ -1353,7 +1353,7 @@
   "nadacevia.cz": {
    "plat": "wordpress",
    "src": "det",
-   "grant": null
+   "grant": true
   },
   "nadacevinci.cz": {
    "plat": "wordpress",
