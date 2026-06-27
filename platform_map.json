@@ -1308,7 +1308,7 @@
   "nadaceleontinka.cz": {
    "plat": "drupal",
    "src": "det",
-   "grant": null
+   "grant": true
   },
   "nadaceo2.cz": {
    "plat": "visu_cms",
