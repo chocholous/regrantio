@@ -47,6 +47,7 @@ python3 scripts/sfk.py               # SFK – Státní fond kultury ČR (na mk.
 python3 scripts/mpo.py               # MPO (mpo.gov.cz) — NÁRODNÍ programy (TREND/TRIO/TWIST/CFF/Obchůdek/Czech Rise Up/brownfieldy/strategické investice), seed-driven. OP TAK/PIK = P3 EU, MIMO
 python3 scripts/mmr.py               # MMR (mmr.gov.cz) — NÁRODNÍ dotace /cs/narodni-dotace (PORR, euroregiony, hroby, bezbariérové obce, cestovní ruch, NNO…), Kentico. MIMO: IROP/EU (P3) + Podpora bydlení (=SFPI)
 python3 scripts/eeagrants.py         # EHP a Norské fondy (eeagrants.cz; NKM = MF) — výzvy 2014–2021 (ukončené). typ_poskytovatele=zahranicni_fond, zdroj=ehp_norsko
+python3 scripts/tacr.py              # TA ČR (tacr.gov.cz) — aplikovaný výzkum, veřejné soutěže národních programů (SIGMA/TREND/DOPRAVA 2030/THÉTA 2/PRODEF/Prostředí pro život 2). WP CPT call+programme; lhůty jen ve FRONT-END HTML; --since aktuální cyklus
 
 # Univerzální doc→text (vrstva 2) — používají harvestery i pipeline
 python3 scripts/dsw2_fetch.py        # sniff_ext + pdftotext/textutil (PDF/DOC/DOCX/XLS/ODT)

@@ -57,6 +57,7 @@ PROVIDER_TYPE = {
     "sfk": "statni_fond",             # Státní fond kultury ČR (na mk.gov.cz) — kultura
     # státní grantové agentury (účelová podpora výzkumu)
     "gacr": "statni_agentura",        # Grantová agentura ČR (gacr.cz) — základní výzkum
+    "tacr": "statni_agentura",        # Technologická agentura ČR (tacr.gov.cz) — aplikovaný výzkum
     # zahraniční / mezinárodní donorské fondy
     "eeagrants": "zahranicni_fond",   # EHP a Norské fondy (eeagrants.cz; NKM = Ministerstvo financí)
     # nadace

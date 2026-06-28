@@ -1987,8 +1987,8 @@
   },
   "tacr.cz": {
    "plat": "wordpress",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "tacr.dsw2.otevrenamesta.cz": {
    "plat": "dsw2_otevrenamesta",
