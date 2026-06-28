@@ -57,6 +57,8 @@ PROVIDER_TYPE = {
     "sfk": "statni_fond",             # Státní fond kultury ČR (na mk.gov.cz) — kultura
     # státní grantové agentury (účelová podpora výzkumu)
     "gacr": "statni_agentura",        # Grantová agentura ČR (gacr.cz) — základní výzkum
+    # zahraniční / mezinárodní donorské fondy
+    "eeagrants": "zahranicni_fond",   # EHP a Norské fondy (eeagrants.cz; NKM = Ministerstvo financí)
     # nadace
     "nadacevia": "nadace",            # Nadace Via
     "partnerstvi": "nadace",          # Nadace Partnerství
@@ -153,7 +155,7 @@ def main():
     # Filtr „dle kraje" v produktu vyžaduje vyplněný kraj. Samosprávě doplníme kraj z HOSTU
     # (naučeno majoritou z ne-null záznamů + ruční override pro all-null hosty); národní
     # poskytovatele (ministerstva/fondy/agentury/nadace) označíme celostatni=true (ne „neuvedeno").
-    NATIONAL = {"ministerstvo", "statni_fond", "statni_agentura", "nadace", "firemni_nadace", "nadacni_fond"}
+    NATIONAL = {"ministerstvo", "statni_fond", "statni_agentura", "nadace", "firemni_nadace", "nadacni_fond", "zahranicni_fond"}
     SOURCE_KRAJ_MANUAL = {"loket.dsw2.otevrenamesta.cz": "Karlovarský kraj"}  # all-null host → ruční
     cnt = collections.defaultdict(collections.Counter)
     for r in recs:

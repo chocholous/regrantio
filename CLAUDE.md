@@ -46,6 +46,7 @@ python3 scripts/sfdi.py              # SFDI (sfdi.gov.cz) — příspěvky na do
 python3 scripts/sfk.py               # SFK – Státní fond kultury ČR (na mk.gov.cz; dedikovaná doména mrtvá) — projektové dotace v kultuře, 3 výzvy/rok přes DP MK. POZOR: mk.gov.cz = ASP.NET WebForms (NEstrip <form>)
 python3 scripts/mpo.py               # MPO (mpo.gov.cz) — NÁRODNÍ programy (TREND/TRIO/TWIST/CFF/Obchůdek/Czech Rise Up/brownfieldy/strategické investice), seed-driven. OP TAK/PIK = P3 EU, MIMO
 python3 scripts/mmr.py               # MMR (mmr.gov.cz) — NÁRODNÍ dotace /cs/narodni-dotace (PORR, euroregiony, hroby, bezbariérové obce, cestovní ruch, NNO…), Kentico. MIMO: IROP/EU (P3) + Podpora bydlení (=SFPI)
+python3 scripts/eeagrants.py         # EHP a Norské fondy (eeagrants.cz; NKM = MF) — výzvy 2014–2021 (ukončené). typ_poskytovatele=zahranicni_fond, zdroj=ehp_norsko
 
 # Univerzální doc→text (vrstva 2) — používají harvestery i pipeline
 python3 scripts/dsw2_fetch.py        # sniff_ext + pdftotext/textutil (PDF/DOC/DOCX/XLS/ODT)

@@ -522,7 +522,7 @@
   },
   "eeagrants.cz": {
    "plat": "custom_php",
-   "src": "sonnet",
+   "src": "manual_verified",
    "grant": true
   },
   "epodatelna.msk.cz": {
@@ -2212,7 +2212,7 @@
   },
   "www.eeagrants.cz": {
    "plat": "custom_php",
-   "src": "sonnet",
+   "src": "manual_verified",
    "grant": true
   },
   "www.erstestiftung.org": {
