@@ -46,6 +46,7 @@ PROVIDER_TYPE = {
     "mzp": "ministerstvo",            # Ministerstvo životního prostředí (mzp.gov.cz)
     "eagri": "ministerstvo",          # Ministerstvo zemědělství (mze.gov.cz)
     "mpsv": "ministerstvo",           # Ministerstvo práce a sociálních věcí (mpsv.gov.cz)
+    "mpo": "ministerstvo",            # Ministerstvo průmyslu a obchodu (mpo.gov.cz) — národní programy
     # státní fondy
     "vinarskyfond": "statni_fond",    # Vinařský fond
     "sfa": "statni_fond",             # Státní fond audiovize (sfa.gov.cz)

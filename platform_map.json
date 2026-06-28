@@ -1142,8 +1142,8 @@
   },
   "mpo.gov.cz": {
    "plat": "custom_php",
-   "src": "sonnet",
-   "grant": false
+   "src": "manual_verified",
+   "grant": true
   },
   "mpsv.cz": {
    "plat": "vue_nuxt",

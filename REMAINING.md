@@ -10,9 +10,9 @@ Aktualizuj po každém přidaném zdroji. Recept na přidání zdroje viz `CLAUD
 
 | metrika | hodnota |
 |---|---|
-| záznamů celkem | **2203** |
-| z toho granty / foundation_mission | 2178 / 25 |
-| poskytovatelů | **117** |
+| záznamů celkem | **2212** |
+| z toho granty / foundation_mission | 2187 / 25 |
+| poskytovatelů | **118** |
 | status grantů | ~342 open · ~39 announced · ~1064 closed · ~724 unknown (počítá se klientsky k dnešku) |
 | typy poskytovatelů | samosprava_kraj 844 · samosprava_obec 798 · ministerstvo 335 · nadacni_fond 63 · nadace 56 · firemni_nadace 42 · statni_fond 36 · statni_agentura 14 |
 
@@ -25,7 +25,7 @@ přirozeně klesá jak deadliny míjejí; není to ztráta dat.
   `data/_<src>_extract.py` nebo LLM workflow) → ingest_rich → consolidate → fix_dataset → build_app.
 - **Samospráva**: 14 krajů + ~30 měst (vismo, DSW2/otevřená města, bespoke per-web harvestery —
   všechny registrované v `routing.yaml` sekce `sources`).
-- **Ministerstva**: MŠMT (msmt), MV (mv), MŽP (mzp), MZe/eAGRI (eagri), MZČR (mzcr), MKČR (mkcr), **MPSV (mpsv)**.
+- **Ministerstva**: MŠMT (msmt), MV (mv), MŽP (mzp), MZe/eAGRI (eagri), MZČR (mzcr), MKČR (mkcr), **MPSV (mpsv)**, **MPO (mpo, 9 národních programů)**.
 - **Státní fondy**: **SFŽP (sfzp, 19)**, SFA – Státní fond audiovize (sfa, 8), **SFPI/SFRB (sfpi, 6)**, **SFDI (sfdi, 8)**, **SFK – Státní fond kultury (sfk, 1)**.
 - **Agentury**: **GA ČR (gacr, 14)** — typ `statni_agentura`.
 - **EU/centrální**: IROP (irop.gov.cz), dotaceEU.
@@ -53,8 +53,12 @@ přirozeně klesá jak deadliny míjejí; není to ztráta dat.
 **P1 hotovo.** Další: **P2 — Ministerstva (MPO/MMR/MD/MF).**
 
 ### P2 — Ministerstva (zbývající)
-- [ ] **MPO — Ministerstvo průmyslu a obchodu** (`mpo.gov.cz`) — národní programy + OP TAK (viz P3). **← DALŠÍ.**
-- [ ] **MMR — Ministerstvo pro místní rozvoj** (`mmr.gov.cz`) — národní dotační programy (částečně IROP máme).
+- [x] **MPO — Ministerstvo průmyslu a obchodu** (`mpo.gov.cz`) — HOTOVO: 9 národních programů (TREND, TRIO,
+      TWIST, The Country for the Future, Technologická inkubace, Obchůdek 2021+, Czech Rise Up 3.0,
+      Strategické investice/NZIA, brownfieldy). ⚠ Konkrétní lhůty výzev jsou v aktualitách (ne na landing)
+      → 5/9 status unknown (program-level). **OP TAK / OP PIK (EU) ZÁMĚRNĚ MIMO → P3.** grant flag opraven
+      (byl chybně False).
+- [ ] **MMR — Ministerstvo pro místní rozvoj** (`mmr.gov.cz`) — národní dotační programy (částečně IROP máme). **← DALŠÍ.**
 - [ ] **MD — Ministerstvo dopravy**.
 - [ ] **MF — Ministerstvo financí**.
 
