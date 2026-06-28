@@ -45,6 +45,7 @@ python3 scripts/sfpi.py              # SFPI/SFRB (sfpi.cz) — WP program-hub pa
 python3 scripts/sfdi.py              # SFDI (sfdi.gov.cz) — příspěvky na dopravu: cyklostezky, bezbariérové chodníky, bezpečnost silnic, letiště, ETCS… (FRONT-END HTML, /prispevky/<slug>/ jsou přes REST 401)
 python3 scripts/sfk.py               # SFK – Státní fond kultury ČR (na mk.gov.cz; dedikovaná doména mrtvá) — projektové dotace v kultuře, 3 výzvy/rok přes DP MK. POZOR: mk.gov.cz = ASP.NET WebForms (NEstrip <form>)
 python3 scripts/mpo.py               # MPO (mpo.gov.cz) — NÁRODNÍ programy (TREND/TRIO/TWIST/CFF/Obchůdek/Czech Rise Up/brownfieldy/strategické investice), seed-driven. OP TAK/PIK = P3 EU, MIMO
+python3 scripts/mmr.py               # MMR (mmr.gov.cz) — NÁRODNÍ dotace /cs/narodni-dotace (PORR, euroregiony, hroby, bezbariérové obce, cestovní ruch, NNO…), Kentico. MIMO: IROP/EU (P3) + Podpora bydlení (=SFPI)
 
 # Univerzální doc→text (vrstva 2) — používají harvestery i pipeline
 python3 scripts/dsw2_fetch.py        # sniff_ext + pdftotext/textutil (PDF/DOC/DOCX/XLS/ODT)

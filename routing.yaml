@@ -100,6 +100,7 @@ sources:
   sfdi.cz:              {harvester: [scripts/sfdi.py], note: "SFDI (redirect → sfdi.gov.cz)"}
   sfkultury.cz:         {harvester: [scripts/sfk.py], note: "Státní fond kultury ČR — dedikovaná doména MRTVÁ (bez DNS); fond žije na mk.gov.cz/statni-fond-kultury (ASP.NET WebForms, NEstrip <form>). scripts/sfk.py discoveruje aktuální 'Žádosti o dotace SFK na rok <ROK>'; 3 výzvy/rok přes DP MK. (mk.gov.cz jinak = MK ministerstvo, kentico)"}
   mpo.gov.cz:           {harvester: [scripts/mpo.py], note: "MPO — jen NÁRODNÍ programy (TREND/TRIO/TWIST/CFF/Obchůdek/Czech Rise Up/brownfieldy/strategické investice), seed-driven landing pages. OP TAK / OP PIK (EU) sem NEpatří = P3 EU (běží přes MS2021+/AIS)"}
+  mmr.gov.cz:           {harvester: [scripts/mmr.py], note: "MMR — jen NÁRODNÍ dotace pod /cs/narodni-dotace (PORR, hroby, euroregiony, bezbariérové obce, cestovní ruch, NNO…), Kentico, discovery kategorií + filtr aktuálního ročníku. MIMO: IROP/OP/EU (P3), kategorie 'Podpora bydlení' (=SFPI). Lhůty ve Výzva PDF"}
   vinarskyfond.cz:      {harvester: [scripts/vinarskyfond.py], note: "Vinařský fond"}
   # nadace / nadační fondy s dedikovaným parserem (9× + Nadace Via)
   nadacevia.cz:         {harvester: [scripts/nadacevia.py], note: "Nadace Via — WP REST pages → grantové výzvy"}

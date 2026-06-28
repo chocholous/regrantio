@@ -47,6 +47,7 @@ PROVIDER_TYPE = {
     "eagri": "ministerstvo",          # Ministerstvo zemědělství (mze.gov.cz)
     "mpsv": "ministerstvo",           # Ministerstvo práce a sociálních věcí (mpsv.gov.cz)
     "mpo": "ministerstvo",            # Ministerstvo průmyslu a obchodu (mpo.gov.cz) — národní programy
+    "mmr": "ministerstvo",            # Ministerstvo pro místní rozvoj (mmr.gov.cz) — národní dotace
     # státní fondy
     "vinarskyfond": "statni_fond",    # Vinařský fond
     "sfa": "statni_fond",             # Státní fond audiovize (sfa.gov.cz)
