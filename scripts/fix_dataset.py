@@ -149,6 +149,43 @@ def main():
         r["status"], r["status_confidence"] = new, conf
     st_after = collections.Counter(r.get("status") for r in recs)
 
+    # ---- D) doplnění region.kraj (samospráva) + celostátní (národní zdroje) ----
+    # Filtr „dle kraje" v produktu vyžaduje vyplněný kraj. Samosprávě doplníme kraj z HOSTU
+    # (naučeno majoritou z ne-null záznamů + ruční override pro all-null hosty); národní
+    # poskytovatele (ministerstva/fondy/agentury/nadace) označíme celostatni=true (ne „neuvedeno").
+    NATIONAL = {"ministerstvo", "statni_fond", "statni_agentura", "nadace", "firemni_nadace", "nadacni_fond"}
+    SOURCE_KRAJ_MANUAL = {"loket.dsw2.otevrenamesta.cz": "Karlovarský kraj"}  # all-null host → ruční
+    cnt = collections.defaultdict(collections.Counter)
+    for r in recs:
+        f = r.get("facets") or {}
+        if f.get("typ_poskytovatele") in ("samosprava_kraj", "samosprava_obec"):
+            k = (f.get("region") or {}).get("kraj")
+            if k:
+                cnt[r.get("source")][k] += 1
+    learned_kraj = {h: c.most_common(1)[0][0] for h, c in cnt.items()}
+    learned_kraj.update(SOURCE_KRAJ_MANUAL)
+    kraj_filled = celost_filled = 0
+    for r in recs:
+        if r.get("kind") != "grant":
+            continue
+        f = r.setdefault("facets", {}) or {}
+        r["facets"] = f
+        reg = f.get("region")
+        if not isinstance(reg, dict):
+            reg = {"nazev": None, "obec": None, "okres": None, "kraj": None, "celostatni": False, "_conf": "low"}
+            f["region"] = reg
+        if reg.get("kraj"):
+            continue
+        pt = f.get("typ_poskytovatele")
+        src = r.get("source")
+        if pt in ("samosprava_kraj", "samosprava_obec") and src in learned_kraj:
+            reg["kraj"] = learned_kraj[src]
+            reg["_conf"] = reg.get("_conf") or "high"
+            kraj_filled += 1
+        elif pt in NATIONAL and not reg.get("celostatni"):
+            reg["celostatni"] = True
+            celost_filled += 1
+
     # ---- report ----
     print("=== A) ÚSTÍ / duplicitní zdroje ===")
     dd = collections.Counter(r.get("source") for r in dropped)
@@ -173,6 +210,9 @@ def main():
         print(f"  {k}: {c}")
     print(f"  před:  " + " · ".join(f"{k}={v}" for k, v in st_before.most_common()))
     print(f"  po:    " + " · ".join(f"{k}={v}" for k, v in st_after.most_common()))
+
+    print(f"\n=== D) region.kraj ===")
+    print(f"  samospráva kraj doplněn z hostu: +{kraj_filled} · národní celostatni=true: +{celost_filled}")
 
     nulls_after = sum(1 for r in recs if not (r.get("facets") or {}).get("typ_poskytovatele"))
     print("\n=== souhrn ===")

@@ -32,6 +32,10 @@ přirozeně klesá jak deadliny míjejí; není to ztráta dat.
 - **Nadace/fondy**: ~17 (nadacevia, nadacecez, nadaceokd, agrofert, albert, sirius, leontinka,
   partnerstvi, nadace_adra, veronica, hlavka, vinarskyfond, kellner, vdv, fondbudoucnosti,
   fondpaliativnipece, socialninadacnifond, …).
+- **Deploy & data API**: `docs/grants_app.html` (appka, deploy přes `pages.yml` → gh-pages) +
+  `docs/opportunities.json` (veřejný kurátorovaný export pro produkt; `scripts/export_api.py`).
+  Tail po každém běhu: `build_app` → cp do `docs/` · `export_api` → `docs/opportunities.json` · commit.
+  Stabilní Pages URL: `.../branches/<branch>/opportunities.json`. **POZOR: NEMERGOVAT do main bez pokynu.**
 
 ## Vize: co musí mít konkurenceschopný český grantový portál
 
@@ -134,8 +138,10 @@ Kraje máme všechny (14), ale 4 jsou „mělké" a chybí v nich statutární/o
 - [ ] **Zlínský** (`zlinskykraj.cz` 10; Kroměříž máme) — chybí **Zlín (město)**, Uherské Hradiště, Vsetín, Val. Meziříčí.
 - [ ] **Vysočina** (`fondvysociny.cz` 14, Jihlava 11) — Fond Vysočiny má desítky FV programů/rok; chybí Třebíč,
       Havl. Brod, Žďár n. S., Pelhřimov.
-- ⚠ Bonus: facet `region.kraj` je u většiny záznamů **null** (570+) → filtr „dle kraje" v appce nefunguje
-  pořádně; stojí za to doplnit geo-odvození kraje z `source` hostu (samospráva = znám kraj/obec).
+- [x] **Bonus HOTOVO (2026-06-29): facet `region.kraj` doplněn.** `fix_dataset.py` sekce D: samosprávě se
+  kraj odvodí z hostu (naučeno majoritou + ruční override pro all-null hosty), národním poskytovatelům se
+  nastaví `celostatni=true`. Výsledek: 1667 záznamů s konkrétním krajem · 530 celostátních · 0 „neuvedeno".
+  Filtr „dle kraje" v produktu teď funguje. (Zbývá doplnit chybějící MĚSTA výše — to je o pokrytí, ne o facetu.)
 
 ### P6 — Evropská komise / centrálně řízené programy (Brusel) — ZCELA CHYBÍ, vysoká hodnota
 Pro české žadatele (univerzity, firmy, NNO, města, umělci) klíčové; centrální zdroj = **EU Funding & Tenders
