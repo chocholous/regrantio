@@ -55,6 +55,11 @@ def main():
         if app is None:
             continue
         open(os.path.join(d, "grants_app.html"), "w", encoding="utf-8").write(app)
+        # publikuj i veřejný data-export (pro produkt) na stabilní Pages URL:
+        # site/branches/<b>/opportunities.json  (existuje-li na dané větvi)
+        data_json = show(b, "docs/opportunities.json")
+        if data_json is not None:
+            open(os.path.join(d, "opportunities.json"), "w", encoding="utf-8").write(data_json)
         desc = show(b, "docs/PAGES_DESC.txt") or git("log", "-1", "--format=%s", f"origin/{b}")
         date = git("log", "-1", "--format=%cd", "--date=short", f"origin/{b}")
         sha = git("log", "-1", "--format=%h", f"origin/{b}")

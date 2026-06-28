@@ -1,7 +1,10 @@
-Velké rozšíření pokrytí + LLM vrstva 2. Proti main: 778 → 2129 oportunit.
-Přidáno: všech 14 krajů (vlastní dotační programy), všech 26 statutárních měst + desítky obcí
-(dsw2/Otevřená města), IROP/dotaceEU, nadace. Nové platformy: DOTIS API, Fond Vysočiny, GINIS USU,
-Wayback (Karlovarský za WAF). LLM vrstva 2 (Haiku extrakce polí + Opus klasifikace kategorií nad
-extrakcí), kanonické facety (oblast/typ/cílovka/forma/zdroj/režim/délka) přes Opus-ověřené mapy.
-Appka: 4 taby (Vyhledávání · Analýza extrakce · Jak sbíráme data · Rozšířit s Claude Code),
-"Zobrazit další" pro všechna data, oddělený katalog programů (kind=program).
+Velké rozšíření pokrytí + LLM vrstva 2. Aktuálně 2221 oportunit / 119 poskytovatelů.
+Samospráva (14 krajů + ~30 měst, dsw2/Otevřená města/bespoke), ministerstva (MŠMT/MV/MŽP/MZe/
+MZČR/MKČR/MPSV/MPO/MMR), státní fondy (SFŽP/SFA/SFPI/SFDI/SFK), GA ČR, IROP/dotaceEU, ~17 nadací.
+LLM vrstva 2 (Haiku extrakce polí + Opus klasifikace), kanonické facety (oblast/typ/cílovka/forma/
+zdroj/režim/délka), STATUS se počítá KLIENTSKY (nezastará). Appka: fasetové vyhledávání + bohatý
+detail s grounding citacemi.
+
+Veřejný data-export pro produkt: opportunities.json (vedle této appky na stejné Pages cestě) —
+kurátorovaná pole + meta{schema_version, generated_at, count}, raw open_from/deadline pro přepočet
+statusu. Generuje scripts/export_api.py.
