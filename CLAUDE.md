@@ -39,6 +39,7 @@ python3 scripts/mpsv.py                    # MPSV (mpsv.gov.cz) — reuse eagri.
 # Nadace / nadační fondy + jednorázové bespoke zdroje — 1 web = 1 parser (host→parser je v routing.yaml `sources:`)
 python3 scripts/nadacevia.py · albert.py · sirius.py · leontinka.py · partnerstvi.py  # Nadace Via, Albert, Sirius, Leontinka, Partnerství
 python3 scripts/nadace_adra.py · veronica.py · hlavka.py · vinarskyfond.py · sfa.py    # ADRA, Veronica, Hlávkova nadace, Vinařský fond, SF audiovize
+python3 scripts/sfzp.py              # SFŽP (sfzp.gov.cz) — WP REST výzva-* stránky (FN/PU půjčky) + Modernizační fond detail-vyzvy/?id=NN (RES+/HEAT/TRANSGov…)
 
 # Univerzální doc→text (vrstva 2) — používají harvestery i pipeline
 python3 scripts/dsw2_fetch.py        # sniff_ext + pdftotext/textutil (PDF/DOC/DOCX/XLS/ODT)

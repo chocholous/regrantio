@@ -92,6 +92,8 @@ sources:
   eagri.cz:             {harvester: [scripts/eagri.py], note: "MZe/eAGRI (starší doména)"}
   mpsv.gov.cz:          {harvester: [scripts/mpsv.py], note: "MPSV — reuse eagri.process + rozcestník→detail"}
   sfa.gov.cz:           {harvester: [scripts/sfa.py], note: "Státní fond audiovize"}
+  sfzp.gov.cz:          {harvester: [scripts/sfzp.py], note: "SFŽP — WP REST výzva-* stránky (FN/PU) + Modernizační fond detail-vyzvy/?id=NN"}
+  sfzp.cz:              {harvester: [scripts/sfzp.py], note: "SFŽP (redirect → sfzp.gov.cz)"}
   vinarskyfond.cz:      {harvester: [scripts/vinarskyfond.py], note: "Vinařský fond"}
   # nadace / nadační fondy s dedikovaným parserem (9× + Nadace Via)
   nadacevia.cz:         {harvester: [scripts/nadacevia.py], note: "Nadace Via — WP REST pages → grantové výzvy"}

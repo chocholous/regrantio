@@ -1842,13 +1842,13 @@
   },
   "sfzp.cz": {
    "plat": "wordpress",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "sfzp.gov.cz": {
    "plat": "wordpress",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "sgs.cvut.cz": {
    "plat": "custom_php",

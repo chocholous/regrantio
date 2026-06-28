@@ -48,6 +48,7 @@ PROVIDER_TYPE = {
     # státní fondy
     "vinarskyfond": "statni_fond",    # Vinařský fond
     "sfa": "statni_fond",             # Státní fond audiovize (sfa.gov.cz)
+    "sfzp": "statni_fond",            # Státní fond životního prostředí (sfzp.gov.cz)
     # nadace
     "nadacevia": "nadace",            # Nadace Via
     "partnerstvi": "nadace",          # Nadace Partnerství
