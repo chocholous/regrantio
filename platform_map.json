@@ -342,8 +342,8 @@
   },
   "dotace.chyne.cz": {
    "plat": "dsw2_otevrenamesta",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "dotace.khk.cz": {
    "plat": "react",
@@ -372,33 +372,33 @@
   },
   "dotace.medlanky.cz": {
    "plat": "dsw2_otevrenamesta",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "dotace.melnik.cz": {
    "plat": "vismo",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "dotace.mestobystrice.cz": {
    "plat": "dsw2_otevrenamesta",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "dotace.mestodobris.cz": {
    "plat": "dsw2_otevrenamesta",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "dotace.mmhk.cz": {
    "plat": "vismo",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "dotace.nmnm.cz": {
    "plat": "dsw2_otevrenamesta",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "dotace.olomouc.eu": {
    "plat": "angular",
@@ -407,13 +407,13 @@
   },
   "dotace.ostrava.cz": {
    "plat": "wordpress",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "dotace.pardubickykraj.cz": {
    "plat": "nuxt_vue",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "dotace.plzen.eu": {
    "plat": "edotace_plzen",
@@ -427,58 +427,58 @@
   },
   "dotace.policenm.cz": {
    "plat": "dsw2_otevrenamesta",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "dotace.praha11.cz": {
    "plat": "dsw2_otevrenamesta",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "dotace.praha12.cz": {
    "plat": "dsw2_otevrenamesta",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "dotace.praha14.cz": {
    "plat": "dsw2_otevrenamesta",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "dotace.praha2.cz": {
    "plat": "dsw2_otevrenamesta",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "dotace.praha3.cz": {
    "plat": "dsw2_otevrenamesta",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "dotace.praha4.cz": {
    "plat": "dsw2_otevrenamesta",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "dotace.praha8.cz": {
    "plat": "dsw2_otevrenamesta",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "dotace.stepanov.cz": {
    "plat": "dsw2_otevrenamesta",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "dotace.tisnov.cz": {
    "plat": "dsw2_otevrenamesta",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "dotace.usti-nad-labem.cz": {
    "plat": "dsw2_otevrenamesta",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "dotace.usti.cz": {
    "plat": "dsw2_otevrenamesta",
@@ -587,8 +587,8 @@
   },
   "fondvysociny.cz": {
    "plat": "UNKNOWN",
-   "src": "sonnet",
-   "grant": false
+   "src": "manual_verified",
+   "grant": true
   },
   "formulare.zlin.eu": {
    "plat": "ERR_fetch",
@@ -602,8 +602,8 @@
   },
   "frydekmistek.cz": {
    "plat": "wordpress",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "fundlift.cz": {
    "plat": "angular",
@@ -657,8 +657,8 @@
   },
   "granty.liberec.cz": {
    "plat": "grantys",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "granty.nadace-osf.cz": {
    "plat": "ERR_fetch",
@@ -682,8 +682,8 @@
   },
   "havirov-city.cz": {
    "plat": "drupal",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "hithit.cz": {
    "plat": "custom_spa",
@@ -707,8 +707,8 @@
   },
   "hodonin.eu": {
    "plat": "vismo",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "hostalkovice.ostrava.cz": {
    "plat": "plone",
@@ -722,8 +722,8 @@
   },
   "hradeckralove.org": {
    "plat": "vismo",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "hzscr.gov.cz": {
    "plat": "aspnet_clanek_mvhzs",
@@ -792,8 +792,8 @@
   },
   "jihlava.cz": {
    "plat": "vismo",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "jundrov.brno.cz": {
    "plat": "liferay",
@@ -802,8 +802,8 @@
   },
   "karvina.cz": {
    "plat": "marwel",
-   "src": "sonnet",
-   "grant": false
+   "src": "manual_verified",
+   "grant": true
   },
   "karvina.org": {
    "plat": "marwel",
@@ -847,13 +847,13 @@
   },
   "kr-jihomoravsky.cz": {
    "plat": "ERR_fetch",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "kr-karlovarsky.cz": {
    "plat": "gordic_ginis",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "kr-olomoucky.cz": {
    "plat": "ERR_fetch",
@@ -867,8 +867,8 @@
   },
   "kr-ustecky.cz": {
    "plat": "ERR_fetch",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "kr-zlinsky.cz": {
    "plat": "custom_php_codeigniter",
@@ -877,8 +877,8 @@
   },
   "kraj-jihocesky.cz": {
    "plat": "drupal",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "kraj-lbc.cz": {
    "plat": "firon",
@@ -902,13 +902,13 @@
   },
   "krnov.cz": {
    "plat": "vismo",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "kromeriz.dsw2.otevrenamesta.cz": {
    "plat": "dsw2_otevrenamesta",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "kulturamazelenou.cz": {
    "plat": "nuxt_vue",
@@ -922,8 +922,8 @@
   },
   "letnany.cz": {
    "plat": "vismo",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "lhotka.ostrava.cz": {
    "plat": "plone",
@@ -937,8 +937,8 @@
   },
   "libus.dsw2.otevrenamesta.cz": {
    "plat": "dsw2_otevrenamesta",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "litomerice.cz": {
    "plat": "joomla",
@@ -947,8 +947,8 @@
   },
   "loket.dsw2.otevrenamesta.cz": {
    "plat": "dsw2_otevrenamesta",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "lpr.cz": {
    "plat": "wordpress",
@@ -977,8 +977,8 @@
   },
   "mb-net.cz": {
    "plat": "vismo",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "mb.grantys.cz": {
    "plat": "grantys",
@@ -1017,8 +1017,8 @@
   },
   "mesto-most.cz": {
    "plat": "vismo",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "mesto-uh.cz": {
    "plat": "drupal",
@@ -1042,13 +1042,13 @@
   },
   "mestojablonec.cz": {
    "plat": "nette_custom",
-   "src": "sonnet",
-   "grant": false
+   "src": "manual_verified",
+   "grant": true
   },
   "mestokladno.cz": {
    "plat": "vismo",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "mestonachod.cz": {
    "plat": "aspnet_clanek_mvhzs",
@@ -1102,13 +1102,13 @@
   },
   "mmdecin.cz": {
    "plat": "joomla",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "mmkv.cz": {
    "plat": "drupal",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "mmr.gov.cz": {
    "plat": "kentico",
@@ -1157,8 +1157,8 @@
   },
   "msk.cz": {
    "plat": "ERR_fetch",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "msmt.cz": {
    "plat": "marwel",
@@ -1197,18 +1197,18 @@
   },
   "mucl.cz": {
    "plat": "vismo",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "mukolin.cz": {
    "plat": "vismo",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "mulitvinov.cz": {
    "plat": "vismo",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "mulouny.cz": {
    "plat": "public4u",
@@ -1442,8 +1442,8 @@
   },
   "novemestonm.dsw2.otevrenamesta.cz": {
    "plat": "dsw2_otevrenamesta",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "npi.cz": {
    "plat": "joomla",
@@ -1457,8 +1457,8 @@
   },
   "nros.cz": {
    "plat": "wordpress",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "nsa.gov.cz": {
    "plat": "wordpress",
@@ -1477,13 +1477,13 @@
   },
   "olkraj.cz": {
    "plat": "gordic_ginis",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "olomouc.eu": {
    "plat": "cmso1",
-   "src": "sonnet",
-   "grant": false
+   "src": "manual_verified",
+   "grant": true
   },
   "olympic.cz": {
    "plat": "custom_php",
@@ -1497,8 +1497,8 @@
   },
   "opava-city.cz": {
    "plat": "joomla",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "opd.cz": {
    "plat": "aspnet_webforms",
@@ -1552,8 +1552,8 @@
   },
   "ostrava.dsw2.otevrenamesta.cz": {
    "plat": "dsw2_otevrenamesta",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "ovajih.ostrava.cz": {
    "plat": "plone",
@@ -1582,13 +1582,13 @@
   },
   "pardubice.eu": {
    "plat": "UNKNOWN",
-   "src": "sonnet",
-   "grant": false
+   "src": "manual_verified",
+   "grant": true
   },
   "pardubickykraj.cz": {
    "plat": "ERR_fetch",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "petrkovice.ostrava.cz": {
    "plat": "plone",
@@ -1652,8 +1652,8 @@
   },
   "praha.eu": {
    "plat": "liferay",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "praha1.cz": {
    "plat": "wordpress",
@@ -1712,8 +1712,8 @@
   },
   "praha6.dsw2.otevrenamesta.cz": {
    "plat": "dsw2_otevrenamesta",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "praha7.cz": {
    "plat": "wordpress",
@@ -1732,8 +1732,8 @@
   },
   "prerov.eu": {
    "plat": "public4u",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "prevence-praha.cz": {
    "plat": "joomla",
@@ -1752,8 +1752,8 @@
   },
   "prostejov.eu": {
    "plat": "public4u",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "pupo.kr-vysocina.cz": {
    "plat": "vismo",
@@ -1902,8 +1902,8 @@
   },
   "sokolov.cz": {
    "plat": "vismo",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "sources.csv": {
    "plat": "ERR_fetch",
@@ -1937,13 +1937,13 @@
   },
   "stredoceskykraj.cz": {
    "plat": "ERR_fetch",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "stredoceskykraj.dsw2.otevrenamesta.cz": {
    "plat": "dsw2_otevrenamesta",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "sumperk.cz": {
    "plat": "gordic_ginis",
@@ -1977,8 +1977,8 @@
   },
   "taborcz.eu": {
    "plat": "vismo",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "tachov-mesto.cz": {
    "plat": "wordpress",
@@ -1992,8 +1992,8 @@
   },
   "tacr.dsw2.otevrenamesta.cz": {
    "plat": "dsw2_otevrenamesta",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "tc.cz": {
    "plat": "custom_php",
@@ -2002,8 +2002,8 @@
   },
   "teplice.cz": {
    "plat": "vismo",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "tichysvet.cz": {
    "plat": "webnode",
@@ -2027,8 +2027,8 @@
   },
   "trinecko.cz": {
    "plat": "vismo",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "trutnov.cz": {
    "plat": "public4u",
@@ -2553,6 +2553,11 @@
   "nadacecs.cz": {
    "plat": "custom_static_html",
    "src": "det",
+   "grant": true
+  },
+  "granty.chomutov.cz": {
+   "plat": "UNKNOWN",
+   "src": "manual_verified",
    "grant": true
   }
  },

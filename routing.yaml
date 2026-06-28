@@ -105,6 +105,46 @@ sources:
   nadace.veronica.cz:   {harvester: [scripts/veronica.py], note: "Nadace Veronica"}
   hlavkovanadace.cz:    {harvester: [scripts/hlavka.py], note: "Nadání Josefa, Marie a Zdeňky Hlávkových"}
 
+  # KRAJE — dedikovaný per-kraj harvester (bespoke CMS/dotační portál; generický family-harvester nestačil)
+  dotace.kraj-lbc.cz:        {harvester: [scripts/liberecky_harvest.py], note: "Liberecký kraj"}
+  kr-ustecky.cz:             {harvester: [scripts/ustecky_harvest.py], note: "Ústecký kraj"}
+  kr-karlovarsky.cz:         {harvester: [scripts/karlovarsky_harvest.py], note: "Karlovarský kraj (+ karlovarsky_wayback_harvest.py pro archivované výzvy z web.archive.org)"}
+  stredoceskykraj.cz:        {harvester: [scripts/stredocesky_harvest.py], note: "Středočeský kraj"}
+  dotace.pardubickykraj.cz:  {harvester: [scripts/pardubicky_harvest.py], note: "Pardubický kraj"}
+  kr-jihomoravsky.cz:        {harvester: [scripts/jm_harvest.py], note: "Jihomoravský kraj (eud.jmk.cz)"}
+  kraj-jihocesky.cz:         {harvester: [scripts/jihocesky_harvest.py], note: "Jihočeský kraj"}
+  olkraj.cz:                 {harvester: [scripts/olomoucky_harvest.py], note: "Olomoucký kraj"}
+  msk.cz:                    {harvester: [scripts/msk_harvest.py], note: "Moravskoslezský kraj"}
+  zlinskykraj.cz:            {harvester: [scripts/zlinsky_harvest.py], note: "Zlínský kraj"}
+  dotace.khk.cz:             {harvester: [scripts/dotis_harvest.py], note: "Královéhradecký kraj (DOTIS, dotisreactfunctions API)"}
+  fondvysociny.cz:           {harvester: [scripts/fondvysociny_harvest.py], note: "Kraj Vysočina (Fond Vysočiny)"}
+
+  # MĚSTA / magistráty — dedikovaný per-město harvester
+  praha.eu:                  {harvester: [scripts/praha_harvest.py], note: "Praha + městské části (dotace.prahaN.cz); praha_grants.py = Liferay PoC pro zdravotnictví"}
+  dotace.brno.cz:            {harvester: [scripts/brno_harvest.py], note: "Brno (ekodotace/socialnipece/zdravi.brno.cz)"}
+  mucl.cz:                   {harvester: [scripts/ceskalipa_harvest.py], note: "Česká Lípa"}
+  granty.chomutov.cz:        {harvester: [scripts/chomutov_harvest.py], note: "Chomutov"}
+  mmdecin.cz:                {harvester: [scripts/decin_harvest.py], note: "Děčín"}
+  frydekmistek.cz:           {harvester: [scripts/fm_harvest.py], note: "Frýdek-Místek"}
+  havirov-city.cz:           {harvester: [scripts/havirov_harvest.py], note: "Havířov"}
+  dotace.mmhk.cz:            {harvester: [scripts/hk_mesto_harvest.py], note: "Hradec Králové (město)"}
+  mestojablonec.cz:          {harvester: [scripts/jablonec_harvest.py], note: "Jablonec nad Nisou"}
+  jihlava.cz:                {harvester: [scripts/jihlava_harvest.py], note: "Jihlava"}
+  karvina.cz:                {harvester: [scripts/karvina_harvest.py], note: "Karviná"}
+  mestokladno.cz:            {harvester: [scripts/kladno_harvest.py], note: "Kladno"}
+  mmkv.cz:                   {harvester: [scripts/kv_mesto_harvest.py], note: "Karlovy Vary (město)"}
+  granty.liberec.cz:         {harvester: [scripts/liberec_mesto_harvest.py], note: "Liberec (město)"}
+  mb-net.cz:                 {harvester: [scripts/mb_harvest.py], note: "Mladá Boleslav"}
+  olomouc.eu:                {harvester: [scripts/olomouc_mesto_harvest.py], note: "Olomouc (město)"}
+  opava-city.cz:             {harvester: [scripts/opava_harvest.py], note: "Opava"}
+  dotace.ostrava.cz:         {harvester: [scripts/ostrava_harvest.py], note: "Ostrava"}
+  pardubice.eu:              {harvester: [scripts/pardubice_mesto_harvest.py], note: "Pardubice (město)"}
+  dotace.plzen.eu:           {harvester: [scripts/plzen_mesto_harvest.py], note: "Plzeň (město)"}
+  prerov.eu:                 {harvester: [scripts/prerov_harvest.py], note: "Přerov"}
+  prostejov.eu:              {harvester: [scripts/prostejov_harvest.py], note: "Prostějov"}
+  teplice.cz:                {harvester: [scripts/teplice_harvest.py], note: "Teplice"}
+  trinecko.cz:               {harvester: [scripts/trinec_harvest.py], note: "Třinec"}
+
 # cokoliv nezařazené (bespoke vendor po 1 webu, nové nadace…) → univerzální
 default:
   harvester: [scripts/harvest_site.py]
