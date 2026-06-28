@@ -10,10 +10,10 @@ Aktualizuj po každém přidaném zdroji. Recept na přidání zdroje viz `CLAUD
 
 | metrika | hodnota |
 |---|---|
-| záznamů celkem | **2188** |
-| z toho granty / foundation_mission | 2163 / 25 |
-| poskytovatelů | **114** |
-| status grantů | **340 open** · 39 announced · 1061 closed · 723 unknown |
+| záznamů celkem | **2194** |
+| z toho granty / foundation_mission | 2169 / 25 |
+| poskytovatelů | **115** |
+| status grantů | ~342 open · ~39 announced · ~1064 closed · ~724 unknown (počítá se klientsky k dnešku) |
 | typy poskytovatelů | samosprava_kraj 844 · samosprava_obec 798 · ministerstvo 335 · nadacni_fond 63 · nadace 56 · firemni_nadace 42 · statni_fond 36 · statni_agentura 14 |
 
 Status se počítá KLIENTSKY k reálnému dnešku (build_app.py:computeStatus) → „open" číslo
@@ -26,7 +26,7 @@ přirozeně klesá jak deadliny míjejí; není to ztráta dat.
 - **Samospráva**: 14 krajů + ~30 měst (vismo, DSW2/otevřená města, bespoke per-web harvestery —
   všechny registrované v `routing.yaml` sekce `sources`).
 - **Ministerstva**: MŠMT (msmt), MV (mv), MŽP (mzp), MZe/eAGRI (eagri), MZČR (mzcr), MKČR (mkcr), **MPSV (mpsv)**.
-- **Státní fondy**: **SFŽP (sfzp, 19)**, SFA – Státní fond audiovize (sfa, 8).
+- **Státní fondy**: **SFŽP (sfzp, 19)**, SFA – Státní fond audiovize (sfa, 8), **SFPI/SFRB (sfpi, 6)**.
 - **Agentury**: **GA ČR (gacr, 14)** — typ `statni_agentura`.
 - **EU/centrální**: IROP (irop.gov.cz), dotaceEU.
 - **Nadace/fondy**: ~17 (nadacevia, nadacecez, nadaceokd, agrofert, albert, sirius, leontinka,
@@ -36,9 +36,12 @@ přirozeně klesá jak deadliny míjejí; není to ztráta dat.
 ## Zbývá — v pořadí priority
 
 ### P1 — Státní fondy (vysoký objem, jasná struktura)
-- [ ] **SFRB / SFPI — Státní fond podpory investic** (`sfpi.cz`) — bydlení, úvěry/dotace (Nájemní byty,
-      Regenerace sídlišť, Úvěry pro mladé…). **← PRÁVĚ SE DĚLÁ (tato session).**
-- [ ] **SFDI — Státní fond dopravní infrastruktury** (`sfdi.cz`) — cyklostezky, bezpečnost, příspěvkové programy.
+- [x] **SFRB / SFPI — Státní fond podpory investic** (`sfpi.cz`) — HOTOVO: 6 programů bydlení
+      (Úsporné BD, Živel 3, Dostupné nájemní bydlení, BD bez bariér, Nájemní bydlení, Regenerace sídlišť).
+      ⚠ Část programů (Program 150/600, Panel 2013+, Zateplování, Vlastní bydlení, Nájemní byty,
+      Výstavba pro obce) je **page-builder** — tělo přes WP REST prázdné; doplnit přes front-end HTML
+      parsing, jsou to ale převážně čisté úvěry (nižší priorita pro grantový dataset).
+- [ ] **SFDI — Státní fond dopravní infrastruktury** (`sfdi.cz`) — cyklostezky, bezpečnost, příspěvkové programy. **← DALŠÍ.**
 - [ ] **Státní fond kultury ČR** (spadá pod MK) — projektové dotace v kultuře.
 
 ### P2 — Ministerstva (zbývající)

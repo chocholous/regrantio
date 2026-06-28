@@ -1837,8 +1837,8 @@
   },
   "sfpi.cz": {
    "plat": "wordpress",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "sfzp.cz": {
    "plat": "wordpress",

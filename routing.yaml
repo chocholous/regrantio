@@ -95,6 +95,7 @@ sources:
   sfzp.gov.cz:          {harvester: [scripts/sfzp.py], note: "SFŽP — WP REST výzva-* stránky (FN/PU) + Modernizační fond detail-vyzvy/?id=NN"}
   sfzp.cz:              {harvester: [scripts/sfzp.py], note: "SFŽP (redirect → sfzp.gov.cz)"}
   gacr.cz:              {harvester: [scripts/gacr.py], note: "GA ČR — WP posty 'Vyhlášení veřejné soutěže' + LA/bilaterální 'Výzva pro podávání' (discovery fulltextem, --since aktuální cyklus)"}
+  sfpi.cz:              {harvester: [scripts/sfpi.py], note: "SFPI/SFRB — WP program-hub pages (bydlení: úvěry+dotace); discovery filtruje top-level program pages, vylučuje sub-stránky/archiv. Pozn.: část programů je page-builder (tělo přes REST prázdné)"}
   vinarskyfond.cz:      {harvester: [scripts/vinarskyfond.py], note: "Vinařský fond"}
   # nadace / nadační fondy s dedikovaným parserem (9× + Nadace Via)
   nadacevia.cz:         {harvester: [scripts/nadacevia.py], note: "Nadace Via — WP REST pages → grantové výzvy"}
