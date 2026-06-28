@@ -98,6 +98,7 @@ sources:
   sfpi.cz:              {harvester: [scripts/sfpi.py], note: "SFPI/SFRB — WP program-hub pages (bydlení: úvěry+dotace); discovery filtruje top-level program pages, vylučuje sub-stránky/archiv. Pozn.: část programů je page-builder (tělo přes REST prázdné)"}
   sfdi.gov.cz:          {harvester: [scripts/sfdi.py], note: "SFDI (sfdi.cz→sfdi.gov.cz) — příspěvky na dopravu (cyklostezky/chodníky/bezpečnost…). Programy = /prispevky/<slug>/ sub-pages, přes WP REST 401 → harvest FRONT-END HTML (blok 'Základní údaje o příspěvku')"}
   sfdi.cz:              {harvester: [scripts/sfdi.py], note: "SFDI (redirect → sfdi.gov.cz)"}
+  sfkultury.cz:         {harvester: [scripts/sfk.py], note: "Státní fond kultury ČR — dedikovaná doména MRTVÁ (bez DNS); fond žije na mk.gov.cz/statni-fond-kultury (ASP.NET WebForms, NEstrip <form>). scripts/sfk.py discoveruje aktuální 'Žádosti o dotace SFK na rok <ROK>'; 3 výzvy/rok přes DP MK. (mk.gov.cz jinak = MK ministerstvo, kentico)"}
   vinarskyfond.cz:      {harvester: [scripts/vinarskyfond.py], note: "Vinařský fond"}
   # nadace / nadační fondy s dedikovaným parserem (9× + Nadace Via)
   nadacevia.cz:         {harvester: [scripts/nadacevia.py], note: "Nadace Via — WP REST pages → grantové výzvy"}

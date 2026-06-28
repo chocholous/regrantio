@@ -10,9 +10,9 @@ Aktualizuj po každém přidaném zdroji. Recept na přidání zdroje viz `CLAUD
 
 | metrika | hodnota |
 |---|---|
-| záznamů celkem | **2202** |
-| z toho granty / foundation_mission | 2177 / 25 |
-| poskytovatelů | **116** |
+| záznamů celkem | **2203** |
+| z toho granty / foundation_mission | 2178 / 25 |
+| poskytovatelů | **117** |
 | status grantů | ~342 open · ~39 announced · ~1064 closed · ~724 unknown (počítá se klientsky k dnešku) |
 | typy poskytovatelů | samosprava_kraj 844 · samosprava_obec 798 · ministerstvo 335 · nadacni_fond 63 · nadace 56 · firemni_nadace 42 · statni_fond 36 · statni_agentura 14 |
 
@@ -26,7 +26,7 @@ přirozeně klesá jak deadliny míjejí; není to ztráta dat.
 - **Samospráva**: 14 krajů + ~30 měst (vismo, DSW2/otevřená města, bespoke per-web harvestery —
   všechny registrované v `routing.yaml` sekce `sources`).
 - **Ministerstva**: MŠMT (msmt), MV (mv), MŽP (mzp), MZe/eAGRI (eagri), MZČR (mzcr), MKČR (mkcr), **MPSV (mpsv)**.
-- **Státní fondy**: **SFŽP (sfzp, 19)**, SFA – Státní fond audiovize (sfa, 8), **SFPI/SFRB (sfpi, 6)**, **SFDI (sfdi, 8)**.
+- **Státní fondy**: **SFŽP (sfzp, 19)**, SFA – Státní fond audiovize (sfa, 8), **SFPI/SFRB (sfpi, 6)**, **SFDI (sfdi, 8)**, **SFK – Státní fond kultury (sfk, 1)**.
 - **Agentury**: **GA ČR (gacr, 14)** — typ `statni_agentura`.
 - **EU/centrální**: IROP (irop.gov.cz), dotaceEU.
 - **Nadace/fondy**: ~17 (nadacevia, nadacecez, nadaceokd, agrofert, albert, sirius, leontinka,
@@ -45,10 +45,15 @@ přirozeně klesá jak deadliny míjejí; není to ztráta dat.
       (cyklostezky, bezbariérové chodníky, bezpečnost silnic II/III, křížení komunikací, zabezpečení letišť,
       multimodální překladiště, jednotky ETCS, nové technologie). Pozn.: programy jsou přes WP REST 401 →
       harvest front-end HTML. Cyklo/chodníky jsou „mezi ročníky" (Termín „-") → status unknown.
-- [ ] **Státní fond kultury ČR** (spadá pod MK) — projektové dotace v kultuře. **← DALŠÍ.**
+- [x] **Státní fond kultury ČR** (SFK) — HOTOVO: 1 záznam (dotace SFK 2026, 3 výzvy/rok přes DP MK).
+      ⚠ Dedikované domény (sfkultury.cz, fondkultury.cz) MRTVÉ → fond žije na mk.gov.cz/statni-fond-kultury
+      (ASP.NET WebForms – NEstrip `<form>`!). Tematické okruhy nejsou na webu (jen termíny) → z titulu fondu.
+      Možné prohloubení: SFK Kinematografie je samostatně = SFA (už máme), ostatní okruhy jdou přes 1 výzvu.
+
+**P1 hotovo.** Další: **P2 — Ministerstva (MPO/MMR/MD/MF).**
 
 ### P2 — Ministerstva (zbývající)
-- [ ] **MPO — Ministerstvo průmyslu a obchodu** (`mpo.gov.cz`) — národní programy + OP TAK (viz P3).
+- [ ] **MPO — Ministerstvo průmyslu a obchodu** (`mpo.gov.cz`) — národní programy + OP TAK (viz P3). **← DALŠÍ.**
 - [ ] **MMR — Ministerstvo pro místní rozvoj** (`mmr.gov.cz`) — národní dotační programy (částečně IROP máme).
 - [ ] **MD — Ministerstvo dopravy**.
 - [ ] **MF — Ministerstvo financí**.

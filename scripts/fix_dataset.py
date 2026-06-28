@@ -52,6 +52,7 @@ PROVIDER_TYPE = {
     "sfzp": "statni_fond",            # Státní fond životního prostředí (sfzp.gov.cz)
     "sfpi": "statni_fond",            # Státní fond podpory investic / SFRB (sfpi.cz) — bydlení
     "sfdi": "statni_fond",            # Státní fond dopravní infrastruktury (sfdi.gov.cz) — doprava
+    "sfk": "statni_fond",             # Státní fond kultury ČR (na mk.gov.cz) — kultura
     # státní grantové agentury (účelová podpora výzkumu)
     "gacr": "statni_agentura",        # Grantová agentura ČR (gacr.cz) — základní výzkum
     # nadace
