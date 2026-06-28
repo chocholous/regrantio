@@ -612,8 +612,8 @@
   },
   "gacr.cz": {
    "plat": "wordpress",
-   "src": "det",
-   "grant": null
+   "src": "manual_verified",
+   "grant": true
   },
   "gaju.jcu.cz": {
    "plat": "plone",
