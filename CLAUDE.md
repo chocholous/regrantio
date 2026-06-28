@@ -92,7 +92,8 @@ python3 scripts/build_app.py              # → data/grants_app.html (fasetový 
 **Coverage je MĚŘENÝ cyklus, ne hádání** (`docs/coverage.md`): `diversity_finder.py` → coverage workflow → diff proti minulému běhu (vyčísli zisk) → stop při saturaci. Nové záludnosti jdou do `prompts/pitfalls.md`.
 
 ## Rozcestník dokumentace
-- `REMAINING.md` (root) — **plán rozšiřování**: co je hotovo, co zbývá (priority P1–P5), stav datasetu, vlajky. Aktualizuj po každém přidaném zdroji.
+- `docs/SESSION_PLAYBOOK.md` — **JAK pracovat** (handoff pro příští session): zlatá pravidla (NIKDY nemergovat do main, nehalucinovat, status v kódu), recept na přidání zdroje (8 kroků), pasti (cp1250 konzole, TLS, WebForms/Kentico/page-builder, JOIN, …), deploy+export. **Přečti na začátku session.**
+- `REMAINING.md` (root) — **plán rozšiřování (CO)**: co je hotovo, co zbývá (priority P1–P7), stav datasetu, vlajky. Aktualizuj po každém přidaném zdroji.
 - `docs/platform_playbook.md` — definice VŠECH CMS rodin → podpis/harvester/metoda
 - `docs/detection.md` — 3 vrstvy detekce platformy + lekce o slitých labelech
 - `docs/data_reuse.md` — index UŽ STAŽENÝCH dat k reuse (klíčové: harvest = REUSE-first)

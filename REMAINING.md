@@ -1,8 +1,8 @@
 # REMAINING.md — plán rozšiřování pokrytí
 
 Živý plánovací dokument (verzovaný v gitu). Co je hotovo, co zbývá, v jakém pořadí.
-Aktualizuj po každém přidaném zdroji. Recept na přidání zdroje viz `CLAUDE.md` +
-`docs/coverage.md`; data žijí v gitignored `data/`.
+Aktualizuj po každém přidaném zdroji. **JAK to dělat (zlatá pravidla, recept, pasti) viz
+`docs/SESSION_PLAYBOOK.md`** + `CLAUDE.md`; data žijí v gitignored `data/`.
 
 > **Status k 2026-06-29.** Větev `coverage-expansion-next`.
 
