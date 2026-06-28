@@ -11,6 +11,10 @@ Usage:
 import argparse, json, sys, unicodedata
 from collections import Counter
 
+if hasattr(sys.stdout, "reconfigure"):  # Windows cp1250 konzole neumí →·⚠ v diagnostice → vynuť UTF-8 (no-op jinde)
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
+
 
 def norm(s):
     s = unicodedata.normalize("NFD", str(s))

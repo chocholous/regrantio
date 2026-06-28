@@ -25,6 +25,9 @@ Spuštění z kořene repa:
 """
 import argparse, json, os, shutil, collections, sys
 from datetime import date
+if hasattr(sys.stdout, "reconfigure"):  # Windows cp1250 konzole neumí →·⚠ v diagnostice → vynuť UTF-8 (no-op jinde)
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from opportunities import compute_status  # kanonický výpočet statusu (sdílený s pipeline)
 

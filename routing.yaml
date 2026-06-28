@@ -80,6 +80,29 @@ families:
   ERR_fetch:     {harvester: [], method: "DNS/timeout/WAF → retry / jiná IP / Apify", layer2: "—"}
   UNKNOWN:       {harvester: [], method: "re-detekce: cms_similarity + save_unknown_evidence + Sonnet (detect_platforms_wf)", layer2: "—"}
 
+# Host-specific DEDIKOVANÉ parsery — mají PŘEDNOST před platform-family routingem.
+# Důvod: generický family-harvester (wp_harvest/harvest_site/lewis_discover/Apify) u těchto webů
+# nestačil → napsán bespoke parser. route_host(host) sahá SEM dřív než na rodinu (scripts/routing.py).
+# Klíč = host v platform_map.json. (MŽP nemá dedikovaný parser → zůstává v rodině drupal→harvest_site.)
+sources:
+  # ministerstva / státní fondy s dedikovaným parserem
+  mv.gov.cz:            {harvester: [scripts/mv_cms.py], note: "MV ČR — /clanek/*.aspx + /soubor"}
+  msmt.gov.cz:          {harvester: [scripts/marwel.py], note: "MŠMT — Marwel CMS (seed-driven)"}
+  mze.gov.cz:           {harvester: [scripts/eagri.py], note: "MZe/eAGRI — ea-content-block + příloha Zásady"}
+  eagri.cz:             {harvester: [scripts/eagri.py], note: "MZe/eAGRI (starší doména)"}
+  mpsv.gov.cz:          {harvester: [scripts/mpsv.py], note: "MPSV — reuse eagri.process + rozcestník→detail"}
+  sfa.gov.cz:           {harvester: [scripts/sfa.py], note: "Státní fond audiovize"}
+  vinarskyfond.cz:      {harvester: [scripts/vinarskyfond.py], note: "Vinařský fond"}
+  # nadace / nadační fondy s dedikovaným parserem (9× + Nadace Via)
+  nadacevia.cz:         {harvester: [scripts/nadacevia.py], note: "Nadace Via — WP REST pages → grantové výzvy"}
+  nadacnifondalbert.cz: {harvester: [scripts/albert.py], note: "Nadační fond Albert"}
+  nadacesirius.cz:      {harvester: [scripts/sirius.py], note: "Nadace Sirius"}
+  nadaceleontinka.cz:   {harvester: [scripts/leontinka.py], note: "Nadace Leontinka"}
+  nadacepartnerstvi.cz: {harvester: [scripts/partnerstvi.py], note: "Nadace Partnerství"}
+  nadace-adra.cz:       {harvester: [scripts/nadace_adra.py], note: "Nadace ADRA"}
+  nadace.veronica.cz:   {harvester: [scripts/veronica.py], note: "Nadace Veronica"}
+  hlavkovanadace.cz:    {harvester: [scripts/hlavka.py], note: "Nadání Josefa, Marie a Zdeňky Hlávkových"}
+
 # cokoliv nezařazené (bespoke vendor po 1 webu, nové nadace…) → univerzální
 default:
   harvester: [scripts/harvest_site.py]

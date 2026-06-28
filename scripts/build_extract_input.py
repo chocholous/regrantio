@@ -19,6 +19,9 @@ Spuštění:
 """
 import argparse, glob, json, os, re, sys
 from urllib.parse import urljoin
+if hasattr(sys.stdout, "reconfigure"):  # Windows cp1250 konzole neumí −→ v diagnostice → vynuť UTF-8 (no-op jinde)
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import docstore, prefilter
 from dsw2_fetch import DOC_EXT_RE
