@@ -10,9 +10,9 @@ Aktualizuj po každém přidaném zdroji. Recept na přidání zdroje viz `CLAUD
 
 | metrika | hodnota |
 |---|---|
-| záznamů celkem | **2194** |
-| z toho granty / foundation_mission | 2169 / 25 |
-| poskytovatelů | **115** |
+| záznamů celkem | **2202** |
+| z toho granty / foundation_mission | 2177 / 25 |
+| poskytovatelů | **116** |
 | status grantů | ~342 open · ~39 announced · ~1064 closed · ~724 unknown (počítá se klientsky k dnešku) |
 | typy poskytovatelů | samosprava_kraj 844 · samosprava_obec 798 · ministerstvo 335 · nadacni_fond 63 · nadace 56 · firemni_nadace 42 · statni_fond 36 · statni_agentura 14 |
 
@@ -26,7 +26,7 @@ přirozeně klesá jak deadliny míjejí; není to ztráta dat.
 - **Samospráva**: 14 krajů + ~30 měst (vismo, DSW2/otevřená města, bespoke per-web harvestery —
   všechny registrované v `routing.yaml` sekce `sources`).
 - **Ministerstva**: MŠMT (msmt), MV (mv), MŽP (mzp), MZe/eAGRI (eagri), MZČR (mzcr), MKČR (mkcr), **MPSV (mpsv)**.
-- **Státní fondy**: **SFŽP (sfzp, 19)**, SFA – Státní fond audiovize (sfa, 8), **SFPI/SFRB (sfpi, 6)**.
+- **Státní fondy**: **SFŽP (sfzp, 19)**, SFA – Státní fond audiovize (sfa, 8), **SFPI/SFRB (sfpi, 6)**, **SFDI (sfdi, 8)**.
 - **Agentury**: **GA ČR (gacr, 14)** — typ `statni_agentura`.
 - **EU/centrální**: IROP (irop.gov.cz), dotaceEU.
 - **Nadace/fondy**: ~17 (nadacevia, nadacecez, nadaceokd, agrofert, albert, sirius, leontinka,
@@ -41,8 +41,11 @@ přirozeně klesá jak deadliny míjejí; není to ztráta dat.
       ⚠ Část programů (Program 150/600, Panel 2013+, Zateplování, Vlastní bydlení, Nájemní byty,
       Výstavba pro obce) je **page-builder** — tělo přes WP REST prázdné; doplnit přes front-end HTML
       parsing, jsou to ale převážně čisté úvěry (nižší priorita pro grantový dataset).
-- [ ] **SFDI — Státní fond dopravní infrastruktury** (`sfdi.cz`) — cyklostezky, bezpečnost, příspěvkové programy. **← DALŠÍ.**
-- [ ] **Státní fond kultury ČR** (spadá pod MK) — projektové dotace v kultuře.
+- [x] **SFDI — Státní fond dopravní infrastruktury** (`sfdi.gov.cz`) — HOTOVO: 8 příspěvkových programů
+      (cyklostezky, bezbariérové chodníky, bezpečnost silnic II/III, křížení komunikací, zabezpečení letišť,
+      multimodální překladiště, jednotky ETCS, nové technologie). Pozn.: programy jsou přes WP REST 401 →
+      harvest front-end HTML. Cyklo/chodníky jsou „mezi ročníky" (Termín „-") → status unknown.
+- [ ] **Státní fond kultury ČR** (spadá pod MK) — projektové dotace v kultuře. **← DALŠÍ.**
 
 ### P2 — Ministerstva (zbývající)
 - [ ] **MPO — Ministerstvo průmyslu a obchodu** (`mpo.gov.cz`) — národní programy + OP TAK (viz P3).

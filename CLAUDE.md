@@ -42,6 +42,7 @@ python3 scripts/nadace_adra.py · veronica.py · hlavka.py · vinarskyfond.py ·
 python3 scripts/sfzp.py              # SFŽP (sfzp.gov.cz) — WP REST výzva-* stránky (FN/PU půjčky) + Modernizační fond detail-vyzvy/?id=NN (RES+/HEAT/TRANSGov…)
 python3 scripts/gacr.py              # GA ČR (gacr.cz) — WP posty „Vyhlášení veřejné soutěže" (Standardní/JUNIOR STAR/EXPRO/POSTDOC/…) + LA/bilaterální „Výzva pro podávání" (--since = aktuální roční kolo)
 python3 scripts/sfpi.py              # SFPI/SFRB (sfpi.cz) — WP program-hub pages, bydlení (úvěry+dotace): Úsporné BD, Živel, Dostupné nájemní bydlení, BD bez bariér…
+python3 scripts/sfdi.py              # SFDI (sfdi.gov.cz) — příspěvky na dopravu: cyklostezky, bezbariérové chodníky, bezpečnost silnic, letiště, ETCS… (FRONT-END HTML, /prispevky/<slug>/ jsou přes REST 401)
 
 # Univerzální doc→text (vrstva 2) — používají harvestery i pipeline
 python3 scripts/dsw2_fetch.py        # sniff_ext + pdftotext/textutil (PDF/DOC/DOCX/XLS/ODT)
