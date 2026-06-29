@@ -1533,7 +1533,7 @@
   "opzp.cz": {
    "plat": "wordpress",
    "src": "det",
-   "grant": null
+   "grant": true
   },
   "osa.cz": {
    "plat": "nelson_cms",
