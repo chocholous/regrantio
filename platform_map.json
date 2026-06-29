@@ -2153,7 +2153,7 @@
   "vlada.gov.cz": {
    "plat": "custom_php",
    "src": "sonnet",
-   "grant": false
+   "grant": true
   },
   "vyskov-mesto.cz": {
    "plat": "vismo",

@@ -58,6 +58,7 @@ PROVIDER_TYPE = {
     "mpsv": "ministerstvo",           # Ministerstvo práce a sociálních věcí (mpsv.gov.cz)
     "mpo": "ministerstvo",            # Ministerstvo průmyslu a obchodu (mpo.gov.cz) — národní programy
     "mmr": "ministerstvo",            # Ministerstvo pro místní rozvoj (mmr.gov.cz) — národní dotace
+    "vlada": "ministerstvo",          # Úřad vlády ČR (vlada.gov.cz) — národní dotace NNO (rady/zmocněnci vlády)
     "opzp": "ministerstvo",           # OP Životní prostředí 2021–2027 (opzp.cz) — EU OP, řídící orgán MŽP
     "opst": "ministerstvo",           # OP Spravedlivá transformace 2021–2027 (opst.cz) — EU OP, řídící orgán MŽP
     "opjak": "ministerstvo",          # OP Jan Amos Komenský 2021–2027 (opjak.cz) — EU OP MŠMT (vzdělávání+výzkum)
