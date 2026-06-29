@@ -17,13 +17,14 @@ Co zbývá, NARÁŽÍ NA GENUINE BLOCKER nebo by ZHORŠILO kvalitu:
 | Zbývající zdroj | Stav / proč ne |
 |---|---|
 | **EU F&T Portal (P6)** | ✅ **HOTOVO** — 341 otevřených výzev (SEDIA API, Playwright→HTTP replay) |
+| **Úřad vlády ČR NNO** | ✅ **HOTOVO** — 7 národních programů (seed-driven, deadline z prózy) |
 | OP TAK / dotaceeu.cz centrál | ASP.NET **WebForms** (postback listing) → Apify/viewstate; dedup riziko |
-| OPD (opd.cz) | výzva-detail nese jen **program-level alokaci** (4,9 mld EUR celá OPD), ne per-výzva → jako IROP nejednoznačné, riziko špatného čísla |
-| OPZ+ (esfcr.cz) | Liferay listing bez čisté tabulky (33 výzev) → bespoke render-parse; překryv s MPSV (máme 8) |
+| OPD (opd.cz) | výzva-detail = JS, statické HTML jen nav; alokace jen **program-level** (4,9 mld EUR celá OPD) → jako IROP nejednoznačné. NEúčelné. |
+| OPZ+ (esfcr.cz) | Liferay listing bez čisté tabulky → bespoke render-parse; překryv s MPSV (máme 8) |
 | SZIF (PRV/SZP) | **WAF** (ConnectionReset) → jen přes proxy/Apify |
-| Interreg ×5, Visegrad, Úřad vlády NNO | ne-WP **bespoke** (per-site HTML/próza+PDF), roztříštěné |
+| Interreg ×5, Visegrad | ne-WP **bespoke** (per-site HTML/próza+PDF), roztříštěné |
 | Nadace (zbylé velké) | převážně **ne-WP** (Yii/custom-PHP) → bespoke per-web, většinou jen `foundation_mission` |
-| Města (ČB, Zlín, Šumperk, Třebíč) | JS-rendered; výzvy bez inline dat/částek → přidaly by hlavně **closed/null/unknown** = proti cíli „méně unknown". Vědomě NEpřidáno. |
+| Města (ČB, Zlín, Šumperk, Třebíč) | **OVĚŘENO Playwrightem 2026-06-30: programy NEjsou čistě harvestovatelné** — schované za víceúrovňovou navigací („Programy → výzvy → sub-stránka → detail") + PDF; render vrátil ~0 reálných programů. Bez hluboké per-město bespoke práce s téměř nulovým čistým výnosem. |
 
 **Doktrína kvality (proč nedoháníme nuly):** `amount=null` a `status=unknown` jsou VĚTŠINOU SPRÁVNÉ —
 částky bývají jen v zadávací dokumentaci (PDF) a katalogové programy nemají jeden deadline. Vynutit je
@@ -62,10 +63,10 @@ níže „Recon EU OP + Interreg").
 
 | metrika | hodnota |
 |---|---|
-| záznamů celkem | **2742** |
-| z toho granty / foundation_mission | 2717 / 25 |
-| poskytovatelů | **126** |
-| status grantů | **~718 open** · ~50 announced · ~1294 closed · ~655 unknown (počítá se klientsky k dnešku) |
+| záznamů celkem | **2749** |
+| z toho granty / foundation_mission | 2724 / 25 |
+| poskytovatelů | **127** |
+| status grantů | **~718 open** · ~50 announced · ~1301 closed · ~655 unknown (počítá se klientsky k dnešku) |
 | typy poskytovatelů | samosprava_kraj 843 · samosprava_obec 718 · ministerstvo 561 · **evropska_komise 341** · nadacni_fond 63 · nadace 57 · statni_fond 47 · statni_agentura 44 · firemni_nadace 42 · zahranicni_fond 26 |
 
 Status se počítá KLIENTSKY k reálnému dnešku (build_app.py:computeStatus) → „open" číslo
