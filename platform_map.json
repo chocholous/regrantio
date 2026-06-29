@@ -28,7 +28,7 @@
   "agenturasport.cz": {
    "plat": "wordpress",
    "src": "det",
-   "grant": null
+   "grant": true
   },
   "agosto-foundation.org": {
    "plat": "ERR_fetch",
@@ -1463,7 +1463,7 @@
   "nsa.gov.cz": {
    "plat": "wordpress",
    "src": "det",
-   "grant": null
+   "grant": true
   },
   "nsmascr.cz": {
    "plat": "galileo",

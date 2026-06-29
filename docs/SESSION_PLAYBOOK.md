@@ -111,9 +111,10 @@ v `REMAINING.md`). Aktuálně ~2256 záznamů / 121 poskytovatelů na větvi `co
 
 ## 5. Kde hledat / co dál
 
-- **`REMAINING.md`** = priority a mezery (P1 fondy ✓ · P2 ministerstva · **P2b agentury: NSA další** ·
+- **`REMAINING.md`** = priority a mezery (P1 fondy ✓ · P2 ministerstva · **P2b agentury: NSA ✓ → SZIF/Úřad vlády další** ·
   P3 EU OP · P4 nadace 17→40+ · P5 chybějící města · P6 Brusel · P7 mezinárodní). Vize-tabulka = stav vs cíl.
 - **`CLAUDE.md`** = architektura, příkazy, doc rozcestník.
 - **`docs/`** = platform_playbook, detection, coverage, data_reuse, apify_howto.
-- **Další na řadě (k 2026-06-29): NSA — Národní sportovní agentura** (`agenturasport.cz`), pak SZIF/Úřad vlády,
-  pak nadace (P4) / EU OP (P3). EU/Brusel (P6) = velký zdroj přes EU Funding & Tenders Portal (strukturované API).
+- **Další na řadě (k 2026-06-29): SZIF — Státní zemědělský intervenční fond** (`szif.cz`; PRV/SZP, národní
+  dotace v zemědělství) nebo **Úřad vlády** (Rada vlády pro NNO), pak nadace (P4) / EU OP (P3). EU/Brusel (P6) =
+  velký zdroj přes EU Funding & Tenders Portal (strukturované API). (NSA HOTOVO 2026-06-29: 21 výzev sportu, statni_agentura.)

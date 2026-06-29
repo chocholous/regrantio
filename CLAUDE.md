@@ -48,6 +48,7 @@ python3 scripts/mpo.py               # MPO (mpo.gov.cz) — NÁRODNÍ programy (
 python3 scripts/mmr.py               # MMR (mmr.gov.cz) — NÁRODNÍ dotace /cs/narodni-dotace (PORR, euroregiony, hroby, bezbariérové obce, cestovní ruch, NNO…), Kentico. MIMO: IROP/EU (P3) + Podpora bydlení (=SFPI)
 python3 scripts/eeagrants.py         # EHP a Norské fondy (eeagrants.cz; NKM = MF) — výzvy 2014–2021 (ukončené). typ_poskytovatele=zahranicni_fond, zdroj=ehp_norsko
 python3 scripts/tacr.py              # TA ČR (tacr.gov.cz) — aplikovaný výzkum, veřejné soutěže národních programů (SIGMA/TREND/DOPRAVA 2030/THÉTA 2/PRODEF/Prostředí pro život 2). WP CPT call+programme; lhůty jen ve FRONT-END HTML; --since aktuální cyklus
+python3 scripts/nsa.py               # NSA – Národní sportovní agentura (agenturasport.cz→nsa.gov.cz) — dotace do sportu: neinvestiční (Můj klub, sportovní organizace olympijského/paralympijského hnutí, významné akce, reprezentace, parasport) + investiční (Regiony/Standardizovaná/Movité infrastruktura, obnova po povodních). WP+Elementor; výzvy = pages /dotace/<slug>/, content.rendered STAČÍ (strukturní blok); batch-fetch content přes include= (sekvenční fetch přes WAF je pomalý); --year filtruje aktuální cyklus. typ=statni_agentura
 
 # Univerzální doc→text (vrstva 2) — používají harvestery i pipeline
 python3 scripts/dsw2_fetch.py        # sniff_ext + pdftotext/textutil (PDF/DOC/DOCX/XLS/ODT)

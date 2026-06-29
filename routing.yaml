@@ -103,6 +103,8 @@ sources:
   mpo.gov.cz:           {harvester: [scripts/mpo.py], note: "MPO — jen NÁRODNÍ programy (TREND/TRIO/TWIST/CFF/Obchůdek/Czech Rise Up/brownfieldy/strategické investice), seed-driven landing pages. OP TAK / OP PIK (EU) sem NEpatří = P3 EU (běží přes MS2021+/AIS)"}
   mmr.gov.cz:           {harvester: [scripts/mmr.py], note: "MMR — jen NÁRODNÍ dotace pod /cs/narodni-dotace (PORR, hroby, euroregiony, bezbariérové obce, cestovní ruch, NNO…), Kentico, discovery kategorií + filtr aktuálního ročníku. MIMO: IROP/OP/EU (P3), kategorie 'Podpora bydlení' (=SFPI). Lhůty ve Výzva PDF"}
   eeagrants.cz:         {harvester: [scripts/eeagrants.py], note: "EHP a Norské fondy (NKM = Ministerstvo financí) — výzvy /programy/<oblast>/vyzvy/<rok>/<slug>. Období 2014–2021 ukončeno (closed). Vrstva 2 čistí JS/nav z těla; zdroj=ehp_norsko, typ=zahranicni_fond"}
+  nsa.gov.cz:           {harvester: [scripts/nsa.py], note: "Národní sportovní agentura (agenturasport.cz→nsa.gov.cz) — dotace do sportu (Můj klub, sportovní organizace, akce, reprezentace, parasport; investiční: Regiony/Standardizovaná/Movité infrastruktura). WP+Elementor, výzvy = pages /dotace/<slug>/; content.rendered STAČÍ (strukturní blok). Discovery REST + filtr aktuálního ročníku (--year). typ=statni_agentura"}
+  agenturasport.cz:     {harvester: [scripts/nsa.py], note: "NSA (redirect 301 → nsa.gov.cz)"}
   vinarskyfond.cz:      {harvester: [scripts/vinarskyfond.py], note: "Vinařský fond"}
   # nadace / nadační fondy s dedikovaným parserem (9× + Nadace Via)
   nadacevia.cz:         {harvester: [scripts/nadacevia.py], note: "Nadace Via — WP REST pages → grantové výzvy"}
