@@ -1,5 +1,12 @@
 # Runbook pro novou session — Vrstva 1 / fáze 2 (dokumenty→text) + Vrstva 2 (extrakce)
 
+> ⓘ **Tohle popisuje LLM-workflow cestu vrstvy 2** (`classify_wf.js` + `extract_wf.js` →
+> `opportunities.py --from-extraction` → `data/opportunities.jsonl`). Dnes je u většiny nových zdrojů
+> primární **deterministická cesta**: `build_extract_input.py` → per-source `data/_<src>_extract.py`
+> → `ingest_rich.py` → `data/opportunities_v2.jsonl` (viz `docs/SESSION_PLAYBOOK.md` „recept na přidání
+> zdroje"). LLM workflow používej tam, kde je detail neredukovatelně próza/PDF. Živý dataset =
+> `opportunities_v2.jsonl`, ne `opportunities.jsonl`.
+
 Model: **Vrstva 1** = fáze 1 (harvest: `{url,title,text,documents[]}`) + fáze 2 (dokumenty→text).
 **Vrstva 2** = LLM extrakce (classify + extract → `data/opportunities.jsonl`).
 Tahle session: vrstva 1 už má **fázi 1 hotovou** (`data/h19_*.jsonl` + další); zbývá **fáze 2 vrstvy 1**, pak **vrstva 2**.

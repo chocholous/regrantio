@@ -1,8 +1,12 @@
 # Coverage expansion — roadmap rozšíření zdrojů
 
-> Větev `coverage-expansion`. Cíl: pokrýt **všechna** ministerstva, kraje, nadace a města.
-> **Vodítko = current data** (`platform_map.json`: 507 hostů / 83 platforem detekováno; 51 v `opportunities.jsonl`).
-> Gap = **65 grantových hostů** (`grant:true`, nezpracované). Tenhle dokument je jejich tříděný plán.
+> ⚠ **HISTORICKÝ LOG (větev `coverage-expansion`, červen 2026).** Zachycuje, JAK byly nasazeny kraje +
+> města + první ministerstva (užitečné jako reference triků per-platforma: DOTIS API, Fond Vysočiny,
+> GINIS USU, Wayback WAF obejití…). Počty (778/911/…/2164) i „gap 65 hostů" jsou k datu logu, NE aktuální.
+> **Aktuální plán CO dál = `REMAINING.md`; JAK = `docs/SESSION_PLAYBOOK.md`.** Živý dataset =
+> `data/opportunities_v2.jsonl` (~2280). Větev je dnes `coverage-expansion-next`.
+>
+> Cíl (stále platí): pokrýt **všechna** ministerstva, kraje, nadace a města.
 
 ## Princip (z architektury, viz README + docs/platform_playbook.md)
 Každá CMS-rodina = jeden tenký harvester (vrstva 1: TEXT + dokumenty). Pak univerzální vrstva 2 (LLM).
