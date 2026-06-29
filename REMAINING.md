@@ -6,8 +6,21 @@ Aktualizuj po každém přidaném zdroji. **JAK to dělat (zlatá pravidla, rece
 
 > **Status k 2026-06-29.** Větev `coverage-expansion-next`.
 
+## Kvalitní pass 2026-06-29 (dedup + čištění)
+Po expanzi proběhl quality pass (fix_dataset.py): **2491 → 2412** (−79). Odstraněno:
+- **−74 re-snapshotů** (A3 dedup): stejný `(source, titul, deadline)` = redundantní katalog harvestovaný
+  opakovaně přes ročníky (DSW2/QCM: Ústí n.L. 35, Hodonín 19, Mělník 11…). Necháváme NEJBOHATŠÍ kopii
+  (s částkou/popisem). Záznamy s ODLIŠNÝM deadlinem (různé ročníky výzvy) zůstávají.
+- **−1 stray** (DROP_STRAY): ČMZRB / Národní rozvojová banka (úvěry/záruky, ne dotace) omylem jako mise pod mkcr.
+- **−4 test junk** (DROP_SOURCES): `tacr.dsw2.otevrenamesta.cz` = demo instance (titulky kódy „PP1/TK01",
+  deadliny 2021); reálné TA ČR máme pod zdrojem `tacr`.
+- Výsledek: **0 reziduálních exact dupů**, unknown 738 → 665, 0 mojibake (data čistá UTF-8), 0 broken titulků
+  (prázdný `title` u foundation_mission je správně — mise nesou `name`).
+- Pozn.: zbývající `amount=null` (≈75 %) a `status=unknown` (665) jsou VĚTŠINOU správné — částky bývají jen
+  v PDF (zadávací dokumentace) a katalogové programy nemají jeden deadline (jsou opakující se). NEHALUCINUJEME.
+
 ## Co přibylo v session 2026-06-29 (přehled)
-Od 2256 → **2491 záznamů** (+235), 119 → **126 poskytovatelů**. Přidáno:
+Od 2256 → **2412 záznamů** (po dedupu), 119 → **125 poskytovatelů**. Přidáno:
 - **NSA** (Národní sportovní agentura, `nsa.gov.cz`) — 21 sportovních výzev (`statni_agentura`).
 - **Nadace OSF** (`osf.cz`) — 1 `foundation_mission` (nemá otevřenou výzvu; donorské fondy/programy).
 - **EU operační programy (P3) — nově 213 výzev:** **OPŽP** (`opzp.cz`, 107) · **OP ST** (`opst.cz`, 98) ·
@@ -25,11 +38,11 @@ níže „Recon EU OP + Interreg").
 
 | metrika | hodnota |
 |---|---|
-| záznamů celkem | **2491** |
-| z toho granty / foundation_mission | 2465 / 26 |
-| poskytovatelů | **126** |
-| status grantů | ~390 open · ~37 announced · ~1300 closed · ~738 unknown (počítá se klientsky k dnešku) |
-| typy poskytovatelů | samosprava_kraj 844 · samosprava_obec 798 · ministerstvo 566 · nadacni_fond 63 · nadace 57 · statni_fond 51 · statni_agentura 44 · firemni_nadace 42 · zahranicni_fond 26 |
+| záznamů celkem | **2412** (po dedupu) |
+| z toho granty / foundation_mission | 2387 / 25 |
+| poskytovatelů | **125** |
+| status grantů | ~390 open · ~37 announced · ~1295 closed · ~665 unknown (počítá se klientsky k dnešku) |
+| typy poskytovatelů | samosprava_kraj 844 · samosprava_obec ~725 · ministerstvo 566 · nadacni_fond 63 · nadace 57 · statni_fond 51 · statni_agentura 40 · firemni_nadace 42 · zahranicni_fond 26 |
 
 Status se počítá KLIENTSKY k reálnému dnešku (build_app.py:computeStatus) → „open" číslo
 přirozeně klesá jak deadliny míjejí; není to ztráta dat.

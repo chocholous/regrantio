@@ -32,12 +32,22 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from opportunities import compute_status  # kanonický výpočet statusu (sdílený s pipeline)
 
 # Zdroj, jehož KAŽDÝ záznam je duplicitní/nekonzistentní kopií jiného zdroje → smazat.
-DROP_SOURCES = {"dotace.usti.cz"}  # = duplicitní Ústí (kind=program fonds + ne-extrahované appeals)
+DROP_SOURCES = {
+    "dotace.usti.cz",                      # = duplicitní Ústí (kind=program fonds + ne-extrahované appeals)
+    "tacr.dsw2.otevrenamesta.cz",          # TEST/demo instance dsw2 (titulky kódy „PP1/TK01", deadliny 2021);
+                                           # reálné TA ČR máme pod zdrojem „tacr" (9 veřejných soutěží)
+}
 
 # Varianta poskytovatele sklizená 2× (bohatší extract_wf pod bare-slug vs chudší apify pod <slug>.cz).
 # Když TÝŽ (normalizovaný) titul existuje pod bare-slug, .cz kopie je duplicitní → drop.
 # (Ostatní .cz varianty nesou DISTINKTNÍ granty — nemažou se; jen agrofert má překryv titulů.)
 VARIANT_DEDUP = {"nadace-agrofert.cz": "nadace-agrofert"}
+
+# Konkrétní stray/mis-filed záznamy (nesprávný zdroj nebo ne-grant) → drop pro čistotu.
+DROP_STRAY = [
+    # ČMZRB / Národní rozvojová banka = úvěry/záruky (ne dotace), navíc omylem jako mise pod mkcr.
+    lambda r: r.get("source") == "mkcr" and "MZRB" in (r.get("name") or "").upper(),
+]
 
 # Ruční mapa zdroj→typ poskytovatele pro all-null zdroje (ověřeno z titulků/URL záznamů).
 # slovník hodnot = canon facet vocab (ministerstvo / statni_fond / nadace / firemni_nadace / nadacni_fond).
@@ -108,9 +118,11 @@ def main():
     n0 = len(recs)
     src0 = len({r.get("source") for r in recs})
 
-    # ---- A) DROP duplicitních zdrojů ----
+    # ---- A) DROP duplicitních zdrojů + stray ----
     dropped = [r for r in recs if r.get("source") in DROP_SOURCES]
     recs = [r for r in recs if r.get("source") not in DROP_SOURCES]
+    stray_dropped = [r for r in recs if any(f(r) for f in DROP_STRAY)]
+    recs = [r for r in recs if not any(f(r) for f in DROP_STRAY)]
 
     # ---- A2) variant dedup (agrofert: .cz apify kopie překrývající bohatší bare-slug) ----
     def ntitle(r):
@@ -125,6 +137,25 @@ def main():
             else:
                 keep.append(r)
         recs = keep
+
+    # ---- A3) dedup re-snapshotů: stejný (source, title, deadline) = redundantní (program/výzva
+    #      harvestovaná opakovaně — typicky katalog DSW2/QCM přes ročníky, BEZ odlišného deadline).
+    #      Necháme NEJBOHATŠÍ kopii (částka > délka popisu > délka titulku). Záznamy s ODLIŠNÝM
+    #      deadlinem (skutečně různé ročníky výzvy) zůstávají — liší se klíčem. ----
+    def _rich(r):
+        return (1 if r.get("amount") else 0, len(r.get("focus_area") or ""), len(r.get("title") or ""))
+    _groups = collections.OrderedDict()
+    for r in recs:
+        _groups.setdefault((r.get("source"), ntitle(r), r.get("deadline")), []).append(r)
+    resnapshot_dropped, _kept = [], []
+    for (_src, _nt, _dl), grp in _groups.items():
+        if len(grp) > 1 and _nt:                      # _nt neprázdný titulek → kolaps re-snapshotů
+            best = max(grp, key=_rich)
+            _kept.append(best)
+            resnapshot_dropped += [r for r in grp if r is not best]
+        else:
+            _kept.extend(grp)
+    recs = _kept
 
     # ---- B) reclasifikace typ_poskytovatele=null ----
     maj = majority_types(recs)
@@ -204,6 +235,10 @@ def main():
         print("\n=== A2) variant dedup (.cz apify kopie) ===")
         for s, c in collections.Counter(r.get("source") for r in variant_dropped).most_common():
             print(f"  DROP {s}: {c} (duplicitní titul existuje pod bohatším bare-slug)")
+    if resnapshot_dropped:
+        print(f"\n=== A3) dedup re-snapshotů (stejný source+titul+deadline): −{len(resnapshot_dropped)} ===")
+        for s, c in collections.Counter(r.get("source") for r in resnapshot_dropped).most_common(10):
+            print(f"  −{c:3}  {s}")
     print("\n=== B) reclasifikace typ_poskytovatele=null ===")
     for k, c in sorted(filled.items()):
         print(f"  +{c:3}  {k}")
