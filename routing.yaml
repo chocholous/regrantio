@@ -108,6 +108,7 @@ sources:
   vinarskyfond.cz:      {harvester: [scripts/vinarskyfond.py], note: "Vinařský fond"}
   # nadace / nadační fondy s dedikovaným parserem (9× + Nadace Via)
   nadacevia.cz:         {harvester: [scripts/nadacevia.py], note: "Nadace Via — WP REST pages → grantové výzvy"}
+  osf.cz:               {harvester: [scripts/osf.py], note: "Nadace OSF (Open Society Fund Praha) — WP+Elementor REST pages. K 2026-06 bez otevřené žadatelské výzvy → 1 foundation_mission (Stronger Roots 2026–2027 už rozdělen; ostatní = donorské fondy). Harvester future-proof: discoveruje slug …vyzva… aktuálního roku (--year), neuzavřené. typ=nadace"}
   nadacnifondalbert.cz: {harvester: [scripts/albert.py], note: "Nadační fond Albert"}
   nadacesirius.cz:      {harvester: [scripts/sirius.py], note: "Nadace Sirius"}
   nadaceleontinka.cz:   {harvester: [scripts/leontinka.py], note: "Nadace Leontinka"}

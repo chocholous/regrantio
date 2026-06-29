@@ -63,6 +63,7 @@ PROVIDER_TYPE = {
     "eeagrants": "zahranicni_fond",   # EHP a Norské fondy (eeagrants.cz; NKM = Ministerstvo financí)
     # nadace
     "nadacevia": "nadace",            # Nadace Via
+    "osf": "nadace",                  # Nadace OSF (Open Society Fund Praha)
     "partnerstvi": "nadace",          # Nadace Partnerství
     "leontinka": "nadace",            # Nadace Leontinka
     "veronica": "nadace",             # Nadace Veronica

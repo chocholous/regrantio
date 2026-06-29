@@ -1543,7 +1543,7 @@
   "osf.cz": {
    "plat": "wordpress",
    "src": "det",
-   "grant": null
+   "grant": true
   },
   "ostrava.cz": {
    "plat": "plone",
