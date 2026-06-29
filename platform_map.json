@@ -1518,7 +1518,7 @@
   "opjak.cz": {
    "plat": "wordpress",
    "src": "det",
-   "grant": null
+   "grant": true
   },
   "opst.cz": {
    "plat": "wordpress",

@@ -50,6 +50,7 @@ PROVIDER_TYPE = {
     "mmr": "ministerstvo",            # Ministerstvo pro místní rozvoj (mmr.gov.cz) — národní dotace
     "opzp": "ministerstvo",           # OP Životní prostředí 2021–2027 (opzp.cz) — EU OP, řídící orgán MŽP
     "opst": "ministerstvo",           # OP Spravedlivá transformace 2021–2027 (opst.cz) — EU OP, řídící orgán MŽP
+    "opjak": "ministerstvo",          # OP Jan Amos Komenský 2021–2027 (opjak.cz) — EU OP MŠMT (vzdělávání+výzkum)
     # státní fondy
     "vinarskyfond": "statni_fond",    # Vinařský fond
     "sfa": "statni_fond",             # Státní fond audiovize (sfa.gov.cz)
