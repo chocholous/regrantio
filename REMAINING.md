@@ -239,3 +239,19 @@ Proběhla sonda kandidátů; čisté WP-REST výhry (typ NSA) jsou z velké čá
 - **Doporučení dalšího pořadí:** (a) P6 **EU Funding & Tenders Portal** — STRUKTUROVANÉ JSON API výzev =
   nejlepší ROI (1 harvester → stovky programů, Horizon/Erasmus+/CERV/LIFE/Kreativní Evropa); (b) vlada.gov.cz
   jako dedikovaná próza+PDF session; (c) P5 chybějící města reuse `vismo.py`/`dsw2.py` (nulový nový kód).
+
+### Recon EU OP + Interreg (2026-06-29, pokr.) — kde končí WP-reuse pattern
+„EU OP na WP s CPT `call`" (`opzp.harvest_op`) cracknul OPŽP+OP ST; OP JAK měl jiný WP (listing /vyzvy/).
+Zbylé OP/Interreg už do reuse NEpadají — **ZEĎ (vyžaduje Apify/WebForms/bespoke, ne rychlý harvest):**
+- **OP TAK** (`agentura-api.org`) = ne-WP; **OPZ+** (`esfcr.cz`) = ne-WP; **OPD** (`opd.cz`) = ne-WP;
+  **NPO** (`narodniplanobnovy.cz`) = ne-WP.
+- **dotaceeu.cz** (centrální MMR portál, agreguje VŠECHNY OP po složkách `01-OP-TAK`/`03-OPZ+`/…) =
+  **ASP.NET WebForms**: listing řádky jsou postback (0 statických href), stránkování přes `WebForm_DoPostBack`
+  → potřeba **Apify postback** nebo viewstate emulace. Navíc DEDUP riziko (překryv s IROP/OPŽP/OPST/OPJAK,
+  co už máme). POZOR: NEharvestovat naivně celé dotaceeu → duplicity.
+- **Interreg** (at-cz.eu, by-cz.eu, sn-cz2027.eu, cz-pl.eu, sk-cz.eu) = všechny ne-WP, bespoke (per-site
+  HTML parser, prózové výzvy). `comerto` vendor (at-cz/sn-cz) = 1 parser na 2, ale stále bespoke.
+- **Visegrad Fund** (`visegradfund.org`, P7) = ne-WP, bespoke (malá konečná sada grantů → spíš mission+pár).
+- **Tipsport** (`nadacetipsport.cz`) = WP ale bez grant-CPT (jen `portfolio`) → výzvy nestrukturované.
+→ **Závěr:** P3 EU OP přes WP-reuse vyčerpáno (OPŽP+OPST+OPJAK = 213 záznamů). Další P3 (OP TAK/OPZ+/OPD)
+  = Apify/WebForms session NEBO per-OP bespoke; P6 EU F&T API zůstává nejlepší strukturovaný ROI.
