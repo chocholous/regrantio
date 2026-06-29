@@ -6,6 +6,21 @@ Aktualizuj po každém přidaném zdroji. **JAK to dělat (zlatá pravidla, rece
 
 > **Status k 2026-06-29.** Větev `coverage-expansion-next`.
 
+## Co přibylo v session 2026-06-29 (přehled)
+Od 2256 → **2491 záznamů** (+235), 119 → **126 poskytovatelů**. Přidáno:
+- **NSA** (Národní sportovní agentura, `nsa.gov.cz`) — 21 sportovních výzev (`statni_agentura`).
+- **Nadace OSF** (`osf.cz`) — 1 `foundation_mission` (nemá otevřenou výzvu; donorské fondy/programy).
+- **EU operační programy (P3) — nově 213 výzev:** **OPŽP** (`opzp.cz`, 107) · **OP ST** (`opst.cz`, 98) ·
+  **OP JAK** (`opjak.cz`, 8). Vše `zdroj=eu_fondy`, `typ=ministerstvo`, status v kódu.
+- **Infrastruktura:** reprodukční fix (vrstva-2 extraktory `data/_<src>_extract.py` nově TRACKOVANÉ);
+  housekeeping dokumentace (README/PAGES_DESC/coverage_expansion/phase2 sjednoceny, smazán stale handoff).
+- **Reuse asset:** `scripts/opzp.py:harvest_op(base,host,out)` = sdílený harvester „EU OP na WP s CPT `call`".
+
+**Genuine blocker (kde session skončila):** WP-reuse na EU OP vyčerpán. Zbylé OP TAK/OPZ+/OPD/NPO = ne-WP;
+centrál `dotaceeu.cz` = ASP.NET WebForms (postback listing → Apify/viewstate) + dedup riziko; Interreg ×5 a
+Visegrad = ne-WP bespoke. Další postup chce Apify/WebForms NEBO P6 EU F&T API (dedikovaná session — viz
+níže „Recon EU OP + Interreg").
+
 ## Aktuální stav datasetu
 
 | metrika | hodnota |
