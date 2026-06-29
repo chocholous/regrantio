@@ -2559,6 +2559,11 @@
    "plat": "UNKNOWN",
    "src": "manual_verified",
    "grant": true
+  },
+  "ec.europa.eu": {
+   "plat": "sedia_api",
+   "src": "det",
+   "grant": true
   }
  },
  "dist": {

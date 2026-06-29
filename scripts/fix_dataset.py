@@ -61,6 +61,7 @@ PROVIDER_TYPE = {
     "opzp": "ministerstvo",           # OP Životní prostředí 2021–2027 (opzp.cz) — EU OP, řídící orgán MŽP
     "opst": "ministerstvo",           # OP Spravedlivá transformace 2021–2027 (opst.cz) — EU OP, řídící orgán MŽP
     "opjak": "ministerstvo",          # OP Jan Amos Komenský 2021–2027 (opjak.cz) — EU OP MŠMT (vzdělávání+výzkum)
+    "eu_ft": "evropska_komise",       # EU Funding & Tenders Portal (ec.europa.eu) — centrálně řízené programy EU
     # státní fondy
     "vinarskyfond": "statni_fond",    # Vinařský fond
     "sfa": "statni_fond",             # Státní fond audiovize (sfa.gov.cz)
