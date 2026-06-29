@@ -91,9 +91,10 @@ v `REMAINING.md`). Aktuálně ~2256 záznamů / 121 poskytovatelů na větvi `co
 - **ingest JOIN = basename** `grant_NN.json`; out musí mít stejné indexy jako in; přeskočení = nezapsat soubor.
 - **Velké downloady** (build_extract_input s desítkami příloh) pusť na pozadí (`run_in_background`);
   **foreground `sleep` je blokovaný** — nečekej sleepem, čekej na notifikaci.
-- **Gitignored:** `data/` celé (vč. `data/_<src>_extract.py`, `*_documents.jsonl`, `opportunities_v2.jsonl`).
-  **Trackuj:** `scripts/*.py`, `routing.yaml`, `platform_map.json`, `CLAUDE.md`, `REMAINING.md`,
-  `docs/grants_app.html`, `docs/opportunities.json`.
+- **Gitignored:** `data/` celé (`*_documents.jsonl`, `opportunities_v2.jsonl`, `<src>_out/`, doc-store…)
+  — VÝJIMKA: `data/_<src>_extract.py` se TRACKUJÍ (`.gitignore`: `/data/*` + `!/data/_*_extract.py`), jsou to
+  vrstva-2 extraktory = kód. **Trackuj:** `scripts/*.py`, `data/_<src>_extract.py`, `routing.yaml`,
+  `platform_map.json`, `CLAUDE.md`, `REMAINING.md`, `docs/grants_app.html`, `docs/opportunities.json`.
 
 ---
 

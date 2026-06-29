@@ -4,8 +4,11 @@ venv/
 __pycache__/
 *.pyc
 
-# Generovaný výstup pipeline (zdrojová data žijí v rodičovském re-grantio/data/)
-/data/
+# Generovaný výstup pipeline + zdrojová data (gitignored, ~1 GB) — viz data_bundle/ pro reprodukci.
+# VÝJIMKA: per-source vrstva-2 extraktory `data/_<src>_extract.py` jsou KÓD (ne data) → trackují se,
+# jinak fresh clone nedokáže reprodukovat vrstvu 2 (harvester je v scripts/, ale extraktor chyběl).
+/data/*
+!/data/_*_extract.py
 *.out.json
 
 # OS
