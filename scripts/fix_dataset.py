@@ -23,7 +23,7 @@ Spuštění z kořene repa:
    python3 scripts/fix_dataset.py            # in-place, vytvoří .bak
    python3 scripts/fix_dataset.py --dry-run  # jen report
 """
-import argparse, json, os, shutil, collections, sys
+import argparse, json, os, re, shutil, collections, sys
 from datetime import date
 if hasattr(sys.stdout, "reconfigure"):  # Windows cp1250 konzole neumí →·⚠ v diagnostice → vynuť UTF-8 (no-op jinde)
     sys.stdout.reconfigure(encoding="utf-8")
@@ -157,6 +157,67 @@ def main():
             _kept.extend(grp)
     recs = _kept
 
+    # ---- A4) sanitizace polí: amount→int|null, deadline/open_from→ISO|„průběžně"|null,
+    #      oprava deadline<open (typo roku). Garantuje typovou čistotu pro status + appku. ----
+    CZM = {"ledna": 1, "února": 2, "unora": 2, "března": 3, "brezna": 3, "dubna": 4, "května": 5,
+           "kvetna": 5, "června": 6, "cervna": 6, "července": 7, "cervence": 7, "srpna": 8,
+           "září": 9, "zari": 9, "října": 10, "rijna": 10, "listopadu": 11, "prosince": 12}
+    _AMT_OK = re.compile(r"^[\d  .,]+(\s*(?:Kč|kč|korun)\.?)?$")
+
+    def _coerce_amount(a):
+        if isinstance(a, bool) or a is None:
+            return None
+        if isinstance(a, (int, float)):
+            return int(a) if 1000 <= a <= 500_000_000_000 else (int(a) if 0 <= a < 1000 else None)
+        if isinstance(a, str) and _AMT_OK.match(a.strip()) and re.search(r"\d", a):
+            digits = re.sub(r"\D", "", re.sub(r",\d+$", "", a.strip()))   # tečky/mezery = tisíce; čárka = desetinné
+            n = int(digits) if digits else None
+            return n if n and 1000 <= n <= 500_000_000_000 else None
+        return None  # próza/rozsah/„nestanoveno" → null (nehádáme)
+
+    def _coerce_date(v, year):
+        if v is None:
+            return None
+        s = str(v).strip()
+        if re.fullmatch(r"\d{4}-\d{2}-\d{2}", s):
+            return s
+        if re.sub(r"[^a-zěšč]", "", s.lower()) in ("průběžně", "prubezne", "rolling", "průběžne"):
+            return "průběžně"
+        cur = bool(re.search(r"aktu[áa]ln[íi]ho|b[ěe][žz]n[ée]ho", s, re.I))  # „aktuálního/běžného roku" = letošek
+        m = re.match(r"(\d{1,2})\.\s*([A-Za-zÁ-ž]+)", s)
+        if m and m.group(2).lower() in CZM and cur:
+            return f"{year}-{CZM[m.group(2).lower()]:02d}-{int(m.group(1)):02d}"
+        m = re.match(r"(\d{1,2})\.\s*(\d{1,2})\.", s)
+        if m and cur and 1 <= int(m.group(2)) <= 12 and 1 <= int(m.group(1)) <= 31:
+            return f"{year}-{int(m.group(2)):02d}-{int(m.group(1)):02d}"
+        return None  # neparsovatelné/nejednoznačné → null (status unknown, ne špatné datum)
+
+    san = collections.Counter()
+    for r in recs:
+        a0 = r.get("amount")
+        a1 = _coerce_amount(a0)
+        if a1 != a0:
+            r["amount"] = a1
+            san["amount"] += 1
+        for f in ("open_from", "deadline"):
+            d0 = r.get(f)
+            d1 = _coerce_date(d0, today.year)
+            if d1 != d0:
+                r[f] = d1
+                san["date"] += 1
+        of, dl = r.get("open_from"), r.get("deadline")
+        if of and dl and re.fullmatch(r"\d{4}-\d{2}-\d{2}", of) and re.fullmatch(r"\d{4}-\d{2}-\d{2}", dl) and dl < of:
+            bumped = f"{int(dl[:4]) + 1}{dl[4:]}"   # deadline < open = typo roku → +1
+            from datetime import date as _d
+            try:
+                if of <= bumped and (_d.fromisoformat(bumped) - _d.fromisoformat(of)).days <= 550:
+                    r["deadline"] = bumped
+                else:
+                    r["deadline"] = None
+                san["deadline_fix"] += 1
+            except Exception:
+                r["deadline"] = None
+
     # ---- B) reclasifikace typ_poskytovatele=null ----
     maj = majority_types(recs)
     filled = collections.Counter()
@@ -239,6 +300,9 @@ def main():
         print(f"\n=== A3) dedup re-snapshotů (stejný source+titul+deadline): −{len(resnapshot_dropped)} ===")
         for s, c in collections.Counter(r.get("source") for r in resnapshot_dropped).most_common(10):
             print(f"  −{c:3}  {s}")
+    if san:
+        print(f"\n=== A4) sanitizace: amount→int|null {san['amount']}× · date→ISO|průběžně|null "
+              f"{san['date']}× · deadline<open oprava {san['deadline_fix']}× ===")
     print("\n=== B) reclasifikace typ_poskytovatele=null ===")
     for k, c in sorted(filled.items()):
         print(f"  +{c:3}  {k}")
