@@ -6,6 +6,25 @@ Aktualizuj po každém přidaném zdroji. **JAK to dělat (zlatá pravidla, rece
 
 > **Status k 2026-06-29.** Větev `coverage-expansion-next`.
 
+## ✅ Stav projektu: pokrytí dostupných zdrojů KOMPLETNÍ + dataset bez datových chyb
+**2412 záznamů / 125 poskytovatelů, integrita ověřena (0 bad_amount · 0 bad_date · 0 open<deadline ·
+0 status_mismatch · 0 dup ids).** Vše, co jde harvestovat BEZ Apify/special tooling a v dobré kvalitě,
+je pokryté. Co zbývá, NARÁŽÍ NA GENUINE BLOCKER (vyžaduje placený Apify nebo bespoke reverse-engineering):
+
+| Zbývající zdroj | Blocker (proč ne „bez tooling") |
+|---|---|
+| OP TAK / OPZ+ / OPD, dotaceeu.cz centrál | ASP.NET **WebForms** (postback listing, 0 statických href) → Apify/viewstate; navíc dedup riziko |
+| SZIF (PRV/SZP) | **WAF** (ConnectionReset) → jen přes proxy/Apify |
+| EU F&T Portal (Horizon/Erasmus+/CERV/LIFE) | strukturované API, ale SEDIA query contract = 500 → nutno zachytit přesný payload z prohlížeče |
+| Interreg ×5, Visegrad, Úřad vlády NNO | ne-WP **bespoke** (per-site HTML/próza+PDF), roztříštěné |
+| Nadace (OSF✓ … zbylé velké) | převážně **ne-WP** (Yii/custom-PHP/statické) → bespoke per-web |
+| Chybějící města (ČB, Zlín, Šumperk, Třebíč) | dostupné, ALE přidají hlavně **closed/null-amount/unknown** záznamy (programy s lhůtou led–úno → po termínu, částky jen v PDF) = zhoršují kvalitu, ne zlepšují. Vědomě NEpřidáno. |
+
+**Doktrína kvality (proč nedoháníme nuly):** `amount=null` a `status=unknown` jsou VĚTŠINOU SPRÁVNÉ —
+částky bývají jen v zadávací dokumentaci (PDF) a katalogové programy nemají jeden deadline. Vynutit je
+= halucinace nebo špatná čísla (ověřeno: IROP alokace na stránce je nejednoznačná / min-velikost-projektu
+vs alokace). **Raději poctivý null než špatné číslo.** Enrichment amount z PDF NEbezpečný → neprovádíme.
+
 ## Kvalitní pass 2026-06-29 (dedup + čištění)
 Po expanzi proběhl quality pass (fix_dataset.py): **2491 → 2412** (−79). Odstraněno:
 - **−74 re-snapshotů** (A3 dedup): stejný `(source, titul, deadline)` = redundantní katalog harvestovaný
