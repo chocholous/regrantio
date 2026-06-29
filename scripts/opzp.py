@@ -67,22 +67,21 @@ def detail_block(full_text, title):
     return seg
 
 
-def discover():
+def discover(base):
     calls = []
     for pg in range(1, 4):
-        batch = getj(f"{B}/wp-json/wp/v2/call?per_page=100&page={pg}&_fields=id,slug,link,title")
+        batch = getj(f"{base}/wp-json/wp/v2/call?per_page=100&page={pg}&_fields=id,slug,link,title")
         calls += batch
         if len(batch) < 100:
             break
     return calls
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--out", default="data/opzp_documents.jsonl")
-    args = ap.parse_args()
-    calls = discover()
-    print(f"  discovery: {len(calls)} výzev (CPT call)", flush=True)
+def harvest_op(base, host, out):
+    """Reuse pro JAKÝKOLI EU OP na WordPressu s CPT `call` a front-end blokem 'Detail výzvy'
+    (Stav/Druh výzvy/Podání žádosti od-do/Alokace). Sdílí opzp.cz (OPŽP) i opst.cz (OP ST)."""
+    calls = discover(base)
+    print(f"  discovery: {len(calls)} výzev (CPT call) @ {host}", flush=True)
     recs = []
     for c in calls:
         url = c.get("link") or ""
@@ -92,28 +91,37 @@ def main():
         except Exception as e:
             print(f"  ⚠ {c['slug']}: fetch selhal → přeskakuji ({str(e)[:40]})", flush=True)
             continue
-        ft = clean(h)
-        body = detail_block(ft, title)
+        body = detail_block(clean(h), title)
         if "Alokace" not in body and "Podán" not in body and "Podan" not in body:
             print(f"  ⚠ {c['slug']}: bez strukturního bloku → přeskakuji", flush=True)
             continue
         atts, seen = [], set()
         for href, label in DOC_RE.findall(h):
-            u = urljoin(B, html.unescape(href))
+            u = urljoin(base, html.unescape(href))
             lab = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", "", label))).strip()
             if u in seen:
                 continue
             if re.search(r"text v[ýy]zvy|pravidl|p[řr][íi]loh", lab, re.I):
                 seen.add(u)
                 atts.append({"url": u, "label": lab or u.rsplit("/", 1)[-1]})
-        recs.append({"url": url, "host": HOST, "title": title, "body_text": body,
+        recs.append({"url": url, "host": host, "title": title, "body_text": body,
                      "attachments": atts[:3], "n_attachments": min(len(atts), 3)})
         time.sleep(0.15)
-    os.makedirs(os.path.dirname(args.out) or ".", exist_ok=True)
-    with open(args.out, "w", encoding="utf-8") as o:
+    os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
+    with open(out, "w", encoding="utf-8") as o:
         for r in recs:
             o.write(json.dumps(r, ensure_ascii=False) + "\n")
-    print(f"OPZP_DONE {len(recs)}/{len(calls)} -> {args.out}")
+    print(f"OP_DONE {len(recs)}/{len(calls)} ({host}) -> {out}")
+    return recs
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--out", default="data/opzp_documents.jsonl")
+    ap.add_argument("--base", default=B)
+    ap.add_argument("--host", default=HOST)
+    args = ap.parse_args()
+    harvest_op(args.base, args.host, args.out)
 
 
 if __name__ == "__main__":

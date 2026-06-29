@@ -49,6 +49,7 @@ PROVIDER_TYPE = {
     "mpo": "ministerstvo",            # Ministerstvo průmyslu a obchodu (mpo.gov.cz) — národní programy
     "mmr": "ministerstvo",            # Ministerstvo pro místní rozvoj (mmr.gov.cz) — národní dotace
     "opzp": "ministerstvo",           # OP Životní prostředí 2021–2027 (opzp.cz) — EU OP, řídící orgán MŽP
+    "opst": "ministerstvo",           # OP Spravedlivá transformace 2021–2027 (opst.cz) — EU OP, řídící orgán MŽP
     # státní fondy
     "vinarskyfond": "statni_fond",    # Vinařský fond
     "sfa": "statni_fond",             # Státní fond audiovize (sfa.gov.cz)
