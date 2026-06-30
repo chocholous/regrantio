@@ -95,12 +95,22 @@ def check_product_contract():
     print(f"    (schema {meta['schema_version']}, {len(grants)} grantů, id unikátní, hash konzistentní)")
 
 
+def check_sync_contract():
+    """Dokáž, že dokumentovaný sync algoritmus (PRODUCT_API §3) funguje na reálném exportu."""
+    sys.path.insert(0, os.path.join(ROOT, "scripts"))
+    import product_sync_example
+    rc = product_sync_example.selftest(os.path.join(ROOT, "docs", "opportunities.json"))
+    if rc != 0:
+        raise RuntimeError("sync selftest FAIL (PRODUCT_API §3 porušen)")
+
+
 def main():
     print("# VALIDATE RELEASE\n")
     check("compile all .py", compile_all)
     check("routing.yaml parses", check_routing)
     check("json configs valid", check_json_configs)
     check("product contract (opportunities.json)", check_product_contract)
+    check("sync contract (reference consumer selftest)", check_sync_contract)
     print()
     if errors:
         print(f"FAIL — {len(errors)} chyb")

@@ -21,6 +21,12 @@ Posun od „dev cvičení" k produkčnímu provozu (data → produkt = web app).
 - **CI release gate** `scripts/validate_release.py` + `.github/workflows/validate.yml`: na každý push
   ověří syntax všech .py, parsovatelnost routing.yaml/JSON configů a kontrakt opportunities.json
   (schema/count/unikátní id/reprodukovatelný content_hash). Chytl by routing.yaml bug před deployem.
+- **Status logika konzistentní** napříč 3 implementacemi: `opportunities.py:compute_status` (kanon),
+  `build_app.py:computeStatus` (JS, lexikografické ISO porovnání = chronologicky správné) a dokumentované
+  `status_rule`. Ověřeno — žádný drift, žádný špatný badge v produktu.
+- **Referenční sync consumer + důkaz** `scripts/product_sync_example.py`: hotová `sync()` funkce pro
+  produkt + `--selftest` dokazující insert/update/delete/no-op + idempotenci na reálném exportu. Selftest
+  běží i v CI → kontrakt z PRODUCT_API §3 se nehne bez upozornění.
 - **Doc fixy:** CLAUDE.md prostředí macOS→Windows realita; headline počty (README/SESSION_PLAYBOOK) → 2749/127.
 
 **Zbývá v produkčním passu (příští session):** dořešit `h19_*` nadační batch (per-web parsery nebo

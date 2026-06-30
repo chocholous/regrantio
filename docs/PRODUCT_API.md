@@ -80,6 +80,11 @@ for id in db.all_ids() - incoming_ids:
     db.soft_delete(id)             # výzva zmizela ze zdroje
 ```
 
+> **Referenční implementace + důkaz:** `scripts/product_sync_example.py` obsahuje hotovou funkci
+> `sync()` (zkopíruj do produktu) a `--selftest`, který na reálném exportu dokazuje insert/update/
+> delete/no-op + idempotenci. Tentýž selftest běží v CI (`validate_release.py`) → kontrakt se nehne
+> bez upozornění.
+
 ---
 
 ## 4. Schéma záznamu (pole)
