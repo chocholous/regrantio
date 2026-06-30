@@ -18,6 +18,9 @@ Posun od „dev cvičení" k produkčnímu provozu (data → produkt = web app).
 - **Data audit:** dataset čistý (0 dup id, 0 date errors, 0 type errors, 0 mojibake); build tail
   (consolidate→fix_dataset→build_app→export) ověřen idempotentní. Nuly (amount 80 %, deadline 655) jsou
   dle doktríny správné (poctivý null > vymyšlené číslo).
+- **CI release gate** `scripts/validate_release.py` + `.github/workflows/validate.yml`: na každý push
+  ověří syntax všech .py, parsovatelnost routing.yaml/JSON configů a kontrakt opportunities.json
+  (schema/count/unikátní id/reprodukovatelný content_hash). Chytl by routing.yaml bug před deployem.
 - **Doc fixy:** CLAUDE.md prostředí macOS→Windows realita; headline počty (README/SESSION_PLAYBOOK) → 2749/127.
 
 **Zbývá v produkčním passu (příští session):** dořešit `h19_*` nadační batch (per-web parsery nebo

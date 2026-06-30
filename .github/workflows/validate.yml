@@ -1,0 +1,24 @@
+name: Validate release
+
+# Na každý push: ověř git-tracked soubory (běží BEZ gitignored data/). Chytá rozbitý routing.yaml,
+# syntax chyby v harvesterech/extraktorech a porušený veřejný kontrakt docs/opportunities.json
+# (schema/count/id/content_hash). Doplněk k pages.yml (ten jen deployuje) — tohle je release gate.
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install validation deps
+        run: pip install pyyaml
+      - name: Validate (syntax + configs + product contract)
+        run: python scripts/validate_release.py

@@ -38,7 +38,9 @@ v `REMAINING.md`). Aktuálně **2749 záznamů / 127 poskytovatelů** na větvi 
              → cp data/grants_app.html docs/grants_app.html → export_api.py (→ docs/opportunities.json)
 7. KONFIG    fix_dataset PROVIDER_TYPE (slug→typ) · routing.yaml sources (host→harvester) ·
              platform_map.json final[host].grant=true · CLAUDE.md harvester řádek · REMAINING.md
-8. VERIFY+   ověř (status / provider type / citace / kraj) → git add (KÓD/KONFIG/docs) → commit → push.
+8. VERIFY+   ověř (status / provider type / citace / kraj) → `python scripts/validate_release.py`
+             (syntax + routing.yaml + kontrakt opportunities.json) → git add (KÓD/KONFIG/docs) → commit → push.
+             CI (`.github/workflows/validate.yml`) tutéž validaci pustí na push — ale chytni to lokálně dřív.
 ```
 
 **Vzory harvesterů/extraktorů (kopíruj podle podobnosti):**
