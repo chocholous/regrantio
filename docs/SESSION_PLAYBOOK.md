@@ -88,6 +88,10 @@ v `REMAINING.md`). Aktuálně **2749 záznamů / 127 poskytovatelů** na větvi 
 - **České datum má tečky** → na věty s datem NEpoužívej `[^.]`; použij date-aware regex `\d{1,2}\.\s*\d{1,2}\.\s*20\d\d`.
 - **ASCII `"` uvnitř českého string-literálu** v `_extract.py` → SyntaxError (předčasné ukončení stringu).
   Použij kulaté uvozovky `„ "` nebo `"` uvnitř vůbec nedávej. Vždy `ast.parse` před spuštěním.
+  ⚠ **Stejná past kousla `routing.yaml`** (2026-06-30): `„open"` (české otevírací `„` + ASCII zavírací `"`)
+  v note u ec.europa.eu předčasně ukončilo YAML double-quoted string → `routing.py` padal od eu_ft commitu.
+  Po editaci YAML/JSON/PY s českým textem VŽDY parse-test (`python -c "import yaml; yaml.safe_load(open(...))"`)
+  nebo `py_compile`/`ast.parse`. Smoke-test celého repa: `py_compile` všech `scripts/*.py` + `data/_*_extract.py`.
 - **ingest JOIN = basename** `grant_NN.json`; out musí mít stejné indexy jako in; přeskočení = nezapsat soubor.
 - **Velké downloady** (build_extract_input s desítkami příloh) pusť na pozadí (`run_in_background`);
   **foreground `sleep` je blokovaný** — nečekej sleepem, čekej na notifikaci.
@@ -116,6 +120,9 @@ v `REMAINING.md`). Aktuálně **2749 záznamů / 127 poskytovatelů** na větvi 
   P3 EU OP · P4 nadace 17→40+ · P5 chybějící města · P6 Brusel · P7 mezinárodní). Vize-tabulka = stav vs cíl.
 - **`CLAUDE.md`** = architektura, příkazy, doc rozcestník.
 - **`docs/`** = platform_playbook, detection, coverage, data_reuse, apify_howto.
-- **Další na řadě (k 2026-06-29): SZIF — Státní zemědělský intervenční fond** (`szif.cz`; PRV/SZP, národní
-  dotace v zemědělství) nebo **Úřad vlády** (Rada vlády pro NNO), pak nadace (P4) / EU OP (P3). EU/Brusel (P6) =
-  velký zdroj přes EU Funding & Tenders Portal (strukturované API). (NSA HOTOVO 2026-06-29: 21 výzev sportu, statni_agentura.)
+- **Priorita k 2026-06-30 = PRODUCTION-READINESS (ne coverage).** Viz `docs/PRODUCT_API.md` (kontrakt pro
+  produkt) + `docs/REFRESH.md` (update strategie) + `scripts/refresh.py` (checklist). Coverage (P-priority
+  níže) až po kvalitě. Úřad vlády HOTOVO (7 NNO programů); EU F&T HOTOVO (341). Zbylé coverage zdroje =
+  genuine blockery (SZIF WAF, OP TAK/dotaceeu WebForms, nadace ne-WP) — viz REMAINING tabulka.
+- **Reálný reprodukční gap:** jednorázový nadační batch `h19_*` (fondbudoucnosti/kellner/vdv/… bez
+  registrovaného harvesteru) — REFRESH.md §6. Dořešit per-web parsery nebo ponechat jako poslední stav.
