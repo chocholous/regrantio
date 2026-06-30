@@ -4,7 +4,25 @@
 Aktualizuj po každém přidaném zdroji. **JAK to dělat (zlatá pravidla, recept, pasti) viz
 `docs/SESSION_PLAYBOOK.md`** + `CLAUDE.md`; data žijí v gitignored `data/`.
 
-> **Status k 2026-06-29.** Větev `coverage-expansion-next`.
+> **Status k 2026-06-30.** Větev `coverage-expansion-next`. **2749 záznamů / 127 poskytovatelů.**
+
+## 🏭 Production-readiness pass 2026-06-30 (probíhá)
+Posun od „dev cvičení" k produkčnímu provozu (data → produkt = web app). Hotovo tuto session:
+- **KRITICKÝ FIX:** `routing.yaml` nešel parsovat (ASCII `"` uvnitř českého `„open"` na `ec.europa.eu`)
+  → `scripts/routing.py` padal od commitu eu_ft. Opraveno; 70 sources / 23 families se načítají.
+- **Produkční kontrakt** `docs/PRODUCT_API.md` + `scripts/export_api.py` rozšířen: `content_hash` per grant
+  (inkrementální sync produktu: upsert dle `id`, re-index dle hash, delete chybějících `id`), pojistka
+  `--min-ratio` proti kolapsu datasetu (rozbitý harvest nesmaže granty z produktu). schema 1.0→1.1.
+- **Refresh strategie** `docs/REFRESH.md` + `scripts/refresh.py` (operační checklist zdroj→harvester→tier→
+  počet + gap-check). Odhalen jediný reálný reprodukční gap = jednorázový nadační batch `h19_*` (viz §6 REFRESH).
+- **Data audit:** dataset čistý (0 dup id, 0 date errors, 0 type errors, 0 mojibake); build tail
+  (consolidate→fix_dataset→build_app→export) ověřen idempotentní. Nuly (amount 80 %, deadline 655) jsou
+  dle doktríny správné (poctivý null > vymyšlené číslo).
+- **Doc fixy:** CLAUDE.md prostředí macOS→Windows realita; headline počty (README/SESSION_PLAYBOOK) → 2749/127.
+
+**Zbývá v produkčním passu (příští session):** dořešit `h19_*` nadační batch (per-web parsery nebo
+ponechat jako poslední stav); zvážit registraci family-covered hostů do `routing.yaml sources:` pro
+úplnost refresh-checklistu; pokračovat coverage (P-priority níže) až po kvalitě.
 
 ## ✅ Stav projektu: pokrytí dostupných zdrojů KOMPLETNÍ + dataset bez datových chyb
 **2742 záznamů / 126 poskytovatelů; 718 otevřených grantů (26 %); integrita ověřena (0 bad_amount ·

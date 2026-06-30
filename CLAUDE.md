@@ -16,7 +16,10 @@ Repo je **samostatný a soběstačný** (osamostatněno z rodiče 2026-06-01). V
 
 ## Příkazy
 
-Prostředí: macOS, **python3.13**, používej venv (`python3.13 -m venv .venv && source .venv/bin/activate`). Žádné build/test/lint — je to skriptová pipeline, ne aplikace.
+Prostředí: vyvíjeno na macOS, **běží i na Windows** (aktuální pracovní stroj — viz `docs/SESSION_PLAYBOOK.md §3`
+cp1250/TLS pasti). Python **3.13** ve venv. **POZOR na příkazy níže:** jsou psané `python3` + `source .venv/bin/activate`
+(macOS/Linux); na **Windows** je to `python` + `.venv\Scripts\activate`. Žádné build/test/lint — je to skriptová
+pipeline, ne aplikace.
 
 ```bash
 # Driver nad UŽ STAŽENÝMI daty (LLM fáze jsou stuby — viz níže)
@@ -95,6 +98,8 @@ python3 scripts/build_app.py              # → data/grants_app.html (fasetový 
 ## Rozcestník dokumentace
 - `docs/SESSION_PLAYBOOK.md` — **JAK pracovat** (handoff pro příští session): zlatá pravidla (NIKDY nemergovat do main, nehalucinovat, status v kódu), recept na přidání zdroje (8 kroků), pasti (cp1250 konzole, TLS, WebForms/Kentico/page-builder, JOIN, …), deploy+export. **Přečti na začátku session.**
 - `REMAINING.md` (root) — **plán rozšiřování (CO)**: co je hotovo, co zbývá (priority P1–P7), stav datasetu, vlajky. Aktualizuj po každém přidaném zdroji.
+- `docs/PRODUCT_API.md` — **datový kontrakt pro produkt (web app)**: endpoint `opportunities.json`, tvar, sync algoritmus (upsert dle `id`, change-detection dle `content_hash`, delete chybějících), schéma polí, status semantika, kadence, verzování, záruky kvality. Generuje `scripts/export_api.py`.
+- `docs/REFRESH.md` — **update/refresh strategie**: co/jak často/jak bezpečně re-harvestovat (kadence per tier), pojistka proti kolapsu datasetu, known refresh-gapy. Nástroj `scripts/refresh.py` = živý checklist (zdroj→harvester→tier→počet + gap-check).
 - `docs/platform_playbook.md` — definice VŠECH CMS rodin → podpis/harvester/metoda
 - `docs/detection.md` — 3 vrstvy detekce platformy + lekce o slitých labelech
 - `docs/data_reuse.md` — index UŽ STAŽENÝCH dat k reuse (klíčové: harvest = REUSE-first)

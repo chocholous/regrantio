@@ -8,7 +8,7 @@ Operační příručka „JAK" (na rozdíl od `REMAINING.md` = „CO"). Přečti
 ## 0. Cíl & zlatá pravidla
 
 **Cíl:** kompletní, konkurenceschopná česká grantová databáze (7 vrstev pokrytí — viz vize-tabulka
-v `REMAINING.md`). Aktuálně ~2256 záznamů / 121 poskytovatelů na větvi `coverage-expansion-next`.
+v `REMAINING.md`). Aktuálně **2749 záznamů / 127 poskytovatelů** na větvi `coverage-expansion-next`.
 
 **ZLATÁ PRAVIDLA (neporušuj):**
 1. **NIKDY nemerguj do `main`** bez explicitního pokynu uživatele. Je to JEHO větev. Pracuj na
