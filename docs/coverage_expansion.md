@@ -3,8 +3,8 @@
 > ⚠ **HISTORICKÝ LOG (větev `coverage-expansion`, červen 2026).** Zachycuje, JAK byly nasazeny kraje +
 > města + první ministerstva (užitečné jako reference triků per-platforma: DOTIS API, Fond Vysočiny,
 > GINIS USU, Wayback WAF obejití…). Počty (778/911/…/2164) i „gap 65 hostů" jsou k datu logu, NE aktuální.
-> **Aktuální plán CO dál = `REMAINING.md`; JAK = `docs/SESSION_PLAYBOOK.md`.** Živý dataset =
-> `data/opportunities_v2.jsonl` (~2280). Větev je dnes `coverage-expansion-next`.
+> **Aktuální plán CO dál + přesné statistiky = `REMAINING.md`; JAK = `docs/SESSION_PLAYBOOK.md`.** Živý
+> dataset = `data/opportunities_v2.jsonl`. Větev je dnes `coverage-expansion-next`.
 >
 > Cíl (stále platí): pokrýt **všechna** ministerstva, kraje, nadace a města.
 
