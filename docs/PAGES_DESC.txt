@@ -1,7 +1,8 @@
-Velké rozšíření pokrytí + LLM/deterministická vrstva 2. Aktuálně ~2280 oportunit / 122 poskytovatelů
-(větev coverage-expansion-next, k 2026-06-29). Samospráva (14 krajů + ~30 měst, dsw2/Otevřená města/
-bespoke), ministerstva (MŠMT/MV/MŽP/MZe/MZČR/MKČR/MPSV/MPO/MMR), státní fondy (SFŽP/SFA/SFPI/SFDI/SFK),
-státní agentury (GA ČR / TA ČR / NSA), IROP/dotaceEU, ~17 nadací, EHP a Norské fondy.
+Velké rozšíření pokrytí + LLM/deterministická vrstva 2 + produkční integrace. Aktuálně 2749 oportunit /
+127 poskytovatelů (větev coverage-expansion-next, k 2026-06-30). Samospráva (14 krajů + ~30 měst, dsw2/
+Otevřená města/bespoke), ministerstva (MŠMT/MV/MŽP/MZe/MZČR/MKČR/MPSV/MPO/MMR), státní fondy (SFŽP/SFA/
+SFPI/SFDI/SFK), státní agentury (GA ČR / TA ČR / NSA), EU operační programy (OPŽP/OP ST/OP JAK), EU
+Funding & Tenders Portal (341 otevřených centrálních EU výzev), IROP/dotaceEU, ~17 nadací, EHP a Norské fondy.
 LLM vrstva 2 (Haiku extrakce polí + Opus klasifikace) i deterministické per-source extraktory,
 kanonické facety (oblast/typ/cílovka/forma/zdroj/režim/délka/kraj), STATUS se počítá KLIENTSKY
 (nezastará). Appka: fasetové vyhledávání + bohatý detail s grounding citacemi.
