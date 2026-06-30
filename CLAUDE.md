@@ -100,6 +100,7 @@ python3 scripts/build_app.py              # → data/grants_app.html (fasetový 
 - `REMAINING.md` (root) — **plán rozšiřování (CO)**: co je hotovo, co zbývá (priority P1–P7), stav datasetu, vlajky. Aktualizuj po každém přidaném zdroji.
 - `docs/PRODUCT_API.md` — **datový kontrakt pro produkt (web app)**: endpoint `opportunities.json`, tvar, sync algoritmus (upsert dle `id`, change-detection dle `content_hash`, delete chybějících), schéma polí, status semantika, kadence, verzování, záruky kvality. Generuje `scripts/export_api.py`.
 - `docs/REFRESH.md` — **update/refresh strategie**: co/jak často/jak bezpečně re-harvestovat (kadence per tier), pojistka proti kolapsu datasetu, known refresh-gapy. Nástroj `scripts/refresh.py` = živý checklist (zdroj→harvester→tier→počet + gap-check).
+- `docs/INTEGRATION_GRANTIO_CZ.md` — **konkrétní napojení na produkt grantio.cz** (`the-machine-app`, SvelteKit+Supabase): mapování `opportunities.json` → jejich `public.grants` sloupce, sync job (upsert dle `dedupe_key`, content_hash, soft-delete), status výpočet. Doplňuje obecný `PRODUCT_API.md` o produkt-specifické schéma.
 - `docs/platform_playbook.md` — definice VŠECH CMS rodin → podpis/harvester/metoda
 - `docs/detection.md` — 3 vrstvy detekce platformy + lekce o slitých labelech
 - `docs/data_reuse.md` — index UŽ STAŽENÝCH dat k reuse (klíčové: harvest = REUSE-first)

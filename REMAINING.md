@@ -29,11 +29,12 @@ Posun od „dev cvičení" k produkčnímu provozu (data → produkt = web app).
   běží i v CI → kontrakt z PRODUCT_API §3 se nehne bez upozornění.
 - **Doc fixy:** CLAUDE.md prostředí macOS→Windows realita; headline počty (README/SESSION_PLAYBOOK) → 2749/127.
 
-**Napojení na produkt (grantio.cz) HOTOVO jako spec:** v repu `chocholous/the-machine-app` (SvelteKit+
-Supabase) na větvi `regrantio-data-integration` je `docs/INTEGRATION_REGRANTIO.md` — kompletní datová
-specifikace (feed URL, mapování `opportunities.json` → `public.grants` sloupce, sync logika, status
-výpočet, volitelná content_hash migrace). Implementaci napíše jejich Claude Code. **Větev NENÍ pushnutá
-do jejich remote** (jejich produkční repo — push je rozhodnutí uživatele). UI (filtry/AI chat) = jejich volba.
+**Napojení na produkt (grantio.cz) HOTOVO jako spec — ŽIJE V TOMTO REPU:** `docs/INTEGRATION_GRANTIO_CZ.md`
+= kompletní datová specifikace napojení na produkt `chocholous/the-machine-app` (SvelteKit+Supabase):
+feed URL, **mapování `opportunities.json` → `public.grants` sloupce** (jejich schéma nastudováno), sync
+logika (upsert dle `dedupe_key`, content_hash, soft-delete), status výpočet, volitelná content_hash
+migrace, zadání sync jobu. Záměrně v NAŠEM repu (ne v jejich) — produktový tým si to přečte tady.
+Implementaci napíše jejich Claude Code ve svém stacku. UI (filtry/AI chat) = jejich product volba.
 
 **Zbývá v produkčním passu (příští session):** dořešit `h19_*` nadační batch (per-web parsery nebo
 ponechat jako poslední stav); zvážit registraci family-covered hostů do `routing.yaml sources:` pro

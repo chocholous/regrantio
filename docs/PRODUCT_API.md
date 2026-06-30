@@ -7,6 +7,10 @@ vrstva 2…) je interní a produkt se na to **nesmí spoléhat** — jediný sta
 
 Generuje ho `scripts/export_api.py` z interního zdroje pravdy `data/opportunities_v2.jsonl`.
 
+> **Konkrétní napojení na náš produkt grantio.cz** (mapování na jejich Supabase `public.grants` schéma)
+> je v `docs/INTEGRATION_GRANTIO_CZ.md`. Tenhle dokument je obecný kontrakt feedu; ten druhý je
+> produkt-specifický návod k implementaci.
+
 ---
 
 ## 1. Kde to leží (endpoint)
