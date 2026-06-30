@@ -1,0 +1,121 @@
+<!doctype html><html lang=cs><head><meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1"><title>re-grantio · větve</title>
+<style>
+:root{--bg:#0b0e14;--card:#141925;--bd:#222a39;--fg:#e6ecf5;--mut:#8a96aa;--acc:#6ea8fe}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 -apple-system,Segoe UI,Roboto,sans-serif}
+.wrap{max-width:880px;margin:0 auto;padding:40px 22px}
+h1{font-size:26px;margin:0 0 4px}.lead{color:var(--mut);margin:0 0 26px}
+.card{display:block;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px 18px;margin:0 0 12px;transition:border-color .15s}
+.card:hover{border-color:var(--acc)}
+.h{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.br{font-size:17px;font-weight:600;color:var(--acc)}
+.main{font-size:10px;background:#2a3550;color:#9db4e6;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px}
+.meta{margin-left:auto;color:var(--mut);font-size:12px}
+.desc{color:var(--fg);opacity:.85;margin:8px 0 10px;font-size:13.5px;white-space:pre-wrap}
+.open{color:var(--acc);font-size:13px}
+.mrg{font-size:10px;padding:2px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.4px}
+.mrg.ok{background:#173a2a;color:#74e0a8}.mrg.no{background:#3a3417;color:#e0cf74}
+.guide{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;margin:0 0 26px}
+.guide h2{font-size:18px;margin:0 0 8px}.guide p{font-size:13.5px;color:var(--fg);opacity:.9;margin:6px 0}
+.guide ol{margin:8px 0 0;padding-left:20px}.guide li{margin:7px 0;font-size:13.5px}
+.guide code{background:#0d1016;border:1px solid var(--bd);border-radius:4px;padding:1px 6px;font-size:12px;color:#9fd0ff}
+.guide pre{background:#0d1016;border:1px solid var(--bd);border-radius:8px;padding:10px 12px;overflow-x:auto;font-size:12px;line-height:1.5;color:#cdd6e4;margin:6px 0}
+.guide .warn{background:#15110a;border-left:3px solid #e0cf74;border-radius:0 8px 8px 0;padding:9px 12px;margin:10px 0;font-size:13px;color:#e0d4a8}
+.guide a{color:var(--acc)}
+.flow{display:flex;flex-direction:column;margin:10px 0 2px}
+.node{background:#0d1016;border:1px solid var(--bd);border-radius:10px;padding:10px 13px;position:relative}
+.node .t{font-weight:600;font-size:13.5px}.node .s{font-size:12px;color:var(--mut);margin-top:2px;padding-right:64px}
+.node .who{position:absolute;right:11px;top:10px;font-size:9.5px;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.4px}
+.who.kod{background:#173a2a;color:#74e0a8}.who.haiku{background:#3a3417;color:#e0cf74}.who.opus{background:#1a2e3a;color:#74c2e0}
+.fa{text-align:center;color:#3a4257;font-size:17px;line-height:1.15;margin:2px 0}
+.legend{display:flex;gap:16px;font-size:12px;color:var(--mut);margin:12px 0 0;flex-wrap:wrap}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+.h2b{font-size:14px;color:var(--mut);margin:0 0 12px;text-transform:uppercase;letter-spacing:.5px}
+footer{color:var(--mut);font-size:12px;margin-top:24px;text-align:center}
+footer a{color:var(--mut)}
+</style></head><body><div class=wrap>
+<h1>🎯 re-grantio</h1>
+<p class=lead>Katalog českých grantů a dotací. Každá větev = vlastní verze aplikace + popis, čím se liší od <b>main</b>.</p>
+
+<div class=guide>
+<h2>⚙️ Logika receptu</h2>
+<p>Dvouvrstvý model: <b>tenké per-CMS harvestery</b> (jen text+dokumenty) → <b>jeden univerzální LLM extraktor</b>. Dělba práce: <b>status &amp; struktura = kód</b>, vytěžení polí = levný model (Haiku), <b>kategorie a kanonizace štítků = Opus</b>. Každé pole má doslovnou citaci (grounding).</p>
+<div class=flow>
+ <div class=node><div class=t>0 · Zdroj &amp; detekce platformy</div><div class=s>grantové weby obcí/krajů/ministerstev/nadací; platformu určí strukturální otisk, ne label</div><span class="who kod">kód</span></div>
+ <div class=fa>▼</div>
+ <div class=node><div class=t>1 · Vrstva 1 — Harvest (lossless)</div><div class=s>5 archetypů: REST (WP) · inline-JS (dsw2) · HTML-listing (vismo) · Kentico/ASP.NET · SPA-grid→XHR replay → jen TEXT + odkazy na dokumenty, nic se nezahazuje</div><span class="who kod">kód</span></div>
+ <div class=fa>▼</div>
+ <div class=node><div class=t>2 · Doc-store — dokumenty → text</div><div class=s>stažení příloh (PDF/Excel/DOC/ODT) + převod na text, deduplikace přes manifest</div><span class="who kod">kód</span></div>
+ <div class=fa>▼</div>
+ <div class=node><div class=t>3 · Vrstva 2 — extrakce polí</div><div class=s>LLM workflow, 1 oportunita = 1 agent, plný text+PDF → pole schématu + evidence (citace). Bez ořezu vstupu.</div><span class="who haiku">Haiku</span></div>
+ <div class=fa>▼</div>
+ <div class=node><div class=t>4 · Kategorie nad extrakcí</div><div class=s>klasifikace oblast / typ žadatele / cílová skupina z vytěžených dat — řízený slovník, kanonické hodnoty</div><span class="who opus">Opus</span></div>
+ <div class=fa>▼</div>
+ <div class=node><div class=t>5 · Kanonizace štítků + hierarchie</div><div class=s>variant→kanon mapy pro všechny facety; rollup oblast→nadoblast a typ→sektor. STATUS (otevřená/uzavřená) dopočítá kód z datumů</div><span class="who opus">Opus</span></div>
+ <div class=fa>▼</div>
+ <div class=node><div class=t>→ opportunities.jsonl → build_app → tato aplikace</div><div class=s>fasetové vyhledávání + bohatý detail + grounding; status v kódu, ne LLM</div><span class="who kod">kód</span></div>
+</div>
+<div class=legend><span><i class="dot" style="background:#74e0a8"></i> kód (deterministicky)</span><span><i class="dot" style="background:#e0cf74"></i> Haiku (vytěžení polí)</span><span><i class="dot" style="background:#74c2e0"></i> Opus (kategorie &amp; kanonizace)</span></div>
+<p style="margin-top:14px">📚 <b>Celý recept &amp; dokumentace</b> (GitHub):
+<a href="https://github.com/chocholous/regrantio/blob/HEAD/README.md">README</a> ·
+<a href="https://github.com/chocholous/regrantio/blob/HEAD/CLAUDE.md">CLAUDE.md</a> (operační pravidla pro Claude Code) ·
+<a href="https://github.com/chocholous/regrantio/blob/HEAD/docs/platform_playbook.md">platformy</a> ·
+<a href="https://github.com/chocholous/regrantio/blob/HEAD/docs/detection.md">detekce</a> ·
+<a href="https://github.com/chocholous/regrantio/blob/HEAD/docs/coverage.md">coverage</a> ·
+<a href="https://github.com/chocholous/regrantio/blob/HEAD/schema/opportunity_schema.md">schéma</a> ·
+<a href="https://github.com/chocholous/regrantio">celé repo</a></p>
+</div>
+
+<div class=guide>
+<h2>🧩 Přidat další data (Claude Code + Opus)</h2>
+<p>Repo je veřejné — naklonuj a rozšiř pokrytí. <b>Každé rozšíření = vlastní větev</b> s vlastní verzí appky (objeví se v seznamu níže po pushnutí).</p>
+<div class=warn>⚠ <b>Než založíš novou větev:</b> ověř v seznamu níže, že předchozí větve jsou <b>✓ slité do main</b>. Pokud nejsou a nechceš schválně porovnávat víc variant proti sobě, nejdřív je smerguj — ať nestavíš na rozjeté divergenci.</div>
+<ol>
+<li><b>Naklonuj &amp; setup:</b><pre>git clone https://github.com/chocholous/regrantio.git
+cd regrantio/opportunity_pipeline
+python3.13 -m venv .venv &amp;&amp; source .venv/bin/activate
+pip install -r requirements.txt &amp;&amp; playwright install chromium
+bash scripts/unpack_data.sh</pre></li>
+<li><b>Založ větev na rozšíření:</b> <code>git checkout main &amp;&amp; git pull &amp;&amp; git checkout -b rozsireni-&lt;co&gt;</code></li>
+<li><b>Spusť Claude Code a přepni na Opus:</b> <code>claude</code> → <code>/model opus</code> (kategorie &amp; filtry dělá Opus)</li>
+<li><b>Řekni Claudovi:</b> ať zjistí platformu nového zdroje → napíše tenký harvester (lossless, jen TEXT+dokumenty) → protáhne vrstvou 2 (Haiku pole, <b>Opus kategorie</b>) → zkonsoliduje a přestaví appku (<code>build_app.py</code>).</li>
+<li><b>Popis větve:</b> přidej <code>docs/PAGES_DESC.txt</code> (1–3 věty, co je jinak vs main — ukáže se zde).</li>
+<li><b>Commit + push</b> → GitHub Action sama nasadí appku větve a aktualizuje tuhle homepage.</li>
+<li><b>Hotové rozšíření</b> → otevři PR a smerguj do main (badge se přepne na „✓ slito").</li>
+</ol>
+<p>Pravidla kvality: <b>status počítá kód</b> · harvest <b>lossless</b> · <b>kategorie/filtry = Opus</b> · grounding (evidence) · struktura před prózou. Plný recept: <a href="https://github.com/chocholous/regrantio">README.md / CLAUDE.md</a>.</p>
+</div>
+
+<p class=h2b>Větve projektu</p>
+<a class=card href="branches/main/grants_app.html">
+  <div class=h><span class=br>main</span><span class="main">main</span><span class=meta>2026-06-27 · 1aa798f</span></div>
+  <p class=desc>Revert &quot;audit&quot;</p>
+  <span class=open>Otevřít aplikaci →</span></a>
+<a class=card href="branches/coverage-expansion/grants_app.html">
+  <div class=h><span class=br>coverage-expansion</span><span class="mrg no">⟳ neslito (rozpracováno)</span><span class=meta>2026-06-07 · 0c63747</span></div>
+  <p class=desc>Velké rozšíření pokrytí + LLM vrstva 2. Proti main: 778 → 2129 oportunit.
+Přidáno: všech 14 krajů (vlastní dotační programy), všech 26 statutárních měst + desítky obcí
+(dsw2/Otevřená města), IROP/dotaceEU, nadace. Nové platformy: DOTIS API, Fond Vysočiny, GINIS USU,
+Wayback (Karlovarský za WAF). LLM vrstva 2 (Haiku extrakce polí + Opus klasifikace kategorií nad
+extrakcí), kanonické facety (oblast/typ/cílovka/forma/zdroj/režim/délka) přes Opus-ověřené mapy.
+Appka: 4 taby (Vyhledávání · Analýza extrakce · Jak sbíráme data · Rozšířit s Claude Code),
+&quot;Zobrazit další&quot; pro všechna data, oddělený katalog programů (kind=program).</p>
+  <span class=open>Otevřít aplikaci →</span></a>
+<a class=card href="branches/coverage-expansion-next/grants_app.html">
+  <div class=h><span class=br>coverage-expansion-next</span><span class="mrg no">⟳ neslito (rozpracováno)</span><span class=meta>2026-06-30 · 92aac79</span></div>
+  <p class=desc>Velké rozšíření pokrytí + LLM/deterministická vrstva 2 + produkční integrace. Aktuálně 2749 oportunit /
+127 poskytovatelů (větev coverage-expansion-next, k 2026-06-30). Samospráva (14 krajů + ~30 měst, dsw2/
+Otevřená města/bespoke), ministerstva (MŠMT/MV/MŽP/MZe/MZČR/MKČR/MPSV/MPO/MMR), státní fondy (SFŽP/SFA/
+SFPI/SFDI/SFK), státní agentury (GA ČR / TA ČR / NSA), EU operační programy (OPŽP/OP ST/OP JAK), EU
+Funding &amp; Tenders Portal (341 otevřených centrálních EU výzev), IROP/dotaceEU, ~17 nadací, EHP a Norské fondy.
+LLM vrstva 2 (Haiku extrakce polí + Opus klasifikace) i deterministické per-source extraktory,
+kanonické facety (oblast/typ/cílovka/forma/zdroj/režim/délka/kraj), STATUS se počítá KLIENTSKY
+(nezastará). Appka: fasetové vyhledávání + bohatý detail s grounding citacemi.
+
+Veřejný data-export pro produkt: opportunities.json (vedle této appky na stejné Pages cestě) —
+kurátorovaná pole + meta{schema_version, generated_at, count}, raw open_from/deadline pro přepočet
+statusu. Generuje scripts/export_api.py.</p>
+  <span class=open>Otevřít aplikaci →</span></a>
+<footer>Generováno 2026-06-30 16:22 UTC · <a href="https://github.com/chocholous/regrantio">github.com/chocholous/regrantio</a></footer>
+</div></body></html>
