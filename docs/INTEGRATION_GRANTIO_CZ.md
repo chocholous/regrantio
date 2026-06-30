@@ -124,6 +124,14 @@ jinak                     → open   (+ 'closing' když deadline < ~14 dní → 
 Ukládej RAW `open_from`/`deadline`, status drž jako odvozený. Constraint `open/closing/closed` byl u
 vás stejně dropnutý, takže `unknown`/`announced` jdou uložit, nebo si je namapuj na svou taxonomy.
 
+**Co znamená `unknown` (≈24 % grantů, čekej to):** grant nemá jednu parsovatelnou lhůtu — jsou to
+převážně **opakující se / katalogové programy** obcí a krajů (deadline typu „každoročně 15. 11.",
+„průběžně během roku", „31. ledna každého roku"). NENÍ to chyba ani chybějící data — je to realita
+zdroje (nefabrikujeme lhůtu, kterou neznáme). **V UI je neprezentuj jako `closed`** — ukaž např.
+„termín neuveden / průběžně — ověř u zdroje" + odkaz na `url`. Část z nich je `rezim_prijmu='prubezna'`
+(průběžný příjem) → můžeš je volitelně zobrazit jako otevřené, ale my je držíme `unknown` (poctivěji,
+nevíme, jestli program neskončil).
+
 ---
 
 ## 5. (Volitelná) mini-migrace pro efektivní detekci změn
