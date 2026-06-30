@@ -94,13 +94,16 @@ per-zdroj (re-harvest celý zdroj → nahraď jeho podmnožinu), ne plošně.
   1. **slug↔host mismatch** (mv, msmt, mzcr, mzp, mkcr, nadacevia…): zdroj JE registrovaný, jen
      dataset `source` je slug a routing klíč je host (`mv.gov.cz`). Reálně refreshovatelné svým
      harvesterem (`mv_cms.py`, `marwel.py`, drupal/kentico). Kosmetika, ne gap.
-  2. **⚠ jednorázový nadační batch `h19_*`** (fondbudoucnosti 36, socialninadacnifond 12,
+  2. **jednorázový nadační batch `h19_*`** (fondbudoucnosti 36, socialninadacnifond 12,
      fondpaliativnipece 12, nadaceokd 8, kellner 5, vdv 5, nasedite 4, krasapomoci 2, nadacecs 2,
-     kontobariery 1, nadacetm 1, voracek 1…): sklizeno starým hromadným během (`harvest19_*` /
-     `h19_*.jsonl`), BEZ dedikovaného registrovaného harvesteru a bez `data/_<src>_extract.py`.
-     **To je jediný skutečný reprodukční gap.** Tyto nadace se dnes nedají čistě re-harvestovat
-     stejným receptem; většina jsou navíc ne-WP/blokující weby (viz REMAINING recon). Do produkce:
-     buď je dotáhnout na per-web parser (až bude čas, P4), nebo je ponechat jako poslední známý stav.
+     kontobariery 1, nadacetm 1, voracek 1…): sklizeno **generickým `harvest_site.py` (BFS)** a
+     protaženo **starou v1 LLM-workflow cestou** (`harvest19_*`/`h19_*.jsonl` → classify_wf/extract_wf →
+     v1 `opportunities.jsonl` → merge do v2), proto NEmají per-source `data/_<src>_extract.py` (výjimka:
+     `nadacecs`). **Reprodukční stav:** v principu obnovitelné (generic `harvest_site.py <domain>` +
+     LLM vrstva 2), ale NE pinned recept jako v2 zdroje; navíc většina jsou **`foundation_mission`**
+     (nadace bez otevřené výzvy) a část webů je ne-WP/blokující (viz REMAINING recon). **Doporučení:**
+     nech jako poslední známý stav (mission má referenční hodnotu); per-web parser (P4) stav jen tehdy,
+     až nadace vyhlásí reálnou žadatelskou výzvu. Není to dead-end ani urgentní gap.
 
 ---
 
