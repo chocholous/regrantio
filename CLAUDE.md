@@ -67,6 +67,12 @@ python3 scripts/intl_funds.py        # Visegrad Fund (5 programu, pevne uzaverky
 python3 scripts/nadace_spa.py        # JS-renderovane nadace pres Playwright (Partnerstvi/OSF/Vodafone/LPR/CLF/Abakus) - 1 harvester, 6 webu
 python3 scripts/grantovydiar_harvest.py --ids A-B  # Grantový diář (agregátor) — FUNKČNÍ, ale NEingestováno: veřejné id okno je 100% closed (probe 07/2026), čerstvé za loginem
 
+# Sdilene moduly (POUZIVEJ V NOVEM KODU misto vlastnich kopii)
+python3 -c "import czech"            # scripts/czech.py - kanonicke parsovani: cz_date_to_iso (VALIDUJE, 31.2. -> None), cz_dates_all, strip_tags, sentence_at
+                                     #   duvod: audit napocital 38 vlastnich kopii "ceske datum -> ISO", z toho 24 BEZ validace rozsahu
+python3 -c "import upsert_v2"        # scripts/upsert_v2.py - upsert do v2 datasetu (obohaceny zaznam se prepisuje jen ve faktech)
+python3 tests/test_core.py           # 23 testu kriticke logiky (status/upsert/derive/czech); bezi i ve validate_release a CI
+
 # Univerzální doc→text (vrstva 2) — používají harvestery i pipeline
 python3 scripts/dsw2_fetch.py        # sniff_ext + pdftotext/textutil (PDF/DOC/DOCX/XLS/ODT)
 

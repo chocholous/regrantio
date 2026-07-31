@@ -20,6 +20,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(
 from opportunities import compute_status          # noqa: E402
 from upsert_v2 import merge, _enriched            # noqa: E402
 import derive_deadlines as dd                     # noqa: E402
+import czech                                     # noqa: E402
 
 TODAY = datetime.date(2026, 7, 31)
 
@@ -132,6 +133,45 @@ def test_derive_neexistujici_datum_neprojde():
 
 def test_next_occurrence_dnesek_je_platny():
     assert dd.next_occurrence(31, 7, TODAY) == "2026-07-31"
+
+
+# ---------------------------------------------------------------- czech.py (sdílené parsování)
+def test_czech_datum_ciselne():
+    assert czech.cz_date_to_iso("Termín: 15. 11. 2026 do 12:00") == "2026-11-15"
+    assert czech.cz_date_to_iso("15.11.2026") == "2026-11-15"
+
+
+def test_czech_datum_slovni():
+    assert czech.cz_date_to_iso("do 31. ledna 2027") == "2027-01-31"
+    assert czech.cz_date_to_iso("do 31. unora 2027") is None      # 31. 2. neexistuje
+
+
+def test_czech_neexistujici_datum_je_none():
+    """Klíčové: 24 starých parserů tohle NEVALIDOVALO a umělo vyrobit 2026-13-45."""
+    for bad in ("31. 2. 2026", "45. 1. 2026", "1. 13. 2026", "30. 2. 2026"):
+        assert czech.cz_date_to_iso(bad) is None, f"{bad} nesmí projít"
+
+
+def test_czech_bez_data_vraci_none():
+    for s in ("bude upřesněno", "", None, "duben 2026"):
+        assert czech.cz_date_to_iso(s) is None
+
+
+def test_czech_vsechna_data_serazena():
+    ds = czech.cz_dates_all("od 1. 3. 2026 do 30. 6. 2026, náhradní 31. ledna 2027")
+    assert ds == ["2026-03-01", "2026-06-30", "2027-01-31"]
+
+
+def test_czech_strip_tags():
+    assert czech.strip_tags("<p>první</p><p>druhá</p>").splitlines() == ["první", "druhá"]
+    assert "alert" not in czech.strip_tags("<script>alert(1)</script>text")
+    assert czech.strip_tags("a&nbsp;&amp;&nbsp;b") == "a & b"
+
+
+def test_czech_sentence_at():
+    t = "Úvodní věta. Lhůta pro podání žádosti je do 31. 12. 2026 včetně."
+    s = czech.sentence_at(t, t.find("31. 12."))
+    assert "Lhůta pro podání" in s and "Úvodní věta" not in s
 
 
 # ---------------------------------------------------------------- mini-runner (bez pytestu)

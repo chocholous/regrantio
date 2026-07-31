@@ -23,12 +23,19 @@ if hasattr(sys.stdout, "reconfigure"):
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(ROOT)
 errors = []
+EXPORT = "docs/opportunities.json"   # veřejný kontrakt (generuje scripts/export_api.py)
+
+
+class Skip(Exception):
+    """Kontrolu nelze provést v tomhle prostředí (např. CI bez gitignored dat)."""
 
 
 def check(name, fn):
     try:
         fn()
         print(f"  ✓ {name}")
+    except Skip as e:
+        print(f"  — {name}: SKIP ({e})")
     except Exception as e:
         errors.append(f"{name}: {e}")
         print(f"  ✗ {name}: {e}")
@@ -109,6 +116,51 @@ def check_unit_tests():
     print("    (" + (r.stdout or "").strip().splitlines()[-1] + ")")
 
 
+def check_data_quality():
+    """Kvalita DAT v exportu — chytá to, co projde schématem, ale je věcně špatně.
+
+    Proč: 24 z 38 harvesterů si nese vlastní parser českého data BEZ validace rozsahu
+    (audit 2026-07-31) → umí vyrobit 2026-13-45. Dnes to zachytí sanitizace ve fix_dataset,
+    ale to je záchranná síť bez pojistky. Tahle kontrola je ta pojistka."""
+    import datetime as _dt
+    if not os.path.exists(EXPORT):
+        raise Skip(f"{EXPORT} není v pracovní kopii")
+    grants = json.load(open(EXPORT, encoding="utf-8"))["grants"]
+    bad_date, bad_range, inverted, empty_title = [], [], [], 0
+    for g in grants:
+        for f in ("open_from", "deadline"):
+            v = g.get(f)
+            if v in (None, "", "průběžně"):
+                continue
+            try:
+                d = _dt.date.fromisoformat(str(v))
+            except ValueError:
+                bad_date.append(f"{g.get('id','?')[:50]}:{f}={v}")
+                continue
+            if not (2000 <= d.year <= 2035):
+                bad_range.append(f"{g.get('id','?')[:50]}:{f}={v}")
+        of, dl = g.get("open_from"), g.get("deadline")
+        try:
+            if of and dl and _dt.date.fromisoformat(str(of)) > _dt.date.fromisoformat(str(dl)):
+                inverted.append(g.get("id", "?")[:50])
+        except ValueError:
+            pass
+        if g.get("kind") == "grant" and not (g.get("title") or "").strip():
+            empty_title += 1
+    problems = []
+    if bad_date:
+        problems.append(f"{len(bad_date)} neplatných dat ({bad_date[0]})")
+    if bad_range:
+        problems.append(f"{len(bad_range)} dat mimo 2000–2035 ({bad_range[0]})")
+    if inverted:
+        problems.append(f"{len(inverted)} × deadline < open_from ({inverted[0]})")
+    if empty_title:
+        problems.append(f"{empty_title} grantů bez title")
+    if problems:
+        raise RuntimeError("; ".join(problems))
+    print(f"    ({len(grants)} záznamů: data platná, žádné inverzní termíny, tituly neprázdné)")
+
+
 def check_sync_contract():
     """Dokáž, že dokumentovaný sync algoritmus (PRODUCT_API §3) funguje na reálném exportu."""
     sys.path.insert(0, os.path.join(ROOT, "scripts"))
@@ -124,7 +176,7 @@ def main():
     check("unit testy (kritická logika)", check_unit_tests)
     check("routing.yaml parses", check_routing)
     check("json configs valid", check_json_configs)
-    check("product contract (opportunities.json)", check_product_contract)
+    check("kvalita dat (termíny, tituly)", check_data_quality)
     check("sync contract (reference consumer selftest)", check_sync_contract)
     print()
     if errors:
