@@ -98,6 +98,7 @@ PROVIDER_TYPE = {
     "nadacetm": "nadace",             # Nadace Terezy Maxové dětem
     "voracek": "nadace",              # Nadace Jakuba Voráčka
     # firemní nadace / nadační fondy
+    "nadace_spa": "nadace",           # JS-renderované nadace (Partnerství/OSF/Vodafone/LPR/ČLF/Abakus)
     "nadacecs": "firemni_nadace",     # Nadace České spořitelny
     "albert": "firemni_nadace",       # Nadační fond Albert (Ahold)
     "kontobariery": "nadacni_fond",   # Konto Bariéry (Nadace Charty 77)

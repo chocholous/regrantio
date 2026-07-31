@@ -67,7 +67,8 @@ SOURCES = {
     "mv":        (["scripts/mv_cms.py"], "html"),
     "opd":       (["scripts/opd.py"], "html"),   # OP Doprava — tabulka výzev na opd3.opd.cz
     "interreg":  (["scripts/interreg.py"], "structured"),
-    "intl_funds":(["scripts/intl_funds.py"], "html"),   # Visegrad + ERSTE (403 bez UA hlaviček)  # Interreg SK-CZ (WP REST kategorie výzev)   # OP Doprava — tabulka výzev na opd3.opd.cz
+    "intl_funds":(["scripts/intl_funds.py"], "html"),   # Visegrad + ERSTE (403 bez UA hlaviček)
+    "nadace_spa":(["scripts/nadace_spa.py"], "browser"),  # JS-renderované nadace (Playwright)   # Visegrad + ERSTE (403 bez UA hlaviček)  # Interreg SK-CZ (WP REST kategorie výzev)   # OP Doprava — tabulka výzev na opd3.opd.cz
 }
 
 
