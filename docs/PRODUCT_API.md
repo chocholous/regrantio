@@ -37,7 +37,7 @@ https://chocholous.github.io/regrantio/branches/<branch>/opportunities.json
     "schema_version": "1.1",            // při breaking změně schématu stoupne MAJOR
     "generated_at": "2026-06-30T14:53:37+00:00",  // UTC ISO-8601
     "generated_date": "2026-06-30",     // jen datum (pro snadné porovnání „je dnešní?")
-    "count": 2749,                       // počet záznamů v grants[]
+    "count": 3372,                       // počet záznamů v grants[]
     "source": "regrantio pipeline",
     "content_hash_fields": [ ... ],      // která pole vstupují do content_hash (audit/transparentnost)
     "status_rule": "open if today<=deadline; announced if today<open_from; closed if today>deadline …"

@@ -31,8 +31,10 @@ import http_util   # jednotná TLS politika (audit #7/#32)
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
 
 # --- SEED dotační hub stránky (resortní Liferay sity, které reálně existují /web/<slug>) ---
-# Sport/sociální/školství/zdravotnictví NEjsou samostatné sity (HTTP 500); jejich programy
-# zachytí RSS doplněk (Vyhlášení Programu …). Hub = stránka, ze které čteme odkazy na detaily.
+# Hub = stránka, ze které čteme odkazy na detaily.
+# 2026-07-31: sociální oblast a školství dřív vracely HTTP 500 (proto se spoléhalo jen na RSS
+# doplněk) — dnes fungují a nesou vlastní programy (školství 18 položek, sociální 6), takže
+# jsou zpátky mezi seedy. Ověřeno živě; kdyby zase začaly padat, harvester je jen přeskočí.
 SEED_HUBS = [
     "https://praha.eu/web/kultura/granty",
     "https://praha.eu/web/kultura/programove-dotace-2027",
@@ -40,6 +42,9 @@ SEED_HUBS = [
     "https://praha.eu/web/portalzp",
     "https://praha.eu/web/cestovniruch/dotace",
     "https://praha.eu/web/pamatky/dotace",
+    "https://praha.eu/skolstvi-granty",
+    "https://praha.eu/web/socialni",
+    "https://praha.eu/programy-primarni-prevence-pro-skoly-a-skolska-zarizeni",
 ]
 
 # odkaz je kandidát na program-detail, když matchne POS a nematchne NEG

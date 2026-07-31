@@ -3,58 +3,57 @@
 Živý plánovací dokument. **Aktuální stav, co je hotovo, co zbývá a proč.** JAK pracovat (zlatá pravidla,
 recept na zdroj, pasti) = `docs/SESSION_PLAYBOOK.md` + `CLAUDE.md`. Data žijí v gitignored `data/`.
 
-> **Status k 2026-07-31, větev `coverage-expansion-next`.** Full-refresh + rozšíření hotovo: dataset
-> **3049 záznamů / 132 poskytovatelů** (z 2749/127), refresh je nově JEDEN příkaz
-> (`scripts/refresh_run.py`), html-tier poprvé reálně refreshovatelný (upsert_v2), repo uklizené
-> (`scripts/legacy/` karanténa). Produkční kontrakt beze změny (schema 1.1), CI zelené.
+> **Status k 2026-07-31, větev `coverage-expansion-next`.** Dataset **3372 záznamů / 133
+> poskytovatelů**. Všech 18 automatizovaných zdrojů refreshnuto k dnešku, repo uklizené
+> (`scripts/legacy/` karanténa), produkční kontrakt beze změny (schema 1.1), CI zelené.
 
 ---
 
 ## 📊 Aktuální stav datasetu (live `data/opportunities_v2.jsonl`, k 2026-07-31)
 
-| metrika | hodnota (změna proti 2026-06-30) |
+| metrika | hodnota |
 |---|---|
-| **záznamů celkem** | **3049** (3024 grantů + 25 foundation_mission) — bylo 2749 (+300) |
-| **poskytovatelů** | **132** (+5) |
-| status grantů (k 2026-07-31) | **672 open** (22 %) · 33 announced · 1649 closed · 670 unknown (22 %) |
-| typ poskytovatele | ministerstvo 854 · samosprava_kraj 843 · samosprava_obec 723 · evropska_komise 341 · nadacni_fond 63 · nadace 57 · statni_agentura 53 · statni_fond 47 · firemni_nadace 42 · zahranicni_fond 26 |
-| vyplněnost grantů | deadline 2354 (77 %) · **amount 777 (25 %, bylo 20 %)** |
-| integrita | **0 dup id · 0 null id · 0 bad amount · 0 grant bez title · 0 bez url** — `validate_release` ✓ |
+| **záznamů celkem** | **3372** (3347 grantů + 25 foundation_mission) |
+| **poskytovatelů** | **133** |
+| status grantů | **678 open** · 33 announced · 1730 closed · 906 unknown |
+| typ poskytovatele | samosprava_kraj 1153 · ministerstvo 866 · samosprava_obec 723 · evropska_komise 341 · nadacni_fond 63 · nadace 57 · statni_agentura 53 · statni_fond 48 · firemni_nadace 42 · zahranicni_fond 26 |
+| vyplněnost grantů | deadline 2441 (73 %) · amount 777 (23 %) |
+| integrita | **0 dup id · 0 bez title · 0 bad amount** — `validate_release` ✓ |
 
-„Open" počet přirozeně klesá, jak deadliny míjejí (status se počítá klientsky k reálnému dnešku);
-při přepočtu k 31. 7. se 74 červnových open zavřelo a nové zdroje/refresh přidaly ~120 aktuálních výzev.
-`amount=null`/`status=unknown` zůstávají VĚTŠINOU správné (částky jen v PDF; katalogové programy bez
-jedné lhůty) — **raději poctivý null než vymyšlené číslo**.
+`amount=null`/`status=unknown` zůstávají VĚTŠINOU správné (částky bývají jen v PDF; katalogové
+programy nemají jednu lhůtu) — **raději poctivý null než vymyšlené číslo**. Produkt si navíc
+defaultně filtruje `deadline >= dnes NEBO NULL`, takže archiv nezavazí.
 
 ---
 
 ## ✅ Session 2026-07-31 — co se stalo
 
-**Nové zdroje (+~320 záznamů):**
-- **esfcr (OPZ+/OPZ, esfcr.cz)**: 233 výzev ze strukturovaných Liferay polí, **16 aktuálně open**,
-  100% vyplněnost dat i alokací. LZZ archiv 2007–13 vědomě mimo dataset (v harvestu zůstává).
-- **mk (MK ČR)**: 53 výzev z centrálního HTML listingu (OD/DO deterministicky z tabulek).
-- **msmt**: plný BFS harvest (189 stránek) nahradil statický 7-záznamový batch → 14 záznamů,
-  jen aktuální cyklus (`--since-year`).
-- **czechaid (ČRA)**: 9 výzev (1 open — Etiopie, deadline 3. 9. 2026); ZIP přílohy vč. rozbalení.
-- **hzs (HZS ČR)**: 4 standing programy (obce/NNO); jednorázové 2022 výzvy vědomě mimo (šum).
-- **plone_ostrava**: 5 aktuálních programů městských obvodů (132 stránek balastu odfiltrováno).
-- **grantovydiar.cz**: harvester HOTOVÝ a funkční, ale NEingestováno — veřejné id okno je 100 %
-  closed (probe 192 záznamů / 0 open), čerstvé výzvy za loginem. Kandidát na placený přístup.
+**Nové zdroje / doplněné mezery (+623 proti 2749 na začátku session):**
+- **esfcr (OPZ+/OPZ)** 233 · **mk (MK ČR)** 53 · **msmt** plný BFS 14 · **czechaid** 9 ·
+  **hzs** 4 · **plone_ostrava** 5 — nové zdroje z první části session.
+- **Fond Vysočiny 14 → 313**: harvester znal jen listing `aktivni` (18 programů), ale existuje
+  `vyhodnocene` s **326** — jediná velká mezera nalezená hloubkovým auditem.
+- **Praha 15 → 25**: harvester měl v komentáři, že sekce sociální/školství vracejí HTTP 500;
+  dnes fungují (24 položek) → doplněny mezi seedy.
+- **OP Doprava (opd3.opd.cz) 0 → 12** (*z toho 5 otevřených*): v REMAINING veden jako blocker
+  („ne-WP"), web mezitím přešel na server-rendered tabulku výzev → `scripts/opd.py`.
+- **grantovydiar.cz**: harvester hotový, NEingestován (veřejné id okno 100 % closed, zbytek za loginem).
 
-**Full refresh (obsahový, ne jen status):** gacr 14 · tacr 9 · sfzp 19→21 · opzp 107 · opst 98→101 ·
-opjak 8 · osf · mk/msmt/esfcr/czechaid/hzs/plone nové. **nsa ODLOŽENO** — WAF škrtí stahování příloh
-na ~1 soubor/4 min (červnový stav 21 záznamů zůstává jako poslední známý; viz blockery).
+**Refresh:** všech 18 automatizovaných zdrojů (8 structured + 10 html) proběhlo bez chyby.
 
-**Infrastruktura:**
-- `scripts/refresh_run.py` — **JEDEN příkaz na refresh kolo** (`--tier structured|html`, `--sources`),
-  provede harvest→input→extract→ingest→tail vč. `--min-ratio` pojistky. Ověřeno reálným během.
-- `scripts/upsert_v2.py` — html-tier ingesty (kraj/dotis/kentico/fondvysociny) nově UPSERTUJÍ do v2
-  (dřív append-only do v1 → ~1300 záznamů krajů/měst fakticky nešlo refreshovat). Obohacené záznamy
-  se přepisují jen ve faktech (datumy/status/částky).
-- Windows robustnost: UTF-8 guardy (76 skriptů), TLS přes `http_util` všude, MAX_PATH guard (ZIP).
-- Konsolidace: +37 oblast variant, `EU dotace` marker se DROPuje (mapa→null), 129→78 variant.
-- **`scripts/legacy/`** — karanténa 16 v1/jednorázových skriptů (viz tamní README).
+**Infrastruktura a čistota:**
+- `scripts/refresh_run.py` — jeden příkaz na refresh kolo; **registr rozšířen o 5 zdrojů**
+  (`nadacevia`, `mzcr`, `mzp`, `mv`, `opd`), které měly kompletní řetěz, ale refresh je míjel.
+- `scripts/upsert_v2.py` — html-tier ingesty upsertují do v2 (dřív append-only skip).
+- Windows robustnost: UTF-8 guardy (76 skriptů), TLS přes `http_util`, MAX_PATH guard.
+- **`scripts/legacy/`** — karanténa 18 v1/jednorázových skriptů (viz tamní README).
+
+**Hloubkový audit pokrytí (co se NEpotvrdilo):** prošel jsem 14 krajů, 12 ministerstev/fondů
+a 18 EU programů sondami. Vysočina a Praha byly JEDINÉ skutečné mezery. Jinde „vyšší čísla"
+znamenala navigaci, dokumenty starých programů (MPO: 262 podstránek = OPPI 2007–2013) nebo
+**awards místo výzev** (Zlínský kraj). Vědomě NEpřidáno: **NPO** (rozcestník na resortní výzvy,
+které už máme → duplikace) a **Ministerstvo dopravy** (web nemá dotační sekci; dopravní dotace
+jdou přes SFDI a nově OP Doprava).
 
 ---
 

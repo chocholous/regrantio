@@ -12,7 +12,7 @@ Tenhle dokument je **konkrétní návod, jak náš grantový feed napojit na pro
 
 ## 0. Jak to zapadá
 
-`regrantio` (naše pipeline) sbírá a kurátoruje českou grantovou databázi (2749 grantů / 127
+`regrantio` (naše pipeline) sbírá a kurátoruje českou grantovou databázi (3372 záznamů / 133
 poskytovatelů) a publikuje **jeden veřejný JSON feed**. grantio.cz ten feed 1× denně stáhne a
 upsertne do `public.grants`. Odtud už jede vaše stávající UI (vyhledávání, match scoring, wizard, …).
 
@@ -39,7 +39,7 @@ Tvar feedu:
 ```jsonc
 {
   "meta": { "schema_version": "1.1", "generated_at": "...", "generated_date": "2026-06-30",
-            "count": 2749, "status_rule": "..." },
+            "count": 3372, "status_rule": "..." },
   "grants": [ { "id": "...", "kind": "grant", "title": "...", "content_hash": "...", ... } ]
 }
 ```
@@ -53,7 +53,7 @@ Feed je úplný snapshot (vždy všechny záznamy), ne diff.
 - **Klíč:** náš `id` (= stabilní URL grantu). Ulož do `grant_id_ext` a `dedupe_key = 'regrantio:' || id`.
   Upsert podle `dedupe_key` (`onConflict: 'dedupe_key'`).
 - **Detekce změn:** každý grant nese `content_hash` (16 hex, otisk věcného obsahu). Aktualizuj/re-indexuj
-  jen když se hash změní. (Volitelně ulož do nového sloupce — §5; bez něj prostě upsertuj vše, 2749 řádků
+  jen když se hash změní. (Volitelně ulož do nového sloupce — §5; bez něj prostě upsertuj vše, ~3400 řádků
   denně je pro Postgres triviální.)
 - **Odebrání:** regrantio řádek (`source_name='regrantio'`), jehož `id` v novém feedu chybí → výzva
   zanikla ve zdroji → **soft-delete** (nastav `status='closed'` / skryj z vyhledávání; ne hard delete,

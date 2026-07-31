@@ -64,6 +64,7 @@ PROVIDER_TYPE = {
     "opzp": "ministerstvo",           # OP Životní prostředí 2021–2027 (opzp.cz) — EU OP, řídící orgán MŽP
     "opst": "ministerstvo",           # OP Spravedlivá transformace 2021–2027 (opst.cz) — EU OP, řídící orgán MŽP
     "opjak": "ministerstvo",          # OP Jan Amos Komenský 2021–2027 (opjak.cz) — EU OP MŠMT (vzdělávání+výzkum)
+    "opd": "ministerstvo",            # OP Doprava 2021–2027 (opd3.opd.cz) — EU OP, řídící orgán MD
     "mk": "ministerstvo",             # Ministerstvo kultury (mk.gov.cz) — dotační řízení (mk_harvest)
     "esfcr": "ministerstvo",          # OPZ+/OPZ (esfcr.cz) — EU OP, řídící orgán MPSV
     "hzs": "ministerstvo",            # HZS ČR (hzscr.gov.cz) — MV, generální ředitelství HZS

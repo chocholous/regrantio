@@ -59,6 +59,13 @@ SOURCES = {
     "sfdi":  (["scripts/sfdi.py"], "html"),
     "sfpi":  (["scripts/sfpi.py"], "html"),
     "eeagrants": (["scripts/eeagrants.py"], "html"),
+    # 2026-07-31: zdroje, které MĚLY kompletní řetěz (harvester + data/_<src>_extract.py),
+    # ale chyběly v registru → refresh je míjel a hlásil je jako ORPHAN (147 záznamů).
+    "nadacevia": (["scripts/nadacevia.py"], "html"),
+    "mzcr":      (["scripts/harvest_site.py", "mzd.gov.cz"], "generic"),
+    "mzp":       (["scripts/harvest_site.py", "mzp.cz"], "generic"),
+    "mv":        (["scripts/mv_cms.py"], "html"),
+    "opd":       (["scripts/opd.py"], "html"),   # OP Doprava — tabulka výzev na opd3.opd.cz
 }
 
 

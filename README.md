@@ -10,7 +10,7 @@ paralelně extrahuje pole. **Maximálně využívá UŽ STAŽENÁ DATA** (viz `d
 ## 🔎 Vyzkoušej & dokumentace
 
 - **Živá aplikace (rozcestník větví + recept):** → **[chocholous.github.io/regrantio](https://chocholous.github.io/regrantio/)**
-  Homepage = diagram logiky receptu + návod „jak přidat další data (Claude Code + Opus)" + seznam větví s merge-statusem. Každá větev má vlastní verzi appky — nejnovější je **`coverage-expansion-next`** (**2749 oportunit / 127 poskytovatelů** k 2026-06-30: 14 krajů + ~30 měst + ministerstva + státní fondy + agentury GAČR/TAČR/NSA + nadace + EU OP + EU Funding & Tenders Portal + LLM/deterministická vrstva 2 + Opus kategorie). Filtry: oblast · sektor/typ žadatele · cílová skupina · poskytovatel · kraj · forma · zdroj · spoluúčast · míra · typ dokumentu · status · výše. Detail nese doslovné citace (grounding) + odkazy na originály. Pages se nasazují per-branch přes GitHub Actions (`.github/workflows/pages.yml`). **Datový kontrakt pro produkt:** [docs/PRODUCT_API.md](docs/PRODUCT_API.md) · **refresh strategie:** [docs/REFRESH.md](docs/REFRESH.md).
+  Homepage = diagram logiky receptu + návod „jak přidat další data (Claude Code + Opus)" + seznam větví s merge-statusem. Každá větev má vlastní verzi appky — nejnovější je **`coverage-expansion-next`** (**3372 oportunit / 133 poskytovatelů** k 2026-07-31: 14 krajů + ~30 měst + ministerstva + státní fondy + agentury GAČR/TAČR/NSA + nadace + EU OP + EU Funding & Tenders Portal + LLM/deterministická vrstva 2 + Opus kategorie). Filtry: oblast · sektor/typ žadatele · cílová skupina · poskytovatel · kraj · forma · zdroj · spoluúčast · míra · typ dokumentu · status · výše. Detail nese doslovné citace (grounding) + odkazy na originály. Pages se nasazují per-branch přes GitHub Actions (`.github/workflows/pages.yml`). **Datový kontrakt pro produkt:** [docs/PRODUCT_API.md](docs/PRODUCT_API.md) · **refresh strategie:** [docs/REFRESH.md](docs/REFRESH.md).
 - **Vygenerovat appku lokálně:** `python3 scripts/build_app.py` → `data/grants_app.html`
 - **Dokumentace:** [docs/platform_playbook.md](docs/platform_playbook.md) (CMS rodiny) · [docs/detection.md](docs/detection.md) · [docs/coverage.md](docs/coverage.md) · [schema/opportunity_schema.md](schema/opportunity_schema.md) · [CLAUDE.md](CLAUDE.md) (operační)
 
@@ -21,7 +21,7 @@ Raw data jsou komprimovaná v **`data_bundle/`** (~1,9 GB) — rozbal jedním p�
 brew install xz zstd      # potřebné kompresory
 ./scripts/unpack_data.sh  # data_bundle/*.tar.xz + originals.part-* → data/
 ```
-- **core** (3 MB) — `opportunities.jsonl` (snapshot z doby zabalení; živý dataset je `data/opportunities_v2.jsonl`, 2749 oportunit), harvest jsonl, configy, app
+- **core** (3 MB) — `opportunities.jsonl` (snapshot z doby zabalení; živý dataset je `data/opportunities_v2.jsonl`, 3372 oportunit), harvest jsonl, configy, app
 - **doctext** (11 MB) — vytěžený TEXT z PDF/xls/doc (pipeline jede i bez originálů)
 - **wpfull** (55 MB) — WordPress korpus
 - **originals** (1,8 GB, split na 95 MB kvůli GitHub limitu 100 MB/soubor) — PDF/xls/doc originály (interně DEFLATE, nekomprimují se)

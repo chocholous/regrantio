@@ -17,6 +17,7 @@ Ponechány pro referenci/archeologii; nic v živé pipeline je neimportuje.
 | `save_classifications.py` | v1 classify ledger (`data/classifications.jsonl`) |
 | `save_unknown_evidence.py` | jednorázový sběr důkazů při re-fingerprintu platforem |
 | `build_apify_input.py`, `ingest_apify.py` | Apify most — použije se AŽ při placené P3 session (WebForms/dotaceeu); do té doby mimo živou pipeline |
+| `fetch_samosprava_docs.py`, `build_samosprava_extract_input.py` | vrstva-2 kroky pro samosprávu nad **v1** `opportunities.jsonl` (id=canon_key); v2 cesta pro kraje/města jde přes `ingest_kraj.py`/`upsert_v2.py` |
 | `azv_life_build_input.py` | builder AZV/LIFE z `wp_full` — zdroj nikdy nebyl ingestován (0 záznamů v datasetu); kandidát na dokončení, ne živý kód |
 
 Pozn.: `pipeline.py` v kořeni je také legacy stub (viz REMAINING ⚑4), ale zůstává na místě,
