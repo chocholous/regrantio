@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Repo je **samostatný a soběstačný** (osamostatněno z rodiče 2026-06-01). Všechny cesty jsou lokální:
 
 - **JEDEN katalog: `data/opportunities.jsonl`** (řádek = záznam) = interní zdroj pravdy. Všechno do něj upsertuje (`ingest_rich`, `scripts/upsert.py`), všechno z něj čte (`consolidate`, `fix_dataset`, `build_app`, `export_api`). Jeho publikovaná podoba je `docs/opportunities.json` (viz `docs/EXPORT.md`). Žádné v1/v2 verze — starší varianty jsou v `data/_archiv_v1/` (lokálně, gitignored).
-- **Data žijí v `./data/`** (~1 GB, **gitignored** — viz `.gitignore`): `wp_full/` (127 souborů, WP reuse korpus), `vismo_files/` (1371 PDF→txt), `vismo_documents.jsonl`, `dsw2_files/`, `dsw2_programs.jsonl`, `dsw2_links.jsonl`. Mapa host→platforma je `./platform_map.json` (root).
+- **Katalog je V GITU** (jediná datová výjimka — je nenahraditelný a CI ho potřebuje). Ostatní data v `./data/` (~1 GB, **gitignored** — viz `.gitignore`): `wp_full/` (127 souborů, WP reuse korpus), `vismo_files/` (1371 PDF→txt), `vismo_documents.jsonl`, `dsw2_files/`, `dsw2_programs.jsonl`, `dsw2_links.jsonl`. Mapa host→platforma je `./platform_map.json` (root).
 - **`scripts/*.py` používají relativní cesty `data/...`** (argparse defaulty) → spouštěj je **z kořene repa** (CWD = `opportunity_pipeline/`), jinak nenajdou data.
 - Data jsou kopie z rodičovského `re-grantio/data/` k datu osamostatnění. Nejsou v gitu, takže **fresh clone je nemá** — refresh = znovu zkopírovat z rodiče nebo re-harvestovat (`scripts/*harvest*`).
 

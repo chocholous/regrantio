@@ -1,7 +1,7 @@
 # EXPORT.md — publikovaná podoba katalogu
 
 Pipeline drží **jeden katalog**: `data/opportunities.jsonl` (řádek = jeden záznam, interní zdroj
-pravdy, gitignored). `scripts/export_api.py` z něj dělá jeho **publikovanou podobu**:
+pravdy, VERZOVANÝ v gitu). `scripts/export_api.py` z něj dělá jeho **publikovanou podobu**:
 `docs/opportunities.json` — jeden soubor, jen kurátorovaná pole, bez interních stop po sběru.
 Publikuje se přes GitHub Pages vedle prohlížecí appky.
 

@@ -1,7 +1,7 @@
 # REMAINING.md — stav projektu + co zbývá
 
 Živý plánovací dokument. **Aktuální stav, co je hotovo, co zbývá a proč.** JAK pracovat (zlatá pravidla,
-recept na zdroj, pasti) = `docs/SESSION_PLAYBOOK.md` + `CLAUDE.md`. Data žijí v gitignored `data/`.
+recept na zdroj, pasti) = `docs/SESSION_PLAYBOOK.md` + `CLAUDE.md`. Katalog je v gitu, zbytek dat v gitignored `data/`.
 
 > **Status k 2026-07-31, `main` == `coverage-expansion-next`.** Dataset **3397 záznamů / 136
 > poskytovatelů**. Všech 25 automatizovaných zdrojů refreshnuto k dnešku, repo uklizené
@@ -124,7 +124,8 @@ P3 OP TAK/dotaceeu (Apify/WebForms) · P2b SZIF (proxy) · P4 nadace 17→40+ ·
 4. **WP fulltext discovery vrací všechny ročníky** — filtruj `--since`/`--since-year` na aktuální kolo.
 5. **Soubory otvírej s `encoding="utf-8"`** — default Windows open() píše cp1250 mojibake
    (kouslo grantovydiar harvest 2026-07-31).
-6. **Data gitignored** — fresh clone nemá `data/`; obnova = `data_bundle/` nebo re-harvest.
+6. **Katalog je v gitu, zdrojová data ne** — fresh clone má `data/opportunities.jsonl`, ale ne
+   stažená PDF a per-source harvesty; jejich obnova = `data_bundle/` nebo re-harvest.
 7. **Nehalucinovat** — `amount=null`/`deadline=null` zůstává null; žádné fiktivní záznamy.
 8. **Jen jeden proces smí psát `opportunities.jsonl`** — ingesty pouštěj sekvenčně
    (`refresh_run.py` to garantuje; ad-hoc paralelní loops ne).

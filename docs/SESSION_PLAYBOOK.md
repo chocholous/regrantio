@@ -106,7 +106,7 @@ v `REMAINING.md`). Aktuálně **3372 záznamů / 133 poskytovatelů** na větvi 
 
 ## 4. Deploy & export (po každém běhu)
 
-- **Jeden katalog:** `data/opportunities.jsonl` = interní zdroj pravdy (řádek = záznam, gitignored).
+- **Jeden katalog:** `data/opportunities.jsonl` = interní zdroj pravdy (řádek = záznam, verzovaný v gitu).
   Všechno do něj upsertuje a všechno z něj čte. Žádné v1/v2 varianty.
 - `docs/grants_app.html` = appka (deploy `pages.yml` → větev `gh-pages`, per-branch). Data inline v HTML;
   status se přepočítává KLIENTSKY. **Musíš cp z `data/grants_app.html` po build_app**, jinak je live stale.

@@ -4,11 +4,20 @@ venv/
 __pycache__/
 *.pyc
 
-# Generovaný výstup pipeline + zdrojová data (gitignored, ~1 GB) — viz data_bundle/ pro reprodukci.
-# VÝJIMKA: per-source vrstva-2 extraktory `data/_<src>_extract.py` jsou KÓD (ne data) → trackují se,
-# jinak fresh clone nedokáže reprodukovat vrstvu 2 (harvester je v scripts/, ale extraktor chyběl).
+# Stažená zdrojová data (~1 GB: PDF, texty, per-source harvest jsonl) — gitignored.
+# DVĚ VÝJIMKY, obě záměrné:
+#   1. `data/opportunities.jsonl` = KATALOG, hlavní produkt pipeline. Verzuje se, protože
+#      jinak existuje v jediné kopii na jediném stroji a je nenahraditelný: publikovaný
+#      export `docs/opportunities.json` nese 11 polí z 12 (chybí `provenance` a `extra`),
+#      takže by po ztrátě disku zmizela vazba na zdrojové dokumenty i bezeztrátová zásoba,
+#      ze které se dopočítávají odvozené termíny. Zároveň je to podmínka pro běh v CI.
+#   2. per-source vrstva-2 extraktory `data/_<src>_extract.py` jsou KÓD (ne data) → jinak
+#      fresh clone nedokáže reprodukovat vrstvu 2 (harvester je v scripts/, extraktor chyběl).
 /data/*
+!/data/opportunities.jsonl
 !/data/_*_extract.py
+data/*.bak
+data/*.pre-refresh.bak
 *.out.json
 
 # OS
