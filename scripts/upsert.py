@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Sdílený UPSERT do data/opportunities_v2.jsonl pro strukturní layer-1 ingesty.
+"""Sdílený UPSERT do data/opportunities.jsonl pro strukturní layer-1 ingesty.
 
 Historicky ingest_kraj/ingest_dotis/ingest_kentico/ingest_fondvysociny APPENDOVALY do v1
 `opportunities.jsonl` a duplicitní id přeskočily → re-harvest téhož programu se změněným
@@ -14,7 +14,7 @@ Tenhle modul je JEDNO místo s korektní sémantikou refreshe:
     odebrání řeší vědomě fix_dataset/export — viz docs/REFRESH.md §5).
 
 Použití (v ingest skriptu):
-    from upsert_v2 import upsert
+    from upsert import upsert
     stats = upsert(out_path, recs)      # → {"new": n, "updated": n, "unchanged": n, "total": n}
 """
 import json

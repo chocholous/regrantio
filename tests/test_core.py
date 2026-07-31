@@ -4,7 +4,7 @@
 Proč zrovna tyhle tři oblasti:
   • compute_status  — jediné místo, kde vzniká open/closed. Chyba tady = špatné statusy
                       u 3400 grantů a nikdo si toho nemusí všimnout (data „vypadají OK").
-  • upsert_v2       — rozhoduje, co se při refreshi přepíše. Chyba = ztráta obohacení
+  • upsert       — rozhoduje, co se při refreshi přepíše. Chyba = ztráta obohacení
                       z vrstvy 2 nebo naopak neaktualizovaná data.
   • derive_deadlines— odvozuje termín z textu. Chyba = FABRIKOVANÉ datum v produktu.
 
@@ -18,7 +18,7 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "scripts"))
 
 from opportunities import compute_status          # noqa: E402
-from upsert_v2 import merge, _enriched            # noqa: E402
+from upsert import merge, _enriched            # noqa: E402
 import derive_deadlines as dd                     # noqa: E402
 import czech                                     # noqa: E402
 
@@ -57,7 +57,7 @@ def test_status_deadline_dnes_je_jeste_open():
     assert st == "open"
 
 
-# ---------------------------------------------------------------- upsert_v2
+# ---------------------------------------------------------------- upsert
 def _raw(**kw):
     base = {"id": "x", "title": "T", "deadline": "2026-01-01", "provenance": {"layer": 1},
             "facets": {"oblast": []}}

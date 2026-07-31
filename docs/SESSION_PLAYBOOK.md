@@ -33,7 +33,7 @@ v `REMAINING.md`). Aktuálně **3372 záznamů / 133 poskytovatelů** na větvi 
 3. INPUT     python scripts/build_extract_input.py data/<src>_documents.jsonl --source <src> --out-dir data/<src>_in --force-type grant
 4. VRSTVA 2  data/_<src>_extract.py  → data/<src>_out/grant_NN.json   (JOIN je podle BASENAME = stejný index jako _in!)
              skip nějaký záznam = NEzapisuj jeho out soubor.
-5. INGEST    python scripts/ingest_rich.py --out-dir data/<src>_out --src data/<src>_in --existing data/opportunities_v2.jsonl --out data/opportunities_v2.jsonl --harvest-file data/<src>_documents.jsonl --today <YYYY-MM-DD>
+5. INGEST    python scripts/ingest_rich.py --out-dir data/<src>_out --src data/<src>_in --existing data/opportunities.jsonl --out data/opportunities.jsonl --harvest-file data/<src>_documents.jsonl --today <YYYY-MM-DD>
 6. TAIL      consolidate.py → fix_dataset.py --today <dnes> → build_app.py
              → cp data/grants_app.html docs/grants_app.html → export_api.py (→ docs/opportunities.json)
 7. KONFIG    fix_dataset PROVIDER_TYPE (slug→typ) · routing.yaml sources (host→harvester) ·
@@ -97,18 +97,20 @@ v `REMAINING.md`). Aktuálně **3372 záznamů / 133 poskytovatelů** na větvi 
 - **ingest JOIN = basename** `grant_NN.json`; out musí mít stejné indexy jako in; přeskočení = nezapsat soubor.
 - **Velké downloady** (build_extract_input s desítkami příloh) pusť na pozadí (`run_in_background`);
   **foreground `sleep` je blokovaný** — nečekej sleepem, čekej na notifikaci.
-- **Gitignored:** `data/` celé (`*_documents.jsonl`, `opportunities_v2.jsonl`, `<src>_out/`, doc-store…)
+- **Gitignored:** `data/` celé (`*_documents.jsonl`, `opportunities.jsonl`, `<src>_out/`, doc-store…)
   — VÝJIMKA: `data/_<src>_extract.py` se TRACKUJÍ (`.gitignore`: `/data/*` + `!/data/_*_extract.py`), jsou to
   vrstva-2 extraktory = kód. **Trackuj:** `scripts/*.py`, `data/_<src>_extract.py`, `routing.yaml`,
   `platform_map.json`, `CLAUDE.md`, `REMAINING.md`, `docs/grants_app.html`, `docs/opportunities.json`.
 
 ---
 
-## 4. Deploy & produkt (po každém běhu)
+## 4. Deploy & export (po každém běhu)
 
+- **Jeden katalog:** `data/opportunities.jsonl` = interní zdroj pravdy (řádek = záznam, gitignored).
+  Všechno do něj upsertuje a všechno z něj čte. Žádné v1/v2 varianty.
 - `docs/grants_app.html` = appka (deploy `pages.yml` → větev `gh-pages`, per-branch). Data inline v HTML;
   status se přepočítává KLIENTSKY. **Musíš cp z `data/grants_app.html` po build_app**, jinak je live stale.
-- `docs/opportunities.json` = veřejný kurátorovaný export pro produkt (`scripts/export_api.py`):
+- `docs/opportunities.json` = publikovaná podoba katalogu (`scripts/export_api.py`, viz `docs/EXPORT.md`):
   `{meta{schema_version,generated_at,count,status_rule}, grants[…]}`. Jen veřejná pole (BEZ `_*`,
   `provenance`, `extra`, `foundation_id`), RAW `open_from`/`deadline`. Stabilní Pages URL:
   `https://chocholous.github.io/regrantio/branches/<branch>/opportunities.json`.
@@ -122,8 +124,8 @@ v `REMAINING.md`). Aktuálně **3372 záznamů / 133 poskytovatelů** na větvi 
   P3 EU OP · P4 nadace 17→40+ · P5 chybějící města · P6 Brusel · P7 mezinárodní). Vize-tabulka = stav vs cíl.
 - **`CLAUDE.md`** = architektura, příkazy, doc rozcestník.
 - **`docs/`** = platform_playbook, detection, coverage, data_reuse, apify_howto.
-- **Priorita k 2026-06-30 = PRODUCTION-READINESS (ne coverage).** Viz `docs/PRODUCT_API.md` (kontrakt pro
-  produkt) + `docs/REFRESH.md` (update strategie) + `scripts/refresh.py` (checklist). Coverage (P-priority
+- **Priorita k 2026-06-30 = PRODUCTION-READINESS (ne coverage).** Viz `docs/EXPORT.md` (publikovaný
+  export) + `docs/REFRESH.md` (update strategie) + `scripts/refresh.py` (checklist). Coverage (P-priority
   níže) až po kvalitě. Úřad vlády HOTOVO (7 NNO programů); EU F&T HOTOVO (341). Zbylé coverage zdroje =
   genuine blockery (SZIF WAF, OP TAK/dotaceeu WebForms, nadace ne-WP) — viz REMAINING tabulka.
 - **Reálný reprodukční gap:** jednorázový nadační batch `h19_*` (fondbudoucnosti/kellner/vdv/… bez

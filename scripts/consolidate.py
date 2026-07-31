@@ -6,7 +6,7 @@ varianta→kanon: exact mapa → diakritika-insensitivní → substring patterns
 sektor_zadatele (rollup z kanon typ_zadatele) a normalizuje region.kraj. Reportuje singletony PŘED/PO.
 
 Usage:
-  python3 scripts/consolidate.py [--in data/opportunities_v2.jsonl] [--maps data/consolidation_maps.json] [--dry-run]
+  python3 scripts/consolidate.py [--in data/opportunities.jsonl] [--maps data/consolidation_maps.json] [--dry-run]
 """
 import argparse, json, sys, unicodedata
 from collections import Counter
@@ -52,7 +52,7 @@ def dedup(xs):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--in", dest="inp", default="data/opportunities_v2.jsonl")
+    ap.add_argument("--in", dest="inp", default="data/opportunities.jsonl")
     ap.add_argument("--maps", default="data/consolidation_maps.json")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()

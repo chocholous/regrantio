@@ -18,7 +18,7 @@ MODEL (shodný s eagri/mv/marwel → konzumuje build_extract_input --source-type
   doc regex; stažení+konverzi dělá doc-store ve fázi 2. Grantové podmínky (lhůta/částka/oprávnění)
   žijí převážně v příloze, ne v textu stránky — proto je lossless listujeme.
 
-POZOR — tohle je VRSTVA 1 (jen text+dokumenty). Aby MPSV vstoupil do opportunities_v2.jsonl, musí
+POZOR — tohle je VRSTVA 1 (jen text+dokumenty). Aby MPSV vstoupil do opportunities.jsonl, musí
 běžet VRSTVA 2 (LLM): build_extract_input → classify_wf/extract_wf → compute_status → ingest_rich →
 consolidate. Tenhle skript sám o sobě dataset nemění (žádné fabrikované záznamy).
 

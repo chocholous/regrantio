@@ -10,7 +10,7 @@ paralelně extrahuje pole. **Maximálně využívá UŽ STAŽENÁ DATA** (viz `d
 ## 🔎 Vyzkoušej & dokumentace
 
 - **Živá aplikace (rozcestník větví + recept):** → **[chocholous.github.io/regrantio](https://chocholous.github.io/regrantio/)**
-  Homepage = diagram logiky receptu + návod „jak přidat další data (Claude Code + Opus)" + seznam větví s merge-statusem. Každá větev má vlastní verzi appky — nejnovější je **`coverage-expansion-next`** (**3397 oportunit / 136 poskytovatelů** k 2026-07-31: 14 krajů + ~30 měst + ministerstva + státní fondy + agentury GAČR/TAČR/NSA + nadace + EU OP + OPZ+/OPZ + OP Doprava + Interreg + Visegrad/ERSTE + EU Funding & Tenders Portal + LLM/deterministická vrstva 2 + Opus kategorie). Filtry: oblast · sektor/typ žadatele · cílová skupina · poskytovatel · kraj · forma · zdroj · spoluúčast · míra · typ dokumentu · status · výše. Detail nese doslovné citace (grounding) + odkazy na originály. Pages se nasazují per-branch přes GitHub Actions (`.github/workflows/pages.yml`). **Datový kontrakt pro produkt:** [docs/PRODUCT_API.md](docs/PRODUCT_API.md) · **refresh strategie:** [docs/REFRESH.md](docs/REFRESH.md).
+  Homepage = diagram logiky receptu + návod „jak přidat další data (Claude Code + Opus)" + seznam větví s merge-statusem. Každá větev má vlastní verzi appky — nejnovější je **`coverage-expansion-next`** (**3397 oportunit / 136 poskytovatelů** k 2026-07-31: 14 krajů + ~30 měst + ministerstva + státní fondy + agentury GAČR/TAČR/NSA + nadace + EU OP + OPZ+/OPZ + OP Doprava + Interreg + Visegrad/ERSTE + EU Funding & Tenders Portal + LLM/deterministická vrstva 2 + Opus kategorie). Filtry: oblast · sektor/typ žadatele · cílová skupina · poskytovatel · kraj · forma · zdroj · spoluúčast · míra · typ dokumentu · status · výše. Detail nese doslovné citace (grounding) + odkazy na originály. Pages se nasazují per-branch přes GitHub Actions (`.github/workflows/pages.yml`). **Publikovaný export:** [docs/EXPORT.md](docs/EXPORT.md) · **refresh strategie:** [docs/REFRESH.md](docs/REFRESH.md).
 - **Vygenerovat appku lokálně:** `python3 scripts/build_app.py` → `data/grants_app.html`
 - **Dokumentace:** [docs/platform_playbook.md](docs/platform_playbook.md) (CMS rodiny) · [docs/detection.md](docs/detection.md) · [docs/coverage.md](docs/coverage.md) · [schema/opportunity_schema.md](schema/opportunity_schema.md) · [CLAUDE.md](CLAUDE.md) (operační)
 
@@ -21,7 +21,7 @@ Raw data jsou komprimovaná v **`data_bundle/`** (~1,9 GB) — rozbal jedním p�
 brew install xz zstd      # potřebné kompresory
 ./scripts/unpack_data.sh  # data_bundle/*.tar.xz + originals.part-* → data/
 ```
-- **core** (3 MB) — `opportunities.jsonl` (snapshot z doby zabalení; živý dataset je `data/opportunities_v2.jsonl`, 3397 oportunit), harvest jsonl, configy, app
+- **core** (3 MB) — `opportunities.jsonl` (snapshot z doby zabalení; živý dataset je `data/opportunities.jsonl`, 3397 oportunit), harvest jsonl, configy, app
 - **doctext** (11 MB) — vytěžený TEXT z PDF/xls/doc (pipeline jede i bez originálů)
 - **wpfull** (55 MB) — WordPress korpus
 - **originals** (1,8 GB, split na 95 MB kvůli GitHub limitu 100 MB/soubor) — PDF/xls/doc originály (interně DEFLATE, nekomprimují se)
@@ -59,7 +59,7 @@ brew install xz zstd      # potřebné kompresory
 - Výstup per zdroj: záznamy `{url, title, date, text/html, document_urls[]}`.
 
 ### Fáze 2 — Doc-store: dokumenty → text (= VRSTVA 1, fáze 2; univerzální, `scripts/docstore.py`)
-> Mapování: **vrstva 1** = fáze 1 (harvest) + fáze 2 (dokumenty→text) · **vrstva 2** = fáze 3–4 (classify + extract). Viz `docs/phase2_runbook.md` pro běh v čisté session.
+> Mapování: **vrstva 1** = fáze 1 (harvest) + fáze 2 (dokumenty→text) · **vrstva 2** = fáze 3–4 (classify + extract).
 - **Vazba na vrstvu 1 = `documents[]` URL.** Harvester přílohy jen LISTUJE (lossless), doc-store je MATERIALIZUJE: `dsw2_fetch.sniff_ext()` + download + `convert()` (pdftotext/textutil) → `data/files/<source>/<sha>.{ext,txt}` + `manifest.jsonl` (keyed URL). Idempotentní.
 - **Sjednocuje 2 cesty:** `--from-harvest` materializuje URL-only zdroje (eeagrants/praha); `--index` zaregistruje už stažené `data/vismo_files/`/`dsw2_files/` bez re-downloadu. Vše v jednom manifestu.
 - Skenované PDF → flag na OCR.
@@ -122,5 +122,4 @@ Cyklus, který je MĚŘENÝ (ne nora):
 - **`routing.yaml` + `scripts/routing.py`** — platforma→harvester (jediný zdroj pravdy; `--host`/`--platform`/`--all`)
 - **`limits.json` + `scripts/limits.py`** — registr limitů (JEN sondy/safety; data se berou celá)
 - `prompts/classify_type.md` / `extract_grant.md` / `pitfalls.md` — prompty vrstvy 1/2 + vytěžené záludnosti
-- `pipeline.py` — starší in-process driver (reálné fáze 3-4 jedou přes workflow výše)
 - `schema/opportunity_schema.md` — kanonický model (+ extra/provenance)

@@ -96,8 +96,8 @@ def refresh_source(src, today):
     if not run([f"data/_{src}_extract.py"], f"{src} extract"):
         return False
     return run(["scripts/ingest_rich.py", "--out-dir", f"data/{src}_out",
-                "--src", f"data/{src}_in", "--existing", "data/opportunities_v2.jsonl",
-                "--out", "data/opportunities_v2.jsonl", "--harvest-file", docs,
+                "--src", f"data/{src}_in", "--existing", "data/opportunities.jsonl",
+                "--out", "data/opportunities.jsonl", "--harvest-file", docs,
                 "--today", today], f"{src} ingest")
 
 
@@ -132,8 +132,8 @@ def main():
     else:
         ap.error("zadej --tier nebo --sources")
 
-    backup = os.path.join(ROOT, "data", "opportunities_v2.jsonl.pre-refresh.bak")
-    live = os.path.join(ROOT, "data", "opportunities_v2.jsonl")
+    backup = os.path.join(ROOT, "data", "opportunities.jsonl.pre-refresh.bak")
+    live = os.path.join(ROOT, "data", "opportunities.jsonl")
     if os.path.exists(live):
         shutil.copy2(live, backup)
         print(f"záloha datasetu -> {backup}")

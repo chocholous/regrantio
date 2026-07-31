@@ -18,7 +18,7 @@ Doprovodné nástroje:
 ## 1. Dvě věci, které „stárnou" jinak
 
 1. **Status (open/closed)** — stárne KAŽDÝ DEN, ale NEvyžaduje re-harvest. Status se počítá z
-   `open_from`/`deadline` klientsky k dnešku (appka i produkt, viz `docs/PRODUCT_API.md §5`).
+   `open_from`/`deadline` klientsky k dnešku (appka i produkt, viz `docs/EXPORT.md §3`).
    → „dnes zavřené" výzvy zmizí z otevřených i bez nového exportu. **Žádná akce.**
 2. **Obsah (nové/změněné/zaniklé výzvy)** — stárne v řádu týdnů a VYŽADUJE re-harvest zdroje.
    → tohle je vlastní náplň refreshe (§3).
@@ -53,7 +53,7 @@ existujícím parserem. Pro zdroj `<src>` s harvesterem `scripts/<h>.py`:
 2. INPUT     python scripts/build_extract_input.py data/<src>_documents.jsonl --source <src> --out-dir data/<src>_in --force-type grant
 3. VRSTVA 2  python data/_<src>_extract.py           # deterministický extraktor (TRACKOVANÝ v gitu)
 4. INGEST    python scripts/ingest_rich.py --out-dir data/<src>_out --src data/<src>_in \
-                --existing data/opportunities_v2.jsonl --out data/opportunities_v2.jsonl \
+                --existing data/opportunities.jsonl --out data/opportunities.jsonl \
                 --harvest-file data/<src>_documents.jsonl --today <YYYY-MM-DD>
 5. TAIL      python scripts/consolidate.py
              python scripts/fix_dataset.py --today <YYYY-MM-DD>
@@ -68,7 +68,7 @@ datasetu jako poslední známý stav (consolidate/fix neodstraní). Tvrdé odebr
 vědomě (viz §5).
 
 **Html-tier (kraje/města přes `ingest_kraj`/`ingest_dotis`/`ingest_kentico`/`ingest_fondvysociny`)
-upsertuje od 2026-07-31 taky** — přes sdílený `scripts/upsert_v2.py` přímo do `opportunities_v2.jsonl`
+upsertuje od 2026-07-31 taky** — přes sdílený `scripts/upsert.py` přímo do `opportunities.jsonl`
 (dřív append-only skip do v1 → refresh se nepropsal). Záznam obohacený vrstvou 2 se při refreshi
 přepisuje jen ve FAKTECH z listingu (datumy/status/částky/source_url); LLM facety a citace zůstávají.
 
@@ -90,7 +90,7 @@ přepisuje jen ve FAKTECH z listingu (datumy/status/částky/source_url); LLM fa
 
 Default chování = výzvy se v datasetu drží i po zmizení ze zdroje (closed mají referenční hodnotu).
 Produkt řeší „zmizení ze zdroje" sám: výzva, jejíž `id` v novém exportu chybí, se v produktu
-soft-deletuje (viz `docs/PRODUCT_API.md §6`). Pokud chceš čistit i interní dataset, dělej to vědomě
+soft-deletuje (viz `docs/EXPORT.md §3`). Pokud chceš čistit i interní dataset, dělej to vědomě
 per-zdroj (re-harvest celý zdroj → nahraď jeho podmnožinu), ne plošně.
 
 ---
@@ -108,10 +108,10 @@ per-zdroj (re-harvest celý zdroj → nahraď jeho podmnožinu), ne plošně.
   2. **jednorázový nadační batch `h19_*`** (fondbudoucnosti 36, socialninadacnifond 12,
      fondpaliativnipece 12, nadaceokd 8, kellner 5, vdv 5, nasedite 4, krasapomoci 2, nadacecs 2,
      kontobariery 1, nadacetm 1, voracek 1…): sklizeno **generickým `harvest_site.py` (BFS)** a
-     protaženo **starou v1 LLM-workflow cestou** (`harvest19_*`/`h19_*.jsonl` → classify_wf/extract_wf →
-     v1 `opportunities.jsonl` → merge do v2), proto NEmají per-source `data/_<src>_extract.py` (výjimka:
+     protaženo **starou LLM-workflow cestou** (`harvest19_*`/`h19_*.jsonl` → classify_wf/extract_wf →
+     merge do katalogu), proto NEmají per-source `data/_<src>_extract.py` (výjimka:
      `nadacecs`). **Reprodukční stav:** v principu obnovitelné (generic `harvest_site.py <domain>` +
-     LLM vrstva 2), ale NE pinned recept jako v2 zdroje; navíc většina jsou **`foundation_mission`**
+     LLM vrstva 2), ale NE pinned recept jako deterministické zdroje; navíc většina jsou **`foundation_mission`**
      (nadace bez otevřené výzvy) a část webů je ne-WP/blokující (viz REMAINING recon). **Doporučení:**
      nech jako poslední známý stav (mission má referenční hodnotu); per-web parser (P4) stav jen tehdy,
      až nadace vyhlásí reálnou žadatelskou výzvu. Není to dead-end ani urgentní gap.

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Export kurátorovaného veřejného datasetu pro externí produkt → opportunities.json.
 
-Projekce `data/opportunities_v2.jsonl` (interní zdroj pravdy) na VEŘEJNÝ kontrakt:
+Projekce `data/opportunities.jsonl` (interní zdroj pravdy) na VEŘEJNÝ kontrakt:
   • jen kurátorovaná pole (žádné interní `provenance`/`extra`/`foundation_id`, žádné scrape-internals);
   • RAW `open_from`/`deadline` → konzument si přepočítá status (snapshot `status` je jen pohodlí,
     pravdivý je výpočet z dat dle scripts/opportunities.py:compute_status);
   • `content_hash` per grant = stabilní otisk VĚCNÝCH polí (BEZ volatilního statusu) → produkt umí
     inkrementální sync: upsert podle `id`, re-index jen když se změní `content_hash`, smaž `id`,
-    které v exportu CHYBÍ (viz docs/PRODUCT_API.md);
+    které v exportu CHYBÍ (viz docs/EXPORT.md);
   • `meta` = schema_version + generated_at + count → freshness signál.
 
 Tvar: {"meta": {...}, "grants": [ {...}, … ]}. Default výstup = docs/opportunities.json (publikuje
@@ -18,7 +18,7 @@ harvest by jinak smazal granty z produktu), `--min-ratio` (default 0.9) běh ZAS
 smazání povol `--force`.
 
 Spuštění z kořene repa (po fix_dataset, jako součást tailu):
-  python3 scripts/export_api.py [--in data/opportunities_v2.jsonl] [--out docs/opportunities.json]
+  python3 scripts/export_api.py [--in data/opportunities.jsonl] [--out docs/opportunities.json]
 """
 import argparse, hashlib, json, os, sys
 from datetime import datetime, timezone
@@ -49,7 +49,7 @@ def content_hash(rec):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--in", dest="inp", default="data/opportunities_v2.jsonl")
+    ap.add_argument("--in", dest="inp", default="data/opportunities.jsonl")
     ap.add_argument("--out", default="docs/opportunities.json")
     ap.add_argument("--min-ratio", type=float, default=0.9,
                     help="Pojistka: zastav, pokud nový count < min-ratio * předchozí count (rozbitý harvest).")
@@ -74,7 +74,7 @@ def main():
     if prev and len(grants) < a.min_ratio * prev and not a.force:
         print(json.dumps({"MARKER": "EXPORT_API_ABORT", "reason": "count_collapse",
                           "new": len(grants), "prev": prev, "min_ratio": a.min_ratio,
-                          "hint": "rozbitý harvest? zkontroluj data/opportunities_v2.jsonl; vědomě přepiš --force"},
+                          "hint": "rozbitý harvest? zkontroluj data/opportunities.jsonl; vědomě přepiš --force"},
                          ensure_ascii=False))
         sys.exit(2)
 

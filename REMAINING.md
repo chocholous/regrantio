@@ -5,11 +5,11 @@ recept na zdroj, pasti) = `docs/SESSION_PLAYBOOK.md` + `CLAUDE.md`. Data žijí 
 
 > **Status k 2026-07-31, větev `coverage-expansion-next`.** Dataset **3372 záznamů / 133
 > poskytovatelů**. Všech 18 automatizovaných zdrojů refreshnuto k dnešku, repo uklizené
-> (`scripts/legacy/` karanténa), produkční kontrakt beze změny (schema 1.1), CI zelené.
+> (mrtvý kód smazán), publikovaný export beze změny (schema 1.1), CI zelené.
 
 ---
 
-## 📊 Aktuální stav datasetu (live `data/opportunities_v2.jsonl`, k 2026-07-31)
+## 📊 Aktuální stav datasetu (live `data/opportunities.jsonl`, k 2026-07-31)
 
 | metrika | hodnota |
 |---|---|
@@ -63,9 +63,8 @@ defaultně filtruje `deadline >= dnes NEBO NULL`, takže archiv nezavazí.
 **Infrastruktura a čistota:**
 - `scripts/refresh_run.py` — jeden příkaz na refresh kolo; **registr rozšířen o 5 zdrojů**
   (`nadacevia`, `mzcr`, `mzp`, `mv`, `opd`), které měly kompletní řetěz, ale refresh je míjel.
-- `scripts/upsert_v2.py` — html-tier ingesty upsertují do v2 (dřív append-only skip).
+- `scripts/upsert.py` — html-tier ingesty upsertují do katalogu (dřív append-only skip).
 - Windows robustnost: UTF-8 guardy (76 skriptů), TLS přes `http_util`, MAX_PATH guard.
-- **`scripts/legacy/`** — karanténa 18 v1/jednorázových skriptů (viz tamní README).
 
 **Hloubkový audit pokrytí (co se NEpotvrdilo):** prošel jsem 14 krajů, 12 ministerstev/fondů
 a 18 EU programů sondami. Vysočina a Praha byly JEDINÉ skutečné mezery. Jinde „vyšší čísla"
@@ -122,10 +121,9 @@ P3 OP TAK/dotaceeu (Apify/WebForms) · P2b SZIF (proxy) · P4 nadace 17→40+ ·
 3. **Deadline-regexy:** gap `[^\n]`, NIKDY `[^\n.]` (české zkratky tzn./č. mají tečku);
    „dotace NA OBDOBÍ od…do…" = realizace, NE lhůta podání (negativní guard).
 4. **WP fulltext discovery vrací všechny ročníky** — filtruj `--since`/`--since-year` na aktuální kolo.
-5. **`pipeline.py` = legacy stub** — nepoužívat; živý dataset = `opportunities_v2.jsonl`.
-6. **Soubory otvírej s `encoding="utf-8"`** — default Windows open() píše cp1250 mojibake
+5. **Soubory otvírej s `encoding="utf-8"`** — default Windows open() píše cp1250 mojibake
    (kouslo grantovydiar harvest 2026-07-31).
-7. **Data gitignored** — fresh clone nemá `data/`; obnova = `data_bundle/` nebo re-harvest.
-8. **Nehalucinovat** — `amount=null`/`deadline=null` zůstává null; žádné fiktivní záznamy.
-9. **Jen jeden proces smí psát `opportunities_v2.jsonl`** — ingesty pouštěj sekvenčně
+6. **Data gitignored** — fresh clone nemá `data/`; obnova = `data_bundle/` nebo re-harvest.
+7. **Nehalucinovat** — `amount=null`/`deadline=null` zůstává null; žádné fiktivní záznamy.
+8. **Jen jeden proces smí psát `opportunities.jsonl`** — ingesty pouštěj sekvenčně
    (`refresh_run.py` to garantuje; ad-hoc paralelní loops ne).

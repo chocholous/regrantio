@@ -3,7 +3,7 @@
 
 NEspouští harvestery sám (jsou různě drahé: WP REST = vteřiny, Playwright/seed-driven = minuty a ruční
 údržba seedů). Místo toho je to **checklist generator**: spojí autoritativní registr zdrojů
-(`routing.yaml` sekce `sources:`) s živým datasetem (`data/opportunities_v2.jsonl`) a vypíše pro každý
+(`routing.yaml` sekce `sources:`) s živým datasetem (`data/opportunities.jsonl`) a vypíše pro každý
 zdroj harvester, refresh-tier (jak drahé/automatické to je), počet záznamů a přesný příkaz k re-harvestu.
 
 Tier (jak se zdroj obnovuje):
@@ -73,7 +73,7 @@ def load_platform_map():
 
 
 def load_dataset_sources():
-    p = os.path.join(ROOT, "data", "opportunities_v2.jsonl")
+    p = os.path.join(ROOT, "data", "opportunities.jsonl")
     c = Counter()
     if not os.path.exists(p):
         return c

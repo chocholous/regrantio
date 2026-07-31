@@ -7,16 +7,16 @@ tematické facety (oblast/typ_zadatele) odvozeny DETERMINISTICKY z title/eligibl
 dává faseta smysl; jemnější LLM enrichment může přijít později. allocation/support_rate harvester
 mis-parsuje → NEpoužívají se.
 
-UPSERT (2026-07-31): zápis do v2 datasetu přes sdílený scripts/upsert_v2.py — re-harvest
+UPSERT (2026-07-31): zápis do katalogu přes sdílený scripts/upsert.py — re-harvest
 aktualizuje existující výzvy (dřív append-only skip → refresh se nepropsal).
 
-Usage: python3 scripts/ingest_kentico.py data/h_kentico_irop.jsonl --source irop.gov.cz [--out data/opportunities_v2.jsonl] [--today 2026-07-31]
+Usage: python3 scripts/ingest_kentico.py data/h_kentico_irop.jsonl --source irop.gov.cz [--out data/opportunities.jsonl] [--today 2026-07-31]
 """
 import argparse, json, os, re, sys
 from datetime import date
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from opportunities import compute_status, canon_key, _host, _pd
-from upsert_v2 import upsert
+from upsert import upsert
 
 # oblast / typ_zadatele NEklasifikujeme keyword-heuristikou → LLM vrstva 2 (viz ingest_kraj.py).
 
@@ -33,7 +33,7 @@ def main():
     ap.add_argument("--platform", default="kentico")
     ap.add_argument("--poskytovatel", default="ministerstvo")
     ap.add_argument("--zdroj", default="eu_fondy")
-    ap.add_argument("--out", default="data/opportunities_v2.jsonl")
+    ap.add_argument("--out", default="data/opportunities.jsonl")
     ap.add_argument("--today", default=date.today().isoformat())
     a = ap.parse_args()
     today = _pd(a.today) or date.today()

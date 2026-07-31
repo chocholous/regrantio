@@ -8,8 +8,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Repo je **samostatný a soběstačný** (osamostatněno z rodiče 2026-06-01). Všechny cesty jsou lokální:
 
-- `pipeline.py` má `REPO = os.path.dirname(__file__)` → kořen **tohoto** repa. Importuje `dsw2_fetch` z lokálního `scripts/` (ne z `../extract/`).
-- **Data žijí v `./data/`** (~1 GB, **gitignored** — viz `.gitignore`): `wp_full/` (127 souborů, WP reuse korpus), `vismo_files/` (1371 PDF→txt), `vismo_documents.jsonl`, `dsw2_files/`, `dsw2_programs.jsonl`, `dsw2_links.jsonl`, `merged_dataset.json`. Mapa host→platforma je `./platform_map.json` (root).
+- **JEDEN katalog: `data/opportunities.jsonl`** (řádek = záznam) = interní zdroj pravdy. Všechno do něj upsertuje (`ingest_rich`, `scripts/upsert.py`), všechno z něj čte (`consolidate`, `fix_dataset`, `build_app`, `export_api`). Jeho publikovaná podoba je `docs/opportunities.json` (viz `docs/EXPORT.md`). Žádné v1/v2 verze — starší varianty jsou v `data/_archiv_v1/` (lokálně, gitignored).
+- **Data žijí v `./data/`** (~1 GB, **gitignored** — viz `.gitignore`): `wp_full/` (127 souborů, WP reuse korpus), `vismo_files/` (1371 PDF→txt), `vismo_documents.jsonl`, `dsw2_files/`, `dsw2_programs.jsonl`, `dsw2_links.jsonl`. Mapa host→platforma je `./platform_map.json` (root).
 - **`scripts/*.py` používají relativní cesty `data/...`** (argparse defaulty) → spouštěj je **z kořene repa** (CWD = `opportunity_pipeline/`), jinak nenajdou data.
 - Data jsou kopie z rodičovského `re-grantio/data/` k datu osamostatnění. Nejsou v gitu, takže **fresh clone je nemá** — refresh = znovu zkopírovat z rodiče nebo re-harvestovat (`scripts/*harvest*`).
 - `platform_data/platform_map.json` je starší **snapshot**, ne to, co pipeline čte (autoritativní je `./platform_map.json` v rootu).
@@ -22,10 +22,6 @@ cp1250/TLS pasti). Python **3.13** ve venv. **POZOR na příkazy níže:** jsou 
 pipeline, ne aplikace.
 
 ```bash
-# Driver nad UŽ STAŽENÝMI daty (LLM fáze jsou stuby — viz níže)
-python3 pipeline.py --source <host>                      # 1 zdroj
-python3 pipeline.py --reuse-all --out data/opportunities.jsonl
-
 # Harvestery (vrstva 1) — každý je samostatný CLI, spouští se z rodiče kvůli ../data
 python3 scripts/wp_harvest.py        # WP REST, lossless
 python3 scripts/vismo.py             # listing výzev
@@ -70,7 +66,7 @@ python3 scripts/grantovydiar_harvest.py --ids A-B  # Grantový diář (agregáto
 # Sdilene moduly (POUZIVEJ V NOVEM KODU misto vlastnich kopii)
 python3 -c "import czech"            # scripts/czech.py - kanonicke parsovani: cz_date_to_iso (VALIDUJE, 31.2. -> None), cz_dates_all, strip_tags, sentence_at
                                      #   duvod: audit napocital 38 vlastnich kopii "ceske datum -> ISO", z toho 24 BEZ validace rozsahu
-python3 -c "import upsert_v2"        # scripts/upsert_v2.py - upsert do v2 datasetu (obohaceny zaznam se prepisuje jen ve faktech)
+python3 -c "import upsert"        # scripts/upsert.py - upsert do katalogu (obohaceny zaznam se prepisuje jen ve faktech)
 python3 tests/test_core.py           # 23 testu kriticke logiky (status/upsert/derive/czech); bezi i ve validate_release a CI
 
 # Univerzální doc→text (vrstva 2) — používají harvestery i pipeline
@@ -83,16 +79,15 @@ python3 scripts/diversity_finder.py      # nejodlišnější nevzorkované zdroj
 
 # Deterministická vrstva 2 (strukturní část kolem LLM extrakce) — POŘADÍ: build_extract_input → extract_wf.js → ingest_rich → consolidate
 python3 scripts/build_extract_input.py <layer1.jsonl> --source <slug> --out-dir <dir>   # → grant_NN.json: PLNÝ text + PLNÝ text příloh (žádný ořez) pro extract_wf.js
-python3 scripts/ingest_rich.py --out-dir <extract_out> --src <ei_dir>                    # bohatá extrakce → data/opportunities_v2.jsonl (status v KÓDU, ne LLM)
+python3 scripts/ingest_rich.py --out-dir <extract_out> --src <ei_dir>                    # bohatá extrakce → data/opportunities.jsonl (status v KÓDU, ne LLM)
 python3 scripts/consolidate.py            # remap facet variant→kanon (oblast/typ_zadatele/cílová/kraj) dle data/consolidation_maps.json; --dry-run pro report
 
-# Kvalita datasetu + build prohlížecí appky (nad data/opportunities_v2.jsonl)
+# Kvalita datasetu + build prohlížecí appky (nad data/opportunities.jsonl)
 python3 scripts/derive_deadlines.py       # doplni deadline tam, kde je termin ve zdroji jen jako text (opakujici se "kazdorocne 15.11." -> nejblizsi budouci vyskyt); znaci status_confidence=derived
 python3 scripts/fix_dataset.py            # deterministická oprava: dedup (Ústí/variant) + reclasifikace null poskytovatele + přepočet statusu k --today (default dnešek); idempotentní, .bak
 python3 scripts/build_app.py              # → data/grants_app.html (fasetový prohlížeč; STATUS se počítá KLIENTSKY k dnešku, nezastará)
 ```
-> **UPSERT sémantika (2026-07-31):** strukturní layer-1 ingesty (`ingest_kraj`/`ingest_dotis`/`ingest_kentico`/`ingest_fondvysociny`) zapisují do v2 přes sdílený `scripts/upsert_v2.py` — re-harvest AKTUALIZUJE existující záznamy (dřív append-only skip → html-tier fakticky nešel refreshovat). Záznam obohacený vrstvou 2 se přepisuje jen ve FAKTECH (datumy/status/částky), LLM facety+citace zůstávají. `ingest_rich` je upsert dle id odjakživa.
-> **`scripts/legacy/`** = karanténa v1/jednorázových skriptů (viz tamní README). Nic z živé pipeline je neimportuje.
+> **UPSERT sémantika (2026-07-31):** strukturní layer-1 ingesty (`ingest_kraj`/`ingest_dotis`/`ingest_kentico`/`ingest_fondvysociny`) zapisují do katalogu přes sdílený `scripts/upsert.py` — re-harvest AKTUALIZUJE existující záznamy (dřív append-only skip → html-tier fakticky nešel refreshovat). Záznam obohacený vrstvou 2 se přepisuje jen ve FAKTECH (datumy/status/částky), LLM facety+citace zůstávají. `ingest_rich` je upsert dle id odjakživa.
 > **Windows pozn.:** skripty tisknou diagnostiku s `→ · ⚠` — konzole cp1250 to neumí. Pipeline-skripty (`consolidate`, `fix_dataset`, `build_extract_input`, `routing`) si proto na startu vynutí UTF-8 stdout (`sys.stdout.reconfigure`); jinak `UnicodeEncodeError`.
 
 **`scripts/*.js` NEJSOU node skripty** — jsou to **Claude Code Workflow** definice (`export const meta`, `agent()`, `parallel()`). Spouští se nástrojem Workflow uvnitř Claude Code, ne `node coverage_wf.js`. Jsou to LLM orchestrace pro coverage (`coverage_wf.js`, `type_coverage_wf.js`) a re-detekci platforem (`detect_platforms_wf.js`).
@@ -104,7 +99,7 @@ python3 scripts/build_app.py              # → data/grants_app.html (fasetový 
 - **Vrstva 2 (extrakce, LLM):** JEDEN univerzální extraktor próza+PDF → opportunity schema. Společné napříč zdroji. `dsw2_fetch.py` (doc→md) je taky univerzální napříč všemi handlery (`File.ashx`, `/soubor`, `/getmedia`, přímé `.pdf`).
 
 **Pevná pravidla, která se snadno poruší:**
-1. **STATUS se POČÍTÁ v kódu, ne LLM.** Otevřená a uzavřená výzva jsou textově identické — liší se jen datem vs. dnešek. LLM klasifikuje TYP, kód počítá status. Kanonická funkce je `scripts/opportunities.py:compute_status(open_from, deadline, today)` (pozor: `pipeline.py:compute_status(fields, rec)` je starší VARIANTA s jiným podpisem a natvrdo `date(2026,6,1)` — nepoužívej ji jako zdroj pravdy). Uložené `status` v `opportunities_v2.jsonl` je SNAPSHOT z build-time (`fix_dataset.py --today`, default dnešek); **appka ho ignoruje a počítá status KLIENTSKY k reálnému dnešku** (`build_app.py:computeStatus`, zrcadlí `opportunities.py`), takže badge/filtr nezastarají.
+1. **STATUS se POČÍTÁ v kódu, ne LLM.** Otevřená a uzavřená výzva jsou textově identické — liší se jen datem vs. dnešek. LLM klasifikuje TYP, kód počítá status. Kanonická funkce je `scripts/opportunities.py:compute_status(open_from, deadline, today)` — jediná; nikde jinde status nepočítej. Uložené `status` v `opportunities.jsonl` je SNAPSHOT z build-time (`fix_dataset.py --today`, default dnešek); **appka ho ignoruje a počítá status KLIENTSKY k reálnému dnešku** (`build_app.py:computeStatus`, zrcadlí `opportunities.py`), takže badge/filtr nezastarají.
 2. **Nevěř platform labelu** z detekce — ověř strukturální otisk (`cms_similarity.py`). Labely `mv_legacy`/`gordic_ginis` slévaly 3 různé CMS; ~65 grantových zdrojů bylo schováno v `UNKNOWN`. Příklad záměny: `mpsv.gov.cz` byl detekcí označen `custom_spa` (protože stará homepage `www.mpsv.cz` JE Nuxt SPA) — ve skutečnosti je dotační portál server-rendered gov.cz CMS jako MZe → opraveno na `eagri_portal` (harvestuje `eagri.py`/`mpsv.py`).
 3. **Dvě vrstvy obsahu, v pořadí:** nejdřív TYP (`prompts/classify_type.md` → grant/project/news/foundation_mission/administrative/other), pak POLE typu (`prompts/extract_grant.md`).
 4. **NEOŘEZÁVAT vstup do LLM** — plný markdown + přílohy (kontext ~200k).
@@ -112,7 +107,7 @@ python3 scripts/build_app.py              # → data/grants_app.html (fasetový 
 6. **LIMITY JEN NA SONDY; DATA VŽDY CELÁ** (v každé vrstvě i fázi). Bounded smí být jen **probe** (detekce platformy, sniff typu, vzorek pro MĚŘENÍ kvality) a **safety** (runaway-pojistka, vysoko, při dosažení NAHLAS `⚠` log = bug, ne coverage cap). **Sběr dat = žádný strop na stránky/dokumenty/přílohy, žádný ořez textu, žádné vzorkování** (`acquisition.*` = null/unbounded). Vše v `limits.json` (root), NIKDY natvrdo; kód čte `scripts/limits.py` → `L('cesta.klic')`. Struktura: `probe` / `acquisition` (vše null) / `safety` (vysoké pojistky). Než zavedeš JAKÝKOLI limit, je to sonda nebo safety? Když ne → nepatří tam, ber data celá.
 7. **STRUKTURA PŘED PRÓZOU** (`docs/detection.md` krok ⓪) — vždy nejdřív zkus strukturovaný endpoint (API/XHR/inline-JS/šablona/WP REST); LLM vrstva 2 až když je detail neredukovatelně próza/PDF. Ověř CO endpoint dá (award-DB ≠ otevřené výzvy).
 
-**LLM vrstva 2 = Claude-řízené WORKFLOW s Haiku agenty** (NE stub): `scripts/classify_wf.js` (klasifikace base_type) + `scripts/extract_wf.js` (extrakce polí per typ, 1 oportunita = 1 agent, plný text). Spouští se nástrojem Workflow uvnitř Claude Code; status dopočítá kód po běhu. (`pipeline.py:llm_call` je starý in-process stub — driver ho zatím nevolá; reálná vrstva 2 jede přes workflow.) Empiricky: na plném textu ~88 % polí grantu; ořez vstupu sráží `amount` na 27 %.
+**LLM vrstva 2 = Claude-řízené WORKFLOW s Haiku agenty** (NE stub): `scripts/classify_wf.js` (klasifikace base_type) + `scripts/extract_wf.js` (extrakce polí per typ, 1 oportunita = 1 agent, plný text). Spouští se nástrojem Workflow uvnitř Claude Code; status dopočítá kód po běhu. Empiricky: na plném textu ~88 % polí grantu; ořez vstupu sráží `amount` na 27 %.
 
 **Přístupové metody vrstvy 1 (5 archetypů):** REST (WP) / inline-JS (dsw2) / HTML-listing (vismo, eeagrants statické HTTP) / SPA-postback (Apify) / **SPA-grid se skrytým JSON-XHR → 1× odposlech Playwrightem (`scripts/lewis_discover.py`) → čistý HTTP replay bez Apify (`lewis_dynamo.py`)**. `requirements.txt` = playwright (jen pro discover).
 
@@ -121,9 +116,8 @@ python3 scripts/build_app.py              # → data/grants_app.html (fasetový 
 ## Rozcestník dokumentace
 - `docs/SESSION_PLAYBOOK.md` — **JAK pracovat** (handoff pro příští session): zlatá pravidla (NIKDY nemergovat do main, nehalucinovat, status v kódu), recept na přidání zdroje (8 kroků), pasti (cp1250 konzole, TLS, WebForms/Kentico/page-builder, JOIN, …), deploy+export. **Přečti na začátku session.**
 - `REMAINING.md` (root) — **plán rozšiřování (CO)**: co je hotovo, co zbývá (priority P1–P7), stav datasetu, vlajky. Aktualizuj po každém přidaném zdroji.
-- `docs/PRODUCT_API.md` — **datový kontrakt pro produkt (web app)**: endpoint `opportunities.json`, tvar, sync algoritmus (upsert dle `id`, change-detection dle `content_hash`, delete chybějících), schéma polí, status semantika, kadence, verzování, záruky kvality. Generuje `scripts/export_api.py`.
+- `docs/EXPORT.md` — **publikovaná podoba katalogu** (`docs/opportunities.json`): tvar souboru, schéma polí, `content_hash`, status jako odvozená hodnota, záruky kvality, pojistka proti kolapsu. Generuje `scripts/export_api.py`.
 - `docs/REFRESH.md` — **update/refresh strategie**: co/jak často/jak bezpečně re-harvestovat (kadence per tier), pojistka proti kolapsu datasetu, known refresh-gapy. Nástroj `scripts/refresh.py` = živý checklist (zdroj→harvester→tier→počet + gap-check).
-- `docs/INTEGRATION_GRANTIO_CZ.md` — **konkrétní napojení na produkt grantio.cz** (`the-machine-app`, SvelteKit+Supabase): mapování `opportunities.json` → jejich `public.grants` sloupce, sync job (upsert dle `dedupe_key`, content_hash, soft-delete), status výpočet. Doplňuje obecný `PRODUCT_API.md` o produkt-specifické schéma.
 - `docs/platform_playbook.md` — definice VŠECH CMS rodin → podpis/harvester/metoda
 - `docs/detection.md` — 3 vrstvy detekce platformy + lekce o slitých labelech
 - `docs/data_reuse.md` — index UŽ STAŽENÝCH dat k reuse (klíčové: harvest = REUSE-first)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Deterministické opravy nad data/opportunities_v2.jsonl (po-ingest, před build_app).
+"""Deterministické opravy nad data/opportunities.jsonl (po-ingest, před build_app).
 
 Dvě nezávislé opravy, obě plně data-driven a idempotentní (lze pustit opakovaně):
 
@@ -121,7 +121,7 @@ def majority_types(recs):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--in", dest="inp", default="data/opportunities_v2.jsonl")
+    ap.add_argument("--in", dest="inp", default="data/opportunities.jsonl")
     ap.add_argument("--today", default=date.today().isoformat(), help="práh pro výpočet statusu (default dnešek)")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()

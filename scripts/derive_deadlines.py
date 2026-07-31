@@ -100,7 +100,7 @@ def derive(entry, today):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--in", dest="inp", default="data/opportunities_v2.jsonl")
+    ap.add_argument("--in", dest="inp", default="data/opportunities.jsonl")
     ap.add_argument("--today", default=datetime.date.today().isoformat())
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()

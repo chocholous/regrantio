@@ -32,13 +32,13 @@ neumí spočítat: pokud už záznam prošel vrstvou 2 (`provenance.layer == 2` 
 se JEN datumy/status/částky a zbytek (facety z LLM, focus_area, citace) zůstane — refresh nesmí
 degradovat obohacený záznam. Pořadí řádků v souboru se zachovává (stabilní diff).
 
-Usage: python3 scripts/ingest_kraj.py data/h_kraj_zlinsky.json [data/h_kraj_*.json ...] --out data/opportunities_v2.jsonl [--today 2026-06-05]
+Usage: python3 scripts/ingest_kraj.py data/h_kraj_zlinsky.json [data/h_kraj_*.json ...] --out data/opportunities.jsonl [--today 2026-06-05]
 """
 import argparse, json, os, re, sys
 from datetime import date
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from opportunities import compute_status, canon_key, _pd
-from upsert_v2 import upsert
+from upsert import upsert
 
 # POZN.: oblast / typ_zadatele / cilova_skupina ZÁMĚRNĚ neklasifikujeme keyword-heuristikou.
 # Dle architektury (CLAUDE.md) je klasifikace fazet práce LLM vrstvy 2 (classify nad textem),
@@ -56,7 +56,7 @@ def _num(x):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("inputs", nargs="+")
-    ap.add_argument("--out", default="data/opportunities_v2.jsonl")
+    ap.add_argument("--out", default="data/opportunities.jsonl")
     ap.add_argument("--today", default=date.today().isoformat())
     a = ap.parse_args()
     today = _pd(a.today) or date.today()

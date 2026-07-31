@@ -9,16 +9,16 @@ Lossless: harvest drží VŠECHNY tituly (i 2011). Do opportunities jdou jen rel
 default 2025-01-01) — to NENÍ harvest-cap, ale opportunity-relevance (starý uzavřený titul ≠ oportunita);
 počet zahozených se NAHLAS loguje (lossless raw je zachován v h_dotis_*.json).
 
-UPSERT (2026-07-31): zápis jde do v2 datasetu přes sdílený scripts/upsert_v2.py — re-harvest
+UPSERT (2026-07-31): zápis jde do katalogu přes sdílený scripts/upsert.py — re-harvest
 aktualizuje existující tituly (dřív append-only skip → refresh se nepropsal).
 
-Usage: python3 scripts/ingest_dotis.py data/h_dotis_khk.json --kraj "Královéhradecký kraj" [--out data/opportunities_v2.jsonl] [--since 2025-01-01] [--today 2026-07-31]
+Usage: python3 scripts/ingest_dotis.py data/h_dotis_khk.json --kraj "Královéhradecký kraj" [--out data/opportunities.jsonl] [--since 2025-01-01] [--today 2026-07-31]
 """
 import argparse, json, os, re, sys
 from datetime import date
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from opportunities import compute_status, canon_key, _pd
-from upsert_v2 import upsert
+from upsert import upsert
 
 # oblast NEklasifikujeme keyword/memo-heuristikou → LLM vrstva 2 (viz ingest_kraj.py).
 # Kód programu (memo) i program_name se ukládají do extra/focus_area, ať z nich LLM může čerpat.
@@ -28,7 +28,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("inp")
     ap.add_argument("--kraj", required=True, help="název kraje pro region (Královéhradecký kraj)")
-    ap.add_argument("--out", default="data/opportunities_v2.jsonl")
+    ap.add_argument("--out", default="data/opportunities.jsonl")
     ap.add_argument("--since", default="2025-01-01", help="ingest jen tituly s dateEnd >= datum (opportunity-relevance)")
     ap.add_argument("--today", default=date.today().isoformat())
     a = ap.parse_args()

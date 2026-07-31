@@ -2,14 +2,14 @@
 """validate_release.py — release/CI gate nad GIT-TRACKED soubory (běží i bez gitignored data/).
 
 Chytá třídu chyb, co prošla do produkce (rozbitý routing.yaml = ASCII `"` v českém stringu) a hlídá
-veřejný kontrakt produktu (docs/opportunities.json). Spouštěj lokálně před pushem i v GitHub Actions.
+publikovaný export (docs/opportunities.json). Spouštěj lokálně před pushem i v GitHub Actions.
 
 Kontroly:
-  1. py_compile všech scripts/*.py + data/_*_extract.py + pipeline.py (syntax)
+  1. py_compile všech scripts/*.py + data/_*_extract.py (syntax)
   1b. unit testy tests/test_core.py — compute_status, upsert merge, derive_deadlines
   2. routing.yaml se parsuje (yaml.safe_load) + má `families`/`sources`/`default`
   3. platform_map.json + limits.json jsou validní JSON
-  4. docs/opportunities.json = veřejný kontrakt: meta(schema_version/count/generated_at), count==len,
+  4. docs/opportunities.json = publikovaný export: meta(schema_version/count/generated_at), count==len,
      každý grant má neprázdné `id` + `content_hash`, `id` unikátní, a content_hash je REPRODUKOVATELNÝ
      (přepočet dle export_api.content_hash sedí → export logika je konzistentní).
 
@@ -44,8 +44,6 @@ def check(name, fn):
 def compile_all():
     bad = []
     files = glob.glob("scripts/*.py") + glob.glob("data/_*_extract.py")
-    if os.path.exists("pipeline.py"):
-        files.append("pipeline.py")
     for f in files:
         try:
             py_compile.compile(f, doraise=True)
@@ -161,15 +159,6 @@ def check_data_quality():
     print(f"    ({len(grants)} záznamů: data platná, žádné inverzní termíny, tituly neprázdné)")
 
 
-def check_sync_contract():
-    """Dokáž, že dokumentovaný sync algoritmus (PRODUCT_API §3) funguje na reálném exportu."""
-    sys.path.insert(0, os.path.join(ROOT, "scripts"))
-    import product_sync_example
-    rc = product_sync_example.selftest(os.path.join(ROOT, "docs", "opportunities.json"))
-    if rc != 0:
-        raise RuntimeError("sync selftest FAIL (PRODUCT_API §3 porušen)")
-
-
 def main():
     print("# VALIDATE RELEASE\n")
     check("compile all .py", compile_all)
@@ -177,7 +166,6 @@ def main():
     check("routing.yaml parses", check_routing)
     check("json configs valid", check_json_configs)
     check("kvalita dat (termíny, tituly)", check_data_quality)
-    check("sync contract (reference consumer selftest)", check_sync_contract)
     print()
     if errors:
         print(f"FAIL — {len(errors)} chyb")

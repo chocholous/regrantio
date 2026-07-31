@@ -4,16 +4,16 @@
 Strukturovaná pole (popis/alokace/termín/typ žadatele) → opportunity. oblast z názvu+popisu,
 typ_zadatele z textu oprávněnosti, status z termínů (kód). alokace → vyse_alokace_czk.
 
-UPSERT (2026-07-31): zápis do v2 datasetu přes sdílený scripts/upsert_v2.py — re-harvest
+UPSERT (2026-07-31): zápis do katalogu přes sdílený scripts/upsert.py — re-harvest
 aktualizuje existující programy (dřív append-only skip → refresh se nepropsal).
 
-Usage: python3 scripts/ingest_fondvysociny.py data/h_fondvysociny.json [--out data/opportunities_v2.jsonl] [--today 2026-07-31]
+Usage: python3 scripts/ingest_fondvysociny.py data/h_fondvysociny.json [--out data/opportunities.jsonl] [--today 2026-07-31]
 """
 import argparse, json, os, re, sys
 from datetime import date
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from opportunities import compute_status, canon_key, _pd
-from upsert_v2 import upsert
+from upsert import upsert
 
 # oblast / typ_zadatele NEklasifikujeme keyword-heuristikou → LLM vrstva 2 (viz ingest_kraj.py).
 
@@ -27,7 +27,7 @@ def _num(s):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("inp")
-    ap.add_argument("--out", default="data/opportunities_v2.jsonl")
+    ap.add_argument("--out", default="data/opportunities.jsonl")
     ap.add_argument("--today", default=date.today().isoformat())
     a = ap.parse_args()
     today = _pd(a.today) or date.today()
