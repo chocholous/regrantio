@@ -13,7 +13,7 @@ recept na zdroj, pasti) = `docs/SESSION_PLAYBOOK.md` + `CLAUDE.md`. Data žijí 
 
 | metrika | hodnota |
 |---|---|
-| **záznamů celkem** | **3396** (3371 grantů + 25 foundation_mission) |
+| **záznamů celkem** | **3397** (3372 grantů + 25 foundation_mission) |
 | **poskytovatelů** | **136** |
 | status grantů | **687 open** · 33 announced · 1730 closed · 906 unknown |
 | typ poskytovatele | samosprava_kraj 1153 · ministerstvo 866 · samosprava_obec 723 · evropska_komise 341 · nadacni_fond 63 · nadace 57 · statni_agentura 53 · statni_fond 48 · firemni_nadace 42 · zahranicni_fond 26 |
@@ -46,7 +46,7 @@ defaultně filtruje `deadline >= dnes NEBO NULL`, takže archiv nezavazí.
   Oba weby vracely HTTP 403 na default urllib UA → stačily realistické prohlížečové hlavičky.
   Visegrad má pevné uzávěrky (1. 2. / 1. 6. / 1. 10.), extraktor bere NEJBLIŽŠÍ BUDOUCÍ datum.
   EUR částky se NEpřevádějí na CZK (kurz) → jdou do extra.castka_eur, amount zůstává null.
-- **Interreg SK-CZ (sk-cz.eu) 0 → 5**: `scripts/interreg.py` (WP REST, kategorie dle slugu).
+- **Interreg SK-CZ + CZ-PL 0 → 6**: `scripts/interreg.py` (WP REST, kategorie dle slugu).
   Vrstva 2 FILTRUJE: z 13 postů je 8 náborů hodnotitelů/harmonogramů, ne dotačních výzev.
 - **Creative Europe / Kreativní Evropa: vědomě NEpřidáno** — výzvy vyhlašuje EACEA a v datasetu
   už jsou přes EU F&T portál (13 aktuálních `CREA-*`); české zastoupení by bylo duplikací.

@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
-"""Interreg (přeshraniční programy) — layer-1 harvest výzev přes WP REST.
+"""Interreg (přeshraniční programy) — layer-1 harvest výzev. DVA REŽIMY.
 
-STRUKTURA PŘED PRÓZOU: české/slovenské Interreg weby běží na WordPressu a výzvy publikují
-jako POSTY v dotačních KATEGORIÍCH → `/wp-json/wp/v2/posts?categories=<id>` dá titul, datum,
-plný `content.rendered` i odkazy na přílohy. Žádný scraping HTML, žádný LLM.
+STRUKTURA PŘED PRÓZOU: české/slovenské Interreg weby běží na WordPressu.
+  mode="rest" (sk-cz.eu): výzvy jsou POSTY v dotačních KATEGORIÍCH →
+      /wp-json/wp/v2/posts?categories=<id> dá titul, datum, content i přílohy.
+      Kategorie se NEhardkódují podle id (mění se) — hledají se přes /categories podle
+      SLUGU (regex `vyzv|call`), takže nová kategorie na webu se propíše sama. (13 postů)
+  mode="html" (cz-pl.eu): tentýž WP, ale REST je ZAVŘENÝ (HTTPError na /wp-json) →
+      fallback na HTML listing /vyzvy + detailové stránky. (2 výzvy)
 
-Programy (per web = vlastní kategorie; slugy ověřeny živě 2026-07-31):
-  sk-cz.eu  (Interreg SK-CZ)  kategorie: vyzvynapredkladaniezonfp, vyzvy_oh, vyzvy_skcz,
-                              vyzva-na-dotaciu-zo-statneho-rozpoctu-cr   (13 postů)
-  cz-pl.eu  (Interreg CZ-PL)  kategorie se hledají automaticky (slug obsahuje 'vyzv')
-
-Kategorie se NEhardkódují podle id (mění se) — hledají se přes /wp-json/wp/v2/categories
-podle slugu (regex `vyzv|call`), takže přidání nové kategorie na webu se propíše samo.
+POZOR: oba weby vracejí 403 na default urllib User-Agent → posílají se realistické
+prohlížečové hlavičky (HDR).
 
 POZOR na scope: Interreg Central Europe a Danube vyhlašují výzvy centrálně (nadnárodní
 sekretariát) — ty NEJSOU v tomhle harvesteru; kandidát na samostatný zdroj.
@@ -43,19 +42,71 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import http_util  # noqa: E402  (jednotná TLS politika)
 
 PROGRAMS = {
-    "sk-cz": {"base": "https://www.sk-cz.eu", "name": "Interreg SK-CZ (Slovensko–Česko)"},
-    "cz-pl": {"base": "https://www.cz-pl.eu", "name": "Interreg CZ-PL (Česko–Polsko)"},
+    # WP REST (kategorie výzev) — plná cesta
+    "sk-cz": {"base": "https://www.sk-cz.eu", "name": "Interreg SK-CZ (Slovensko–Česko)",
+              "mode": "rest"},
+    # cz-pl má REST ZAVŘENÝ (HTTPError na /wp-json) → HTML listing /vyzvy + detaily
+    "cz-pl": {"base": "https://www.cz-pl.eu", "name": "Interreg CZ-PL (Česko–Polsko)",
+              "mode": "html", "listing": "/vyzvy", "item_re": r'href="(/[^"?#]*(?:vyzv|nabor)[^"?#]*)"'},
 }
 CAT_RE = re.compile(r"vyzv|výzv|call", re.I)
 DOC_RE = re.compile(r"\.(pdf|docx?|xlsx?|zip)(\?|$)", re.I)
-UA = "Mozilla/5.0 (compatible; regrantio/1.0)"
+UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+      "(KHTML, like Gecko) Chrome/126.0 Safari/537.36")
+HDR = {"User-Agent": UA, "Accept-Language": "cs,sk,en;q=0.9", "Accept-Encoding": "identity"}
+
+
+def _get(url, timeout=45):
+    import urllib.request
+    req = urllib.request.Request(url, headers=HDR)
+    with http_util.urlopen(req, timeout=timeout) as r:
+        return r.read().decode("utf-8", "replace"), r.url
 
 
 def api(url, timeout=45):
-    import urllib.request
-    req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with http_util.urlopen(req, timeout=timeout) as r:
-        return json.loads(r.read().decode("utf-8", "replace"))
+    return json.loads(_get(url, timeout)[0])
+
+
+def harvest_html(slug, cfg, timeout):
+    """Weby se ZAVŘENÝM WP REST (cz-pl): HTML listing výzev → detaily."""
+    base = cfg["base"]
+    try:
+        page, _ = _get(base + cfg["listing"], timeout)
+    except Exception as e:  # noqa: BLE001
+        print(f"  [err] {slug} listing: {type(e).__name__}", file=sys.stderr)
+        return []
+    items = sorted(set(re.findall(cfg["item_re"], page, re.I)))
+    items = [i for i in items if i.rstrip("/") != cfg["listing"].rstrip("/")]
+    print(f"  [{slug}] HTML listing: {len(items)} položek", file=sys.stderr)
+    out = []
+    for path in items:
+        url = urllib.parse.urljoin(base, path)
+        try:
+            detail, final = _get(url, timeout)
+        except Exception as e:  # noqa: BLE001
+            print(f"  [err] {slug} {path}: {type(e).__name__}", file=sys.stderr)
+            continue
+        body = strip_tags(detail)
+        if len(body) < 200:
+            continue
+        title = ""
+        m = re.search(r"<h1[^>]*>(.*?)</h1>", detail, re.S | re.I)
+        if m:
+            title = strip_tags(m.group(1))
+        atts, seen = [], set()
+        for mm in re.finditer(r'href="([^"]+)"', detail):
+            u = urllib.parse.urljoin(final, H.unescape(mm.group(1)))
+            if DOC_RE.search(u) and u not in seen:
+                seen.add(u)
+                atts.append({"url": u, "label": urllib.parse.unquote(u.rsplit("/", 1)[-1])[:120]})
+        out.append({
+            "host": base.split("//")[-1], "web": base.split("//")[-1],
+            "program": cfg["name"], "kind": "vyzva",
+            "title": (title or path.strip("/").replace("-", " "))[:300],
+            "url": final, "date": None, "body_text": body,
+            "attachments": atts, "n_attachments": len(atts), "kategorie": [],
+        })
+    return out
 
 
 def strip_tags(s):
@@ -126,7 +177,8 @@ def main():
     for slug, cfg in PROGRAMS.items():
         if a.program and slug != a.program:
             continue
-        recs += harvest(slug, cfg, a.timeout)
+        recs += (harvest_html(slug, cfg, a.timeout) if cfg.get("mode") == "html"
+                 else harvest(slug, cfg, a.timeout))
 
     os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
     with open(a.out, "w", encoding="utf-8") as f:
