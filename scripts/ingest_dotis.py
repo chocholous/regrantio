@@ -9,12 +9,16 @@ Lossless: harvest drží VŠECHNY tituly (i 2011). Do opportunities jdou jen rel
 default 2025-01-01) — to NENÍ harvest-cap, ale opportunity-relevance (starý uzavřený titul ≠ oportunita);
 počet zahozených se NAHLAS loguje (lossless raw je zachován v h_dotis_*.json).
 
-Usage: python3 scripts/ingest_dotis.py data/h_dotis_khk.json --kraj "Královéhradecký kraj" --out data/opportunities.jsonl [--since 2025-01-01] [--today 2026-06-05]
+UPSERT (2026-07-31): zápis jde do v2 datasetu přes sdílený scripts/upsert_v2.py — re-harvest
+aktualizuje existující tituly (dřív append-only skip → refresh se nepropsal).
+
+Usage: python3 scripts/ingest_dotis.py data/h_dotis_khk.json --kraj "Královéhradecký kraj" [--out data/opportunities_v2.jsonl] [--since 2025-01-01] [--today 2026-07-31]
 """
 import argparse, json, os, re, sys
 from datetime import date
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from opportunities import compute_status, canon_key, _pd
+from upsert_v2 import upsert
 
 # oblast NEklasifikujeme keyword/memo-heuristikou → LLM vrstva 2 (viz ingest_kraj.py).
 # Kód programu (memo) i program_name se ukládají do extra/focus_area, ať z nich LLM může čerpat.
@@ -24,19 +28,13 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("inp")
     ap.add_argument("--kraj", required=True, help="název kraje pro region (Královéhradecký kraj)")
-    ap.add_argument("--out", default="data/opportunities.jsonl")
+    ap.add_argument("--out", default="data/opportunities_v2.jsonl")
     ap.add_argument("--since", default="2025-01-01", help="ingest jen tituly s dateEnd >= datum (opportunity-relevance)")
-    ap.add_argument("--today", default="2026-06-05")
+    ap.add_argument("--today", default=date.today().isoformat())
     a = ap.parse_args()
     today = _pd(a.today) or date.today()
     H = json.load(open(a.inp, encoding="utf-8"))
     source = H["source"]
-
-    seen = set()
-    if os.path.exists(a.out):
-        for l in open(a.out, encoding="utf-8"):
-            try: seen.add(json.loads(l).get("id"))
-            except Exception: pass
 
     recs, old_skip = [], 0
     for prog in H["programs"]:
@@ -76,17 +74,11 @@ def main():
             }
             recs.append(rec)
 
-    written, dup = 0, 0
-    with open(a.out, "a", encoding="utf-8") as o:
-        for r in recs:
-            if r["id"] in seen:
-                dup += 1; continue
-            seen.add(r["id"]); o.write(json.dumps(r, ensure_ascii=False) + "\n"); written += 1
+    st = upsert(a.out, recs)
     from collections import Counter
-    print(json.dumps({"MARKER": "INGEST_DOTIS", "source": source, "written": written, "dedup": dup,
+    print(json.dumps({"MARKER": "INGEST_DOTIS", "source": source, **st,
                       "skipped_old_lossless_kept": old_skip,
-                      "by_status": dict(Counter(r["status"] for r in recs)),
-                      "by_oblast": dict(Counter(o for r in recs for o in r["facets"]["oblast"]))},
+                      "by_status": dict(Counter(r["status"] for r in recs))},
                      ensure_ascii=False))
 
 

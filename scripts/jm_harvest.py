@@ -25,6 +25,11 @@ Lossless: ukládáme plný text detailu (_text) + všechny přílohy (_attachmen
 Setup: playwright install chromium
 Usage: python3 scripts/jm_harvest.py [--out data/h_kraj_jm.json] [--headful]
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, json, re, sys
 from playwright.sync_api import sync_playwright
 

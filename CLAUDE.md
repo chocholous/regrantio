@@ -53,6 +53,15 @@ python3 scripts/eeagrants.py         # EHP a Norské fondy (eeagrants.cz; NKM = 
 python3 scripts/tacr.py              # TA ČR (tacr.gov.cz) — aplikovaný výzkum, veřejné soutěže národních programů (SIGMA/TREND/DOPRAVA 2030/THÉTA 2/PRODEF/Prostředí pro život 2). WP CPT call+programme; lhůty jen ve FRONT-END HTML; --since aktuální cyklus
 python3 scripts/nsa.py               # NSA – Národní sportovní agentura (agenturasport.cz→nsa.gov.cz) — dotace do sportu: neinvestiční (Můj klub, sportovní organizace olympijského/paralympijského hnutí, významné akce, reprezentace, parasport) + investiční (Regiony/Standardizovaná/Movité infrastruktura, obnova po povodních). WP+Elementor; výzvy = pages /dotace/<slug>/, content.rendered STAČÍ (strukturní blok); batch-fetch content přes include= (sekvenční fetch přes WAF je pomalý); --year filtruje aktuální cyklus. typ=statni_agentura
 
+# Rozšíření 2026-06/07 (harvest → build_extract_input --no-prefilter → data/_<src>_extract.py → ingest_rich)
+python3 scripts/mk_harvest.py        # MK ČR (mk.gov.cz) — centrální listing 8 HTML tabulek per oblast; OD/DO deterministicky z buněk; url záznamu = detail#slug-hash (1 stránka = víc programů)
+python3 scripts/msmt_harvest.py      # MŠMT plný BFS dotačních rubrik (nahradil seed-driven marwel pro msmt.gov.cz); _msmt_extract filtruje aktuální cyklus (--since-year)
+python3 scripts/esfcr_harvest.py     # ESF ČR / OPZ+ + OPZ (esfcr.cz, Liferay) — strukturovaná pole detailu (Platnost od/do, Alokace); 'Typ výzvy: uzavřená' = REŽIM, ne status
+python3 scripts/czechaid_harvest.py  # Česká rozvojová agentura (czechaid.gov.cz) — BFS /dotace, ZIP přílohy (cp852, MAX_PATH guard); deadline z prózy (nejpozdější = prodloužení)
+python3 scripts/hzs_harvest.py       # HZS ČR (hzscr.gov.cz) — ASP.NET s <base href>, víceleté články (záložky chnum); vrstva 2 bere jen standing programy/aktuální lhůty
+python3 scripts/plone_ostrava.py     # ~20 ostravských městských obvodů (sdílený Plone) — roční rámce; vrstva 2 jen aktuální programy (>= since-year)
+python3 scripts/grantovydiar_harvest.py --ids A-B  # Grantový diář (agregátor) — FUNKČNÍ, ale NEingestováno: veřejné id okno je 100% closed (probe 07/2026), čerstvé za loginem
+
 # Univerzální doc→text (vrstva 2) — používají harvestery i pipeline
 python3 scripts/dsw2_fetch.py        # sniff_ext + pdftotext/textutil (PDF/DOC/DOCX/XLS/ODT)
 
@@ -70,6 +79,8 @@ python3 scripts/consolidate.py            # remap facet variant→kanon (oblast/
 python3 scripts/fix_dataset.py            # deterministická oprava: dedup (Ústí/variant) + reclasifikace null poskytovatele + přepočet statusu k --today (default dnešek); idempotentní, .bak
 python3 scripts/build_app.py              # → data/grants_app.html (fasetový prohlížeč; STATUS se počítá KLIENTSKY k dnešku, nezastará)
 ```
+> **UPSERT sémantika (2026-07-31):** strukturní layer-1 ingesty (`ingest_kraj`/`ingest_dotis`/`ingest_kentico`/`ingest_fondvysociny`) zapisují do v2 přes sdílený `scripts/upsert_v2.py` — re-harvest AKTUALIZUJE existující záznamy (dřív append-only skip → html-tier fakticky nešel refreshovat). Záznam obohacený vrstvou 2 se přepisuje jen ve FAKTECH (datumy/status/částky), LLM facety+citace zůstávají. `ingest_rich` je upsert dle id odjakživa.
+> **`scripts/legacy/`** = karanténa v1/jednorázových skriptů (viz tamní README). Nic z živé pipeline je neimportuje.
 > **Windows pozn.:** skripty tisknou diagnostiku s `→ · ⚠` — konzole cp1250 to neumí. Pipeline-skripty (`consolidate`, `fix_dataset`, `build_extract_input`, `routing`) si proto na startu vynutí UTF-8 stdout (`sys.stdout.reconfigure`); jinak `UnicodeEncodeError`.
 
 **`scripts/*.js` NEJSOU node skripty** — jsou to **Claude Code Workflow** definice (`export const meta`, `agent()`, `parallel()`). Spouští se nástrojem Workflow uvnitř Claude Code, ne `node coverage_wf.js`. Jsou to LLM orchestrace pro coverage (`coverage_wf.js`, `type_coverage_wf.js`) a re-detekci platforem (`detect_platforms_wf.js`).

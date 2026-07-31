@@ -17,6 +17,11 @@ Spuštění (z kořene repa):
   python3 scripts/azv_life_build_input.py            # default 4 soubory → data/extract_input_azv_life.jsonl
   python3 scripts/azv_life_build_input.py --inputs data/wp_full/azvcr-cz__posts.jsonl ... --out ...
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, json, os, re, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import docstore, prefilter

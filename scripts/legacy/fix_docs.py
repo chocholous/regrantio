@@ -15,6 +15,11 @@ balast nemá hodnotu). Hlásí počty + garbage PŘED/PO. Suchý běh: --dry-run
 Usage:
   python3 scripts/fix_docs.py [--dirs data/vismo_files data/files data/dsw2_files] [--garbage-threshold 0.20] [--dry-run]
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, glob, os, re, subprocess, sys, tempfile
 
 OK_PUNCT = set('.,;:%()[]-–—/+=@"\'§!?°×#&*<>|~`_')   # _ patří k textu (fill-in čáry ve formulářích), ne balast

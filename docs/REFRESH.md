@@ -4,8 +4,14 @@ Databáze NESMÍ být jednorázový snapshot. Tenhle dokument říká, **co re-h
 to bezpečně dotáhnout do produktu**. Kvalita > počet: refresh nesmí zhoršit data ani smazat granty
 z produktu kvůli rozbitému běhu.
 
-Doprovodný nástroj: **`python scripts/refresh.py`** = živý checklist (zdroj → harvester → tier →
-počet záznamů → příkaz) + gap-check. Spusť ho na začátku každého refresh kola.
+Doprovodné nástroje:
+- **`python scripts/refresh.py`** = živý checklist (zdroj → harvester → tier → počet záznamů →
+  příkaz) + gap-check. Spusť ho na začátku každého refresh kola.
+- **`python scripts/refresh_run.py --tier structured`** (2026-07-31) = JEDEN příkaz, který
+  celé kolo pro plně-deterministické zdroje PROVEDE (harvest → input → `data/_<src>_extract.py`
+  → ingest → tail vč. exportu s pojistkou). Zálohuje dataset do `.pre-refresh.bak`; selhání
+  jednoho zdroje neshodí kolo. `--tier html` pro deterministické html zdroje, `--sources a,b`
+  pro výběr. Seed/browser/kraje-města zdroje zůstávají ruční (viz checklist).
 
 ---
 
@@ -60,6 +66,11 @@ existujícím parserem. Pro zdroj `<src>` s harvesterem `scripts/<h>.py`:
 (ne duplikuje); nová výzva přibude; výzva, kterou zdroj stáhl, v novém harvestu chybí → zůstane v
 datasetu jako poslední známý stav (consolidate/fix neodstraní). Tvrdé odebrání zaniklých výzev řeš
 vědomě (viz §5).
+
+**Html-tier (kraje/města přes `ingest_kraj`/`ingest_dotis`/`ingest_kentico`/`ingest_fondvysociny`)
+upsertuje od 2026-07-31 taky** — přes sdílený `scripts/upsert_v2.py` přímo do `opportunities_v2.jsonl`
+(dřív append-only skip do v1 → refresh se nepropsal). Záznam obohacený vrstvou 2 se při refreshi
+přepisuje jen ve FAKTECH z listingu (datumy/status/částky/source_url); LLM facety a citace zůstávají.
 
 ---
 

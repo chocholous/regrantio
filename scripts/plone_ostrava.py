@@ -49,6 +49,7 @@ from urllib.parse import urljoin, urlsplit
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import dsw2_fetch as df          # reuse: safe_url, sniff_ext, download, convert, DOC_EXT_RE
 from limits import L
+import http_util  # noqa: E402  (jednotna TLS politika + fallback)
 
 PLATFORM_MAP = "platform_map.json"
 OUT_DOCS = "data/plone_ostrava_documents.jsonl"
@@ -89,7 +90,7 @@ def fetch(url, timeout, retries):
     for i in range(retries):
         try:
             req = urllib.request.Request(df.safe_url(url), headers={"User-Agent": UA})
-            with urllib.request.urlopen(req, timeout=timeout) as r:
+            with http_util.urlopen(req, timeout=timeout) as r:
                 ctype = (r.headers.get("Content-Type") or "").split(";")[0].strip().lower()
                 if ctype and "html" not in ctype:
                     return r.geturl(), ctype, None          # dokument, ne stránka
@@ -112,7 +113,7 @@ def head_resolve(url, timeout, retries):
     for i in range(retries):
         try:
             req = urllib.request.Request(df.safe_url(url), headers={"User-Agent": UA})
-            with urllib.request.urlopen(req, timeout=timeout) as r:
+            with http_util.urlopen(req, timeout=timeout) as r:
                 return r.geturl(), (r.headers.get("Content-Type") or "").split(";")[0].strip().lower()
         except urllib.error.HTTPError:
             return None, None

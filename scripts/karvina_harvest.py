@@ -15,6 +15,11 @@ Ukládá průběžně (po každém detailu přepíše JSON).
 Usage: python3 scripts/karvina_harvest.py [--out data/h_mesto_karvina.json]
        (spouštěj z kořene repa)
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, json, re, sys, urllib.request, html as H
 import http_util   # jednotná TLS politika (audit #7/#32)
 

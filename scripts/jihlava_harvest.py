@@ -16,6 +16,11 @@ _text detailu. Status NEpočítá — dopočítá ingest_kraj z termínů (TODAY
 
 Usage: python3 scripts/jihlava_harvest.py --out data/h_mesto_jihlava.json
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, json, re, ssl, sys, time, html, urllib.request
 from urllib.parse import urljoin
 

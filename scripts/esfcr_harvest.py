@@ -48,6 +48,11 @@ Spuštění (z kořene repa, .venv):
   python3 scripts/esfcr_harvest.py --resume                 # navaž (skip URL už v --out)
 Po harvestu: python3 scripts/coverage_verify.py data/esfcr_documents.jsonl
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse
 import hashlib
 import html as H
@@ -65,6 +70,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from dsw2_fetch import (safe_url, sniff_ext, download, convert, ext_of,  # noqa: E402
                         UA, DOC_EXTS, DOC_EXT_RE)
 from limits import L  # noqa: E402
+import http_util  # noqa: E402  (jednotna TLS politika + fallback)
 
 HOST = "esfcr.cz"
 BASE = "https://www.esfcr.cz"
@@ -104,7 +110,7 @@ def fetch(url, timeout):
     for _ in range(L("http.default_retries") or 1):
         try:
             req = urllib.request.Request(safe_url(url), headers={"User-Agent": UA})
-            with urllib.request.urlopen(req, timeout=timeout) as r:
+            with http_util.urlopen(req, timeout=timeout) as r:
                 return r.read().decode(r.headers.get_content_charset() or "utf-8", "replace")
         except Exception as e:  # noqa: BLE001
             last = e

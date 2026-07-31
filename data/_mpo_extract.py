@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 # Vrstva 2 extrakce pro MPO – národní programy (mpo.gov.cz; parser scripts/mpo.py). 9 programů.
 # POZN: OP TAK / OP PIK (EU) sem NEpatří (P3). Program-level záznamy: konkrétní lhůty výzev jsou
 # v navázaných aktualitách (ne na landing) → u programů „mezi koly"/V&V soutěží deadline=null=unknown;

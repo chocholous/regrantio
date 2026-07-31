@@ -87,7 +87,13 @@ families:
 sources:
   # ministerstva / státní fondy s dedikovaným parserem
   mv.gov.cz:            {harvester: [scripts/mv_cms.py], note: "MV ČR — /clanek/*.aspx + /soubor"}
-  msmt.gov.cz:          {harvester: [scripts/marwel.py], note: "MŠMT — Marwel CMS (seed-driven)"}
+  msmt.gov.cz:          {harvester: [scripts/msmt_harvest.py], note: "MŠMT — Marwel/QCM, plný BFS dotačních rubrik (nahradil seed-driven marwel.py; ten zůstává pro jiné Marwel weby). Vrstva 2 = data/_msmt_extract.py, --since-year filtruje aktuální cyklus"}
+  mk.gov.cz:            {harvester: [scripts/mk_harvest.py], note: "MK ČR — centrální listing zadosti-o-dotace-cs-2023 (8 HTML tabulek per oblast; OD/DO deterministicky z buněk). `url` záznamu = detail#slug-hash (jedna vyhlašovací stránka nese víc programů). POZOR: mk.gov.cz hostí i SFK (sfk.py) — jiná sekce, bez kolize id"}
+  hzscr.gov.cz:         {harvester: [scripts/hzs_harvest.py], note: "HZS ČR — ASP.NET MV CMS s <base href> (mv_cms.py nestačí); víceleté články se záložkami chnum slité do 1 záznamu. Vrstva 2 bere jen standing programy (tabs>=2) nebo aktuální deadline"}
+  czechaid.gov.cz:      {harvester: [scripts/czechaid_harvest.py, scripts/czechaid_gapfill.py], note: "Česká rozvojová agentura (CzechAid) — NETservis CMS, BFS /dotace; výzva bývá v ZIP (rozbaluje se, cp852 jména, MAX_PATH guard). Deadline jen v próze → _czechaid_extract (nejpozdější lhůta = prodloužení; ZRUŠENO → deadline=None)"}
+  esfcr.cz:             {harvester: [scripts/esfcr_harvest.py], note: "ESF ČR — Liferay AssetPublisher: OPZ+ (2021–27) + OPZ (2014–20) listingy + sitemap LZZ archiv. Detail má strukturovaná pole (Platnost od/do, Alokace). Vrstva 2 ingestuje jen OPZ+/OPZ (LZZ archiv zůstává v harvestu). 'Typ výzvy: uzavřená' = REŽIM, ne status!"}
+  "*.ostrava.cz(plone)": {harvester: [scripts/plone_ostrava.py], note: "~20 ostravských městských obvodů na sdíleném Plone (poruba/ovajih/polanka/radvanice…). HTML crawl, roční rámce; vrstva 2 bere jen aktuální programy (>= since-year), EU-projektové stránky a awards vyřazuje"}
+  grantovydiar.cz:      {harvester: [scripts/grantovydiar_harvest.py], note: "Grantový diář (agregátor, svetneziskovek.cz) — server-rendered detail-vyzvy?id=N. NEINGESTOVAT bez rozmyslu: veřejné okno id (≤~12500) je 100% closed (probe 2026-07-31: 192 public / 0 open), čerstvé výzvy za loginem; + dedup riziko s prvozdroji. Harvester funkční, čeká na případný placený login"}
   mze.gov.cz:           {harvester: [scripts/eagri.py], note: "MZe/eAGRI — ea-content-block + příloha Zásady"}
   eagri.cz:             {harvester: [scripts/eagri.py], note: "MZe/eAGRI (starší doména)"}
   mpsv.gov.cz:          {harvester: [scripts/mpsv.py], note: "MPSV — reuse eagri.process + rozcestník→detail"}

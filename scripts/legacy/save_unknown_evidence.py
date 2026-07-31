@@ -3,6 +3,11 @@
 title, generator, scripty/odkazy, patička, charakteristické cesty) do
 platform_evidence/<host>.txt — vstup pro LLM workflow (agenti čtou, neřeší síť).
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import json, re, ssl, os, time, urllib.request
 from urllib.parse import urlparse
 

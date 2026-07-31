@@ -5,6 +5,11 @@ charakteristické URL vzory, cookie názvy, Server/X-Powered-By, generator.
 Shlukování: union-find na Jaccard(otisk_i, otisk_j) >= práh.
 Výstup: shluky s jejich SPOLEČNÝMI diskriminačními tokeny → 1 shluk = 1 parser.
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import json, re, ssl, urllib.request
 from urllib.parse import urlparse
 from concurrent.futures import ThreadPoolExecutor

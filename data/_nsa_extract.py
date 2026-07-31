@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 # Vrstva 2 extrakce pro Národní sportovní agenturu (nsa.gov.cz; parser scripts/nsa.py).
 # Výzvy aktuálního cyklu (sport): neinvestiční (Můj klub, sportovní organizace olympijského/
 # paralympijského hnutí, významné akce, reprezentace, parasport…) i investiční (Regiony,

@@ -3,6 +3,11 @@
 o grantových polích (deadline / amount / eligible / how_to_apply). Výstup =
 ranked trigger-fráze → materiál pro lepší Haiku prompt (synonyma + few-shot).
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import json, re, glob, os
 from collections import Counter
 

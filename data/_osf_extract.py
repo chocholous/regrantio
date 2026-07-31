@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 # Vrstva 2 extrakce pro Nadaci OSF (Open Society Fund Praha; osf.cz; parser scripts/osf.py).
 # K 2026-06 nemá otevřenou žadatelskou výzvu (Stronger Roots 2026–2027 rozdělen 11/2025) → 1 mission
 # (jako NROS/VDV/O2). Mission je grounded z „Co děláme" (data/osf_in/grant_00.json). Grantové _in

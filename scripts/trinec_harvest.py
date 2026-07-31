@@ -17,6 +17,11 @@ Lossless: ukládá parsed pole + perex + breadcrumb. Ukládá průběžně po ka
 
 Usage: python3 scripts/trinec_harvest.py [--out data/h_mesto_trinec.json] [--root /dotace]
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, html as H, json, re, subprocess, sys, urllib.request
 import http_util   # jednotná TLS politika (audit #7/#32)
 from collections import deque

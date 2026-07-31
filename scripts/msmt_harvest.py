@@ -26,6 +26,11 @@ Spuštění (z kořene repa):
   python3 scripts/msmt_harvest.py                       # plný harvest
   python3 scripts/msmt_harvest.py --resume --extra-urls /tmp/missed.txt   # doplnění děr
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse
 import hashlib
 import html as H
@@ -42,6 +47,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from dsw2_fetch import (safe_url, sniff_ext, download, convert, ext_of,  # noqa: E402
                         UA, DOC_EXTS, DOC_EXT_RE)
 from limits import L  # noqa: E402
+import http_util  # noqa: E402  (jednotna TLS politika + fallback)
 
 HOST = "msmt.gov.cz"
 HOST_ALIASES = {"msmt.gov.cz", "www.msmt.gov.cz", "msmt.cz", "www.msmt.cz"}
@@ -60,7 +66,7 @@ def fetch(url, timeout):
     for _ in range(L("http.default_retries") or 1):
         try:
             req = urllib.request.Request(safe_url(url), headers={"User-Agent": UA})
-            with urllib.request.urlopen(req, timeout=timeout) as r:
+            with http_util.urlopen(req, timeout=timeout) as r:
                 return r.read().decode("utf-8", "replace"), r.geturl()
         except Exception as e:  # noqa: BLE001
             last = e

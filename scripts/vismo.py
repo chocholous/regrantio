@@ -6,6 +6,11 @@ sitemap.xml), pak BFS přes ds-/ms- podsložky v dotačním podstromu a sesbíre
 dokumenty (d-NNNN) z `.dok > ul.ui > li` = {title, url, date, section}.
 Bez stahování detailů/příloh (to je vrstva 2). Výstup data/vismo_listing.jsonl.
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, json, re, ssl, sys, time, html, urllib.request
 from urllib.parse import urljoin, urlparse
 from collections import deque

@@ -17,6 +17,11 @@ Výstup: APPEND do data/vismo_modern_documents.jsonl (stejný kontrakt — zázn
 Usage:  python3 scripts/vismo_modern_gapfill.py --extra-urls /tmp/vismo_gap_urls.txt \
             --scan-sitemaps www.kr-ustecky.cz,www.teplice.cz,www.trinecko.cz,www.kutnahora.cz
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, json, os, re, sys, threading
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed

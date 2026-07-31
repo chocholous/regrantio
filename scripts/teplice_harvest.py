@@ -21,6 +21,11 @@ Usage:
   python3 scripts/teplice_harvest.py --out data/h_mesto_teplice.json
   python3 scripts/teplice_harvest.py --out data/h_mesto_teplice.json --render
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, json, re, sys, time
 import html as H
 import urllib.request

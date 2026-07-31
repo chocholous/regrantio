@@ -7,6 +7,11 @@ Limity z limits.json (max_pages se LOGuje, ne tiše). Žádný strop natvrdo.
 
 Spuštění: python3 scripts/harvest_site.py --base https://www.nadacecs.cz --source nadacecs
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, html as H, json, os, re, ssl, sys, time, urllib.request
 from urllib.parse import urljoin, urlparse
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

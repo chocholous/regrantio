@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 # Vrstva 2 extrakce pro Státní fond dopravní infrastruktury (sfdi.gov.cz; parser scripts/sfdi.py).
 # 8 příspěvkových programů (doprava: dotace na infrastrukturu obcí/krajů). VYNECHÁNO grant_08
 # Povodňové škody (program neaktivní – příspěvek jen 2020, prázdná pole). Status NEvyplňuji (počítá kód

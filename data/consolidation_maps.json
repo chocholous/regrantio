@@ -1,0 +1,489 @@
+{
+ "_README": "Deterministický remap roztříštěných facet hodnot (otevřená extrakce tříští diakritikou/cyrilicí/variantami) → kanonické kódy (klíče = build_app LABELS). Aplikuje scripts/consolidate.py. exact mapy mají přednost; pak diakritika-insensitivní; pak *_patterns (substring na NFD-normalizovaném); jinak hodnota zůstane. Cíl: singletony→0.",
+ "oblast": {
+  "sport/volný čas": "sport_volny_cas",
+  "volný čas": "sport_volny_cas",
+  "sport": "sport_volny_cas",
+  "kultura": "kultura_umeni",
+  "literatura_knihovny": "kultura_umeni",
+  "literatura": "kultura_umeni",
+  "média": "media",
+  "média/audiovize": "media",
+  "mediální gramotnost": "media",
+  "media": "media",
+  "sociální": "socialni_sluzby",
+  "senioři": "socialni_sluzby",
+  "vzdělávání/mládež": "vzdelavani_mladez",
+  "deti_mladez": "vzdelavani_mladez",
+  "vzdělávání": "vzdelavani_mladez",
+  "zdraví": "zdravi",
+  "prostředí": "zivotni_prostredi",
+  "životní prostředí": "zivotni_prostredi",
+  "rodina": "rodina",
+  "infrastruktura": "bydleni_infrastruktura",
+  "bydlení": "bydleni_infrastruktura",
+  "věda": "veda_vyzkum",
+  "věda/výzkum": "veda_vyzkum",
+  "cest. ruch": "cestovni_ruch",
+  "cestovní ruch": "cestovni_ruch",
+  "bezpečnost": "bezpecnost",
+  "mezinárodní spolupráce": "mezinarodni_spoluprace",
+  "přeshraniční spolupráce": "mezinarodni_spoluprace",
+  "česko-německá spolupráce": "mezinarodni_spoluprace",
+  "mezinárodní vztahy": "mezinarodni_spoluprace",
+  "náboženství": "nabozenstvi_cirkve",
+  "podnikání": "podnikani",
+  "služby": "podnikani",
+  "komunity": "komunitni_rozvoj",
+  "komunitní rozvoj": "komunitni_rozvoj",
+  "občanská společnost": "komunitni_rozvoj",
+  "veřejný prostor": "komunitni_rozvoj",
+  "rozvoj regionu": "komunitni_rozvoj",
+  "neziskový sektor": "komunitni_rozvoj",
+  "veřejně prospěšná činnost": "komunitni_rozvoj",
+  "obecný účel / nespecifikováno": "ostatni",
+  "různé aktivity": "ostatni",
+  "ostatni": "ostatni",
+  "obecná/individuální dotace": "ostatni",
+  "obecná dotace": "ostatni",
+  "individuální dotace": "ostatni",
+  "kulturní dědictví": "pamatkova_pece",
+  "památková péče": "pamatkova_pece",
+  "památky": "pamatkova_pece",
+  "náboženství/spiritualita": "nabozenstvi_cirkve",
+  "spiritualita": "nabozenstvi_cirkve",
+  "věda a výzkum": "veda_vyzkum",
+  "výzkum": "veda_vyzkum",
+  "základní výzkum": "veda_vyzkum",
+  "aplikovaný výzkum": "veda_vyzkum",
+  "technologie": "veda_vyzkum",
+  "digitalizace": "veda_vyzkum",
+  "inovace": "podnikani",
+  "podnikání a inovace": "podnikani",
+  "regionální rozvoj": "komunitni_rozvoj",
+  "regenerace území": "komunitni_rozvoj",
+  "venkov": "komunitni_rozvoj",
+  "brownfieldy": "komunitni_rozvoj",
+  "spravedlivá transformace": "komunitni_rozvoj",
+  "lidská práva": "komunitni_rozvoj",
+  "Lidská práva": "komunitni_rozvoj",
+  "NNO": "komunitni_rozvoj",
+  "veřejně prospěšné aktivity": "komunitni_rozvoj",
+  "zdravotnictví": "zdravi",
+  "zdravotně postižení": "socialni_sluzby",
+  "zaměstnanost": "socialni_sluzby",
+  "adaptace na změnu klimatu": "zivotni_prostredi",
+  "klima": "zivotni_prostredi",
+  "ochrana ovzduší": "zivotni_prostredi",
+  "oběhové hospodářství": "zivotni_prostredi",
+  "příroda a biodiverzita": "zivotni_prostredi",
+  "odpady": "zivotni_prostredi",
+  "vodní hospodářství": "zivotni_prostredi",
+  "voda": "zivotni_prostredi",
+  "vodovody a kanalizace": "zivotni_prostredi",
+  "příroda a krajina": "zivotni_prostredi",
+  "čistá energetika": "zivotni_prostredi",
+  "energetika": "zivotni_prostredi",
+  "energetické úspory": "zivotni_prostredi",
+  "obnovitelné zdroje energie": "zivotni_prostredi",
+  "obrana": "bezpecnost",
+  "prevence rizik": "bezpecnost",
+  "doprava": "bydleni_infrastruktura",
+  "tělovýchova": "sport_volny_cas",
+  "audiovize": "media",
+  "film a audiovize": "media",
+  "EU dotace": null
+ },
+ "typ_zadatele": {
+  "neziskovka (spolek/o.p.s./církev)": "neziskovka",
+  "neziskovka (spolek/o.p.s./nadace/církev)": "neziskovka",
+  "neziskovka (spolek/o.p.s.)": "neziskovka",
+  "neziskovka (spolek)": "neziskovka",
+  "neziskovka (spolek/o.p.s./zapsaný ústav)": "neziskovka",
+  "spolek": "neziskovka",
+  "fizicka_osoba": "fyzicka_osoba",
+  "rodina": "fyzicka_osoba",
+  "neziskovka": "neziskovka",
+  "fyzicka_osoba": "fyzicka_osoba",
+  "prispevkova_organizace": "prispevkova_organizace",
+  "firma": "firma",
+  "sportovni_klub": "sportovni_klub",
+  "obec_verejny_subjekt": "obec_verejny_subjekt",
+  "osvc_podnikatel": "osvc_podnikatel",
+  "skola_vyzkumna_org": "skola_vyzkumna_org",
+  "cirkev": "cirkev",
+  "spolecenstvi_vlastniku": "spolecenstvi_vlastniku",
+  "bytove_druzstvo": "bytove_druzstvo",
+  "svj": "spolecenstvi_vlastniku",
+  "spolecenstvi_vlastniku_jednotek": "spolecenstvi_vlastniku",
+  "zapsany_ustav": "neziskovka",
+  "obecne_prospesna_spolecnost": "neziskovka",
+  "ops": "neziskovka",
+  "nadace": "neziskovka",
+  "nadacni_fond": "neziskovka",
+  "ustav": "neziskovka",
+  "kraj": "obec_verejny_subjekt",
+  "samosprava": "obec_verejny_subjekt",
+  "obec": "obec_verejny_subjekt"
+ },
+ "forma_podpory": {
+  "dotace": "dotace",
+  "zapujcka_uver": "zapujcka_uver",
+  "uver": "zapujcka_uver",
+  "pujcka": "zapujcka_uver",
+  "stipendium": "stipendium",
+  "cena_soutez": "cena_soutez",
+  "vecny_dar": "vecny_dar",
+  "dar": "vecny_dar",
+  "financni_dar": "vecny_dar",
+  "navratna_vypomoc": "zapujcka_uver"
+ },
+ "zdroj_financovani": {
+  "krajsky": "krajsky",
+  "narodni_rozpocet": "narodni_rozpocet",
+  "eu_fondy": "eu_fondy",
+  "npo": "npo",
+  "ehp_norsko": "ehp_norsko",
+  "vlastni_zdroje": "vlastni_zdroje",
+  "obecni": "krajsky",
+  "mestsky": "krajsky"
+ },
+ "rezim_prijmu": {
+  "jednorazova_vyzva": "jednorazova_vyzva",
+  "prubezna": "prubezna",
+  "kolova": "kolova",
+  "neuvedeno": "neuvedeno"
+ },
+ "delka": {
+  "jednoleta": "jednoleta",
+  "viceleta": "viceleta",
+  "neuvedeno": "neuvedeno"
+ },
+ "cilova_skupina": {
+  "veřejnost": "verejnost",
+  "verejnost": "verejnost",
+  "široká veřejnost": "verejnost",
+  "deti_mladez": "deti_mladez",
+  "děti a mládež": "deti_mladez",
+  "žáci_škol": "deti_mladez",
+  "osoby_se_zdravotnim_postizenim": "osoby_se_zdravotnim_postizenim",
+  "osoby se zdravotním postižením": "osoby_se_zdravotnim_postizenim",
+  "osoby se zdravotním postizenim": "osoby_se_zdravotnim_postizenim",
+  "rodiny": "rodiny",
+  "senioři": "seniori",
+  "seniori": "seniori",
+  "pacienti": "pacienti",
+  "ohrožené skupiny": "ohrozene_skupiny",
+  "ohrozene_skupiny": "ohrozene_skupiny",
+  "osoby v nepříznivé sociální situaci": "ohrozene_skupiny",
+  "osoby ohrožené sociálním vyloučením": "ohrozene_skupiny",
+  "sportovci": "sportovci",
+  "dospělí sportovci": "sportovci",
+  "sportovci dospělých kategorií": "sportovci",
+  "dospeli_nad_21_let": "sportovci",
+  "dospeli_sportovci_nad_21_let": "sportovci",
+  "dospělí sportovci nad 21 let": "sportovci",
+  "diváci sportovních akcí": "sportovci",
+  "návštěvníci sportovních akcí": "sportovci",
+  "sportovní fanoušci": "sportovci",
+  "uživatelé sportovní infrastruktury": "sportovci",
+  "národnostní menšiny": "narodnostni_mensiny",
+  "Romové": "narodnostni_mensiny",
+  "migranti": "cizinci_migranti",
+  "cizinci": "cizinci_migranti",
+  "studenti": "studenti",
+  "studenti_vysokoskolaci": "studenti",
+  "studenti_vysokych_skol": "studenti",
+  "vlastnici_nemovitosti": "vlastnici_najemnici_bytu",
+  "najemci_bytu": "vlastnici_najemnici_bytu",
+  "najemnici_bytu": "vlastnici_najemnici_bytu",
+  "majitele_a_najemci_bytu_a_domu": "vlastnici_najemnici_bytu",
+  "uživatelé sociálních služeb": "uzivatele_socialnich_sluzeb",
+  "uzivatele_socialnich_sluzeb": "uzivatele_socialnich_sluzeb",
+  "klienti sociálních služeb": "uzivatele_socialnich_sluzeb",
+  "příjemci sociálních služeb": "uzivatele_socialnich_sluzeb",
+  "osoby využívající sociální služby": "uzivatele_socialnich_sluzeb",
+  "zdravotničtí pracovníci": "zdravotnici",
+  "zdravotni_pracovnici_nelékarsti": "zdravotnici",
+  "pečující osoby": "pecujici",
+  "neformalni_pecujici": "pecujici",
+  "hasiči_dobrovolníci": "dobrovolni_hasici",
+  "dobrovolni_hasici": "dobrovolni_hasici",
+  "kulturní pracovníci": "kulturni_pracovnici",
+  "muzejní pracovníci": "kulturni_pracovnici",
+  "kulturní kolektivy": "kulturni_pracovnici",
+  "pedagogi": "studenti",
+  "pedagogové": "studenti"
+ },
+ "cilova_patterns": [
+  [
+   "socialnich sluzeb",
+   "uzivatele_socialnich_sluzeb"
+  ],
+  [
+   "bez domova",
+   "ohrozene_skupiny"
+  ],
+  [
+   "bytove nouzi",
+   "ohrozene_skupiny"
+  ],
+  [
+   "ztratou bydleni",
+   "ohrozene_skupiny"
+  ],
+  [
+   "vezeni",
+   "ohrozene_skupiny"
+  ],
+  [
+   "domaciho nasili",
+   "ohrozene_skupiny"
+  ],
+  [
+   "vyloucen",
+   "ohrozene_skupiny"
+  ],
+  [
+   "lekar",
+   "zdravotnici"
+  ],
+  [
+   "paliativ",
+   "zdravotnici"
+  ],
+  [
+   "zdravotn",
+   "zdravotnici"
+  ],
+  [
+   "pedagog",
+   "studenti"
+  ],
+  [
+   "student",
+   "studenti"
+  ],
+  [
+   "zaci",
+   "deti_mladez"
+  ],
+  [
+   "talent",
+   "deti_mladez"
+  ],
+  [
+   "akadem",
+   "veda_vyzkum_komunita"
+  ],
+  [
+   "vyzkum",
+   "veda_vyzkum_komunita"
+  ],
+  [
+   "vedeck",
+   "veda_vyzkum_komunita"
+  ],
+  [
+   "veda",
+   "veda_vyzkum_komunita"
+  ],
+  [
+   "ctenar",
+   "kulturni_pracovnici"
+  ],
+  [
+   "literar",
+   "kulturni_pracovnici"
+  ],
+  [
+   "muzejn",
+   "kulturni_pracovnici"
+  ],
+  [
+   "publik",
+   "kulturni_pracovnici"
+  ],
+  [
+   "kulturn",
+   "kulturni_pracovnici"
+  ],
+  [
+   "najem",
+   "vlastnici_najemnici_bytu"
+  ],
+  [
+   "vlastnic",
+   "vlastnici_najemnici_bytu"
+  ],
+  [
+   "majitel",
+   "vlastnici_najemnici_bytu"
+  ],
+  [
+   "rodinnych domu",
+   "vlastnici_najemnici_bytu"
+  ],
+  [
+   "mensin",
+   "narodnostni_mensiny"
+  ],
+  [
+   "pecuj",
+   "pecujici"
+  ],
+  [
+   "dobrovoln",
+   "dobrovolnici"
+  ],
+  [
+   "hasic",
+   "dobrovolnici"
+  ],
+  [
+   "sportov",
+   "sportovci"
+  ],
+  [
+   "obyvatel",
+   "verejnost"
+  ],
+  [
+   "obcan",
+   "verejnost"
+  ],
+  [
+   "navstevnic",
+   "verejnost"
+  ],
+  [
+   "pohranic",
+   "verejnost"
+  ],
+  [
+   "prihranic",
+   "verejnost"
+  ],
+  [
+   "publika",
+   "verejnost"
+  ],
+  [
+   "predskoln",
+   "deti_mladez"
+  ],
+  [
+   "deti a mladez",
+   "deti_mladez"
+  ],
+  [
+   "zaci",
+   "deti_mladez"
+  ],
+  [
+   "mladez",
+   "deti_mladez"
+  ],
+  [
+   "trener",
+   "sportovci"
+  ],
+  [
+   "reprezentant",
+   "sportovci"
+  ],
+  [
+   "cvicitel",
+   "sportovci"
+  ],
+  [
+   "chronicky nemoc",
+   "pacienti"
+  ],
+  [
+   "nemocni",
+   "pacienti"
+  ],
+  [
+   "bytove nouzi",
+   "ohrozene_skupiny"
+  ],
+  [
+   "chranenem bydleni",
+   "ohrozene_skupiny"
+  ],
+  [
+   "chranene bydleni",
+   "ohrozene_skupiny"
+  ],
+  [
+   "potrebujici socialni",
+   "uzivatele_socialnich_sluzeb"
+  ],
+  [
+   "potrebujici peci",
+   "uzivatele_socialnich_sluzeb"
+  ]
+ ],
+ "kraj": {
+  "Středočeský": "Středočeský kraj",
+  "Vysočina": "Kraj Vysočina",
+  "Praha": "Hlavní město Praha",
+  "Hlavní město Praha": "Hlavní město Praha",
+  "Jihomoravský": "Jihomoravský kraj",
+  "Ústecký": "Ústecký kraj",
+  "Moravskoslezský": "Moravskoslezský kraj",
+  "Královéhradecký": "Královéhradecký kraj",
+  "Karlovarský": "Karlovarský kraj",
+  "Plzeňský": "Plzeňský kraj",
+  "Liberecký": "Liberecký kraj",
+  "Olomoucký": "Olomoucký kraj",
+  "Zlínský": "Zlínský kraj",
+  "Pardubický": "Pardubický kraj",
+  "Jihočeský": "Jihočeský kraj"
+ },
+ "oblast_super": {
+  "socialni_sluzby": "lide_socialni",
+  "zdravi": "lide_socialni",
+  "rodina": "lide_socialni",
+  "kultura_umeni": "kultura_vzdelavani",
+  "vzdelavani_mladez": "kultura_vzdelavani",
+  "pamatkova_pece": "kultura_vzdelavani",
+  "media": "kultura_vzdelavani",
+  "sport_volny_cas": "sport_volny_cas_super",
+  "zivotni_prostredi": "prostredi_infra",
+  "bydleni_infrastruktura": "prostredi_infra",
+  "doprava_mobilita": "prostredi_infra",
+  "veda_vyzkum": "ekonomika_inovace",
+  "podnikani": "ekonomika_inovace",
+  "it_digitalizace": "ekonomika_inovace",
+  "cestovni_ruch": "ekonomika_inovace",
+  "komunitni_rozvoj": "komunita_ostatni",
+  "bezpecnost": "komunita_ostatni",
+  "mezinarodni_spoluprace": "komunita_ostatni",
+  "nabozenstvi_cirkve": "komunita_ostatni",
+  "mensiny": "komunita_ostatni",
+  "ostatni": "komunita_ostatni"
+ },
+ "sektor_of": {
+  "neziskovka": "neziskovy",
+  "spolek": "neziskovy",
+  "sportovni_klub": "neziskovy",
+  "cirkev": "neziskovy",
+  "pacientska_organizace": "neziskovy",
+  "sdruzeni_obci": "neziskovy",
+  "organizator_akci": "neziskovy",
+  "zapsany_ustav": "neziskovy",
+  "obecne_prospesna_spolecnost": "neziskovy",
+  "obec_verejny_subjekt": "verejny",
+  "prispevkova_organizace": "verejny",
+  "skola_vyzkumna_org": "verejny",
+  "firma": "podnikatele",
+  "osvc_podnikatel": "podnikatele",
+  "fyzicka_osoba": "fyzicke_osoby",
+  "vlastnik_nemovitosti": "fyzicke_osoby",
+  "zakonny_zastupce": "fyzicke_osoby",
+  "spolecenstvi_vlastniku": "vlastnici",
+  "bytove_druzstvo": "vlastnici"
+ }
+}

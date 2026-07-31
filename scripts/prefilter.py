@@ -11,6 +11,11 @@ Loguje, CO zahodil (nahlas, ne tiše). Obsahový šum (news zmiňující dotace)
 Spuštění: python3 scripts/prefilter.py data/h19_mzcr.jsonl [--out data/h19_mzcr.clean.jsonl]
           python3 scripts/prefilter.py data/h19_*.jsonl --inplace
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, hashlib, json, os, re, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from limits import L

@@ -16,6 +16,11 @@ plný text <article> + seznam příloh. Co nezjistí (deadline/alokace u stráne
 Usage: python3 scripts/prerov_harvest.py [--out data/h_mesto_prerov.json]
   (spouštěj z kořene repa)
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, json, re, sys, time, urllib.request
 import http_util   # jednotná TLS politika (audit #7/#32)
 

@@ -12,6 +12,11 @@ Oblasti se NEhardcodují — parsují se z odkazů homepage. Dedup napříč obl
 
 Usage: python3 scripts/liberecky_harvest.py [--out data/h_kraj_liberecky.json] [--no-detail]
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, html as htmllib, json, re, sys, urllib.request
 import http_util   # jednotná TLS politika (audit #7/#32)
 

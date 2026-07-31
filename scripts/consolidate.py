@@ -41,9 +41,11 @@ def remap(val, exact, norml, patterns=None):
 
 
 def dedup(xs):
+    """Dedup + DROP None: mapa smí variantu mapovat na null (JSON) = hodnota se ODSTRANÍ
+    (např. marker „EU dotace" u eu_ft záznamů, který není tematická oblast)."""
     seen, out = set(), []
     for x in xs:
-        if x not in seen:
+        if x is not None and x not in seen:
             seen.add(x); out.append(x)
     return out
 

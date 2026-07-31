@@ -7,6 +7,11 @@ stáhne a převede přílohy na text (reuse extract/dsw2_fetch). Spočítá PŘE
 status proti dnešku z 'Úřední deska od-do' (jinak deadline z těla / title fallback).
 Výstup: data/vismo_documents.jsonl + data/vismo_files/<host>/<sha>.{ext,txt}.
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, hashlib, json, os, re, ssl, sys, time, html, urllib.request
 from datetime import date
 

@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 # Vrstva 2 extrakce pro Státní fond životního prostředí (sfzp.gov.cz; parser scripts/sfzp.py).
 # 19 unikátních výzev (13 WP FN/PU stránek + 8 Modernizační fond detailů). grant_02 (2/2024 FN) a
 # grant_03 (1/2024 FN) jsou TENČÍ DUPLIKÁTY bohatších grant_04 (2/2024 FN Půjčka) resp. grant_13

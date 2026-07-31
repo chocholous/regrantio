@@ -9,6 +9,11 @@ replay (bez prohlížeče). Zobecnění lewis_discover.py.
 Setup: playwright install chromium
 Usage: python3 scripts/xhr_discover.py --url "https://dotace.khk.cz/verejnost/vyzvy" [--wait 6000] [--min 200]
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, json, sys
 from playwright.sync_api import sync_playwright
 

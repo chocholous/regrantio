@@ -36,6 +36,11 @@ Výstup (kontrakt jako vismo_documents.jsonl):
 
 Spuštění (z kořene repa): python3 scripts/czechaid_harvest.py
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse
 import hashlib
 import html as H
@@ -52,12 +57,15 @@ from urllib.parse import urljoin, urlsplit, unquote
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import dsw2_fetch as df  # noqa: E402  (safe_url, sniff_ext, download, convert, DOC_EXTS, UA)
 from limits import L  # noqa: E402
+import http_util  # noqa: E402  (jednotna TLS politika + fallback)
 
 HOST = "czechaid.gov.cz"
 HOST_ALIASES = {"czechaid.gov.cz", "www.czechaid.gov.cz", "czechaid.cz", "www.czechaid.cz"}
 SEEDS = ["https://czechaid.gov.cz/dotace"]
 FILE_PATH_RE = re.compile(r"^/(?:[a-z]{2}/)?file/[0-9a-f]{32}/\d+/", re.I)
 EXCERPT_CHARS = 1200   # jen convenience náhled v záznamu; PLNÝ text je v txt_path (lossless)
+# Windows MAX_PATH = 260; necháváme rezervu na `.txt` po konverzi a na `_zip/` adresář zanořeného ZIPu.
+MAX_PATH_BUDGET = 200
 
 
 def canon(u, base=None):
@@ -78,7 +86,7 @@ def fetch(url, timeout):
     for i in range(L("http.default_retries") or 1):
         try:
             req = urllib.request.Request(df.safe_url(url), headers={"User-Agent": df.UA})
-            with urllib.request.urlopen(req, timeout=timeout) as r:
+            with http_util.urlopen(req, timeout=timeout) as r:
                 return (r.read().decode(r.headers.get_content_charset() or "utf-8", "replace"),
                         canon(r.geturl()).split("#")[0])
         except Exception as e:  # noqa: BLE001
@@ -153,6 +161,26 @@ def _zipname(info):
     return info.filename
 
 
+def _safe_member(xdir, name, ext):
+    """Bezpečné jméno souboru člena ZIPu POD Windows MAX_PATH (260 znaků).
+
+    České názvy příloh v ZIPech CzechAid jsou dlouhé („Příloha_6_Projektová_dokumentace_…") a
+    ZIP-v-ZIPu ještě přidá adresář `<člen>_zip/` → absolutní cesta přeteče 260 znaků a extrakce
+    spadne na FileNotFoundError (Windows, ověřeno 2026-07-31). Proto: sanitize → když by cesta
+    přetekla, zkrať STEM a přilep 8 hex z sha1 celého jména (zůstane unikátní + přípona).
+    """
+    safe = re.sub(r"[^\w.\-]+", "_", name)[-120:]
+    budget = MAX_PATH_BUDGET - len(os.path.abspath(xdir)) - 1
+    if len(safe) <= budget:
+        return safe
+    h = hashlib.sha1(name.encode("utf-8")).hexdigest()[:8]
+    suffix = f".{ext}" if ext else ""
+    keep = budget - len(h) - 1 - len(suffix)
+    if keep < 8:                       # extrémně dlouhá cesta → jen hash + přípona
+        return f"{h}{suffix}"
+    return f"{safe[:keep]}_{h}{suffix}"
+
+
 def _zip_members_text(fpath, xdir, timeout, max_bytes, depth=0):
     """Rozbal ZIP (rekurzivně i ZIP-v-ZIPu), členy s doc příponou konvertuj na text
     → (combined_text, members[]). Výzva samotná i její přílohy bývají v (zanořeném) ZIPu —
@@ -176,8 +204,7 @@ def _zip_members_text(fpath, xdir, timeout, max_bytes, depth=0):
             continue
         name = _zipname(info)
         ext = os.path.splitext(name)[1].lstrip(".").lower()
-        safe = re.sub(r"[^\w.\-]+", "_", name)[-120:]
-        mpath = os.path.join(xdir, safe)
+        mpath = os.path.join(xdir, _safe_member(xdir, name, ext))
         with zf.open(info) as src, open(mpath, "wb") as dst:
             dst.write(src.read())
         mrec = {"name": name, "ext": ext, "bytes": info.file_size, "file_path": mpath}

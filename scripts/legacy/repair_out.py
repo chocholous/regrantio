@@ -12,6 +12,11 @@ Usage:
   python3 scripts/repair_out.py --outdir /tmp/out [--expect /tmp/mg2 --prefix grant --count 597] \
       [--fallback /tmp/wf_return.json] [--quiet]
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, glob, json, os, re, sys
 import json_repair
 

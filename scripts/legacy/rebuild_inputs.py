@@ -10,6 +10,11 @@ Usage:
   python3 scripts/rebuild_inputs.py [--dir /tmp/mg2] [--opps data/opportunities.jsonl] [--threshold 0.15] [--dry-run]
 Vypíše indexy dotčených (pro extract_wf.js {dir,prefix,indices:[...]}).
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, glob, json, os, re, sys
 
 OK = set('.,;:%()[]-–—/+=@"\'§!?°×#&*<>|~`_')

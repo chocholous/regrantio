@@ -25,6 +25,11 @@ Spuštění (z kořene repa):
   python3 scripts/mk_harvest.py                      # plný harvest, --today = dnešek
   python3 scripts/mk_harvest.py --today 2026-06-10   # reprodukovatelný status
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse
 import hashlib
 import html as H
@@ -41,6 +46,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from dsw2_fetch import (safe_url, sniff_ext, download, convert, ext_of,  # noqa: E402
                         UA, DOC_EXTS, DOC_EXT_RE)
 from limits import L  # noqa: E402
+import http_util  # noqa: E402  (jednotna TLS politika + fallback)
 
 HOST = "mk.gov.cz"
 HOST_ALIASES = {"mk.gov.cz", "www.mk.gov.cz", "mkcr.cz", "www.mkcr.cz"}
@@ -56,7 +62,7 @@ def fetch(url, timeout):
     for _ in range(L("http.default_retries") or 1):
         try:
             req = urllib.request.Request(safe_url(url), headers={"User-Agent": UA})
-            with urllib.request.urlopen(req, timeout=timeout) as r:
+            with http_util.urlopen(req, timeout=timeout) as r:
                 return r.read().decode("utf-8", "replace")
         except Exception as e:  # noqa: BLE001
             last = e
@@ -114,6 +120,23 @@ def compute_status(open_from, deadline, today):
     if deadline:
         return "open"          # bez OD, deadline v budoucnu (např. průběžný příjem do …)
     return "unknown"           # žádné parsovatelné datum (bude upřesněno / jen měsíc slovy)
+
+
+_SLUG_MAP = str.maketrans("áčďéěíňóřšťúůýžÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ", "acdeeinorstuuyzACDEEINORSTUUYZ")
+
+
+def _rec_url(detail_url, title):
+    """Stabilní klíč záznamu: detail URL + fragment ze slugu programu (viz komentář u recs).
+
+    Slug se ořezává na 60 znaků (URL čitelnost) → dlouhé názvy podprogramů ISO III se lišily
+    až za ořezem a slily by se. Proto se VŽDY připojí 6 hex ze sha1 PLNÉHO názvu: fragment je
+    krátký, čitelný i jednoznačný."""
+    base = detail_url.split("#")[0]
+    if not title:
+        return base
+    slug = re.sub(r"[^a-z0-9]+", "-", title.translate(_SLUG_MAP).lower()).strip("-")[:60].strip("-")
+    h = hashlib.sha1(title.encode("utf-8")).hexdigest()[:6]
+    return f"{base}#{slug}-{h}" if slug else f"{base}#{h}"
 
 
 def parse_listing(page_html):
@@ -272,7 +295,12 @@ def main():
         atts = [done[a["url"]] for a in att_by_detail.get(r["detail_url"], [])]
         recs.append({
             "host": HOST, "title": r["title"],
-            "url": r["detail_url"] or args.listing,
+            # `url` = STABILNÍ KLÍČ záznamu (build_extract_input z něj dělá `id`). Jedna
+            # „vyhlašovací" stránka MK nese až 10 samostatných programů (33 unikátních detail_url
+            # na 53 výzev) → bez rozlišovacího fragmentu by se 20 programů při ingestu slilo do
+            # jednoho id a zmizely by. Fragment je deterministický (slug názvu) a URL zůstává
+            # resolvovatelná na správnou stránku.
+            "url": _rec_url(r["detail_url"] or args.listing, r["title"]),
             "date": None, "kind": "vyzva",
             "area": r["area"], "listing_url": args.listing,
             "detail_url": r["detail_url"], "detail_title": det["title"] if det else None,

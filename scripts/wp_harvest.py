@@ -12,6 +12,11 @@ Pro daný (base, rest_base, entity) stáhne VŠECHNY položky CPT/typu přes
 Nahrazuje 11 ad-hoc skriptů z workflow. Konfigurace přes CLI.
 Pozn.: `_embed` vrací názvy taxonomických termů inline (1 dotaz, bez doplňků).
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, html, json, os, re, sys, urllib.request, urllib.error
 import http_util   # jednotná TLS politika (audit #7/#32)
 from limits import L

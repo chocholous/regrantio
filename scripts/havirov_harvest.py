@@ -18,6 +18,11 @@ Lossless: ukládá parsed pole + plný text landing + plný text Zásad. Uklád�
 
 Usage: python3 scripts/havirov_harvest.py [--out data/h_mesto_havirov.json] [--today 2026-06-05]
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, json, os, re, subprocess, sys, tempfile, urllib.request, urllib.parse
 import http_util   # jednotná TLS politika (audit #7/#32)
 from datetime import date

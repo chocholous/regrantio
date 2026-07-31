@@ -1,161 +1,158 @@
 #!/usr/bin/env python3
-# Vrstva 2 extrakce pro MŠMT (marwel) — replikace extract_wf.js SYS.grant schématu.
-import json, os
+"""Vrstva 2 pro MŠMT (msmt.gov.cz, Marwel; harvester scripts/msmt_harvest.py).
 
-S = "https://msmt.gov.cz/"
-out = {}
+Nahrazuje původní ručně psaný statický batch (7 záznamů z marwel seedů, git history) —
+teď je extrakce DETERMINISTICKÁ a reprodukovatelná nad plným msmt_documents.jsonl:
 
-out["grant_00"] = {
- "title":"Podpora nestátních neziskových organizací pro rok 2026 v oblasti PRÁCE S DĚTMI A MLÁDEŽÍ",
- "oblast":["mládež","volný čas","vzdělávání"],
- "focus_area":"Podpora celoroční činnosti NNO pracujících s dětmi a mládeží (osvědčené organizace, projekty s nadregionálním dopadem)",
- "open_from":None,"deadline":"2025-10-31",
- "deadliny":[{"datum":"2025-10-31","kontext":"Termín pro podání žádostí: do 31. 10. 2025"}],
- "obdobi_realizace":"od 1. 1. 2026 do 31. 12. 2026",
- "castky":[{"typ":"alokace","hodnota":146000000,"kontext":"Celková alokace Výzvy je 146 000 000 Kč"}],
- "vyse_hlavni_czk":146000000,"spoluucast":None,
- "eligible_applicants":"Nestátní neziskové organizace (spolky, ústavy, obecně prospěšné společnosti, nadace) pracující s dětmi a mládeží.",
- "typ_zadatele":["neziskovka"],"cilova_skupina":["děti_mladez"],
- "region":[{"nazev":"Česká republika","celostatni":True}],
- "forma_podpory":["dotace"],"zdroj_financovani":["narodni_rozpocet"],
- "rezim_prijmu":"kolova","delka":"jednoleta",
- "how_to_apply":"Žádosti se vkládají přes informační systém ISPROM (https://isprom.msmt.gov.cz), žádost doručit na MŠMT do termínu.",
- "required_attachments":[],
- "dalsi_datumy":[{"datum":"2026-06-30","popis":"u jedné z dílčích výzev uveden termín od 30.6.2026"}],
- "cislo_vyzvy":None,"source_doc":S+"mladez/podpora-nestatnich-neziskovych-organizaci-pro-rok-2026-v",
- "evidence":{
-   "title":"PODPORA NESTÁTNÍCH NEZISKOVÝCH ORGANIZACÍ PRO ROK 2026 V OBLASTI PRÁCE S DĚTMI A MLÁDEŽÍ",
-   "deadline":"Termín pro podání žádostí: do 31. 10. 2025",
-   "vyse_hlavni_czk":"146 000 000",
-   "castky":"146 000 000",
-   "obdobi_realizace":"od 1. 1. 2026 do 31. 12. 2026",
-   "how_to_apply":"ISPROM na adrese https://isprom.msmt.gov.cz"}}
+  • FILTR NA AKTUÁLNÍ CYKLUS (zlaté pravidlo — fulltext discovery vrací všechny ročníky):
+    bere se článek s grant-titulem (výzva/dotační/rozvojový program), který má ročník >=
+    --since-year v titulu NEBO v próze parsovatelný deadline >= --since-year. Starší ročníky
+    zůstávají lossless v harvest souboru, do datasetu nejdou (šum status=unknown).
+  • deadline  = „žádost/lhůta/termín … do D. M. RRRR" (date-aware regex, česká tečková data)
+  • open_from = „od D. M. RRRR do D. M. RRRR" když je rozpětí
+  • amount    = „Celková alokace … Kč" jen s jednoznačným číslem; jinak null (nehalucinovat)
+  • oblast    = vzdělávání (default); 8K/výzkumné infrastruktury → věda a výzkum
+  • STATUS POČÍTÁ KÓD (ingest_rich → compute_status).
 
-out["grant_01"] = {
- "title":"Na učitelích záleží – rok 2026",
- "oblast":["vzdělávání"],
- "focus_area":"Neinvestiční dotace na podporu pedagogických pracovníků (Na učitelích záleží)",
- "open_from":None,"deadline":"2025-10-31",
- "deadliny":[{"datum":"2025-10-31","kontext":"Žádost musí být doručena na MŠMT nejpozději do 31. 10. 2025"}],
- "obdobi_realizace":"od 1. 1. 2026 do 31. 12. 2026",
- "castky":[{"typ":"alokace","hodnota":1500000,"kontext":"Celková alokace Výzvy je 1 500 000 Kč"}],
- "vyse_hlavni_czk":1500000,"spoluucast":None,
- "eligible_applicants":None,
- "typ_zadatele":[],"cilova_skupina":["pedagogičtí pracovníci","učitelé"],
- "region":[{"nazev":"Česká republika","celostatni":True}],
- "forma_podpory":["dotace"],"zdroj_financovani":["narodni_rozpocet"],
- "rezim_prijmu":"jednorazova_vyzva","delka":"jednoleta",
- "how_to_apply":"On-line formulář IS Integrace; žádost včetně příloh zaslat datovou schránkou (ID vidaawt) poskytovateli do 31. 10. 2025.",
- "required_attachments":[],
- "cislo_vyzvy":None,"source_doc":S+"vzdelavani/zakladni-vzdelavani/vyzva-na-ucitelich-zalezi-rok-2026",
- "evidence":{
-   "title":"Výzvu pro podávání žádostí o poskytnutí neinvestiční dotace: Na učitelích záleží – rok 2026",
-   "deadline":"doručena na MŠMT, nejpozději do 31. 10. 2025",
-   "castky":"1 500 000",
-   "how_to_apply":"prostřednictvím datové schránky (ID datov"}}
+Join: data/msmt_in/grant_NN.json ↔ data/msmt_documents.jsonl dle id (= url).
+Spuštění: python data/_msmt_extract.py [--since-year 2025]
+"""
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
+import argparse
+import glob
+import json
+import os
+import re
 
-out["grant_02"] = {
- "title":"Podpora nadaných žáků základních a středních škol v roce 2026",
- "oblast":["vzdělávání","mládež"],
- "focus_area":"Podpora neformálního a zájmového vzdělávání nadaných žáků ZŠ a SŠ",
- "open_from":None,"deadline":"2025-10-31",
- "deadliny":[{"datum":"2025-10-31","kontext":"Žádost je nutné podat v souladu s Výzvou do 31. října 2025"}],
- "obdobi_realizace":"od 1. 1. 2026 do 31. 12. 2026",
- "castky":[{"typ":"alokace","hodnota":13500000,"kontext":"Celková alokace Výzvy je 13 500 000 Kč"}],
- "vyse_hlavni_czk":13500000,"spoluucast":None,
- "eligible_applicants":"Právnické osoby vykonávající činnost školy / organizace v oblasti práce s nadanými žáky ZŠ a SŠ.",
- "typ_zadatele":["skola_vyzkumna_org","neziskovka"],"cilova_skupina":["nadaní žáci","děti_mladez"],
- "region":[{"nazev":"Česká republika","celostatni":True}],
- "forma_podpory":["dotace"],"zdroj_financovani":["narodni_rozpocet"],
- "rezim_prijmu":"jednorazova_vyzva","delka":"jednoleta",
- "how_to_apply":"Žádosti se vkládají přes informační systém ISPROM (https://isprom.msmt.gov.cz/), otevřen 1. října 2025.",
- "required_attachments":[],
- "cislo_vyzvy":None,"source_doc":S+"mladez/vyzva-podpora-nadanych-zaku-zakladnich-a-strednich-skol-v-1",
- "evidence":{
-   "title":"Výzvu Podpora nadaných žáků základních a středních škol v roce 2026",
-   "deadline":"podat v souladu s Výzvou do 31. října 2025",
-   "castky":"13 500 000",
-   "how_to_apply":"systému ISPROM na adrese https://isprom.msmt.gov.cz"}}
+IN_DIR, OUT_DIR = "data/msmt_in", "data/msmt_out"
+HARVEST = "data/msmt_documents.jsonl"
+CR = [{"nazev": "Česká republika", "obec": None, "okres": None, "kraj": None, "celostatni": True}]
 
-out["grant_03"] = {
- "title":"Podpora aktivit v oblasti primární prevence rizikového chování a podpory duševního zdraví ve školách a školských zařízeních pro rok 2026",
- "oblast":["prevence","duševní zdraví","vzdělávání"],
- "focus_area":"Primární prevence rizikového chování a podpora duševního zdraví ve školách (3 moduly: individuální, interaktivní, …)",
- "open_from":None,"deadline":None,
- "deadliny":[],"obdobi_realizace":"rok 2026",
- "castky":[],"vyse_hlavni_czk":None,"spoluucast":None,
- "eligible_applicants":"Školy a školská zařízení, NNO (dle modulu) v oblasti primární prevence.",
- "typ_zadatele":["skola_vyzkumna_org","neziskovka"],"cilova_skupina":["děti_mladez","žáci"],
- "region":[{"nazev":"Česká republika","celostatni":True}],
- "forma_podpory":["dotace"],"zdroj_financovani":["narodni_rozpocet"],
- "rezim_prijmu":"kolova","delka":"jednoleta",
- "how_to_apply":"Žádosti přes systém IS-PREVENCE (viz Výzva).",
- "required_attachments":[],
- "cislo_vyzvy":None,"source_doc":S+"vzdelavani/socialni-programy/vyzva-podpora-aktivit-v-oblasti-primarni-prevence-rizikoveho",
- "evidence":{
-   "title":"Výzvu Podpora aktivit v oblasti primární prevence rizikového chování a podpory duševního zdraví ve školách a školských zařízeních pro rok 2026",
-   "focus_area":"Výzva je rozdělena na 3 moduly",
-   "oblast":"Národní strategie primární prevence rizikového chování"}}
+GRANT_TITLE = re.compile(r"v[ýy]zv|dotačn|rozvojov[ýy] program|dotace", re.I)
+TITLE_YEAR = re.compile(r"(?:rok[u]?|pro rok|na rok|na období)\s*(20\d\d)|–\s*rok\s*(20\d\d)")
+# gap = [^\n] (NE [^\n.]): české zkratky „tzn./č./resp." obsahují tečku a utnuly by větu
+# („Žádost musí být podána, tzn. doručena … do 31. 10. 2025" by jinak nematchovalo)
+DEADLINE = re.compile(r"(?:[žŽ][áa]dost[^\n]{0,160}?|lh[uů]t[aě][^\n]{0,120}?|term[íi]n[^\n]{0,120}?)"
+                      r"do\s*(\d{1,2})\.\s*(\d{1,2})\.\s*(20\d\d)")
+AMOUNT = re.compile(r"(?:[Cc]elkov[áa] alokace|[Aa]lokace v[ýy]zvy|alokovan[áa] částka)"
+                    r"[^\n.]{0,60}?([\d][\d\s  .]{4,15})\s*Kč")
+RESEARCH = re.compile(r"\b8K\d|v[ýy]zkumn[ýy]ch infrastruktur|bilaterální spoluprác", re.I)
 
-# --- 2016 archivní rozvojové programy (historické; na hubu, ale staré) ---
-out["grant_04"] = {
- "title":"Rozvojový program – Bezplatná výuka českého jazyka přizpůsobená potřebám žáků-cizinců z třetích zemí (2016)",
- "oblast":["vzdělávání","integrace cizinců"],
- "focus_area":"Bezplatná výuka českého jazyka pro žáky-cizince z třetích zemí (rozvojový program 2016)",
- "open_from":None,"deadline":None,
- "deadliny":[],"obdobi_realizace":"rok 2016",
- "castky":[],"vyse_hlavni_czk":None,"spoluucast":None,
- "eligible_applicants":"Právnické osoby vykonávající činnost školy; žadatelem o dotaci je krajský úřad.",
- "typ_zadatele":["skola_vyzkumna_org","obec_verejny_subjekt"],"cilova_skupina":["žáci-cizinci","děti_mladez"],
- "region":[{"nazev":"Česká republika","celostatni":True}],
- "forma_podpory":["dotace"],"zdroj_financovani":["narodni_rozpocet"],
- "rezim_prijmu":"jednorazova_vyzva","delka":"jednoleta","how_to_apply":None,
- "required_attachments":[],
- "cislo_vyzvy":"MŠMT-4100/2016-2","source_doc":S+"vzdelavani/zakladni-vzdelavani/vyhlaseni-rozvojoveho-programu-bezplatna-vyuka-ceskeho",
- "evidence":{
-   "title":"Bezplatná výuka českého jazyka přizpůsobená potřebám žáků-cizinců z třetích zemí",
-   "obdobi_realizace":"vyhlašuje na rok 2016",
-   "cislo_vyzvy":"4100/2016-2"}}
+HOW = ("Žádost se podává MŠMT způsobem a ve lhůtě uvedenou v textu výzvy (typicky informační "
+       "systém MŠMT — ISPROM/IS Integrace — a datová schránka); závazné podmínky jsou v textu "
+       "výzvy a přílohách.")
 
-out["grant_05"] = {
- "title":"Rozvojový program – Zajištění podmínek základního vzdělávání nezletilých azylantů a žadatelů o mezinárodní ochranu (2016)",
- "oblast":["vzdělávání","integrace cizinců"],
- "focus_area":"Zajištění podmínek základního vzdělávání nezletilých azylantů, osob s doplňkovou ochranou a žadatelů o mezinárodní ochranu (2016)",
- "open_from":None,"deadline":None,
- "deadliny":[],"obdobi_realizace":"rok 2016",
- "castky":[],"vyse_hlavni_czk":None,"spoluucast":None,
- "eligible_applicants":"Právnické osoby vykonávající činnost školy; žadatelem o dotaci je krajský úřad.",
- "typ_zadatele":["skola_vyzkumna_org","obec_verejny_subjekt"],"cilova_skupina":["azylanti","žáci-cizinci","děti_mladez"],
- "region":[{"nazev":"Česká republika","celostatni":True}],
- "forma_podpory":["dotace"],"zdroj_financovani":["narodni_rozpocet"],
- "rezim_prijmu":"jednorazova_vyzva","delka":"jednoleta","how_to_apply":None,
- "required_attachments":[],
- "cislo_vyzvy":"MSMT-3229/2016","source_doc":S+"vzdelavani/zakladni-vzdelavani/vyhlaseni-rozvojoveho-programu-zajisteni-podminek-zakladniho-1",
- "evidence":{
-   "title":"Zajištění podmínek základního vzdělávání nezletilých azylantů",
-   "obdobi_realizace":"na rok 2016",
-   "cislo_vyzvy":"3229/2016"}}
 
-out["grant_06"] = {
- "title":"Rozvojový program – Zajištění bezplatné přípravy k začlenění do základního vzdělávání dětí občanů EU (2016)",
- "oblast":["vzdělávání","integrace cizinců"],
- "focus_area":"Bezplatná příprava k začlenění do základního vzdělávání dětí osob se státní příslušností jiného členského státu EU (2016)",
- "open_from":None,"deadline":None,
- "deadliny":[],"obdobi_realizace":"rok 2016",
- "castky":[],"vyse_hlavni_czk":None,"spoluucast":None,
- "eligible_applicants":"Právnické osoby vykonávající činnost školy; žadatelem o dotaci je krajský úřad.",
- "typ_zadatele":["skola_vyzkumna_org","obec_verejny_subjekt"],"cilova_skupina":["děti občanů EU","žáci-cizinci","děti_mladez"],
- "region":[{"nazev":"Česká republika","celostatni":True}],
- "forma_podpory":["dotace"],"zdroj_financovani":["narodni_rozpocet"],
- "rezim_prijmu":"jednorazova_vyzva","delka":"jednoleta","how_to_apply":None,
- "required_attachments":[],
- "cislo_vyzvy":"MSMT-3393/2016","source_doc":S+"vzdelavani/zakladni-vzdelavani/vyhlaseni-rozvojoveho-programu-zajisteni-bezplatne-pripravy-1",
- "evidence":{
-   "title":"Zajištění bezplatné přípravy k začlenění do základního vzdělávání",
-   "obdobi_realizace":"vyhlašuje na rok 2016",
-   "cislo_vyzvy":"3393/2016"}}
+def _iso(d, m, y):
+    d, m, y = int(d), int(m), int(y)
+    if 1 <= d <= 31 and 1 <= m <= 12:
+        return f"{y}-{m:02d}-{d:02d}"
+    return None
 
-os.makedirs("data/msmt_out", exist_ok=True)
-for k, v in out.items():
-    json.dump(v, open(f"data/msmt_out/{k}.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
-print("wrote", len(out), "extraction files to data/msmt_out/")
+
+def _sentence(text, pos, width=200):
+    start = max(0, text.rfind("\n", 0, pos), text.rfind(". ", max(0, pos - width), pos))
+    return re.sub(r"\s+", " ", text[start:pos + 120]).strip(" .;\n")[:280]
+
+
+def current_cycle(rec, body, since_year):
+    """→ {'deadline': iso|None, 'dl_match': m|None} když článek patří do aktuálního cyklu."""
+    t = rec.get("title") or ""
+    if rec.get("kind") != "article" or not GRANT_TITLE.search(t):
+        return None
+    ty = TITLE_YEAR.search(t)
+    year = int(ty.group(1) or ty.group(2)) if ty else None
+    m = dl = None
+    for cand in DEADLINE.finditer(body):
+        # pitfalls: „žádostí … dotace NA OBDOBÍ od … do …" = doba REALIZACE, ne lhůta podání
+        if re.search(r"obdob[íi]|realizac", body[cand.start():cand.end()], re.I):
+            continue
+        m = cand
+        dl = _iso(cand.group(1), cand.group(2), cand.group(3))
+        break
+    if (year and year >= since_year) or (dl and dl >= f"{since_year}-01-01"):
+        return {"deadline": dl, "dl_match": m}
+    return None
+
+
+def build(rec, src, cur):
+    title = re.sub(r"\s+", " ", (rec.get("title") or "")).strip()
+    body = src.get("body") or rec.get("body_text") or ""
+    # POZOR (prompts/pitfalls.md): „od D.M.RRRR do D.M.RRRR" v próze MŠMT je běžně OBDOBÍ
+    # REALIZACE/dotace („dotace na období od 1. 9. 2022 do 31. 8. 2025"), NE lhůta podání →
+    # žádný range-parse; open_from se nehádá (None), deadline jen z DEADLINE regexu (žádost/
+    # lhůta/termín … do D.M.RRRR).
+    ev = {}
+    open_from = None
+    deadline = cur["deadline"]
+    if cur["dl_match"]:
+        ev["deadline"] = _sentence(body, cur["dl_match"].start())
+    amount = None
+    m = AMOUNT.search(body)
+    if m:
+        digits = re.sub(r"\D", "", m.group(1))
+        if digits and 100_000 <= int(digits) <= 500_000_000_000:
+            amount = int(digits)
+            ev["vyse_hlavni_czk"] = _sentence(body, m.start())
+
+    research = bool(RESEARCH.search(title + " " + body[:2000]))
+    src_doc = None
+    for a in rec.get("attachments") or []:
+        if (a.get("ext") or "") in ("pdf", "docx", "doc"):
+            src_doc = a.get("url")
+            break
+
+    return {
+        "title": title,
+        "focus_area": ("Dotační výzva MŠMT" + (" (mezinárodní spolupráce ve výzkumu)" if research
+                                               else " v oblasti vzdělávání/mládeže") + "."),
+        "oblast": (["věda a výzkum", "mezinárodní spolupráce"] if research else ["vzdělávání"]),
+        "open_from": open_from, "deadline": deadline,
+        "castky": ([{"typ": "alokace", "hodnota": amount}] if amount else []),
+        "vyse_hlavni_czk": amount, "spoluucast": None,
+        "eligible_applicants": None,      # oprávnění žadatelé jsou v textu výzvy → neparafrázovat
+        "typ_zadatele": [], "cilova_skupina": [],
+        "region": CR,
+        "forma_podpory": ["dotace"], "zdroj_financovani": ["narodni_rozpocet"],
+        "rezim_prijmu": "jednorazova_vyzva" if deadline else "neuvedeno", "delka": None,
+        "how_to_apply": HOW, "required_attachments": [],
+        "source_doc": src_doc or rec.get("url"),
+        "poskytovatel": "Ministerstvo školství, mládeže a tělovýchovy",
+        "evidence": ev,
+    }
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--since-year", type=int, default=2025)
+    a = ap.parse_args()
+    os.makedirs(OUT_DIR, exist_ok=True)
+    for p in glob.glob(os.path.join(OUT_DIR, "grant_*.json")):
+        os.remove(p)
+    by_id = {}
+    for line in open(HARVEST, encoding="utf-8"):
+        if line.strip():
+            r = json.loads(line)
+            by_id[r.get("url")] = r
+    n, skipped = 0, 0
+    for path in sorted(glob.glob(os.path.join(IN_DIR, "grant_*.json"))):
+        src = json.load(open(path, encoding="utf-8"))
+        rec = by_id.get(src.get("id"))
+        body = (src.get("body") or (rec or {}).get("body_text") or "")
+        cur = current_cycle(rec, body, a.since_year) if rec else None
+        if not cur:
+            skipped += 1
+            continue
+        f = build(rec, src, cur)
+        json.dump(f, open(os.path.join(OUT_DIR, os.path.basename(path)), "w", encoding="utf-8"),
+                  ensure_ascii=False, indent=1)
+        n += 1
+    print(f"wrote {n} grants -> {OUT_DIR}/ (skipped {skipped}: listing/ne-grant/starý ročník)")
+
+
+if __name__ == "__main__":
+    main()

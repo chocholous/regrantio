@@ -10,6 +10,11 @@ Děčín (_prilohy nesou jen id bez URL). Ostatní samosprávy s přímými URL.
 
 Usage: python3 scripts/fetch_samosprava_docs.py [data/h_mesto_hk.json ...]   (default: auto-set)
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, glob, json, os, sys
 from urllib.parse import urljoin
 from concurrent.futures import ThreadPoolExecutor

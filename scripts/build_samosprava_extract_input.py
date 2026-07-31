@@ -12,6 +12,11 @@ nebo harvester==platform). Záznam bez harvest-textu i bez příloh dostane body
 
 Usage: python3 scripts/build_samosprava_extract_input.py --out-dir /tmp/ei_sam
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, glob, json, os, re, sys
 from urllib.parse import urljoin
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

@@ -32,10 +32,15 @@ Po harvestu: python3 scripts/coverage_verify.py data/grantovydiar_documents.json
 """
 import argparse, datetime, html as H, json, os, re, sys, time
 import urllib.request, urllib.error
+if hasattr(sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    sys.stdout.reconfigure(encoding="utf-8")
+    if sys.stderr:
+        sys.stderr.reconfigure(encoding="utf-8")
 from concurrent.futures import ThreadPoolExecutor
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from limits import L
+import http_util  # noqa: E402  (jednotna TLS politika + fallback)
 
 BASE = "https://grantovydiar.cz"
 HOST = "grantovydiar.cz"
@@ -62,7 +67,7 @@ def fetch(url, timeout):
     for attempt in range(retries):
         try:
             req = urllib.request.Request(url, headers={"User-Agent": UA})
-            with urllib.request.urlopen(req, timeout=timeout) as r:
+            with http_util.urlopen(req, timeout=timeout) as r:
                 return r.status, r.geturl(), r.read(3_000_000).decode("utf-8", "replace")
         except urllib.error.HTTPError as e:
             if e.code in RETRYABLE_HTTP and attempt < retries - 1:
@@ -209,7 +214,7 @@ def main():
 
     done = set()
     if os.path.exists(args.out):
-        for ln in open(args.out):
+        for ln in open(args.out, encoding="utf-8", errors="replace"):
             try:
                 done.add(json.loads(ln).get("id"))
             except Exception:
@@ -237,7 +242,7 @@ def main():
     started = time.time()
     # PRŮBĚŽNÝ ZÁPIS: append + flush po každé dávce; výsledky řadíme po blocích,
     # ať soubor roste a běh přežije pád. Log [N/total] do stdout (→ log soubor).
-    out = open(args.out, "a", buffering=1)
+    out = open(args.out, "a", buffering=1, encoding="utf-8")  # BEZ encoding= by Windows psal cp1250 mojibake
     done = 0
     with ThreadPoolExecutor(args.workers) as ex:
         for kind, rec in ex.map(work, ids):
@@ -258,7 +263,7 @@ def main():
     # MARKER souhrn — status rozpad + source_url dočti ze souboru (celý, vč. dřívějších)
     by_status = {}
     with_src = file_total = 0
-    for ln in open(args.out):
+    for ln in open(args.out, encoding="utf-8"):
         try:
             r = json.loads(ln)
         except Exception:

@@ -15,6 +15,11 @@ Politika (env REGRANTIO_TLS):
 
 Non-TLS chyby (timeout/DNS/refused) se NIKDY nepolykají — propagují se beze změny.
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import os
 import ssl
 import sys

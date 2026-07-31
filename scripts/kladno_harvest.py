@@ -18,6 +18,11 @@ Ukládá průběžně (flush po každém programu).
 
 Usage: python3 scripts/kladno_harvest.py [--out data/h_mesto_kladno.json]
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, json, re, subprocess, sys
 from datetime import date
 

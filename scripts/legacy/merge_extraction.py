@@ -12,6 +12,11 @@ Vocab-validace zahodí Haiku slipy mimo slovník (consolidation_maps).
 
 Usage: python3 scripts/merge_extraction.py --eo /tmp/eo_sam --paths /tmp/ei_sam/paths.json [--today 2026-06-05] [--apply]
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, glob, json, os, re, sys
 from datetime import date
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

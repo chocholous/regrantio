@@ -8,6 +8,11 @@ JSON (NazevZadosti, NazevZadatele, IcZadatele, NazevOblasti, NazevStavuZadosti, 
 
 Ověřeno: granty.praha.eu, idSeznamu abad868e-… → 112 907 záznamů.
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, json, os, ssl, sys, time, urllib.parse, urllib.request, http.cookiejar
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from limits import L   # centrální registr limitů (root limits.json)

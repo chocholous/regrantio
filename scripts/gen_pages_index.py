@@ -8,6 +8,11 @@ proti main) a odkazem na její verzi appky.
 
 Usage (v CI): python3 scripts/gen_pages_index.py site
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import subprocess, sys, os, html, datetime
 
 

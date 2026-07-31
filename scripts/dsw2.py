@@ -17,6 +17,11 @@ Výstupy (JSONL, 1 entita/řádek) + sběr odkazů ke stažení (dsw2_links.json
 Konfigurace přes CLI; zabudované cesty /explore|/opendata|/csu jsou konvence
 platformy Otevřená města (obdoba WP REST cesty), přepsatelné přes CLI.
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse
 import datetime
 import html

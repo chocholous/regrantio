@@ -15,6 +15,11 @@ Použití:
         --url-path attachments[].url --txt-path attachments[].txt_path
   python3 scripts/docstore.py --lookup "<url>"
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, hashlib, json, os, sys, threading
 from concurrent.futures import ThreadPoolExecutor
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

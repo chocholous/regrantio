@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 # Vrstva 2 extrakce pro MMR – národní dotace (mmr.gov.cz; parser scripts/mmr.py). 9 programů.
 # VYNECHÁNO: SFPI-overlap (ŽIVEL SFPI, Revitalizace brownfieldů = příjemce SFPI), administrativní
 # (Závazky reg. rad, COVID administrace), destinačně-specifické/historické (Jeseníky, České Švýcarsko,

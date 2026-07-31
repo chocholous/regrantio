@@ -24,6 +24,11 @@ v --out (url + requested_url + alias_urls) — APPEND only, nic se nemaže ani n
 
 Spuštění (z kořene repa): .venv/bin/python scripts/czechaid_gapfill.py --extra-urls /tmp/czechaid_gap_urls.txt
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse
 import json
 import os

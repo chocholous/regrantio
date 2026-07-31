@@ -6,6 +6,11 @@ parsuje (raw json.loads — partial zápis = chvilkově ne), % s evidence, prům
 shoda tvaru region[] (klíče nazev/obec/okres/kraj/celostatni), low_fill, prázdné citace.
 Partial/parse-fail NEní alarm během běhu (json_repair je až po). Usage: python3 scripts/probe_quality.py [outdir]
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import glob, json, os, sys
 
 REGION_KEYS = {"nazev", "obec", "okres", "kraj", "celostatni"}

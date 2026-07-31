@@ -2,6 +2,11 @@
 """Kentico (IROP/dotaceEU) PoC — výzvy listing → detail se strukturovanými poli
 + status z dat + /getmedia/ přílohy (reuse dsw2_fetch). Staticky, bez postbacku.
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, hashlib, json, os, re, ssl, sys, time, html, urllib.request
 from datetime import date
 

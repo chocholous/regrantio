@@ -70,9 +70,9 @@ Granty mimo 4 hlavní kategorie: `vdv.cz`, `osa.cz` (autorské), `olympic.cz`, `
 - `scripts/ingest_kentico.py` — reusable pro JAKÝKOLI Kentico portál (Czech datum→ISO, oblast z keywords title, typ_zadatele z eligible, region=celostátní, zdroj=eu_fondy).
 
 ### ✅ Hotovo — kraje + nadace přes Apify + LLM (+ opportunity-gate)
-- **Apify** `website-content-crawler` (playwright) → markdown → `build_apify_input.py` → `extract_wf` → `ingest_apify.py`.
+- **Apify** `website-content-crawler` (playwright) → markdown → `legacy/build_apify_input.py` → `extract_wf` → `legacy/ingest_apify.py` (v karanténě scripts/legacy/ do příští Apify session).
 - **Kraje**: Zlínský (7 výzev RP*/MaS*), Středočeský, Pardubický. **Nadace**: ČEZ, VDV (Olga Havlová), Via, AGROFERT, NROS, Vodafone, O2. → **+21 oportunit**, opportunities 911→932, poskytovatelů 53→62.
-- **OPPORTUNITY-GATE (`ingest_apify.py`)** dle pravidla „oportunity, ne katalogy": zahodí generické katalogy/rozcestníky/info (titul „Dotace/Granty/grantová řízení/Pro žadatele…"), **news** („Nové dětské hřiště podpoří", „Z programu X půjdou…") a **externí domény** (crawl bloudil na computertrends/litomericko24…). Ponechá jen konkrétní výzvu (deadline/open_from/číslo výzvy / eligible+oblast) nebo misi s „jak požádat". Dropped 26/47.
+- **OPPORTUNITY-GATE (`legacy/ingest_apify.py`)** dle pravidla „oportunity, ne katalogy": zahodí generické katalogy/rozcestníky/info (titul „Dotace/Granty/grantová řízení/Pro žadatele…"), **news** („Nové dětské hřiště podpoří", „Z programu X půjdou…") a **externí domény** (crawl bloudil na computertrends/litomericko24…). Ponechá jen konkrétní výzvu (deadline/open_from/číslo výzvy / eligible+oblast) nebo misi s „jak požádat". Dropped 26/47.
 - **Praha**: granty.praha.eu = žádostní portál (ne katalog); centrál = Liferay próza za WAF (13/16 URL „Request Rejected"), prošly jen `/web/*` + subdoména `zdravotni.praha.eu` (Dotace 2026 s deadlinem). Městské části (8) už máme. → částečně, WAF-limit.
 
 ### 📍 KRAJE — platformy + baseline stav

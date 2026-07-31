@@ -22,6 +22,11 @@ Výstup dle KONTRAKTU pro scripts/ingest_kraj.py (uroven=obec). Ukládá průbě
 
 Usage: python3 scripts/ceskalipa_harvest.py [--out data/h_mesto_ceskalipa.json]
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, json, re, sys, urllib.request
 import http_util   # jednotná TLS politika (audit #7/#32)
 

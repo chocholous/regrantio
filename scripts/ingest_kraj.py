@@ -25,12 +25,20 @@ KONTRAKT (co musí harvester per kraj vyprodukovat — JSON):
 Ingest dopočítá status z dat (pokud není explicitní), oblast z názvu+popisu (univerzální keyword tabulka),
 typ_zadatele z eligible, region=kraj. poskytovatel=samosprava_kraj, zdroj=krajsky.
 
-Usage: python3 scripts/ingest_kraj.py data/h_kraj_zlinsky.json [data/h_kraj_*.json ...] --out data/opportunities.jsonl [--today 2026-06-05]
+UPSERT (2026-07-31): re-harvest TÝŽ program (stejné `id`) ho AKTUALIZUJE, ne přeskočí. Dřív se
+appendovalo jen to, co v cíli nebylo → změněný deadline/alokace se do datasetu nikdy nedostaly a
+html-tier (kraje+města, ~1000 záznamů) fakticky nešel refreshovat. Zachovává se ale to, co ingest
+neumí spočítat: pokud už záznam prošel vrstvou 2 (`provenance.layer == 2` / má `citations`), přepíšou
+se JEN datumy/status/částky a zbytek (facety z LLM, focus_area, citace) zůstane — refresh nesmí
+degradovat obohacený záznam. Pořadí řádků v souboru se zachovává (stabilní diff).
+
+Usage: python3 scripts/ingest_kraj.py data/h_kraj_zlinsky.json [data/h_kraj_*.json ...] --out data/opportunities_v2.jsonl [--today 2026-06-05]
 """
 import argparse, json, os, re, sys
 from datetime import date
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from opportunities import compute_status, canon_key, _pd
+from upsert_v2 import upsert
 
 # POZN.: oblast / typ_zadatele / cilova_skupina ZÁMĚRNĚ neklasifikujeme keyword-heuristikou.
 # Dle architektury (CLAUDE.md) je klasifikace fazet práce LLM vrstvy 2 (classify nad textem),
@@ -48,16 +56,10 @@ def _num(x):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("inputs", nargs="+")
-    ap.add_argument("--out", default="data/opportunities.jsonl")
-    ap.add_argument("--today", default="2026-06-05")
+    ap.add_argument("--out", default="data/opportunities_v2.jsonl")
+    ap.add_argument("--today", default=date.today().isoformat())
     a = ap.parse_args()
     today = _pd(a.today) or date.today()
-
-    seen = set()
-    if os.path.exists(a.out):
-        for l in open(a.out, encoding="utf-8"):
-            try: seen.add(json.loads(l).get("id"))
-            except Exception: pass
 
     from collections import Counter
     grand = Counter()
@@ -110,18 +112,16 @@ def main():
                 "citations": [],
             }
             recs.append(rec)
-        written, dup = 0, 0
-        with open(a.out, "a", encoding="utf-8") as o:
-            for r in recs:
-                if r["id"] in seen:
-                    dup += 1; continue
-                seen.add(r["id"]); o.write(json.dumps(r, ensure_ascii=False) + "\n"); written += 1
-        total_written += written
+        st = upsert(a.out, recs)
+        total_written += st["new"] + st["updated"]
         st_c = Counter(r["status"] for r in recs)
         print(json.dumps({"MARKER": "INGEST_KRAJ", "source": source, "kraj": kraj,
-                          "written": written, "dedup": dup, "by_status": dict(st_c)}, ensure_ascii=False))
-        grand[source] = written
-    print(json.dumps({"MARKER": "INGEST_KRAJ_TOTAL", "written": total_written, "by_source": dict(grand)}, ensure_ascii=False))
+                          "new": st["new"], "updated": st["updated"], "unchanged": st["unchanged"],
+                          "by_status": dict(st_c)}, ensure_ascii=False))
+        grand[source] = st["new"] + st["updated"]
+
+    print(json.dumps({"MARKER": "INGEST_KRAJ_TOTAL", "changed": total_written,
+                      "by_source": dict(grand), "out": a.out}, ensure_ascii=False))
 
 
 if __name__ == "__main__":

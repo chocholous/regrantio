@@ -14,6 +14,11 @@ deadline=null tam, kde web v próze datum neuvádí (kontrakt: co nezjistíš = 
 
 Usage: python3 scripts/chomutov_harvest.py --out data/h_mesto_chomutov.json
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, json, re, ssl, sys, urllib.request
 
 BASE = "https://granty.chomutov.cz"

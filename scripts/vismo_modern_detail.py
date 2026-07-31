@@ -16,6 +16,11 @@ vismo_documents.jsonl) + data/vismo_modern_files/<host>/<sha>.{ext,txt}.
 Usage:  python3 scripts/vismo_modern_detail.py
         python3 scripts/vismo_modern_detail.py --listing data/vismo_modern_listing.jsonl --no-attachments
 """
+import sys as _sys
+if hasattr(_sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+    _sys.stdout.reconfigure(encoding="utf-8")
+    if _sys.stderr:
+        _sys.stderr.reconfigure(encoding="utf-8")
 import argparse, hashlib, json, os, re, ssl, sys, time, html, urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date

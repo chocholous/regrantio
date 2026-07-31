@@ -39,9 +39,11 @@ DROP_SOURCES = {
 }
 
 # Varianta poskytovatele sklizená 2× (bohatší extract_wf pod bare-slug vs chudší apify pod <slug>.cz).
-# Když TÝŽ (normalizovaný) titul existuje pod bare-slug, .cz kopie je duplicitní → drop.
+# Když TÝŽ (normalizovaný) titul existuje pod kanonickým zdrojem, kopie je duplicitní → drop.
 # (Ostatní .cz varianty nesou DISTINKTNÍ granty — nemažou se; jen agrofert má překryv titulů.)
-VARIANT_DEDUP = {"nadace-agrofert.cz": "nadace-agrofert"}
+# 2026-07-31: + mkcr→mk — starý jednorázový h19 batch MK ČR vs nový deterministický
+# mk_harvest.py (data z listing tabulek, aktuální ročník); 14/47 titulů se překrývalo.
+VARIANT_DEDUP = {"nadace-agrofert.cz": "nadace-agrofert", "mkcr": "mk"}
 
 # Konkrétní stray/mis-filed záznamy (nesprávný zdroj nebo ne-grant) → drop pro čistotu.
 DROP_STRAY = [
@@ -62,6 +64,11 @@ PROVIDER_TYPE = {
     "opzp": "ministerstvo",           # OP Životní prostředí 2021–2027 (opzp.cz) — EU OP, řídící orgán MŽP
     "opst": "ministerstvo",           # OP Spravedlivá transformace 2021–2027 (opst.cz) — EU OP, řídící orgán MŽP
     "opjak": "ministerstvo",          # OP Jan Amos Komenský 2021–2027 (opjak.cz) — EU OP MŠMT (vzdělávání+výzkum)
+    "mk": "ministerstvo",             # Ministerstvo kultury (mk.gov.cz) — dotační řízení (mk_harvest)
+    "esfcr": "ministerstvo",          # OPZ+/OPZ (esfcr.cz) — EU OP, řídící orgán MPSV
+    "hzs": "ministerstvo",            # HZS ČR (hzscr.gov.cz) — MV, generální ředitelství HZS
+    "czechaid": "statni_agentura",    # Česká rozvojová agentura / CzechAid (czechaid.gov.cz)
+    "plone_ostrava": "samosprava_obec",  # ostravské městské obvody (sdílený Plone)
     "eu_ft": "evropska_komise",       # EU Funding & Tenders Portal (ec.europa.eu) — centrálně řízené programy EU
     # státní fondy
     "vinarskyfond": "statni_fond",    # Vinařský fond
