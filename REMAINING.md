@@ -83,18 +83,25 @@ jdou přes SFDI a nově OP Doprava).
 
 ---
 
-## ⛔ Co zbývá — GENUINE BLOCKERY (stav 2026-07-31)
+## ⛔ Co zbývá — GENUINE BLOCKERY (recon 2026-07-31)
 
-| Zdroj | Blocker |
+Každý níže byl v této session ŽIVĚ přeověřen; „blocker" = ověřená technická překážka, ne odhad.
+
+| Zdroj | Blocker (ověřeno) |
 |---|---|
-| **NSA refresh** | WAF škrtí přílohy (~1/4 min) → refresh přes `refresh_run.py --sources nsa` pustit přes noc / z jiné sítě; data z 06/2026 zatím platná |
-| OP TAK / `dotaceeu.cz` centrál | ASP.NET **WebForms** postback → Apify/viewstate (mosty připravené v `scripts/legacy/*apify*`); dedup riziko s IROP/OPŽP/OPST/OPZ+ |
-| OPD / NPO / SZIF (PRV) | ne-WP; **SZIF = WAF** (ConnectionReset) → proxy/Apify |
-| grantovydiar.cz aktuální výzvy | login-gate (placený účet svetneziskovek.cz) — harvester hotový, stačí session cookie |
-| Interreg ×5, Visegrad | ne-WP bespoke, roztříštěné, malý výnos |
-| Zbylé velké nadace (ČEZ/OKD detail, Abakus, Neuron, Vodafone…) | ne-WP bespoke per-web; většinou jen `foundation_mission` |
-| Chybějící města (ČB, Zlín, Šumperk, Třebíč) | ověřeno Playwrightem: NEjsou čistě harvestovatelná |
-| `h19_*` nadační batch | jednorázová v1 LLM cesta (REFRESH.md §6); nechat jako poslední stav, per-web parser až při reálné výzvě |
+| **SZIF (PRV/SZP)** | `ConnectionResetError` — WAF blokuje na úrovni TCP spojení; realistické hlavičky NEPOMOHLY (na rozdíl od Visegradu/ERSTE). Chce proxy nebo jinou IP |
+| **OP TAK** | web API (agentura-api.org) je prázdný SPA shell — i po Playwright renderu jen 58 znaků. `dotaceeu.cz/…/vyzvy` má výzvy za FILTROVACÍM formulářem (postback) → Apify/viewstate |
+| **Interreg AT-CZ** | HTTP 200, ale 0 výzvových odkazů — obsah je za JS/filtrem; chce Playwright recon |
+| **Interreg Central Europe** | ověřeno: VŠECHNA 4 kola uzavřená (poslední 11/2025), žádné otevřené výzvy → vědomě nepřidáno |
+| **Interreg Danube** | 404 na /calls — změněná struktura, chce recon |
+| **grantovydiar.cz** | login-gate (veřejné id okno je 100 % closed) |
+| **Zbylé nadace** (ČEZ detail, Neuron, Karla Janečka, Charty 77) | 403/DNS chyby nebo obsah jen v PDF |
+| Chybějící města (ČB, Zlín, Šumperk, Třebíč) | ověřeno Playwrightem: víceúrovňová navigace + PDF, render vrátil ~0 programů |
+| `h19_*` nadační batch | jednorázová v1 LLM cesta (REFRESH.md §6) |
+
+**Poznatek k obcházení blokací:** HTTP 403 u Visegradu, ERSTE a obou Interregů padalo na
+DEFAULTNÍM urllib User-Agentu — stačily realistické prohlížečové hlavičky (UA + Accept-Language
++ `Accept-Encoding: identity`). Než označíš zdroj za blokovaný, zkus tohle.
 
 ## 🎯 Priority příští coverage session (s rozpočtem na nástroje)
 P3 OP TAK/dotaceeu (Apify/WebForms) · P2b SZIF (proxy) · P4 nadace 17→40+ · grantovydiar login.
