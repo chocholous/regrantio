@@ -80,6 +80,7 @@ python3 scripts/ingest_rich.py --out-dir <extract_out> --src <ei_dir>           
 python3 scripts/consolidate.py            # remap facet variant→kanon (oblast/typ_zadatele/cílová/kraj) dle data/consolidation_maps.json; --dry-run pro report
 
 # Kvalita datasetu + build prohlížecí appky (nad data/opportunities_v2.jsonl)
+python3 scripts/derive_deadlines.py       # doplni deadline tam, kde je termin ve zdroji jen jako text (opakujici se "kazdorocne 15.11." -> nejblizsi budouci vyskyt); znaci status_confidence=derived
 python3 scripts/fix_dataset.py            # deterministická oprava: dedup (Ústí/variant) + reclasifikace null poskytovatele + přepočet statusu k --today (default dnešek); idempotentní, .bak
 python3 scripts/build_app.py              # → data/grants_app.html (fasetový prohlížeč; STATUS se počítá KLIENTSKY k dnešku, nezastará)
 ```

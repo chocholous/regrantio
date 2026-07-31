@@ -15,7 +15,7 @@ recept na zdroj, pasti) = `docs/SESSION_PLAYBOOK.md` + `CLAUDE.md`. Data žijí 
 |---|---|
 | **záznamů celkem** | **3397** (3372 grantů + 25 foundation_mission) |
 | **poskytovatelů** | **136** |
-| status grantů | **687 open** · 33 announced · 1730 closed · 906 unknown |
+| status grantů | **697 open** · 33 announced · 1730 closed · 906 unknown |
 | typ poskytovatele | samosprava_kraj 1153 · ministerstvo 866 · samosprava_obec 723 · evropska_komise 341 · nadacni_fond 63 · nadace 57 · statni_agentura 53 · statni_fond 48 · firemni_nadace 42 · zahranicni_fond 26 |
 | vyplněnost grantů | deadline 2441 (73 %) · amount 777 (23 %) |
 | integrita | **0 dup id · 0 bez title · 0 bad amount** — `validate_release` ✓ |
@@ -37,6 +37,12 @@ defaultně filtruje `deadline >= dnes NEBO NULL`, takže archiv nezavazí.
   dnes fungují (24 položek) → doplněny mezi seedy.
 - **OP Doprava (opd3.opd.cz) 0 → 12** (*z toho 5 otevřených*): v REMAINING veden jako blocker
   („ne-WP"), web mezitím přešel na server-rendered tabulku výzev → `scripts/opd.py`.
+- **Kvalita: `scripts/derive_deadlines.py`** — 24 grantů mělo termín ve zdroji, ale v jiném
+  tvaru (`extra.deadliny[]`: „každoročně 15. 11.", „31. ledna každého roku", hotové ISO).
+  Skript ho převede do strojového tvaru a u opakujících se promítne na NEJBLIŽŠÍ BUDOUCÍ
+  výskyt. NENÍ to halucinace — datum je doložené v `kontext` (doslovná věta ze zdroje);
+  odvozené záznamy nesou `status_confidence="derived"` + `extra.deadline_derived_from/_rule`.
+  Efekt: unknown 919 → 895, open 687 → 697.
 - **JS-renderované nadace 0 → 15**: `scripts/nadace_spa.py` (Playwright) pokrývá 6 nadací
   jedním harvesterem — nespojuje je CMS, ale PŘEKÁŽKA (obsah renderuje JS, curl vrátí shell).
   Partnerství · OSF · Vodafone · Liga proti rakovině · Český literární fond · Abakus.
