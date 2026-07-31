@@ -13,8 +13,8 @@ recept na zdroj, pasti) = `docs/SESSION_PLAYBOOK.md` + `CLAUDE.md`. Data žijí 
 
 | metrika | hodnota |
 |---|---|
-| **záznamů celkem** | **3372** (3347 grantů + 25 foundation_mission) |
-| **poskytovatelů** | **133** |
+| **záznamů celkem** | **3376** (3351 grantů + 25 foundation_mission) |
+| **poskytovatelů** | **134** |
 | status grantů | **678 open** · 33 announced · 1730 closed · 906 unknown |
 | typ poskytovatele | samosprava_kraj 1153 · ministerstvo 866 · samosprava_obec 723 · evropska_komise 341 · nadacni_fond 63 · nadace 57 · statni_agentura 53 · statni_fond 48 · firemni_nadace 42 · zahranicni_fond 26 |
 | vyplněnost grantů | deadline 2441 (73 %) · amount 777 (23 %) |
@@ -37,6 +37,10 @@ defaultně filtruje `deadline >= dnes NEBO NULL`, takže archiv nezavazí.
   dnes fungují (24 položek) → doplněny mezi seedy.
 - **OP Doprava (opd3.opd.cz) 0 → 12** (*z toho 5 otevřených*): v REMAINING veden jako blocker
   („ne-WP"), web mezitím přešel na server-rendered tabulku výzev → `scripts/opd.py`.
+- **Interreg SK-CZ (sk-cz.eu) 0 → 5**: `scripts/interreg.py` (WP REST, kategorie dle slugu).
+  Vrstva 2 FILTRUJE: z 13 postů je 8 náborů hodnotitelů/harmonogramů, ne dotačních výzev.
+- **Creative Europe / Kreativní Evropa: vědomě NEpřidáno** — výzvy vyhlašuje EACEA a v datasetu
+  už jsou přes EU F&T portál (13 aktuálních `CREA-*`); české zastoupení by bylo duplikací.
 - **grantovydiar.cz**: harvester hotový, NEingestován (veřejné id okno 100 % closed, zbytek za loginem).
 
 **Refresh:** všech 18 automatizovaných zdrojů (8 structured + 10 html) proběhlo bez chyby.

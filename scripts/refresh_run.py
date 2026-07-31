@@ -66,6 +66,7 @@ SOURCES = {
     "mzp":       (["scripts/harvest_site.py", "mzp.cz"], "generic"),
     "mv":        (["scripts/mv_cms.py"], "html"),
     "opd":       (["scripts/opd.py"], "html"),   # OP Doprava — tabulka výzev na opd3.opd.cz
+    "interreg":  (["scripts/interreg.py"], "structured"),  # Interreg SK-CZ (WP REST kategorie výzev)   # OP Doprava — tabulka výzev na opd3.opd.cz
 }
 
 
