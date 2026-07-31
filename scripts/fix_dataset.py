@@ -83,6 +83,7 @@ PROVIDER_TYPE = {
     "tacr": "statni_agentura",        # Technologická agentura ČR (tacr.gov.cz) — aplikovaný výzkum
     "nsa": "statni_agentura",         # Národní sportovní agentura (nsa.gov.cz) — dotace do sportu
     # zahraniční / mezinárodní donorské fondy
+    "intl_funds": "zahranicni_fond",   # Visegrad Fund + ERSTE Foundation (mezinárodní)
     "interreg": "zahranicni_fond",     # Interreg SK-CZ — přeshraniční program (EFRR)
     "eeagrants": "zahranicni_fond",   # EHP a Norské fondy (eeagrants.cz; NKM = Ministerstvo financí)
     # nadace
