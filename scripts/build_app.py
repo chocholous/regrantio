@@ -345,7 +345,7 @@ def arch_html(n, np):
 
 <div class=stage><div class=num>4</div><h3>Vrstva 2 — Extrakce (LLM)</h3>
 <p>Jeden univerzální extraktor: z <b>PLNÉHO textu + všech příloh</b> (neořezáváno, cap 150k jen safety) do bohatého schématu — oblast, cílová skupina, částky, deadliny, region→geo, dokumenty s rolí, kontakt, příjemci (výsledkové listiny), sběrače. <b>1 oportunita = 1 Sonnet agent.</b> Ke každému poli doslovná <b>evidence</b>.</p>
-<div class=meta>workflow: {lnk(S+'extract_wf.js')} &nbsp;|&nbsp; serializace: agent zapíše JSON Write toolem do souboru → batch {lnk(S+'repair_out.py','json_repair')} (StructuredOutput se na bohatém schématu láme) &nbsp;|&nbsp; schéma: {lnk('../schema/opportunity_schema.md','opportunity_schema.md')}</div></div>
+<div class=meta>workflow: {lnk(S+'extract_wf.js')} &nbsp;|&nbsp; serializace: agent zapíše JSON Write toolem do souboru (StructuredOutput se na bohatém schématu láme) &nbsp;|&nbsp; schéma: {lnk('../schema/opportunity_schema.md','opportunity_schema.md')}</div></div>
 <div class=arrow>▼</div>
 
 <div class=stage><div class=num>5</div><h3>Status v kódu (ne LLM)</h3>

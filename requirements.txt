@@ -1,18 +1,22 @@
-# Vrstva 1 harvestery (eeagrants, lewis_dynamo, vismo, dsw2…) běží na stdlib.
-# Playwright je potřeba JEN pro objevovací metodu scripts/lewis_discover.py
-# (jednorázový headless odposlech XHR SPA/WebForms gridů typu Lewis/Dynamo).
-#   pip install -r requirements.txt && playwright install chromium
-playwright>=1.40
-pyyaml>=6.0   # routing.yaml loader (scripts/routing.py)
-openpyxl>=3.1  # xlsx → text (scripts/dsw2_fetch.py convert; textutil Excel neumí)
-xlrd>=2.0      # xls (legacy BIFF) → text (scripts/dsw2_fetch.py; legacy/fix_docs.py)
-json-repair>=0.25  # kanonizace JSON výstupů LLM vrstvy 2 (jen při workflow cestě)
-certifi>=2024.2    # CA trust store pro jednotnou TLS politiku (scripts/http_util.py; audit #7/#32)
+# JÁDRO pipeline — tohle stačí na drtivou většinu zdrojů.
+# Harvestery samotné běží na standardní knihovně; tyhle čtyři balíčky potřebuje
+# konfigurace a převod příloh na text.
+#
+#   pip install -r requirements.txt
+#
+# Verze jsou ZAMČENÉ (==) záměrně: pipeline běží bez dozoru a tichá změna chování
+# knihovny by se projevila až jako podivná data. Povýšení = vědomý krok.
 
-# Vrstva 1 / fáze 2 — dokumenty → markdown (scripts/to_markdown.py):
-#   docling = PDF/DOCX/PPTX → markdown (layout + tabulky); CPU vynuceno (MPS float64 bug → float32 patch v to_markdown.py)
-#   ocrmac  = Apple Vision OCR engine pro skenovaná PDF (přes docling OcrMacOptions, jen macOS)
-#   tabulky (xls/xlsx/ods) → soffice (LibreOffice, system) → CSV; velké/textové PDF → pdftotext (system poppler)
-docling>=2.96
-ocrmac>=1.0        # macOS only
-python-docx>=1.1  # docx → text cross-platform (scripts/dsw2_fetch.py; audit #10, textutil je jen macOS)
+PyYAML==6.0.3        # routing.yaml + konfigurace (scripts/routing.py)
+python-docx==1.2.0   # docx → text (scripts/dsw2_fetch.py); textutil je jen macOS
+openpyxl==3.1.5      # xlsx → text (scripts/dsw2_fetch.py)
+xlrd==2.0.2          # xls (legacy BIFF) → text
+
+# VOLITELNÉ, instaluj jen když je potřeba:
+#   requirements-browser.txt  — zdroje, které skládají obsah až v prohlížeči
+#                               (nadace_spa, eu_ft, lewis_discover, xhr_discover)
+#   certifi                   — vlastní CA trust store pro scripts/http_util.py;
+#                               bez něj se použije systémový (na Windows funguje)
+#
+# SYSTÉMOVÉ nástroje (ne přes pip): pdftotext z balíku poppler pro velká PDF,
+# volitelně soffice (LibreOffice) pro tabulkové formáty.

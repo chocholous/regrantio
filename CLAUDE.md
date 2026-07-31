@@ -12,7 +12,6 @@ Repo je **samostatný a soběstačný** (osamostatněno z rodiče 2026-06-01). V
 - **Data žijí v `./data/`** (~1 GB, **gitignored** — viz `.gitignore`): `wp_full/` (127 souborů, WP reuse korpus), `vismo_files/` (1371 PDF→txt), `vismo_documents.jsonl`, `dsw2_files/`, `dsw2_programs.jsonl`, `dsw2_links.jsonl`. Mapa host→platforma je `./platform_map.json` (root).
 - **`scripts/*.py` používají relativní cesty `data/...`** (argparse defaulty) → spouštěj je **z kořene repa** (CWD = `opportunity_pipeline/`), jinak nenajdou data.
 - Data jsou kopie z rodičovského `re-grantio/data/` k datu osamostatnění. Nejsou v gitu, takže **fresh clone je nemá** — refresh = znovu zkopírovat z rodiče nebo re-harvestovat (`scripts/*harvest*`).
-- `platform_data/platform_map.json` je starší **snapshot**, ne to, co pipeline čte (autoritativní je `./platform_map.json` v rootu).
 
 ## Příkazy
 

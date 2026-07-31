@@ -114,7 +114,7 @@ Cyklus, který je MĚŘENÝ (ne nora):
 - `docs/coverage.md` — coverage & active learning (typ+pole, saturace, diversity_finder)
 - `docs/data_reuse.md` — index UŽ STAŽENÝCH dat (html/md/pdf/doc/xls) k reuse
 - `docs/apify_howto.md` — kdy a jak Apify (SPA/postback zdroje)
-- `platform_data/` — **datové mapy** (platform_map, cms_clusters, detect_platforms_result, diversity_candidates, *_cov_result)
+- `platform_data/` — **měřené výsledky detekce a pokrytí** (cms_clusters, detect_platforms_result, diversity_candidates, *_cov_result); autoritativní mapa host→platforma je `platform_map.json` v kořeni
 - `scripts/` — detekce (cms_similarity, platform_refingerprint, detect_platforms_wf) + harvestery (wp/vismo/kentico/mv/dsw2/**eeagrants/praha_grants/lewis_dynamo**) + **doc-store** (`docstore.py`) + dsw2_fetch + coverage/diversity
 - **`scripts/extract_wf.js` / `classify_wf.js`** — Claude-workflow vrstvy 2/1 (Haiku, 1 oportunita/agent, plný text)
 - **`scripts/lewis_discover.py`** — Playwright objev skrytého XHR (SPA/grid) → endpoint pro HTTP replay

@@ -1,0 +1,12 @@
+# VOLITELNÉ — jen pro zdroje, které skládají obsah až v prohlížeči.
+# Bez tohohle běží celá pipeline dál, jen se přeskočí browser-tier zdroje.
+#
+#   pip install -r requirements-browser.txt && playwright install chromium
+#
+# Kdo to používá:
+#   scripts/nadace_spa.py      — 6 JS-renderovaných nadací (živý zdroj, 15 záznamů)
+#   scripts/eu_ft.py           — EU Funding & Tenders Portal
+#   scripts/lewis_discover.py  — jednorázový odposlech XHR u Lewis/Dynamo gridů
+#   scripts/xhr_discover.py    — totéž obecně pro jakékoli SPA
+
+playwright==1.61.0

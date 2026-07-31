@@ -3,9 +3,10 @@
 Živý plánovací dokument. **Aktuální stav, co je hotovo, co zbývá a proč.** JAK pracovat (zlatá pravidla,
 recept na zdroj, pasti) = `docs/SESSION_PLAYBOOK.md` + `CLAUDE.md`. Data žijí v gitignored `data/`.
 
-> **Status k 2026-07-31, větev `coverage-expansion-next`.** Dataset **3372 záznamů / 133
-> poskytovatelů**. Všech 18 automatizovaných zdrojů refreshnuto k dnešku, repo uklizené
-> (mrtvý kód smazán), publikovaný export beze změny (schema 1.1), CI zelené.
+> **Status k 2026-07-31, `main` == `coverage-expansion-next`.** Dataset **3397 záznamů / 136
+> poskytovatelů**. Všech 25 automatizovaných zdrojů refreshnuto k dnešku, repo uklizené
+> (mrtvý kód a integrační artefakty smazány, jeden katalog bez v1/v2, závislosti zamčené),
+> publikovaný export beze změny (schema 1.1), CI zelené.
 
 ---
 
@@ -15,9 +16,9 @@ recept na zdroj, pasti) = `docs/SESSION_PLAYBOOK.md` + `CLAUDE.md`. Data žijí 
 |---|---|
 | **záznamů celkem** | **3397** (3372 grantů + 25 foundation_mission) |
 | **poskytovatelů** | **136** |
-| status grantů | **697 open** · 33 announced · 1730 closed · 906 unknown |
-| typ poskytovatele | samosprava_kraj 1153 · ministerstvo 866 · samosprava_obec 723 · evropska_komise 341 · nadacni_fond 63 · nadace 57 · statni_agentura 53 · statni_fond 48 · firemni_nadace 42 · zahranicni_fond 26 |
-| vyplněnost grantů | deadline 2441 (73 %) · amount 777 (23 %) |
+| status grantů | **697 open** · 33 announced · 1747 closed · 895 unknown |
+| typ poskytovatele | samosprava_kraj 1153 · ministerstvo 866 · samosprava_obec 723 · evropska_komise 341 · nadace 71 · nadacni_fond 63 · statni_agentura 53 · statni_fond 47 · firemni_nadace 42 · zahranicni_fond 38 |
+| vyplněnost grantů | deadline 2477 (73 %) · amount 777 (23 %) |
 | integrita | **0 dup id · 0 bez title · 0 bad amount** — `validate_release` ✓ |
 
 `amount=null`/`status=unknown` zůstávají VĚTŠINOU správné (částky bývají jen v PDF; katalogové
