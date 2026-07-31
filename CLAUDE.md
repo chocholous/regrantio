@@ -59,6 +59,7 @@ python3 scripts/msmt_harvest.py      # MŠMT plný BFS dotačních rubrik (nahra
 python3 scripts/esfcr_harvest.py     # ESF ČR / OPZ+ + OPZ (esfcr.cz, Liferay) — strukturovaná pole detailu (Platnost od/do, Alokace); 'Typ výzvy: uzavřená' = REŽIM, ne status
 python3 scripts/czechaid_harvest.py  # Česká rozvojová agentura (czechaid.gov.cz) — BFS /dotace, ZIP přílohy (cp852, MAX_PATH guard); deadline z prózy (nejpozdější = prodloužení)
 python3 scripts/hzs_harvest.py       # HZS ČR (hzscr.gov.cz) — ASP.NET s <base href>, víceleté články (záložky chnum); vrstva 2 bere jen standing programy/aktuální lhůty
+python3 scripts/vismo_modern.py + vismo_modern_detail.py + vismo_modern_gapfill.py  # vismo "modern" (webhouse minbase 4.x, slug URL) - listing -> detail+prilohy -> gap-fill z coverage_verify
 python3 scripts/plone_ostrava.py     # ~20 ostravských městských obvodů (sdílený Plone) — roční rámce; vrstva 2 jen aktuální programy (>= since-year)
 python3 scripts/opd.py               # OP Doprava 2021-2027 (opd3.opd.cz) - tabulka vyzev, OD/DO z bunek (5 otevrenych k 07/2026)
 python3 scripts/interreg.py          # Interreg SK-CZ (WP REST kategorie) + CZ-PL (REST zavreny -> HTML listing); 403 bez UA hlavicek

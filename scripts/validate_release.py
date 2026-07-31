@@ -6,6 +6,7 @@ veřejný kontrakt produktu (docs/opportunities.json). Spouštěj lokálně pře
 
 Kontroly:
   1. py_compile všech scripts/*.py + data/_*_extract.py + pipeline.py (syntax)
+  1b. unit testy tests/test_core.py — compute_status, upsert merge, derive_deadlines
   2. routing.yaml se parsuje (yaml.safe_load) + má `families`/`sources`/`default`
   3. platform_map.json + limits.json jsou validní JSON
   4. docs/opportunities.json = veřejný kontrakt: meta(schema_version/count/generated_at), count==len,
@@ -95,6 +96,19 @@ def check_product_contract():
     print(f"    (schema {meta['schema_version']}, {len(grants)} grantů, id unikátní, hash konzistentní)")
 
 
+def check_unit_tests():
+    """Testy kritické logiky (compute_status / upsert merge / derive_deadlines)."""
+    import subprocess
+    t = os.path.join(ROOT, "tests", "test_core.py")
+    if not os.path.exists(t):
+        raise Skip("tests/test_core.py chybí")
+    r = subprocess.run([sys.executable, t], capture_output=True, text=True)
+    if r.returncode != 0:
+        tail = (r.stdout or "").strip().splitlines()[-3:]
+        raise RuntimeError("unit testy FAIL: " + " | ".join(tail))
+    print("    (" + (r.stdout or "").strip().splitlines()[-1] + ")")
+
+
 def check_sync_contract():
     """Dokáž, že dokumentovaný sync algoritmus (PRODUCT_API §3) funguje na reálném exportu."""
     sys.path.insert(0, os.path.join(ROOT, "scripts"))
@@ -107,6 +121,7 @@ def check_sync_contract():
 def main():
     print("# VALIDATE RELEASE\n")
     check("compile all .py", compile_all)
+    check("unit testy (kritická logika)", check_unit_tests)
     check("routing.yaml parses", check_routing)
     check("json configs valid", check_json_configs)
     check("product contract (opportunities.json)", check_product_contract)
