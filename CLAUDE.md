@@ -85,7 +85,14 @@ python3 scripts/consolidate.py            # remap facet variant→kanon (oblast/
 python3 scripts/derive_deadlines.py       # doplni deadline tam, kde je termin ve zdroji jen jako text (opakujici se "kazdorocne 15.11." -> nejblizsi budouci vyskyt); znaci status_confidence=derived
 python3 scripts/fix_dataset.py            # deterministická oprava: dedup (Ústí/variant) + reclasifikace null poskytovatele + přepočet statusu k --today (default dnešek); idempotentní, .bak
 python3 scripts/build_app.py              # → data/grants_app.html (fasetový prohlížeč; STATUS se počítá KLIENTSKY k dnešku, nezastará)
+
+# OBNOVA KATALOGU — jeden příkaz (14 deterministických zdrojů, bez modelu)
+python3 scripts/refresh_run.py            # harvest → ingest → přepočet → brána kvality → export
+python3 scripts/refresh_run.py --list     # co je v registru; --tier/--only zúží, --tail-only bez sítě
 ```
+> **Obnova → produkt:** `refresh_run.py` v regrantiu vyrobí `docs/opportunities.json`; Grantio si
+> ho vezme svým `pnpm jobs:live all`. Jsou to DVA příkazy, každý ve svém repozitáři — hranice mezi
+> projekty vede přes data, ne přes kód (viz `the-machine-app/docs/SYNC.md`).
 > **UPSERT sémantika (2026-07-31):** strukturní layer-1 ingesty (`ingest_kraj`/`ingest_dotis`/`ingest_kentico`/`ingest_fondvysociny`) zapisují do katalogu přes sdílený `scripts/upsert.py` — re-harvest AKTUALIZUJE existující záznamy (dřív append-only skip → html-tier fakticky nešel refreshovat). Záznam obohacený vrstvou 2 se přepisuje jen ve FAKTECH (datumy/status/částky), LLM facety+citace zůstávají. `ingest_rich` je upsert dle id odjakživa.
 > **Windows pozn.:** skripty tisknou diagnostiku s `→ · ⚠` — konzole cp1250 to neumí. Pipeline-skripty (`consolidate`, `fix_dataset`, `build_extract_input`, `routing`) si proto na startu vynutí UTF-8 stdout (`sys.stdout.reconfigure`); jinak `UnicodeEncodeError`.
 
@@ -116,7 +123,7 @@ python3 scripts/build_app.py              # → data/grants_app.html (fasetový 
 - `docs/SESSION_PLAYBOOK.md` — **JAK pracovat** (handoff pro příští session): zlatá pravidla (NIKDY nemergovat do main, nehalucinovat, status v kódu), recept na přidání zdroje (8 kroků), pasti (cp1250 konzole, TLS, WebForms/Kentico/page-builder, JOIN, …), deploy+export. **Přečti na začátku session.**
 - `REMAINING.md` (root) — **plán rozšiřování (CO)**: co je hotovo, co zbývá (priority P1–P7), stav datasetu, vlajky. Aktualizuj po každém přidaném zdroji.
 - `docs/EXPORT.md` — **publikovaná podoba katalogu** (`docs/opportunities.json`): tvar souboru, schéma polí, `content_hash`, status jako odvozená hodnota, záruky kvality, pojistka proti kolapsu. Generuje `scripts/export_api.py`.
-- `docs/REFRESH.md` — **update/refresh strategie**: co/jak často/jak bezpečně re-harvestovat (kadence per tier), pojistka proti kolapsu datasetu, known refresh-gapy. Nástroj `scripts/refresh.py` = živý checklist (zdroj→harvester→tier→počet + gap-check).
+- `docs/REFRESH.md` — **update/refresh strategie**: co/jak často/jak bezpečně re-harvestovat (kadence per tier), pojistka proti kolapsu datasetu, known refresh-gapy. Dva nástroje: `scripts/refresh.py` = živý checklist (co by šlo obnovit), **`scripts/refresh_run.py` = jeden příkaz, který to pro 14 deterministických zdrojů UDĚLÁ** (harvest → ingest → přepočet → brána → export).
 - `docs/platform_playbook.md` — definice VŠECH CMS rodin → podpis/harvester/metoda
 - `docs/detection.md` — 3 vrstvy detekce platformy + lekce o slitých labelech
 - `docs/data_reuse.md` — index UŽ STAŽENÝCH dat k reuse (klíčové: harvest = REUSE-first)

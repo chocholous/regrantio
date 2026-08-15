@@ -1,34 +1,43 @@
 #!/usr/bin/env python3
-"""refresh_run.py — JEDEN příkaz na refresh kolo (doplněk checklistu refresh.py).
+"""refresh_run.py — JEDEN PŘÍKAZ, kterým se katalog skutečně obnoví.
 
-`refresh.py` říká CO a JAK ČASTO (checklist); TENHLE skript to SPUSTÍ. Pro každý zdroj
-se známým plně-deterministickým řetězem provede REFRESH.md §3 smyčku:
+`refresh.py` je checklist: řekne, CO by se dalo obnovit. Tenhle skript to UDĚLÁ —
+pro zdroje, které to zvládnou bez jazykového modelu.
 
-    harvest → build_extract_input --no-prefilter → data/_<src>_extract.py → ingest_rich
+    python scripts/refresh_run.py --list          # co je v registru a čím se obnoví
+    python scripts/refresh_run.py                 # obnov vše deterministické + tail
+    python scripts/refresh_run.py --tier structured
+    python scripts/refresh_run.py --only dotace.khk.cz,fondvysociny.cz
+    python scripts/refresh_run.py --tail-only     # jen přepočet + export (bez sítě)
+    python scripts/refresh_run.py --dry-run       # ukaž příkazy, nic nespouštěj
 
-a na konci (bez --no-tail) společný tail: consolidate → fix_dataset --today → build_app
-(+ cp do docs/) → export_api (s --min-ratio pojistkou).
+DVĚ TŘÍDY ZDROJŮ, a rozdíl je zásadní
+─────────────────────────────────────
+  deterministické  harvest → strukturní ingest. Celá cesta je kód, takže se dá
+                   pustit kdykoli a opakovaně. TOHLE skript umí.
+  modelové         harvest → build_extract_input → extract_wf.js (LLM) → ingest_rich.
+                   Vyžaduje běh workflow uvnitř Claude Code, takže to není věc
+                   cronu ani tohohle skriptu. Viz README a docs/REFRESH.md.
 
-Zdroje mimo tenhle registr (seed-driven s ručními ročníky, browser/Playwright, html
-kraje/města s vlastními ingesty) se refreshují ručně dle refresh.py --commands — sem
-patří jen to, co jde bez lidského rozhodnutí.
+⚠ NOVÉ VÝZVY U MODELOVÝCH ZDROJŮ TENHLE SKRIPT NEPŘINESE. Přinese je u zdrojů
+deterministických a u VŠECH srovná termíny a status k dnešku — což je ta část
+zastarávání, která se děje sama od sebe každý den, i když nikdo nic nepublikoval.
 
-Použití (z kořene repa, venv):
-  python scripts/refresh_run.py --tier structured             # WP REST/JSON zdroje (týdně)
-  python scripts/refresh_run.py --tier html                   # deterministické html zdroje (2 týdny)
-  python scripts/refresh_run.py --sources gacr,tacr           # výběr
-  python scripts/refresh_run.py --tier structured --no-tail   # bez závěrečného tailu
-Selhání jednoho zdroje NEshodí kolo (loguje se a pokračuje se dalším); exit code = počet selhání.
+⚠ JEDEN ZDROJ NESMÍ SHODIT CELÝ BĚH. Weby krajů padají, mění se a jsou pomalé.
+Chyba se zaznamená, pokračuje se dál a shrnutí na konci ji přizná; návratový kód
+je nenulový, aby si toho všiml i plánovač.
+
+⚠ TAIL BĚŽÍ VŽDYCKY, i když všechny harvesty selžou. Přepočet statusu na síti
+nezávisí a je to to nejlevnější, co se dá pro čerstvost udělat.
 """
 import argparse
-import datetime
-import json
 import os
 import shutil
 import subprocess
 import sys
+import time
 
-if hasattr(sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASCII diagnostiku
+if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
     if sys.stderr:
         sys.stderr.reconfigure(encoding="utf-8")
@@ -36,121 +45,212 @@ if hasattr(sys.stdout, "reconfigure"):  # Windows cp1250 konzole neuveze non-ASC
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PY = sys.executable
 
-# Registr plně-deterministických refresh řetězů: slug → (harvest argv, tier).
-# Slug = <src> v data/<src>_documents.jsonl + data/_<src>_extract.py + data/<src>_{in,out}.
+# -----------------------------------------------------------------------------
+# REGISTR DETERMINISTICKÝCH ZDROJŮ
+# -----------------------------------------------------------------------------
+# host → (harvest argumenty, výstupní soubor, ingest argumenty, tier)
+#
+# Tier je jen VÝBĚROVÉ KRITÉRIUM, ne jiný postup: `structured` = JSON/REST API
+# (rychlé, odolné), `html` = parsování stránek (levné, ale citlivé na redesign).
+#
+# Výstupní soubor je ZÁMĚRNĚ tentýž, jaký má harvester jako default: kdo pustí
+# harvester ručně, dostane totéž co tenhle skript a ingest se nespleje.
 SOURCES = {
-    # structured (WP REST / JSON API / inline-JS) — týdně
-    "gacr":  (["scripts/gacr.py"], "structured"),
-    "tacr":  (["scripts/tacr.py"], "structured"),
-    "nsa":   (["scripts/nsa.py"], "structured"),
-    "sfzp":  (["scripts/sfzp.py"], "structured"),
-    "opzp":  (["scripts/opzp.py"], "structured"),
-    "opst":  (["scripts/opst.py"], "structured"),
-    "opjak": (["scripts/opjak.py"], "structured"),
-    "osf":   (["scripts/osf.py"], "structured"),
-    # html (deterministické listing/detail parsery) — à 2 týdny
-    "mk":            (["scripts/mk_harvest.py"], "html"),
-    "msmt":          (["scripts/msmt_harvest.py"], "html"),
-    "esfcr":         (["scripts/esfcr_harvest.py"], "html"),
-    "czechaid":      (["scripts/czechaid_harvest.py"], "html"),
-    "hzs":           (["scripts/hzs_harvest.py"], "html"),
-    "plone_ostrava": (["scripts/plone_ostrava.py"], "html"),
-    "sfa":   (["scripts/sfa.py"], "html"),
-    "sfdi":  (["scripts/sfdi.py"], "html"),
-    "sfpi":  (["scripts/sfpi.py"], "html"),
-    "eeagrants": (["scripts/eeagrants.py"], "html"),
-    # 2026-07-31: zdroje, které MĚLY kompletní řetěz (harvester + data/_<src>_extract.py),
-    # ale chyběly v registru → refresh je míjel a hlásil je jako ORPHAN (147 záznamů).
-    "nadacevia": (["scripts/nadacevia.py"], "html"),
-    "mzcr":      (["scripts/harvest_site.py", "mzd.gov.cz"], "generic"),
-    "mzp":       (["scripts/harvest_site.py", "mzp.cz"], "generic"),
-    "mv":        (["scripts/mv_cms.py"], "html"),
-    "opd":       (["scripts/opd.py"], "html"),   # OP Doprava — tabulka výzev na opd3.opd.cz
-    "interreg":  (["scripts/interreg.py"], "structured"),
-    "intl_funds":(["scripts/intl_funds.py"], "html"),   # Visegrad + ERSTE (403 bez UA hlaviček)
-    "nadace_spa":(["scripts/nadace_spa.py"], "browser"),  # JS-renderované nadace (Playwright)   # Visegrad + ERSTE (403 bez UA hlaviček)  # Interreg SK-CZ (WP REST kategorie výzev)   # OP Doprava — tabulka výzev na opd3.opd.cz
+    "dotace.khk.cz": (
+        ["dotis_harvest.py", "--web", "https://dotace.khk.cz", "--source", "dotace.khk.cz",
+         "--out", "data/h_dotis_khk.json"],
+        "data/h_dotis_khk.json",
+        ["ingest_dotis.py", "data/h_dotis_khk.json", "--kraj", "Královéhradecký kraj"],
+        "structured",
+    ),
+    "fondvysociny.cz": (
+        ["fondvysociny_harvest.py"], "data/h_fondvysociny.json",
+        ["ingest_fondvysociny.py", "data/h_fondvysociny.json"],
+        "html",
+    ),
+    "dotace.kraj-lbc.cz": (
+        ["liberecky_harvest.py"], "data/h_kraj_liberecky.json",
+        ["ingest_kraj.py", "data/h_kraj_liberecky.json"],
+        "html",
+    ),
+    "dotace.pardubickykraj.cz": (
+        ["pardubicky_harvest.py"], "data/h_kraj_pardubicky.json",
+        ["ingest_kraj.py", "data/h_kraj_pardubicky.json"],
+        "html",
+    ),
+    "kr-ustecky.cz": (
+        ["ustecky_harvest.py"], "data/h_kraj_ustecky.json",
+        ["ingest_kraj.py", "data/h_kraj_ustecky.json"],
+        "html",
+    ),
+    "msk.cz": (
+        ["msk_harvest.py"], "data/h_kraj_msk.json",
+        ["ingest_kraj.py", "data/h_kraj_msk.json"],
+        "html",
+    ),
+    "stredoceskykraj.cz": (
+        ["stredocesky_harvest.py"], "data/h_kraj_stredocesky.json",
+        ["ingest_kraj.py", "data/h_kraj_stredocesky.json"],
+        "html",
+    ),
+    "kr-karlovarsky.cz": (
+        ["karlovarsky_harvest.py"], "data/h_kraj_karlovarsky.json",
+        ["ingest_kraj.py", "data/h_kraj_karlovarsky.json"],
+        "html",
+    ),
+    "kr-jihomoravsky.cz": (
+        ["jm_harvest.py"], "data/h_kraj_jm.json",
+        ["ingest_kraj.py", "data/h_kraj_jm.json"],
+        "html",
+    ),
+    "kraj-jihocesky.cz": (
+        ["jihocesky_harvest.py"], "data/h_kraj_jihocesky.json",
+        ["ingest_kraj.py", "data/h_kraj_jihocesky.json"],
+        "html",
+    ),
+    "olkraj.cz": (
+        ["olomoucky_harvest.py"], "data/h_kraj_olomoucky.json",
+        ["ingest_kraj.py", "data/h_kraj_olomoucky.json"],
+        "html",
+    ),
+    "zlinskykraj.cz": (
+        ["zlinsky_harvest.py"], "data/h_kraj_zlinsky.json",
+        ["ingest_kraj.py", "data/h_kraj_zlinsky.json"],
+        "html",
+    ),
+    "praha.eu": (
+        ["praha_harvest.py"], "data/h_kraj_praha.json",
+        ["ingest_kraj.py", "data/h_kraj_praha.json"],
+        "html",
+    ),
+    # ⚠ Brno je „mesto", ne „kraj" — jméno souboru se od ostatních liší.
+    "dotace.brno.cz": (
+        ["brno_harvest.py"], "data/h_mesto_brno.json",
+        ["ingest_kraj.py", "data/h_mesto_brno.json"],
+        "html",
+    ),
 }
 
-
-def run(argv, label):
-    print(f"\n$ {' '.join(argv)}", flush=True)
-    r = subprocess.run([PY] + argv, cwd=ROOT)
-    if r.returncode != 0:
-        print(f"!! {label} FAILED (exit {r.returncode})", file=sys.stderr)
-    return r.returncode == 0
-
-
-def refresh_source(src, today):
-    harvest, _tier = SOURCES[src]
-    docs = f"data/{src}_documents.jsonl"
-    ok = run(harvest, f"{src} harvest")
-    if not ok:
-        return False
-    if not os.path.exists(os.path.join(ROOT, docs)):
-        print(f"!! {src}: {docs} po harvestu neexistuje", file=sys.stderr)
-        return False
-    if not run(["scripts/build_extract_input.py", docs, "--source", src,
-                "--out-dir", f"data/{src}_in", "--force-type", "grant", "--no-prefilter"],
-               f"{src} input"):
-        return False
-    if not run([f"data/_{src}_extract.py"], f"{src} extract"):
-        return False
-    return run(["scripts/ingest_rich.py", "--out-dir", f"data/{src}_out",
-                "--src", f"data/{src}_in", "--existing", "data/opportunities.jsonl",
-                "--out", "data/opportunities.jsonl", "--harvest-file", docs,
-                "--today", today], f"{src} ingest")
+# Přepočet a export. Na síti nezávisí, takže běží i po neúspěšném harvestu.
+TAIL = [
+    (["derive_deadlines.py"], "doplnění termínů z opakujících se lhůt"),
+    (["fix_dataset.py"], "dedup, reklasifikace, přepočet statusu k dnešku"),
+    (["consolidate.py"], "sjednocení variant faset na kanonické hodnoty"),
+    # ⚠ BRÁNA PŘED PUBLIKACÍ, ne po ní. Export je to, co si stáhne produkt;
+    # zveřejnit dataset s inverzním termínem nebo prázdným titulem a teprve
+    # potom to zjistit znamená, že si vadu odnesou uživatelé.
+    (["validate_release.py"], "kontrola kvality dat (brána)"),
+    (["export_api.py"], "veřejný export docs/opportunities.json"),
+]
 
 
-def tail(today):
-    ok = True
-    ok &= run(["scripts/consolidate.py"], "consolidate")
-    ok &= run(["scripts/fix_dataset.py", "--today", today], "fix_dataset")
-    ok &= run(["scripts/build_app.py"], "build_app")
-    app = os.path.join(ROOT, "data", "grants_app.html")
-    if os.path.exists(app):
-        shutil.copy2(app, os.path.join(ROOT, "docs", "grants_app.html"))
-        print("cp data/grants_app.html -> docs/grants_app.html")
-    ok &= run(["scripts/export_api.py"], "export_api")   # --min-ratio pojistka uvnitř
-    return ok
+def run(args, label, dry):
+    """Spustí krok. Vrací (ok, poslední řádek výstupu)."""
+    cmd = [PY, os.path.join("scripts", args[0])] + args[1:]
+    if dry:
+        print(f"    $ {' '.join(cmd[1:])}")
+        return True, ""
+    t = time.time()
+    try:
+        p = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True,
+                           encoding="utf-8", errors="replace", timeout=1800)
+    except subprocess.TimeoutExpired:
+        print(f"    ✖ {label}: překročen čas (30 min)")
+        return False, ""
+    tail = [l for l in (p.stdout or "").strip().splitlines() if l.strip()]
+    last = tail[-1] if tail else ""
+    if p.returncode != 0:
+        print(f"    ✖ {label} (kód {p.returncode}) — {(p.stderr or last or '').strip()[:200]}")
+        return False, last
+    print(f"    ✓ {label}  {int(time.time() - t)}s  {last[:150]}")
+    return True, last
+
+
+def counts(path="data/opportunities.jsonl"):
+    p = os.path.join(ROOT, path)
+    if not os.path.exists(p):
+        return 0
+    with open(p, encoding="utf-8") as fh:
+        return sum(1 for _ in fh)
 
 
 def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--tier", choices=["structured", "html"], help="refreshni celý tier")
-    ap.add_argument("--sources", help="čárkou oddělené slugy (přebije --tier)")
-    ap.add_argument("--today", default=datetime.date.today().isoformat())
-    ap.add_argument("--no-tail", action="store_true", help="bez závěrečného consolidate/fix/app/export")
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--only", help="čárkou oddělené hosty z registru")
+    ap.add_argument("--tier", choices=["structured", "html"], help="jen zdroje daného tieru")
+    ap.add_argument("--list", action="store_true", help="vypiš registr a skonči")
+    ap.add_argument("--tail-only", action="store_true", help="jen přepočet a export, bez sítě")
+    ap.add_argument("--skip-tail", action="store_true", help="jen harvest a ingest")
+    ap.add_argument("--dry-run", action="store_true", help="ukaž příkazy, nic nespouštěj")
     a = ap.parse_args()
 
-    if a.sources:
-        srcs = [s.strip() for s in a.sources.split(",") if s.strip()]
-        bad = [s for s in srcs if s not in SOURCES]
-        if bad:
-            ap.error(f"neznámé zdroje {bad}; registr: {sorted(SOURCES)}")
-    elif a.tier:
-        srcs = [s for s, (_h, t) in SOURCES.items() if t == a.tier]
-    else:
-        ap.error("zadej --tier nebo --sources")
+    if a.list:
+        print(f"DETERMINISTICKÉ ZDROJE ({len(SOURCES)}) — harvest + strukturní ingest, bez modelu\n")
+        for host, (h, _out, i, tier) in sorted(SOURCES.items()):
+            print(f"  {host:26} {tier:11} {h[0]:26} → {i[0]}")
+        print("\nOstatní zdroje potřebují modelovou vrstvu (extract_wf.js) — viz docs/REFRESH.md.")
+        return 0
 
-    backup = os.path.join(ROOT, "data", "opportunities.jsonl.pre-refresh.bak")
-    live = os.path.join(ROOT, "data", "opportunities.jsonl")
-    if os.path.exists(live):
-        shutil.copy2(live, backup)
-        print(f"záloha datasetu -> {backup}")
+    chosen = sorted(SOURCES)
+    if a.tier:
+        chosen = [h for h in chosen if SOURCES[h][3] == a.tier]
+    if a.only:
+        want = [s.strip() for s in a.only.split(",") if s.strip()]
+        unknown = [w for w in want if w not in SOURCES]
+        if unknown:
+            print(f"✖ Neznámé zdroje: {', '.join(unknown)}")
+            print(f"  Známé: {', '.join(sorted(SOURCES))}")
+            return 2
+        chosen = want
 
+    before = counts()
     failed = []
-    for src in srcs:
-        print(f"\n=================== {src} ===================")
-        if not refresh_source(src, a.today):
-            failed.append(src)
 
-    if not a.no_tail:
-        tail(a.today)
+    # ⚠ ZÁLOHA PŘED SÍTÍ, ne až ve `fix_dataset`. Ten dělá `.bak` až ze stavu PO
+    # ingestu, takže rozbitý harvest, který katalog poškodí, se do ní stihne
+    # propsat. Tahle kopie je poslední stav PŘED tím, než se čehokoli dotkla síť.
+    src = os.path.join(ROOT, "data/opportunities.jsonl")
+    if not a.tail_only and not a.dry_run and os.path.exists(src):
+        shutil.copyfile(src, src + ".pre-refresh.bak")
+        print(f"· záloha před během → data/opportunities.jsonl.pre-refresh.bak ({before} záznamů)\n")
 
-    print(json.dumps({"MARKER": "REFRESH_RUN", "requested": srcs, "failed": failed,
-                      "today": a.today}, ensure_ascii=False))
-    sys.exit(len(failed))
+    if not a.tail_only:
+        print(f"═══ HARVEST + INGEST ({len(chosen)} zdrojů) ═══")
+        for host in chosen:
+            harvest, out, ingest, _tier = SOURCES[host]
+            print(f"\n  {host}")
+            ok, _ = run(harvest, "harvest", a.dry_run)
+            if not ok:
+                failed.append(f"{host} (harvest)")
+                continue
+            # Prázdný nebo chybějící výstup = ingest by tiše nic neudělal.
+            if not a.dry_run and not os.path.exists(os.path.join(ROOT, out)):
+                print(f"    ✖ harvest neuložil {out}")
+                failed.append(f"{host} (bez výstupu)")
+                continue
+            ok, _ = run(ingest, "ingest", a.dry_run)
+            if not ok:
+                failed.append(f"{host} (ingest)")
+
+    if not a.skip_tail:
+        print(f"\n═══ PŘEPOČET A EXPORT ═══")
+        for args, label in TAIL:
+            ok, _ = run(args, label, a.dry_run)
+            if not ok:
+                failed.append(label)
+                # Export bez přepočtu by vydal nesrovnaná data — dál nemá smysl.
+                break
+
+    after = counts()
+    print(f"\n═══ SHRNUTÍ ═══")
+    print(f"  záznamů v katalogu: {before} → {after}  ({after - before:+d})")
+    if failed:
+        print(f"  ✖ selhalo: {', '.join(failed)}")
+        print("  Ostatní zdroje proběhly; oprav a pusť znovu jen ty selhané (--only).")
+        return 1
+    print("  ✓ bez chyb")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

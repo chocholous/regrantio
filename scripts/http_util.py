@@ -27,12 +27,39 @@ import urllib.error
 import urllib.request
 from urllib.parse import urlsplit
 
-VERIFIED_CTX = ssl.create_default_context()
-try:
-    import certifi
-    VERIFIED_CTX.load_verify_locations(certifi.where())
-except Exception:  # noqa: BLE001
-    pass  # bez certifi → system trust store (na Windows i Win ROOT store)
+def _verified_context():
+    """Ověřující kontext. Preferuje NATIVNÍ ověření operačního systému.
+
+    ⚠ PROČ NEJDŘÍV OS, A NE certifi. Na strojích s antivirem, který rozpadá HTTPS
+    (Avast, Kaspersky, firemní proxy), je řetěz podepsaný lokální CA. Ta je
+    v úložišti Windows, ale v certifi z definice NENÍ — takže OpenSSL ověření
+    zamítne a spadne to do fallbacku BEZ ověření. To je nejhorší kombinace:
+    provoz jede dál, jen se přestane cokoli ověřovat, a pozná se to jen podle
+    varování, které nikdo nečte.
+
+    Naměřeno na tomhle stroji: bez truststore skončilo ověření u VŠECH zdrojů
+    na `CERTIFICATE_VERIFY_FAILED: Basic Constraints of CA cert not marked
+    critical` — což je vada certifikátu antiviru, ne zdroje. Přes nativní
+    ověření (SChannel) tytéž zdroje projdou.
+
+    `truststore` je nepovinný. Když chybí, chová se to jako dřív.
+    """
+    try:
+        import truststore
+        return truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+    except Exception:  # noqa: BLE001
+        pass
+
+    ctx = ssl.create_default_context()
+    try:
+        import certifi
+        ctx.load_verify_locations(certifi.where())
+    except Exception:  # noqa: BLE001
+        pass  # bez certifi → system trust store (na Windows i Win ROOT store)
+    return ctx
+
+
+VERIFIED_CTX = _verified_context()
 
 UNVERIFIED_CTX = ssl.create_default_context()
 UNVERIFIED_CTX.check_hostname = False

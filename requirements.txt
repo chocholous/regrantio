@@ -11,12 +11,13 @@ PyYAML==6.0.3        # routing.yaml + konfigurace (scripts/routing.py)
 python-docx==1.2.0   # docx → text (scripts/dsw2_fetch.py); textutil je jen macOS
 openpyxl==3.1.5      # xlsx → text (scripts/dsw2_fetch.py)
 xlrd==2.0.2          # xls (legacy BIFF) → text
+truststore==0.10.4   # NATIVNÍ ověření TLS operačním systémem (scripts/http_util.py)
 
 # VOLITELNÉ, instaluj jen když je potřeba:
 #   requirements-browser.txt  — zdroje, které skládají obsah až v prohlížeči
 #                               (nadace_spa, eu_ft, lewis_discover, xhr_discover)
-#   certifi                   — vlastní CA trust store pro scripts/http_util.py;
-#                               bez něj se použije systémový (na Windows funguje)
+#   certifi                   — záložní CA trust store pro scripts/http_util.py;
+#                               použije se, jen když chybí truststore
 #
 # SYSTÉMOVÉ nástroje (ne přes pip): pdftotext z balíku poppler pro velká PDF,
 # volitelně soffice (LibreOffice) pro tabulkové formáty.

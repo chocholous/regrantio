@@ -6,12 +6,18 @@ z produktu kvůli rozbitému běhu.
 
 Doprovodné nástroje:
 - **`python scripts/refresh.py`** = živý checklist (zdroj → harvester → tier → počet záznamů →
-  příkaz) + gap-check. Spusť ho na začátku každého refresh kola.
-- **`python scripts/refresh_run.py --tier structured`** (2026-07-31) = JEDEN příkaz, který
-  celé kolo pro plně-deterministické zdroje PROVEDE (harvest → input → `data/_<src>_extract.py`
-  → ingest → tail vč. exportu s pojistkou). Zálohuje dataset do `.pre-refresh.bak`; selhání
-  jednoho zdroje neshodí kolo. `--tier html` pro deterministické html zdroje, `--sources a,b`
-  pro výběr. Seed/browser/kraje-města zdroje zůstávají ruční (viz checklist).
+  příkaz) + gap-check. Řekne, CO by se dalo obnovit.
+- **`python scripts/refresh_run.py`** = JEDEN příkaz, který to UDĚLÁ pro 14 deterministických
+  zdrojů (harvest → strukturní ingest → přepočet → brána kvality → export). Před během zálohuje
+  dataset do `.pre-refresh.bak`; selhání jednoho zdroje kolo neshodí, jen se přizná ve shrnutí
+  a v návratovém kódu. `--list` vypíše registr, `--tier structured|html` a `--only a,b` zúží
+  výběr, `--tail-only` přepočítá a vyexportuje bez sítě, `--dry-run` jen ukáže příkazy.
+
+⚠ **`refresh_run.py` NEPŘINESE nové výzvy u zdrojů, které jedou přes model.** Ty potřebují
+`build_extract_input` → `extract_wf.js` (workflow uvnitř Claude Code) → `ingest_rich`, a to není
+věc cronu. Deterministických zdrojů je 14 z 81, ale patří mezi ně ty nejobjemnější krajské
+(Vysočina, Liberecký, Pardubický, Ústecký, MSK, Středočeský, Karlovarský, Jihomoravský,
+Jihočeský, Olomoucký, Zlínský, Praha, Brno, Královéhradecký).
 
 ---
 
