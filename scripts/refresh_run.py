@@ -143,6 +143,15 @@ TAIL = [
     (["export_api.py"], "veřejný export docs/opportunities.json"),
 ]
 
+# ⚠ PUBLIKACE JE ZVLÁŠŤ A JEN NA VYŽÁDÁNÍ (`--publish`).
+#
+# Export do `docs/` je levný a nikomu neublíží, takže patří do tailu vždycky.
+# Nahrání do úschovny je ale okamžik, kdy se data stanou VIDITELNÁ PRO PRODUKT —
+# a to nemá dělat nikdo omylem. Kdo publikuje, řekne si o to.
+#
+# Bez přístupů skript nepokračuje potichu: skončí s vysvětlením, co chybí.
+PUBLISH = (["publish_export.py"], "publikace do úschovny (pro produkt)")
+
 
 def run(args, label, dry):
     """Spustí krok. Vrací (ok, poslední řádek výstupu)."""
@@ -181,6 +190,7 @@ def main():
     ap.add_argument("--list", action="store_true", help="vypiš registr a skonči")
     ap.add_argument("--tail-only", action="store_true", help="jen přepočet a export, bez sítě")
     ap.add_argument("--skip-tail", action="store_true", help="jen harvest a ingest")
+    ap.add_argument("--publish", action="store_true", help="po exportu nahraj do úschovny (pro produkt)")
     ap.add_argument("--dry-run", action="store_true", help="ukaž příkazy, nic nespouštěj")
     a = ap.parse_args()
 
@@ -234,12 +244,24 @@ def main():
 
     if not a.skip_tail:
         print(f"\n═══ PŘEPOČET A EXPORT ═══")
+        tail_ok = True
         for args, label in TAIL:
             ok, _ = run(args, label, a.dry_run)
             if not ok:
                 failed.append(label)
                 # Export bez přepočtu by vydal nesrovnaná data — dál nemá smysl.
+                tail_ok = False
                 break
+
+        # ⚠ PUBLIKUJE SE JEN PO ČISTÉM TAILU. Nahrát do úschovny data, která
+        # neprošla bránou kvality, znamená pustit je do produktu — tedy přesně
+        # to, čemu ta brána má bránit.
+        if a.publish and tail_ok:
+            ok, _ = run(PUBLISH[0], PUBLISH[1], a.dry_run)
+            if not ok:
+                failed.append(PUBLISH[1])
+        elif a.publish:
+            print("    · publikace přeskočena — přepočet neprošel")
 
     after = counts()
     print(f"\n═══ SHRNUTÍ ═══")

@@ -132,3 +132,76 @@ Claude Code. Realistický provoz = **refresh po tierech** (`refresh.py` jako che
 týdně, zbytek řidčeji. Pokud bude potřeba scheduler, kandidát je GitHub Actions cron na samotné
 **structured** harvestery (bez Playwrightu/LLM) → PR s diffem datasetu k revizi. Není to ale nutné
 pro produkční provoz: export je idempotentní a produkt sync zvládá inkrementálně (content_hash).
+
+---
+
+## 8. Publikace do úschovny (co je potřeba založit)
+
+Dnes si Grantio bere data z **lokálního klonu regrantia** vedle sebe. Pro vývoj
+to stačí, pro plánovač ne: znamenalo by to dát produktu přístup do repozitáře se
+scrapery a historií kvůli jednomu souboru — a token k repozitáři nejde omezit na
+soubor. Úschovna ten uzel rozvazuje a je to podmínka toho, aby regrantio mohlo
+být neveřejné.
+
+**Publikuje `scripts/publish_export.py`**, buď samostatně, nebo jako poslední
+krok obnovy:
+
+```bash
+python scripts/refresh_run.py --publish     # obnov a rovnou publikuj
+python scripts/publish_export.py --dry-run  # spočítej otisk, nic nenahrávej
+```
+
+### Co nahrává
+
+| soubor | co to je |
+| --- | --- |
+| `exports/opportunities-<datum>-<otisk8>.json` | samotný export, **verzovaně** |
+| `manifest.json` | ukazatel na aktuální verzi + `sha256`, `bytes`, `count` |
+
+⚠ **Pořadí je součást návrhu:** nejdřív data, teprve pak ukazatel. Obráceně by
+existoval okamžik, kdy manifest ukazuje na soubor, který ještě nedoputoval.
+Nejhorší mezistav je tedy „manifest ukazuje na starší verzi“ — normální provozní
+stav, ne porucha.
+
+⚠ **Export se nikdy nepřepisuje**, přibývá vedle. Vrátit produkt ke starší verzi
+je pak úprava jednoho řádku v manifestu, ne obnova ze zálohy.
+
+### Co musíš založit (jednorázově)
+
+1. **Kbelík v Supabase.** Dashboard → Storage → New bucket, jméno
+   `regrantio-exports`, **PRIVATE** (veřejný by vystavil celý katalog komukoli).
+2. **Do prostředí regrantia** (`.env` nebo secrets plánovače):
+
+   ```
+   SUPABASE_URL=https://<projekt>.supabase.co
+   SUPABASE_SERVICE_ROLE_KEY=<service role klíč>
+   REGRANTIO_BUCKET=regrantio-exports        # nepovinné, tohle je default
+   ```
+
+3. **Do prostředí Grantia** jedinou proměnnou, která přepne zdroj dat ze
+   souboru na úschovnu:
+
+   ```
+   REGRANTIO_MANIFEST_URL=https://<projekt>.supabase.co/storage/v1/object/regrantio-exports/manifest.json
+   ```
+
+   U privátního kbelíku k tomu patří i `REGRANTIO_FEED_TOKEN`.
+
+Dokud proměnné nejsou, `publish_export.py` **nezačne a nahlas řekne proč**
+(návratový kód 1). Tichý „úspěch“, po kterém v úschovně nic není, by byl horší
+než chyba.
+
+### Proč manifest, a ne přímý odkaz na soubor
+
+Manifest nese **otisk** — a ten je jediné, co odliší tři případy, které vypadají
+stejně: úplný soubor, poškozený přenos a **zkrácený přenos, který dá platný JSON
+s méně záznamy**. Ten třetí je nejnebezpečnější: projde kontrolou tvaru a teprve
+pojistka proti kolapsu ho zachytí jako „regrantio přišlo o polovinu zdrojů“.
+
+Ověřeno proti běžícímu importu Grantia (2026‑08‑17), přes lokální úschovnu:
+
+| pokus | výsledek |
+| --- | --- |
+| správný manifest + objekt | ✓ staženo, otisk ověřen, 60 výzev rozparsováno |
+| změněný jeden bajt v objektu | ✖ „Otisk staženého exportu nesouhlasí s manifestem“ |
+| objekt zkrácen na polovinu (platný JSON) | ✖ zachyceno otiskem **před** parsováním |
