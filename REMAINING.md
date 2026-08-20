@@ -3,23 +3,28 @@
 Živý plánovací dokument. **Aktuální stav, co je hotovo, co zbývá a proč.** JAK pracovat (zlatá pravidla,
 recept na zdroj, pasti) = `docs/SESSION_PLAYBOOK.md` + `CLAUDE.md`. Katalog je v gitu, zbytek dat v gitignored `data/`.
 
-> **Status k 2026-07-31, `main` == `coverage-expansion-next`.** Dataset **3397 záznamů / 136
-> poskytovatelů**. Všech 25 automatizovaných zdrojů refreshnuto k dnešku, repo uklizené
-> (mrtvý kód a integrační artefakty smazány, jeden katalog bez v1/v2, závislosti zamčené),
-> publikovaný export beze změny (schema 1.1), CI zelené.
+> **Status k 2026-08-20.** Dataset **3450 záznamů / 136 poskytovatelů**, export vygenerovaný
+> 2026-08-15 (`docs/opportunities.json`, otisk `262aa549…`). Repo čisté, 23/23 testů,
+> publikační cesta do úschovny hotová (`scripts/publish_export.py`, `refresh_run.py --publish`)
+> a čeká **jen na založení kbelíku `regrantio-exports`** — viz `docs/REFRESH.md §8`.
+> Větev `coverage-expansion-next` je o dva commity napřed proti `main`.
 
 ---
 
-## 📊 Aktuální stav datasetu (live `data/opportunities.jsonl`, k 2026-07-31)
+## 📊 Aktuální stav datasetu (live `data/opportunities.jsonl`, k 2026-08-20)
 
 | metrika | hodnota |
 |---|---|
-| **záznamů celkem** | **3397** (3372 grantů + 25 foundation_mission) |
+| **záznamů celkem** | **3450** (3425 grantů + 25 foundation_mission) |
 | **poskytovatelů** | **136** |
-| status grantů | **697 open** · 33 announced · 1747 closed · 895 unknown |
-| typ poskytovatele | samosprava_kraj 1153 · ministerstvo 866 · samosprava_obec 723 · evropska_komise 341 · nadace 71 · nadacni_fond 63 · statni_agentura 53 · statni_fond 47 · firemni_nadace 42 · zahranicni_fond 38 |
-| vyplněnost grantů | deadline 2477 (73 %) · amount 777 (23 %) |
+| status grantů | **685 open** · 45 announced · 1783 closed · 912 unknown |
+| typ poskytovatele | samosprava_kraj 1204 · ministerstvo 866 · samosprava_obec 725 · evropska_komise 341 · nadace 71 · nadacni_fond 63 · statni_agentura 53 · statni_fond 47 · firemni_nadace 42 · zahranicni_fond 38 |
+| vyplněnost grantů | deadline 2513 (73 %) · amount 777 (23 %) |
 | integrita | **0 dup id · 0 bez title · 0 bad amount** — `validate_release` ✓ |
+
+> ⚠ Status v tabulce je SNÍMEK k datu přepočtu. Produkt si stav počítá znovu k dnešku
+> (`build_app.py:computeStatus`, `catalog_status()` v Grantiu), takže se čísla „open/closed"
+> mezi katalogem a aplikací můžou o pár položek lišit — a je to správně.
 
 `amount=null`/`status=unknown` zůstávají VĚTŠINOU správné (částky bývají jen v PDF; katalogové
 programy nemají jednu lhůtu) — **raději poctivý null než vymyšlené číslo**. Produkt si navíc
