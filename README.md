@@ -100,6 +100,44 @@ nečte; slouží jako korpus pro opakovanou extrakci vrstvou 2.
 
 ⚠ **Bez `zstd` se originály nerozbalí.** Na Windows: `winget install Facebook.Zstandard`.
 
+### Kolik toho je a co s tím (změřeno 2026‑08‑20)
+
+Repozitář i s daty zabírá **19 GB**. Rozpad:
+
+| | velikost | co to je |
+|---|---|---|
+| `data/` — pokryto balíkem | **8,5 GB** | `files`, `wp_full`, `vismo_files`, `dsw2_files`. Obnovitelné offline z `data_bundle/`. |
+| `data/` — v žádném balíku | **6,7 GB** | `msmt_files`, `esfcr_files`, `czechaid_files`, `hzs_files`, `mk_files`, `plone_ostrava_files`. **Jediná kopie.** |
+| `data/` — zbytek | ~0,3 GB | harvest jsonl, mezisklady `*_in`, `_archiv_v1` |
+| `.git` | **2,0 GB** | z 95 % `data_bundle` v historii |
+| `data_bundle/` | 1,8 GB | týž korpus, komprimovaně, ve stromu |
+| `.venv` | 0,13 GB | |
+
+Tři pozorování, která z toho plynou:
+
+1. **Týž korpus je uložený třikrát** — rozbalený v `data/`, komprimovaný
+   v `data_bundle/` a ještě jednou v historii gitu. To je celé vysvětlení
+   těch 19 GB.
+2. **`.git` neshubne smazáním souborů.** Chunky po 95 MB (rozdělené kvůli
+   limitu GitHubu na 100 MB/soubor) jsou v historii napořád; zmenšit to jde
+   jen přepsáním historie, což u veřejného repozitáře rozbije každý klon.
+3. **6,7 GB nemá zálohu.** Přesně ten druh jediné kopie, kvůli kterému už
+   jednou putoval do gitu katalog.
+
+**Co s tím doporučuju**, v tomhle pořadí:
+
+- **Zálohovat těch 6,7 GB** do téže privátní úschovny, kterou zakládáme pro
+  exporty. Teprve pak má smysl cokoli mazat.
+- **Přestat verzovat `data_bundle/`** a publikovat ho vedle exportu. Historii
+  nepřepisovat — 2 GB navíc je levnější než rozbité klony; nová data tam prostě
+  nepřibudou.
+- **Uvolnit 8,5 GB** smazáním toho, co balík pokrývá — ale **až po ověření, že
+  se to na tomhle stroji opravdu rozbalí**. Bez `zstd` je ta cesta zavřená
+  a smazání by bylo nevratné.
+
+⚠ **Nemazat naslepo podle velikosti.** `.venv` je aktivní interpret; `data/files`
+sice zabírá 7 GB, ale bez rozbalovače je to jediná kopie originálů.
+
 ## Prohlížení dat
 
 ```bash
