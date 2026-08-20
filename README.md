@@ -1,32 +1,132 @@
-# Opportunity Pipeline — recept na extrakci dotačních/grantových oportunit ze všech zdrojů
+# Regrantio — datový systém pro dotační výzvy
 
-Konsoliduje zjištění z mapování platforem re-grantio (2026-06-01) do použitelného postupu.
-Claude řídí pipeline; **Apify** renderuje SPA/postback weby, **skripty** harvestují + konvertují
-dokumenty + počítají status, **Sonnet** klasifikuje typ a měří kvalitu, **Haiku** masivně
-paralelně extrahuje pole. **Maximálně využívá UŽ STAŽENÁ DATA** (viz `docs/data_reuse.md`).
+Sbírá dotační a grantové výzvy ze **136 zdrojů** (kraje, města, ministerstva,
+státní fondy a agentury, nadace, evropské programy), sjednocuje je do jednoho
+katalogu a publikuje **validovaný export**, ze kterého žije produkt
+[Grantio](https://github.com/chocholous/the-machine-app).
+
+**Jedna odpovědnost:** data. Regrantio neví nic o uživatelích, organizacích ani
+o produktu — jeho výstup je jeden soubor s otiskem. Produkt naopak nesahá do
+tohohle repozitáře; bere si publikovaný artefakt. Hranice mezi projekty vede
+přes data, ne přes kód, a proto může být regrantio kdykoli neveřejné.
+
+| | |
+|---|---|
+| Katalog | `data/opportunities.jsonl` — **3 450 záznamů** (3 425 výzev + 25 profilů nadací), **v gitu** |
+| Publikovaný export | `docs/opportunities.json` — schema 1.1, `content_hash`, [kontrakt](docs/EXPORT.md) |
+| Jazyk | Python 3.13, bez frameworku |
+| Testy | `python tests/test_core.py` (23) a `python scripts/validate_release.py` |
+| CI | `.github/workflows/validate.yml` na každý push |
+| Větev | jediná: `main` |
 
 ---
 
-## 🔎 Vyzkoušej & dokumentace
+## Instalace
 
-- **Živá aplikace (rozcestník větví + recept):** → **[chocholous.github.io/regrantio](https://chocholous.github.io/regrantio/)**
-  Homepage = diagram logiky receptu + návod „jak přidat další data (Claude Code + Opus)" + seznam větví s merge-statusem. Každá větev má vlastní verzi appky — nejnovější je **`coverage-expansion-next`** (**3397 oportunit / 136 poskytovatelů** k 2026-07-31: 14 krajů + ~30 měst + ministerstva + státní fondy + agentury GAČR/TAČR/NSA + nadace + EU OP + OPZ+/OPZ + OP Doprava + Interreg + Visegrad/ERSTE + EU Funding & Tenders Portal + LLM/deterministická vrstva 2 + Opus kategorie). Filtry: oblast · sektor/typ žadatele · cílová skupina · poskytovatel · kraj · forma · zdroj · spoluúčast · míra · typ dokumentu · status · výše. Detail nese doslovné citace (grounding) + odkazy na originály. Pages se nasazují per-branch přes GitHub Actions (`.github/workflows/pages.yml`). **Publikovaný export:** [docs/EXPORT.md](docs/EXPORT.md) · **refresh strategie:** [docs/REFRESH.md](docs/REFRESH.md).
-- **Vygenerovat appku lokálně:** `python3 scripts/build_app.py` → `data/grants_app.html`
-- **Dokumentace:** [docs/platform_playbook.md](docs/platform_playbook.md) (CMS rodiny) · [docs/detection.md](docs/detection.md) · [docs/coverage.md](docs/coverage.md) · [schema/opportunity_schema.md](schema/opportunity_schema.md) · [CLAUDE.md](CLAUDE.md) (operační)
-
-## 📦 Data v repozitáři (reprodukovatelnost)
-
-Raw data jsou komprimovaná v **`data_bundle/`** (~1,9 GB) — rozbal jedním příkazem:
 ```bash
-brew install xz zstd      # potřebné kompresory
-./scripts/unpack_data.sh  # data_bundle/*.tar.xz + originals.part-* → data/
+git clone https://github.com/chocholous/regrantio.git
+cd regrantio
+
+python -m venv .venv
+.venv\Scripts\activate          # Windows
+# source .venv/bin/activate     # macOS / Linux
+
+pip install -r requirements.txt
 ```
-- **core** (3 MB) — `opportunities.jsonl` (snapshot z doby zabalení; živý dataset je `data/opportunities.jsonl`, 3397 oportunit), harvest jsonl, configy, app
-- **doctext** (11 MB) — vytěžený TEXT z PDF/xls/doc (pipeline jede i bez originálů)
-- **wpfull** (55 MB) — WordPress korpus
-- **originals** (1,8 GB, split na 95 MB kvůli GitHub limitu 100 MB/soubor) — PDF/xls/doc originály (interně DEFLATE, nekomprimují se)
+
+⚠ **Skripty se spouštějí z kořene repozitáře.** Cesty k datům jsou relativní
+(`data/...`), takže odjinud data nenajdou.
+
+⚠ **Fresh clone nemá stažená data** — jen katalog, který je v gitu. Jak je
+získat, je v [Data](#data).
+
+## Ověření, že to funguje
+
+```bash
+python scripts/validate_release.py   # kompilace, testy, konfigurace, kontrakt exportu
+python tests/test_core.py            # 23 testů kritické logiky
+```
+
+## Obnova katalogu
+
+```bash
+python scripts/refresh_run.py --list        # co je v registru
+python scripts/refresh_run.py               # harvest → ingest → přepočet → brána → export
+python scripts/refresh_run.py --publish     # a rovnou publikuj do úschovny
+```
+
+14 zdrojů se obnovuje **deterministicky, bez modelu**. Zbytek potřebuje vrstvu 2
+(`scripts/extract_wf.js` uvnitř Claude Code) — podrobně v [docs/REFRESH.md](docs/REFRESH.md).
+
+## Publikování pro produkt
+
+```bash
+python scripts/publish_export.py --dry-run  # spočítej otisk, nic nenahrávej
+python scripts/publish_export.py            # nahraj export a pak manifest
+```
+
+Nahrává **dva soubory a na pořadí záleží**: nejdřív export pod verzovaným
+klíčem, teprve pak `manifest.json`, který na něj ukazuje. Obráceně by existoval
+okamžik, kdy manifest míří na soubor, který ještě nedoputoval.
+
+Potřebuje `SUPABASE_URL` a `SUPABASE_SERVICE_ROLE_KEY` — klíč do úschovny, nic
+o databázi Grantia. Co přesně založit: [docs/REFRESH.md §8](docs/REFRESH.md).
 
 ---
+
+## Data
+
+Katalog je v gitu. Stažené zdrojové dokumenty **nejsou** — je jich skoro 15 GB.
+
+```bash
+./scripts/unpack_data.sh    # data_bundle/ → data/   (potřebuje xz a zstd)
+```
+
+⚠ **`data_bundle/` pokrývá jen to, co existovalo k 12. 6. 2026**: `files/`,
+`dsw2_files/`, `vismo_files/`, `wp_full/` a harvest jsonl. Zdroje přidané
+později (`msmt_files`, `esfcr_files`, `czechaid_files`, `hzs_files`, `mk_files`,
+`plone_ostrava_files`, dohromady ~6,5 GB) v žádném balíku nejsou a existují
+**v jediné kopii na jednom disku**. Jejich obnova = re-harvest.
+
+⚠ **Dokumenty nejsou potřeba k běžné obnově.** 14 deterministických zdrojů je
+nečte; slouží jako korpus pro opakovanou extrakci vrstvou 2.
+
+| balík | co obsahuje | rozbalí |
+|---|---|---|
+| `core.tar.xz` (5 MB) | snímek katalogu, harvest jsonl, konfigurace | `xz` |
+| `doctext.tar.xz` (11 MB) | vytěžený TEXT z dokumentů | `xz` |
+| `wpfull.tar.xz` (55 MB) | WordPress korpus | `xz` |
+| `originals.tar.zst.part-*` (1,8 GB) | originály PDF/doc/xls, rozdělené po 95 MB kvůli limitu GitHubu | **`zstd`** |
+
+⚠ **Bez `zstd` se originály nerozbalí.** Na Windows: `winget install Facebook.Zstandard`.
+
+## Prohlížení dat
+
+```bash
+python scripts/build_app.py     # → data/grants_app.html, fasetový prohlížeč
+```
+
+Publikovaná verze: **[chocholous.github.io/regrantio](https://chocholous.github.io/regrantio/)**
+(staví `.github/workflows/pages.yml` na každý push).
+
+---
+
+## Kde co hledat
+
+| Téma | Soubor |
+|---|---|
+| **Jak pracovat** — zlatá pravidla, recept na přidání zdroje, pasti | [docs/SESSION_PLAYBOOK.md](docs/SESSION_PLAYBOOK.md) |
+| **Co zbývá** — plán rozšiřování, stav datasetu | [REMAINING.md](REMAINING.md) |
+| **Publikovaná podoba katalogu** — tvar, schéma, záruky | [docs/EXPORT.md](docs/EXPORT.md) |
+| **Obnova** — co jak často, pojistky, úschovna | [docs/REFRESH.md](docs/REFRESH.md) |
+| **Model dat** | [schema/opportunity_schema.md](schema/opportunity_schema.md) |
+| CMS rodiny → harvester | [docs/platform_playbook.md](docs/platform_playbook.md) |
+| Detekce platformy | [docs/detection.md](docs/detection.md) |
+| Operační pravidla pro agenty i lidi | [CLAUDE.md](CLAUDE.md) |
+
+---
+
+## Jak je to postavené
 
 ## Klíčové principy (proč to takhle)
 

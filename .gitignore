@@ -4,7 +4,10 @@ venv/
 __pycache__/
 *.pyc
 
-# Stažená zdrojová data (~1 GB: PDF, texty, per-source harvest jsonl) — gitignored.
+# Stažená zdrojová data — gitignored. ⚠ K 2026-08-20 je to 14,8 GB, ne „~1 GB",
+# jak tu stálo od začátku: přibylo šest korpusů (msmt, esfcr, czechaid, hzs, mk,
+# plone), z toho samotné `data/files` má 7 GB binárních originálů.
+# Rozbor velikostí a co je odkud obnovitelné je v README §Data.
 # DVĚ VÝJIMKY, obě záměrné:
 #   1. `data/opportunities.jsonl` = KATALOG, hlavní produkt pipeline. Verzuje se, protože
 #      jinak existuje v jediné kopii na jediném stroji a je nenahraditelný: publikovaný
