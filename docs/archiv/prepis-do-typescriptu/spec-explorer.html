@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grantio Spec Explorer</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2129;
+    --border: #30363d;
+    --text: #c9d1d9;
+    --text-dim: #8b949e;
+    --accent: #58a6ff;
+    --green: #3fb950;
+    --yellow: #d29922;
+    --red: #f85149;
+    --orange: #db6d28;
+    --purple: #bc8cff;
+    --pink: #f778ba;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'SF Mono','Fira Code',monospace; font-size:14px; }
+
+  /* Layout */
+  .app { display:grid; grid-template-columns:260px 1fr; grid-template-rows:56px 1fr; height:100vh; }
+  header { grid-column:1/-1; background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 20px; gap:16px; }
+  header h1 { font-size:16px; color:var(--accent); font-weight:600; }
+  header .phase-tabs { display:flex; gap:4px; margin-left:auto; }
+  header .phase-tab { padding:6px 14px; border-radius:6px; cursor:pointer; font-size:12px; background:transparent; color:var(--text-dim); border:1px solid transparent; transition:all .15s; }
+  header .phase-tab:hover { background:var(--surface2); }
+  header .phase-tab.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+
+  nav { background:var(--surface); border-right:1px solid var(--border); overflow-y:auto; padding:12px 0; }
+  nav .section-label { padding:8px 16px 4px; font-size:11px; text-transform:uppercase; color:var(--text-dim); letter-spacing:1px; }
+  nav .nav-item { padding:8px 16px 8px 24px; cursor:pointer; display:flex; align-items:center; gap:8px; transition:background .1s; font-size:13px; color:var(--text-dim); }
+  nav .nav-item:hover { background:var(--surface2); color:var(--text); }
+  nav .nav-item.active { background:var(--surface2); color:var(--accent); border-right:2px solid var(--accent); }
+  nav .nav-item .badge { margin-left:auto; font-size:10px; padding:2px 6px; border-radius:10px; background:var(--surface2); }
+  nav .nav-item .badge.warn { background:#d2992233; color:var(--yellow); }
+  nav .nav-item .badge.err { background:#f8514933; color:var(--red); }
+  nav .nav-item .badge.ok { background:#3fb95033; color:var(--green); }
+
+  main { overflow-y:auto; padding:24px 32px; }
+
+  /* Cards */
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:20px; margin-bottom:16px; }
+  .card h2 { font-size:15px; color:var(--accent); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+  .card h3 { font-size:13px; color:var(--text); margin:12px 0 6px; }
+  .card p, .card li { color:var(--text-dim); font-size:13px; line-height:1.6; }
+  .card ul { padding-left:20px; }
+  .card code { background:var(--surface2); padding:2px 6px; border-radius:4px; font-size:12px; color:var(--purple); }
+
+  /* Annotation system */
+  .annotate { position:relative; cursor:pointer; border-bottom:2px dashed var(--yellow); }
+  .annotate:hover { background:rgba(210,153,34,0.1); }
+  .annotate .note { display:none; position:absolute; bottom:calc(100% + 8px); left:0; background:#2d1f00; border:1px solid var(--yellow); border-radius:6px; padding:10px 14px; width:320px; z-index:100; font-size:12px; color:var(--yellow); line-height:1.5; white-space:normal; }
+  .annotate:hover .note { display:block; }
+
+  .issue-marker { position:relative; cursor:pointer; }
+  .issue-marker::after { content:''; position:absolute; top:-2px; right:-2px; width:8px; height:8px; border-radius:50%; }
+  .issue-marker.gap::after { background:var(--yellow); }
+  .issue-marker.conflict::after { background:var(--red); }
+  .issue-marker.unclear::after { background:var(--orange); }
+
+  /* State machine */
+  .state-flow { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .state { padding:8px 16px; border-radius:6px; font-size:12px; font-weight:600; border:2px solid; white-space:nowrap; }
+  .state.created { border-color:var(--text-dim); color:var(--text-dim); }
+  .state.scouting { border-color:var(--accent); color:var(--accent); }
+  .state.building { border-color:var(--purple); color:var(--purple); }
+  .state.reviewing { border-color:var(--yellow); color:var(--yellow); }
+  .state.pending { border-color:var(--orange); color:var(--orange); }
+  .state.production { border-color:var(--green); color:var(--green); }
+  .state.error { border-color:var(--red); color:var(--red); background:rgba(248,81,73,0.1); }
+  .arrow { color:var(--text-dim); font-size:18px; }
+
+  /* Agent matrix */
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  th { text-align:left; padding:8px; background:var(--surface2); color:var(--text-dim); font-weight:500; border-bottom:1px solid var(--border); }
+  td { padding:8px; border-bottom:1px solid var(--border); }
+  td.yes { color:var(--green); text-align:center; }
+  td.no { color:var(--text-dim); text-align:center; }
+  td.phase2 { color:var(--text-dim); font-style:italic; }
+
+  /* Tabs inside content */
+  .tabs { display:flex; gap:2px; margin-bottom:16px; border-bottom:1px solid var(--border); }
+  .tab { padding:8px 16px; cursor:pointer; font-size:12px; color:var(--text-dim); border-bottom:2px solid transparent; transition:all .15s; }
+  .tab:hover { color:var(--text); }
+  .tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+  .tab-content { display:none; }
+  .tab-content.active { display:block; }
+
+  /* Pipeline viz */
+  .pipeline { display:flex; gap:4px; align-items:center; flex-wrap:wrap; }
+  .pipe-step { padding:6px 12px; border-radius:4px; font-size:11px; font-weight:500; }
+  .pipe-arrow { color:var(--text-dim); }
+
+  /* Metrics */
+  .metrics { display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:12px; }
+  .metric { background:var(--surface2); border-radius:6px; padding:14px; }
+  .metric .val { font-size:24px; font-weight:700; }
+  .metric .label { font-size:11px; color:var(--text-dim); margin-top:4px; }
+
+  /* Issues panel */
+  .issues-panel { position:fixed; right:0; top:56px; bottom:0; width:360px; background:var(--surface); border-left:1px solid var(--border); transform:translateX(100%); transition:transform .2s; z-index:50; overflow-y:auto; padding:20px; }
+  .issues-panel.open { transform:translateX(0); }
+  .issues-panel h2 { font-size:14px; margin-bottom:16px; }
+  .issue-item { padding:12px; border-radius:6px; margin-bottom:8px; border-left:3px solid; cursor:pointer; }
+  .issue-item.gap { background:rgba(210,153,34,0.08); border-left-color:var(--yellow); }
+  .issue-item.conflict { background:rgba(248,81,73,0.08); border-left-color:var(--red); }
+  .issue-item.unclear { background:rgba(219,109,40,0.08); border-left-color:var(--orange); }
+  .issue-item.question { background:rgba(88,166,255,0.08); border-left-color:var(--accent); }
+  .issue-item h4 { font-size:12px; margin-bottom:4px; }
+  .issue-item p { font-size:11px; color:var(--text-dim); line-height:1.4; }
+  .issue-item .loc { font-size:10px; color:var(--text-dim); margin-top:6px; }
+
+  /* Toggle button */
+  .issues-toggle { position:fixed; right:16px; bottom:16px; width:52px; height:52px; border-radius:50%; background:var(--accent); color:#fff; border:none; cursor:pointer; font-size:20px; z-index:60; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(0,0,0,.4); }
+  .issues-toggle .count { position:absolute; top:-4px; right:-4px; background:var(--red); color:#fff; font-size:10px; width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; }
+
+  /* Legend */
+  .legend { display:flex; gap:16px; padding:12px 16px; background:var(--surface2); border-radius:6px; margin-bottom:16px; flex-wrap:wrap; }
+  .legend-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-dim); }
+  .legend-dot { width:10px; height:10px; border-radius:50%; }
+
+  /* Detail expand */
+  details { margin-bottom:8px; }
+  details summary { cursor:pointer; padding:8px; border-radius:4px; font-size:13px; color:var(--text); }
+  details summary:hover { background:var(--surface2); }
+  details .detail-body { padding:8px 16px; border-left:2px solid var(--border); margin-left:8px; }
+
+  .hidden { display:none; }
+
+  /* Search */
+  .search { background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:8px 12px; color:var(--text); font-size:13px; width:240px; font-family:inherit; }
+  .search:focus { outline:none; border-color:var(--accent); }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .app { grid-template-columns:1fr; }
+    nav { display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header>
+    <h1>GRANTIO</h1>
+    <span style="color:var(--text-dim); font-size:12px;">Spec Explorer v1</span>
+    <input class="search" type="text" placeholder="Hledat..." id="search" oninput="handleSearch(this.value)">
+    <div class="phase-tabs">
+      <div class="phase-tab active" onclick="filterPhase('all',this)">Vse</div>
+      <div class="phase-tab" onclick="filterPhase('1',this)">Faze 1</div>
+      <div class="phase-tab" onclick="filterPhase('2',this)">Faze 2</div>
+      <div class="phase-tab" onclick="filterPhase('3',this)">Faze 3</div>
+    </div>
+  </header>
+
+  <nav id="sidebar">
+    <div class="section-label">Architektura</div>
+    <div class="nav-item active" onclick="showSection('overview')">Prehled <span class="badge ok">OK</span></div>
+    <div class="nav-item" onclick="showSection('decisions')">Rozhodnuti</div>
+    <div class="nav-item" onclick="showSection('dataflow')">Data Flow</div>
+
+    <div class="section-label">State Machine</div>
+    <div class="nav-item" onclick="showSection('states')">Lifecycle <span class="badge warn">2</span></div>
+    <div class="nav-item" onclick="showSection('orchestrator')">Orchestrator <span class="badge warn">3</span></div>
+
+    <div class="section-label">Agenti</div>
+    <div class="nav-item" onclick="showSection('agents')">12 Agentu <span class="badge ok">OK</span></div>
+    <div class="nav-item" onclick="showSection('agent-matrix')">Tool Matrix</div>
+    <div class="nav-item" onclick="showSection('agent-io')">I/O Interfaces <span class="badge warn">1</span></div>
+
+    <div class="section-label">Prompts</div>
+    <div class="nav-item" onclick="showSection('prompts')">7 Vrstev</div>
+    <div class="nav-item" onclick="showSection('prompt-files')">Soubory</div>
+    <div class="nav-item" onclick="showSection('prompt-compose')">Composer <span class="badge warn">1</span></div>
+
+    <div class="section-label">Quality</div>
+    <div class="nav-item" onclick="showSection('gates')">5 Gates <span class="badge warn">2</span></div>
+    <div class="nav-item" onclick="showSection('validation')">4 Validacni urovne</div>
+    <div class="nav-item" onclick="showSection('anti-fab')">Anti-fabrication</div>
+    <div class="nav-item" onclick="showSection('quarantine')">Karantena</div>
+
+    <div class="section-label">Extraction</div>
+    <div class="nav-item" onclick="showSection('pipeline')">6-level Fallback</div>
+    <div class="nav-item" onclick="showSection('transforms')">52 Transformu</div>
+    <div class="nav-item" onclick="showSection('config-loop')">Config Loop <span class="badge warn">1</span></div>
+
+    <div class="section-label">Memory</div>
+    <div class="nav-item" onclick="showSection('memory')">Workspace FS</div>
+    <div class="nav-item" onclick="showSection('memory-agent')">Agent Memory</div>
+    <div class="nav-item" onclick="showSection('hints')">Hints</div>
+    <div class="nav-item" onclick="showSection('cache')">3 Cache vrstvy</div>
+
+    <div class="section-label">Skills</div>
+    <div class="nav-item" onclick="showSection('skills')">6 SKILL.md</div>
+    <div class="nav-item" onclick="showSection('custom-tools')">Custom Tools</div>
+
+    <div class="section-label">Data Model</div>
+    <div class="nav-item" onclick="showSection('enums')">Enums</div>
+    <div class="nav-item" onclick="showSection('quality-score')">Quality Score</div>
+    <div class="nav-item" onclick="showSection('czech')">Ceske specifika</div>
+
+    <div class="section-label">CLI & UI</div>
+    <div class="nav-item" onclick="showSection('cli')">CLI Interface</div>
+    <div class="nav-item" onclick="showSection('ui')">UI Vize (F3) <span class="badge">F3</span></div>
+
+    <div class="section-label">Meta</div>
+    <div class="nav-item" onclick="showSection('numbers')">Cisla z PoC</div>
+    <div class="nav-item" onclick="showSection('iter-plan')">Iteracni plan</div>
+  </nav>
+
+  <main id="content">
+    <!-- Sections generated by JS -->
+  </main>
+</div>
+
+<button class="issues-toggle" onclick="toggleIssues()">
+  !<span class="count" id="issue-count">0</span>
+</button>
+
+<div class="issues-panel" id="issues-panel">
+  <h2 style="color:var(--accent);">Nalezene problemy</h2>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div> Konflikt</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div> Mezera</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div> Nejasnost</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div> Otazka</div>
+  </div>
+  <div id="issues-list"></div>
+</div>
+
+<script>
+const issues = [
+  // === RESOLVED in v4 ===
+  // "Orchestrator je agent" — RESOLVED
+  // "Agent SDK query() vs ClaudeSDKClient" — RESOLVED (orchestrator = ClaudeSDKClient, sub-agents = dispatch)
+  // "Model: Vsude Sonnet vs Haiku" — RESOLVED (Sonnet pro orchestrator+config, Haiku pro extraction)
+  // "Config-catalog vs config-opportunity zavislost" — RESOLVED (sequential: catalog first → opportunity gets URLs)
+  // "Kdo dela test run" — RESOLVED (config agenti maji scrapy_run/cheerio_run/playwright_run tools)
+  // "Jak se handluje Playwright" — RESOLVED (playwright_run tool pro config agenty)
+  // "Scraping tools chybi v matrix" — RESOLVED (scrapy_run, cheerio_run, playwright_run, apify_run)
+  // "run_config chybi" — RESOLVED (orchestrator tool)
+
+  // Remaining gaps
+  { type:'gap', title:'Retry strategie neni specifikovana', desc:'Orchestrator je agent a rozhoduje sam, ale SKILL.md by mel mit guidelines: backoff? delay? co se meni mezi retries (L5 vrstva + hinty)?', section:'orchestrator', severity:2 },
+  { type:'gap', title:'Rate limiting chybi', desc:'Scraping tools (scrapy_run, cheerio_run, playwright_run) nemaji specifikovane rate limiting. Per-domain? Global? Konfigurovatelne?', section:'pipeline', severity:2 },
+  { type:'gap', title:'Document parser architektura', desc:'Docling nema TS ekvivalent, zachovat jako Python microservice. Ale JAK? HTTP API? subprocess? Config-opportunity potrebuje parsovat PDF prilohy.', section:'pipeline', severity:3 },
+  { type:'gap', title:'Error kategorizace pro orchestrator SKILL', desc:'Orchestrator SKILL.md by mel mit pravidla: transient (timeout, rate limit) → retry, permanent (404, auth) → escalate. Zatim chybi.', section:'orchestrator', severity:2 },
+  { type:'gap', title:'Config versioning mechanismus', desc:'run_config bere config_version, configs/ ma history/. Ale kdo vytvari verze? Config agent pri Write? Orchestrator? Git tag?', section:'agents', severity:2 },
+  { type:'gap', title:'Cross-source learning neni specifikovano', desc:'memory.md zminuje cross-source learning, ale implementace je nulova. Jak se urcuje "podobny zdroj"? Orchestrator SKILL?', section:'memory', severity:1 },
+  { type:'gap', title:'Cost tracking across retries', desc:'Orchestrator ma notify tool, ale kde se akumuluje cost? Agent SDK vraci usage per call — kdo sumarizuje?', section:'gates', severity:1 },
+
+  // Unclear
+  { type:'unclear', title:'Prompt L3 "source type" — asymetrie pri prvnim runu', desc:'L3 vrstva se aktivuje "pokud zname typ zdroje". Pri prvnim scout-source L3 neni (source_type jeste nezname). Pri retry uz ano. Zamerne?', section:'prompts', severity:2 },
+  { type:'unclear', title:'Scout-opportunity: sample z ktereho katalogu?', desc:'Orchestrator vybira sample — ale jak? Prvni? Nejvetsi? Nahodne? Co kdyz 3 katalogy maji ruznou strukturu?', section:'orchestrator', severity:2 },
+  { type:'unclear', title:'Analyst-source vs validator-source hranice', desc:'Oba analyzuji kvalitu. Validator = technicka (scoring). Analyst = obsahova + gate-keeping. Muze analyst overridnout validator score?', section:'agents', severity:1 },
+  { type:'unclear', title:'Hints write lifecycle v fazi 1', desc:'Jen analyst ma hint_write. Kdo oznaci jako "resolved"? V fazi 1 neni fixer.', section:'hints', severity:1 },
+  { type:'unclear', title:'7 prompt vrstev — token budget?', desc:'7 vrstev muze byt hodne tokenu (L4 hints az 16KB!). Priorita pri truncation? Orchestrator SKILL.md?', section:'prompts', severity:2 },
+  { type:'unclear', title:'Orchestrator SKILL.md — jak detailni?', desc:'Orchestrator je agent se SKILL.md. Jak detailni pravidla? Rigidni state machine v textu? Nebo volna pravidla a agent rozhoduje?', section:'orchestrator', severity:2 },
+
+  // Questions
+  { type:'question', title:'Scraper dispatch: kdo vybira scrapy vs cheerio vs playwright?', desc:'Config agent ma vsechny 3 scraping tools. Sam rozhodne ktery pouzit? Na zaklade scout findings (strategy, anti_bot)? Nebo je to v SKILL.md?', section:'pipeline', severity:2 },
+  { type:'question', title:'Jeden workspace nebo per-project?', desc:'workspace/ root s sources/{slug}/. Je to jeden globalni workspace? Nebo kazdy zdroj = vlastni Agent SDK project?', section:'memory', severity:1 },
+  { type:'question', title:'Matching engine — faze 1 nebo 3?', desc:'knowledge-summary popisuje 2-tier matching (SQL + LLM). architecture.md dava matching az do faze 3. Je matching opravdu az faze 3?', section:'iter-plan', severity:1 },
+  { type:'question', title:'Config-opportunity: kolik URLs ve vzorku?', desc:'Config-opportunity stavi na vzorku a overuje na vsech. Kolik URLs ve vzorku? 5? 10? Zavisi na poctu listings?', section:'agents', severity:1 },
+];
+
+const sections = {
+  overview: () => `
+    <div class="card">
+      <h2>Grantio — Architektura</h2>
+      <div class="metrics">
+        <div class="metric"><div class="val" style="color:var(--accent)">12</div><div class="label">Agentu</div></div>
+        <div class="metric"><div class="val" style="color:var(--green)">7</div><div class="label">Prompt vrstev</div></div>
+        <div class="metric"><div class="val" style="color:var(--yellow)">5</div><div class="label">Gate typu</div></div>
+        <div class="metric"><div class="val" style="color:var(--purple)">6</div><div class="label">SKILL.md</div></div>
+        <div class="metric"><div class="val" style="color:var(--orange)">52</div><div class="label">Transformaci</div></div>
+        <div class="metric"><div class="val" style="color:var(--pink)">6</div><div class="label">Pipeline urovni</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Klicova metafora</h2>
+      <p><strong style="color:var(--accent)">Source = Projekt</strong> (jako claude.ai project)<br>
+      <strong style="color:var(--purple)">Agent Run = Chat</strong> (Agent SDK session)<br>
+      <strong style="color:var(--green)">CLI command = Prompt</strong> pro orchestrator agenta<br>
+      <strong style="color:var(--yellow)">Orchestrator = Agent</strong> (ne deterministicky kod!)</p>
+    </div>
+    <div class="card">
+      <h2>Architektura (v4)</h2>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:12px; margin-top:12px;">
+        <div style="background:var(--surface2); padding:16px; border-radius:8px; border-top:3px solid var(--yellow);">
+          <h3 style="color:var(--yellow)">CLI → Orchestrator Agent</h3>
+          <p>CLI parsuje args → prompt. Orchestrator je Claude agent se skills a tools.</p>
+        </div>
+        <div style="background:var(--surface2); padding:16px; border-radius:8px; border-top:3px solid var(--purple);">
+          <h3 style="color:var(--purple)">12 Sub-agentu</h3>
+          <p>Scout(3), Config(2), Validator(2), Analyst(1), Fixer(2), Dedup(1)</p>
+        </div>
+        <div style="background:var(--surface2); padding:16px; border-radius:8px; border-top:3px solid var(--accent);">
+          <h3 style="color:var(--accent)">Scraping Tools</h3>
+          <p>scrapy_run, cheerio_run, playwright_run, apify_run — config agenti volaji primo</p>
+        </div>
+        <div style="background:var(--surface2); padding:16px; border-radius:8px; border-top:3px solid var(--green);">
+          <h3 style="color:var(--green)">Filesystem + Skills</h3>
+          <p>sources/{slug}/, SKILL.md, prompts/, configs/ (verzovane)</p>
+        </div>
+      </div>
+    </div>
+  `,
+
+  decisions: () => `
+    <div class="card">
+      <h2>Klicova rozhodnuti</h2>
+      <table>
+        <tr><th>Rozhodnuti</th><th>Volba</th><th>Duvod</th><th>Riziko</th></tr>
+        <tr><td>Runtime</td><td>Hetzner VPS</td><td>Long-running agents, state, cost</td><td style="color:var(--green)">nizke</td></tr>
+        <tr><td>Orchestrator</td><td>Deterministicky TS</td><td>Predvidatelnost, debuggability</td><td style="color:var(--green)">nizke</td></tr>
+        <tr><td>Agenti</td><td>12, asymetricke</td><td>Kazdy ma jasny ukol</td><td style="color:var(--yellow)">stredni — slozitost</td></tr>
+        <tr><td>Model</td><td><span class="annotate">Vsude Sonnet<span class="note">KONFLIKT: knowledge-summary rika extraction = Haiku. Sonnet je 10x drazsi pro 6000+ grantu. Vyresit!</span></span></td><td>Konzistence, kvalita</td><td style="color:var(--red)">naklady!</td></tr>
+        <tr><td>Storage F1</td><td>Filesystem</td><td>CLI first, jednoduche</td><td style="color:var(--green)">nizke</td></tr>
+        <tr><td>Storage F2+</td><td>Postgres + FS</td><td>Queryable metadata</td><td style="color:var(--green)">nizke</td></tr>
+        <tr><td>Prompt storage</td><td>Git (markdown)</td><td>Verzovani, diff, review</td><td style="color:var(--green)">nizke</td></tr>
+        <tr><td>Config format</td><td><span class="annotate">YAML (zachovat)<span class="note">NEJASNOST: "zachovat kompatibilitu" vs "clean break". Jsou 356 configs pouzitelne primo? Nebo jen format?</span></span></td><td>Lidsky citelne, 356 existujicich</td><td style="color:var(--yellow)">stredni</td></tr>
+        <tr><td>Kompatibilita</td><td>Clean break</td><td>Nova architektura</td><td style="color:var(--green)">nizke</td></tr>
+      </table>
+    </div>
+  `,
+
+  dataflow: () => `
+    <div class="card">
+      <h2>Data Flow: Novy zdroj end-to-end</h2>
+      <div style="font-family:monospace; font-size:12px; line-height:2; color:var(--text-dim);">
+        <div style="display:flex; align-items:center; gap:8px; margin:8px 0;">
+          <code style="min-width:200px">grantio add &lt;url&gt;</code>
+          <span class="arrow">→</span>
+          <span>sources/{slug}/status.json <code>{phase: "CREATED"}</code></span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin:8px 0;">
+          <code style="min-width:200px">grantio scout &lt;source&gt;</code>
+          <span class="arrow">→</span>
+          <span>scout-source → scout-catalog(s) → scout-opportunity</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin:8px 0;">
+          <code style="min-width:200px">grantio build &lt;source&gt;</code>
+          <span class="arrow">→</span>
+          <span>config-catalog + config-opportunity + test run + validace</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin:8px 0;">
+          <code style="min-width:200px">grantio analyze &lt;source&gt;</code>
+          <span class="arrow">→</span>
+          <span>analyst-source → verdict (approve/needs_work/reject)</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin:8px 0; padding:8px; background:rgba(210,153,34,0.1); border-radius:6px;">
+          <code style="min-width:200px; color:var(--yellow)">PRODUCTION GATE</code>
+          <span class="arrow">→</span>
+          <span style="color:var(--yellow)">Telegram + CLI approve → status: PRODUCTION</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin:8px 0;">
+          <code style="min-width:200px">Produkce</code>
+          <span class="arrow">→</span>
+          <span class="annotate">Apify actor na cron<span class="note">GAP: V fazi 1 neni scheduler. Kdo pouziva finalni config? Rucni spusteni?</span></span>
+        </div>
+      </div>
+    </div>
+  `,
+
+  states: () => `
+    <div class="card">
+      <h2>Project Lifecycle — State Machine</h2>
+      <div class="state-flow">
+        <div class="state created">CREATED</div><span class="arrow">→</span>
+        <div class="state scouting">SCOUTING</div><span class="arrow">→</span>
+        <div class="state building">BUILDING</div><span class="arrow">→</span>
+        <div class="state reviewing">REVIEWING</div><span class="arrow">→</span>
+        <div class="state pending">PENDING_GATE</div><span class="arrow">→</span>
+        <div class="state production">PRODUCTION</div>
+      </div>
+      <div style="margin-top:16px;">
+        <h3>Chybove stavy (z jakehokoliv stavu)</h3>
+        <div class="state-flow" style="margin-top:8px;">
+          <div class="state error">RETRY</div>
+          <div class="state error">ESCALATED</div>
+          <div class="state error">PAUSED</div>
+          <div class="state error">ABANDONED</div>
+          <div class="state error">FAILED</div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--red)">
+      <h2 style="color:var(--red)">KONFLIKT: mezistav v orchestratoru</h2>
+      <p>State machine ma 6 hlavnich stavu, ale <code>decideNextAction()</code> pouziva 8 mezistavu:</p>
+      <ul style="margin-top:8px;">
+        <li><code>SCOUTED_SOURCE</code> — po scout-source, pred scout-catalog</li>
+        <li><code>SCOUTED_CATALOGS</code> — po scout-catalog(s), pred scout-opportunity</li>
+        <li><code>SCOUTED_OPPORTUNITY</code> — po scout-opportunity, pred build</li>
+        <li><code>CONFIGS_BUILT</code> — po build, pred analyze</li>
+        <li><code>REVIEWED</code> — po analyze, pred gate</li>
+        <li><code>GATE_APPROVED</code> — po gate, pred production</li>
+      </ul>
+      <p style="margin-top:8px; color:var(--yellow)">Otazka: Jsou toto SUBSTAV v ramci SCOUTING/BUILDING/REVIEWING? Nebo plnohodnotne stavy? status.json potrebuje jasnou definici.</p>
+    </div>
+  `,
+
+  orchestrator: () => `
+    <div class="card">
+      <h2>Orchestrator — decideNextAction()</h2>
+      <p>Deterministicky TypeScript, NE agent. Spravuje projekty, dispatchi agenty, aplikuje gates.</p>
+      <div style="margin-top:12px; font-size:12px; background:var(--surface2); padding:16px; border-radius:6px; overflow-x:auto;">
+        <pre style="color:var(--text-dim);">CREATED         → scout-source
+SCOUTED_SOURCE  → scout-catalog (per katalog)
+SCOUTED_CATALOGS → scout-opportunity (sample)
+SCOUTED_OPPORTUNITY → config-catalog + config-opportunity
+CONFIGS_BUILT   → analyst-source (review)
+  └ needs_work  → writeHints() + config-catalog retry
+REVIEWED        → production gate
+GATE_APPROVED   → mark_production</pre>
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--yellow)">
+      <h2 style="color:var(--yellow)">Mezery v orchestratoru</h2>
+      <ul>
+        <li><strong>Retry strategie:</strong> Neni specifikovana (backoff? delay? co se meni?)</li>
+        <li><strong>Rate limiting:</strong> Zadne per-domain throttling</li>
+        <li><strong>Error kategorizace:</strong> Transient vs permanent neni rozliseno</li>
+        <li><strong>Agent SDK API:</strong> query() vs ClaudeSDKClient neni rozhodnuto</li>
+      </ul>
+    </div>
+  `,
+
+  agents: () => `
+    <div class="card">
+      <h2>12 Agentu — Asymetricke urovne</h2>
+      <p style="margin-bottom:12px;">Kazdy agent existuje JEN na urovnich kde dava smysl. Pravidlo: Agent = usudek, Kod = determinismus.</p>
+      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px;">
+        <div style="background:var(--surface2); padding:16px; border-radius:8px; border-top:3px solid var(--accent);">
+          <h3 style="color:var(--accent)">Scout (3)</h3>
+          <ul>
+            <li>scout-source — typ, katalogy</li>
+            <li>scout-catalog — listing, pagination</li>
+            <li>scout-opportunity — schema mapping</li>
+          </ul>
+          <p style="margin-top:8px; font-size:11px;">Nemaji Write/Edit — jen pozoruj!</p>
+        </div>
+        <div style="background:var(--surface2); padding:16px; border-radius:8px; border-top:3px solid var(--purple);">
+          <h3 style="color:var(--purple)">Config (2)</h3>
+          <ul>
+            <li>config-catalog — listing YAML</li>
+            <li>config-opportunity — detail YAML</li>
+          </ul>
+          <p style="margin-top:8px; font-size:11px;">Maji Write/Edit/Bash + test_runner</p>
+        </div>
+        <div style="background:var(--surface2); padding:16px; border-radius:8px; border-top:3px solid var(--green);">
+          <h3 style="color:var(--green)">Validator (2)</h3>
+          <ul>
+            <li>validator-catalog — quality, anomalie</li>
+            <li>validator-source — agregace, trendy</li>
+          </ul>
+          <p style="margin-top:8px; font-size:11px;">Jen Read/Bash — nemodifikuji</p>
+        </div>
+        <div style="background:var(--surface2); padding:16px; border-radius:8px; border-top:3px solid var(--yellow);">
+          <h3 style="color:var(--yellow)">Analyst (1)</h3>
+          <ul>
+            <li>analyst-source — gate-keeper</li>
+          </ul>
+          <p style="margin-top:8px; font-size:11px;">Obsahovy expert + hint_write</p>
+        </div>
+        <div style="background:var(--surface2); padding:16px; border-radius:8px; border-top:3px solid var(--text-dim);">
+          <h3 style="color:var(--text-dim)">Fixer (2) — Faze 2</h3>
+          <ul>
+            <li>fixer-catalog</li>
+            <li>fixer-opportunity</li>
+          </ul>
+          <p style="margin-top:8px; font-size:11px;">Self-healing, auto-oprava</p>
+        </div>
+        <div style="background:var(--surface2); padding:16px; border-radius:8px; border-top:3px solid var(--text-dim);">
+          <h3 style="color:var(--text-dim)">Dedup (1) — Faze 2</h3>
+          <ul>
+            <li>dedup-opportunity</li>
+          </ul>
+          <p style="margin-top:8px; font-size:11px;">Pair judgment, jen Read</p>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Co NENI agent (je to kod)</h2>
+      <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;">
+        ${['Opportunity validace','Data agregace','Quality agregace','Dedup candidates','Scheduling','Config git ops','Notifikace','Orchestrator'].map(x => `<code>${x}</code>`).join('')}
+      </div>
+    </div>
+  `,
+
+  'agent-matrix': () => `
+    <div class="card">
+      <h2>Agent x Tool Matrix</h2>
+      <table>
+        <tr>
+          <th>Tool</th><th>scout-src</th><th>scout-cat</th><th>scout-opp</th>
+          <th>cfg-cat</th><th>cfg-opp</th><th>val-src</th><th>val-cat</th>
+          <th>analyst</th><th>fixer*</th><th>dedup*</th>
+        </tr>
+        ${[
+          ['WebFetch','y','y','y','y','y','','y','','y',''],
+          ['WebSearch','y','','','','','','','','',''],
+          ['Read','y','y','y','y','y','y','y','y','y','y'],
+          ['Write','','','','y','y','','','','y',''],
+          ['Edit','','','','y','y','','','','y',''],
+          ['Bash','','','','y','y','y','y','y','y',''],
+          ['source_memory','y','y','y','y','y','y','y','y','y',''],
+          ['hint_read','y','y','y','y','y','y','y','y','y',''],
+          ['hint_write','','','','','','','','y','',''],
+        ].map(row => `<tr><td><code>${row[0]}</code></td>${row.slice(1).map(c => c === 'y' ? '<td class="yes">&#10003;</td>' : '<td class="no">—</td>').join('')}</tr>`).join('')}
+      </table>
+      <p style="margin-top:8px; font-size:11px; color:var(--text-dim);">* fixer a dedup = faze 2</p>
+    </div>
+  `,
+
+  'agent-io': () => `
+    <div class="card">
+      <h2>Agent I/O Interfaces (klicove)</h2>
+      <details>
+        <summary><strong>scout-source</strong> → ScoutSourceOutput</summary>
+        <div class="detail-body">
+          <code>source_type, catalogs[], anti_bot, auth_required, language, confidence, issues[], suggestions[]</code>
+        </div>
+      </details>
+      <details>
+        <summary><strong>scout-catalog</strong> → ScoutCatalogOutput</summary>
+        <div class="detail-body">
+          <code>listing_selector, item_count, pagination{type, total_pages}, fields_available[], detail_url_pattern, strategy, confidence</code>
+        </div>
+      </details>
+      <details>
+        <summary><strong>config-catalog</strong> → ConfigCatalogOutput</summary>
+        <div class="detail-body">
+          <code>config: YAMLConfig, test_results{items_found, sample_items, field_coverage, validation_errors, pagination_works}, confidence, ready_for_production</code>
+        </div>
+      </details>
+      <details>
+        <summary><strong>analyst-source</strong> → AnalystSourceOutput</summary>
+        <div class="detail-body">
+          <code>verdict: approve|needs_work|reject, quality_score, issues[], hints[], field_analysis{}, content_assessment, recommendations[]</code>
+        </div>
+      </details>
+    </div>
+    <div class="card" style="border-left:3px solid var(--yellow)">
+      <h2 style="color:var(--yellow)">Mezera: config-catalog → config-opportunity zavislost</h2>
+      <p>Orchestrator je spousti "paralelne", ale config-opportunity typicky potrebuje vedet jake URL listing vraci. Potrebuje vstup z config-catalog test runu.</p>
+    </div>
+  `,
+
+  prompts: () => `
+    <div class="card">
+      <h2>7-vrstva Prompt Composition</h2>
+      <div style="display:flex; flex-direction:column; gap:4px; margin-top:12px;">
+        ${[
+          {l:'L0', name:'System', desc:'Agent identita', when:'Vzdy', color:'var(--accent)'},
+          {l:'L1', name:'Task', desc:'Co delej', when:'Vzdy', color:'var(--purple)'},
+          {l:'L2', name:'Domain', desc:'Ceske granty, field definitions', when:'Vzdy', color:'var(--green)'},
+          {l:'L3', name:'Source Type', desc:'WordPress, SPA, API...', when:'Po scout-source', color:'var(--yellow)'},
+          {l:'L4', name:'Hints', desc:'Lidske/analytik hinty', when:'Pokud existuji', color:'var(--orange)'},
+          {l:'L5', name:'Attempt', desc:'Predchozi pokus selhal na...', when:'attempt > 1', color:'var(--red)'},
+          {l:'L6', name:'Memory', desc:'Historie, naucene z predchozich runu', when:'Pokud existuje', color:'var(--pink)'},
+        ].map(l => `
+          <div style="display:flex; align-items:center; gap:12px; padding:10px 16px; background:var(--surface2); border-radius:6px; border-left:3px solid ${l.color};">
+            <code style="color:${l.color}; min-width:24px;">${l.l}</code>
+            <strong style="min-width:100px;">${l.name}</strong>
+            <span style="color:var(--text-dim); flex:1;">${l.desc}</span>
+            <span style="font-size:11px; color:var(--text-dim); min-width:120px; text-align:right;">${l.when}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--orange)">
+      <h2 style="color:var(--orange)">Nejasnosti</h2>
+      <ul>
+        <li><strong>L3 asymetrie:</strong> Pri prvnim scout-source L3 neni (source_type jeste nezname). Pri retry uz ano. Zamerne?</li>
+        <li><strong>Token budget:</strong> 7 vrstev muze byt hodne tokenu (L4 hints az 16KB!). Priorita pri truncation?</li>
+      </ul>
+    </div>
+  `,
+
+  'prompt-files': () => `
+    <div class="card">
+      <h2>Prompt soubory</h2>
+      <div style="font-size:12px; font-family:monospace; line-height:1.8; color:var(--text-dim);">
+<pre>prompts/
+├── system/          # L0: 11 souboru (1 per agent)
+│   ├── scout-source.md, scout-catalog.md, scout-opportunity.md
+│   ├── config-catalog.md, config-opportunity.md
+│   ├── validator-source.md, validator-catalog.md
+│   ├── analyst-source.md
+│   └── fixer-catalog.md, fixer-opportunity.md, dedup-opportunity.md
+├── tasks/           # L1: 9 souboru
+├── domain/          # L2: 4 soubory (czech_grants, eu_grants, field_defs, quality)
+├── source_types/    # L3: 6 souboru (html_listing, spa, pdf, api, search, cms)
+├── templates/       # L5/L6: attempt_retry.md, memory_summary.md
+└── evals/           # Test sady per prompt</pre>
+      </div>
+    </div>
+  `,
+
+  'prompt-compose': () => `
+    <div class="card">
+      <h2>PromptComposer — jak se sklada prompt</h2>
+      <div style="background:var(--surface2); padding:16px; border-radius:6px; font-size:12px; line-height:1.6;">
+<pre style="color:var(--text-dim)">compose({ agent, project, attempt }):
+  parts = []
+  parts.push(system/{agent}.md)              <span style="color:var(--accent)">// L0 — vzdy</span>
+  parts.push(tasks/{task}.md)                <span style="color:var(--accent)">// L1 — vzdy</span>
+  parts.push(domain/czech_grants.md)         <span style="color:var(--accent)">// L2 — vzdy</span>
+  parts.push(domain/field_definitions.md)    <span style="color:var(--accent)">// L2 — vzdy</span>
+  if (project.source_type)                   <span style="color:var(--yellow)">// L3 — podminka</span>
+    parts.push(source_types/{type}.md)
+  if (project.hints.length > 0)              <span style="color:var(--yellow)">// L4 — podminka</span>
+    parts.push(formatted hints)
+  if (attempt > 1)                           <span style="color:var(--yellow)">// L5 — podminka</span>
+    parts.push(attempt_retry.md template)
+  if (project.memory.length > 0)             <span style="color:var(--yellow)">// L6 — podminka</span>
+    parts.push(memory_summary.md template)
+  return parts.join("\\n\\n---\\n\\n")</pre>
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--orange)">
+      <h2 style="color:var(--orange)">Nejasnost: kam jde composed prompt?</h2>
+      <p>Composer vraci string. Ale Agent SDK <code>query()</code> bere <code>prompt</code> (user message) a <code>system</code> (system prompt) zvlast. Ktera cast je system a ktera user? L0 = system, L1-L6 = user? Nebo vse = system?</p>
+    </div>
+  `,
+
+  gates: () => `
+    <div class="card">
+      <h2>5 Gate typu</h2>
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:12px; margin-top:12px;">
+        ${[
+          {name:'Production Gate', type:'Povinny', who:'Clovek', when:'Pred produkci', color:'var(--red)', desc:'Telegram + CLI approve. Sample items, quality, analyst report.'},
+          {name:'Destructive Gate', type:'Povinny', who:'Clovek', when:'Prepis prod dat', color:'var(--red)', desc:'Prepis konfigurace, smazani zdroje, bulk update.'},
+          {name:'Cost Gate', type:'Auto + eskalace', who:'System', when:'Cost > threshold', color:'var(--yellow)', desc:'max_tokens: 100k, max_cost: $2, max_retries: 3'},
+          {name:'Confidence Gate', type:'Automaticky', who:'System', when:'confidence < threshold', color:'var(--orange)', desc:'>0.8 proceed, 0.6-0.8 retry, 0.3-0.6 escalate, <0.3 abort'},
+          {name:'Attempt Gate', type:'Automaticky', who:'System', when:'N failures', color:'var(--purple)', desc:'Po 3 selhanich → eskaluj cloveku'},
+        ].map(g => `
+          <div style="background:var(--surface2); padding:16px; border-radius:8px; border-top:3px solid ${g.color};">
+            <h3 style="color:${g.color}; margin:0 0 4px;">${g.name}</h3>
+            <p style="font-size:11px; margin-bottom:8px;"><strong>${g.type}</strong> · ${g.who} · ${g.when}</p>
+            <p style="font-size:11px;">${g.desc}</p>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div class="card">
+      <h2>Gate flow v pipeline</h2>
+      <div style="font-size:12px; line-height:2; font-family:monospace;">
+scout-source → <span style="color:var(--orange)">[Confidence]</span><br>
+scout-catalog(s) → <span style="color:var(--orange)">[Confidence]</span><br>
+scout-opportunity → <span style="color:var(--orange)">[Confidence]</span><br>
+config-* → <span style="color:var(--orange)">[Confidence]</span> + <span style="color:var(--purple)">[Attempt]</span> + test run<br>
+validator-catalog → quality scoring<br>
+analyst-source → <span style="color:var(--yellow)">[Analyst verdict]</span> + <span style="color:var(--yellow)">[Cost]</span><br>
+<strong style="color:var(--red)">★ PRODUCTION GATE ★</strong> → Deploy
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--yellow)">
+      <h2 style="color:var(--yellow)">Mezery v gates</h2>
+      <ul>
+        <li><strong>Cost tracking:</strong> Jak se akumuluje cost across retries? Agent SDK vraci usage?</li>
+        <li><strong>Po production gate:</strong> Co se deje dal v fazi 1? Zadny scheduler.</li>
+      </ul>
+    </div>
+  `,
+
+  validation: () => `
+    <div class="card">
+      <h2>4 urovne validace (z PoC)</h2>
+      ${[
+        {l:'Level 1', name:'Scraping time', items:['UTF-8 surrogate sanitization (10-15% ceskych PDF!)', 'HTML tag stripping', 'Type coercion (dateutil, dayfirst=True)', 'Required defaults: title="Untitled", url=""'], color:'var(--accent)'},
+        {l:'Level 2', name:'Quality analysis (non-blocking)', items:['Date parseable (40% weight)', 'Amount non-negative (40% weight)', 'Enum in allowed set (20% weight)', 'Content checks: title<10, generic titles, HTML remnants'], color:'var(--purple)'},
+        {l:'Level 3', name:'Sync cleaning', items:['Blocked types → QUARANTINE', 'Amount ceiling >50B → NULL', 'Date range 2020-2032', 'String length caps', 'Missing title/url → QUARANTINE'], color:'var(--yellow)'},
+        {l:'Level 4', name:'Sync quality gates', items:['required_null_threshold: 5%', 'max_quarantine_percent: 20%', 'max_unknown_taxonomy_percent: 30%', 'min_grants_count: 1'], color:'var(--red)'},
+      ].map(l => `
+        <div style="margin:12px 0; padding:12px 16px; background:var(--surface2); border-radius:6px; border-left:3px solid ${l.color};">
+          <h3 style="color:${l.color}; margin:0 0 8px;">${l.l}: ${l.name}</h3>
+          <ul>${l.items.map(i => `<li>${i}</li>`).join('')}</ul>
+        </div>
+      `).join('')}
+    </div>
+  `,
+
+  'anti-fab': () => `
+    <div class="card">
+      <h2>Anti-fabrication — 5 obrannych vrstev</h2>
+      <p style="margin-bottom:12px; color:var(--red); font-weight:600;">Null > guess. Chybejici pole je lepsi nez vymyslene pole.</p>
+      ${[
+        {name:'1. Dual Extraction (CSS + LLM)', desc:'Kazde pole dvakrat. Shoda=0.95, neshoda=flag+0.5.', color:'var(--accent)'},
+        {name:'2. LLM Agreement Check', desc:'Kriticka pole (deadline, funding): 2 nezavisle LLM cally. Neshoda → null.', color:'var(--purple)'},
+        {name:'3. Null > Guess (prompt instrukce)', desc:'V kazdem L0 promptu: NIKDY neodhaduj deadline, castku, eligibility.', color:'var(--green)'},
+        {name:'4. Ceiling & Sanity Checks', desc:'>50B CZK → karantena, deadline >+5 let → karantena, amount_min > amount_max → karantena.', color:'var(--yellow)'},
+        {name:'5. Provenance Tracking', desc:'Kazda hodnota ma zdroj (css/regex/llm/pdf). Bez provenance = podezrele.', color:'var(--orange)'},
+      ].map(l => `
+        <div style="margin:8px 0; padding:10px 16px; background:var(--surface2); border-radius:6px; border-left:3px solid ${l.color};">
+          <h3 style="color:${l.color}; margin:0 0 4px;">${l.name}</h3>
+          <p style="font-size:12px;">${l.desc}</p>
+        </div>
+      `).join('')}
+      <h3 style="margin-top:16px;">Syntetizovat povoleno JEN pro:</h3>
+      <ul>
+        <li><code>ideal_grantee</code> — profil idealniho zadatele</li>
+        <li><code>how_to_apply</code> — step-by-step guide</li>
+      </ul>
+    </div>
+  `,
+
+  quarantine: () => `
+    <div class="card">
+      <h2>Karantena — jen 2 triggery!</h2>
+      <div style="display:flex; gap:12px; margin-top:12px;">
+        <div style="flex:1; padding:16px; background:rgba(248,81,73,0.1); border:1px solid var(--red); border-radius:8px;">
+          <h3 style="color:var(--red)">1. Blocked content type</h3>
+          <p>form_template, news_announcement, completed_project, event, blog_article</p>
+        </div>
+        <div style="flex:1; padding:16px; background:rgba(248,81,73,0.1); border:1px solid var(--red); border-radius:8px;">
+          <h3 style="color:var(--red)">2. Missing title or url</h3>
+          <p>Hard required fields chybi</p>
+        </div>
+      </div>
+      <p style="margin-top:12px; color:var(--text-dim);">Zadny retry/release. Fix config → re-scrape → re-sync je jedina cesta zpet.</p>
+      <p>Non-quarantine corrections: HTML strip, amount cap, date cap, string length — projdou skrz.</p>
+    </div>
+  `,
+
+  pipeline: () => `
+    <div class="card">
+      <h2>6-level Extraction Fallback</h2>
+      ${[
+        {n:1, name:'Step Pipeline', desc:'css → xpath → regex → transform → default (sequential)', color:'var(--accent)'},
+        {n:2, name:'CSS/LLM Cross-Method', desc:'CSS non-empty → keep + LLM comparison. CSS empty → LLM replaces. prefer_llm/prefer_docs override.', color:'var(--purple)'},
+        {n:3, name:'HTML vs Documents', desc:'Single LLM call, combined markdown (html_md + doc_md)', color:'var(--green)'},
+        {n:4, name:'Script', desc:'Custom code, runs BEFORE HTML extraction', color:'var(--yellow)'},
+        {n:5, name:'Listing-to-Detail Merge', desc:'Detail > listing, type coercion', color:'var(--orange)'},
+        {n:6, name:'Catalog Inheritance', desc:'Provider, contact, lifecycle z catalog metadata', color:'var(--pink)'},
+      ].map(l => `
+        <div style="margin:8px 0; padding:10px 16px; background:var(--surface2); border-radius:6px; display:flex; gap:12px; align-items:center;">
+          <div style="min-width:28px; height:28px; border-radius:50%; background:${l.color}; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#fff;">${l.n}</div>
+          <div><strong>${l.name}</strong><br><span style="font-size:12px; color:var(--text-dim);">${l.desc}</span></div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="card">
+      <h2>Pipeline priorities (z PoC — zachovat poradi!)</h2>
+      <div class="pipeline">
+        ${[
+          {p:100, n:'Validation', c:'var(--accent)'},
+          {p:150, n:'ContentHash', c:'var(--green)'},
+          {p:160, n:'DocProcessing', c:'var(--purple)'},
+          {p:170, n:'LLM Extract', c:'var(--yellow)'},
+          {p:200, n:'Merge', c:'var(--orange)'},
+          {p:210, n:'Inheritance', c:'var(--pink)'},
+          {p:220, n:'Lifecycle', c:'var(--text-dim)'},
+          {p:300, n:'Storage', c:'var(--red)'},
+        ].map((s,i) => `
+          ${i > 0 ? '<span class="pipe-arrow">→</span>' : ''}
+          <div class="pipe-step" style="background:${s.c}22; color:${s.c}; border:1px solid ${s.c}44;">${s.p}: ${s.n}</div>
+        `).join('')}
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--yellow)">
+      <h2 style="color:var(--yellow)">GAP: Document parser</h2>
+      <p>Docling (ML, GPU) nema TS ekvivalent. Zachovat jako Python microservice. Ale JAK? HTTP API? subprocess? gRPC? Neni specifikovano.</p>
+    </div>
+  `,
+
+  transforms: () => `
+    <div class="card">
+      <h2>52 Registrovanych transformaci</h2>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:12px;">
+        <div style="background:var(--surface2); padding:16px; border-radius:8px;">
+          <h3 style="color:var(--accent)">Cesko-specificke (12)</h3>
+          <ul>
+            <li>parse_czech_date (36+ variant)</li>
+            <li>parse_czech_amount (mil/mld/tis)</li>
+            <li>extract_deadline (22 keywords)</li>
+            <li>extract_funding_range</li>
+            <li>detect_currency</li>
+            <li>+ 7 dalsich</li>
+          </ul>
+        </div>
+        <div style="background:var(--surface2); padding:16px; border-radius:8px;">
+          <h3 style="color:var(--purple)">Textove (18)</h3>
+          <ul>
+            <li>normalize_text</li>
+            <li>html_to_markdown</li>
+            <li>strip_html</li>
+            <li>extract_email</li>
+            <li>extract_phone</li>
+            <li>+ 13 dalsich</li>
+          </ul>
+        </div>
+        <div style="background:var(--surface2); padding:16px; border-radius:8px;">
+          <h3 style="color:var(--green)">API/JSON (28)</h3>
+          <ul>
+            <li>wp_date</li>
+            <li>json_array_first</li>
+            <li>URL builders</li>
+            <li>+ 25 dalsich</li>
+          </ul>
+        </div>
+      </div>
+      <p style="margin-top:12px; color:var(--text-dim);">Vsechny registrovane by-name, volane ze YAML configu. Chaining: <code>transform: [normalize_text, extract_end_date]</code></p>
+    </div>
+  `,
+
+  'config-loop': () => `
+    <div class="card">
+      <h2>Config Loop — 3 mody</h2>
+      <div style="display:flex; gap:12px; margin-top:12px;">
+        ${[
+          {name:'create', desc:'Z discovery JSON. Novy config od nuly.', color:'var(--green)'},
+          {name:'improve', desc:'Z existujiciho configu + worst samples + diagnostics.', color:'var(--yellow)'},
+          {name:'re-discover', desc:'URL → discovery → create. Kdyz se web uplne zmeni.', color:'var(--red)'},
+        ].map(m => `
+          <div style="flex:1; padding:16px; background:var(--surface2); border-radius:8px; border-top:3px solid ${m.color};">
+            <h3 style="color:${m.color}">${m.name}</h3>
+            <p>${m.desc}</p>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div class="card">
+      <h2>Stagnation detection</h2>
+      <ul>
+        <li>3+ iteraci within 0.1% tolerance = <strong>plateau</strong></li>
+        <li>Alternating up-down over 4 iteraci = <strong>oscillation</strong></li>
+        <li>0 grantu = <strong>always stagnation</strong></li>
+        <li>Regression > 5% = <strong>auto-rollback to best config</strong></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Config validace — 7 urovni</h2>
+      <ol style="padding-left:20px;">
+        <li>YAML parse</li>
+        <li>Structural (source, catalogs, detail sections)</li>
+        <li>Pydantic/Zod model (URL, enums, aliases)</li>
+        <li>Selector syntax (offline CSS/XPath validation)</li>
+        <li>Live selector test (fetch page, test selektory)</li>
+        <li>Discovery validation (strategy-specific required fields)</li>
+        <li>Content classification gate (block all-non-grant sources)</li>
+      </ol>
+    </div>
+  `,
+
+  memory: () => `
+    <div class="card">
+      <h2>Workspace Filesystem</h2>
+      <div style="font-size:12px; font-family:monospace; line-height:1.8; color:var(--text-dim);">
+<pre>workspace/
+├── .claude/skills/          # SKILL.md soubory
+├── shared/
+│   ├── templates/           # YAML templates per strategy
+│   └── prompts/             # Prompt soubory (7 vrstev)
+└── sources/{slug}/          # Jeden "projekt" per zdroj
+    ├── scouts/              # Scout vystupy (JSON)
+    ├── configs/             # YAML configs + history/
+    ├── runs/{run-id}/       # items.json, report.json, session.json
+    ├── memory/              # structure.md, failures.md, decisions.md
+    ├── hints.md             # Source-level hinty
+    └── status.json          # State machine stav</pre>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Retence dat</h2>
+      <table>
+        <tr><th>Data</th><th>Retence</th><th>Duvod</th></tr>
+        <tr><td>status.json</td><td style="color:var(--green)">Vzdy</td><td>State machine</td></tr>
+        <tr><td>configs/ (aktualni)</td><td style="color:var(--green)">Vzdy</td><td>Produkcni reference</td></tr>
+        <tr><td>configs/history/</td><td style="color:var(--yellow)">90 dni</td><td>Debug, rollback</td></tr>
+        <tr><td>scouts/</td><td style="color:var(--yellow)">30 dni</td><td>Vetsinou staci latest</td></tr>
+        <tr><td>runs/ (items)</td><td style="color:var(--yellow)">30 dni</td><td>Po schvaleni nepoteba</td></tr>
+        <tr><td>runs/ (meta)</td><td style="color:var(--green)">Vzdy</td><td>Audit trail</td></tr>
+        <tr><td>memory/</td><td style="color:var(--green)">Vzdy</td><td>Akumulace znalosti</td></tr>
+        <tr><td>hints.md</td><td style="color:var(--green)">Vzdy</td><td>Kolaborace</td></tr>
+      </table>
+    </div>
+  `,
+
+  'memory-agent': () => `
+    <div class="card">
+      <h2>Agent Memory — 3 topiky</h2>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:12px;">
+        <div style="background:var(--surface2); padding:16px; border-radius:8px; border-top:3px solid var(--accent);">
+          <h3 style="color:var(--accent)">structure.md</h3>
+          <p>Co agent vi o strukture webu. REPLACE pri novem scouting.</p>
+        </div>
+        <div style="background:var(--surface2); padding:16px; border-radius:8px; border-top:3px solid var(--red);">
+          <h3 style="color:var(--red)">failures.md</h3>
+          <p>Historie selhani. APPEND-ONLY (nikdy mazat!).</p>
+        </div>
+        <div style="background:var(--surface2); padding:16px; border-radius:8px; border-top:3px solid var(--purple);">
+          <h3 style="color:var(--purple)">decisions.md</h3>
+          <p>Rozhodnuti a duvody. APPEND s run ID a timestampem.</p>
+        </div>
+      </div>
+      <p style="margin-top:12px; color:var(--text-dim);">Agent cte memory na zacatku runu (pres PromptComposer L6). Pise na konci pres custom tool <code>source_memory</code>.</p>
+    </div>
+  `,
+
+  hints: () => `
+    <div class="card">
+      <h2>Hints system</h2>
+      <p>Hinty = lidske/analytik poznamky pro agenty. Ziji v <code>sources/{slug}/hints.md</code>.</p>
+      <div style="background:var(--surface2); padding:16px; border-radius:8px; margin-top:12px; font-size:12px; font-family:monospace; line-height:1.6;">
+<pre>## Source-level
+- [unresolved] Martin, 2026-03-08: Nova sekce 'Mimoradne vyzvy' se nesbira
+- [resolved by run ghi789] Pavel, 2026-03-06: Paginace broken
+
+## Catalog: Verejne souteze
+- [unresolved] Pavel, 2026-03-09: Spolufinancovani je v PDF priloze</pre>
+      </div>
+      <h3 style="margin-top:12px;">Hint kategorie (z PoC, 68 souboru)</h3>
+      <ul>
+        <li><strong>Encyclopedia (10+ KB):</strong> Full DOM snippets, selector tables. Nejvyssi dopad.</li>
+        <li><strong>Gotcha warnings:</strong> Kriticka operational knowledge</li>
+        <li><strong>Non-grant warnings:</strong> Quality ceiling dokumentace</li>
+        <li><strong>Failed/incomplete:</strong> Zero-quality zdroje</li>
+      </ul>
+    </div>
+    <div class="card" style="border-left:3px solid var(--orange)">
+      <h2 style="color:var(--orange)">Nejasnost: hint lifecycle</h2>
+      <p>Jen analyst ma hint_write. Kdo oznaci jako "resolved"? V fazi 1 to neni fixer (faze 2). Zustava vse "unresolved"?</p>
+    </div>
+  `,
+
+  cache: () => `
+    <div class="card">
+      <h2>3 Cache vrstvy (z PoC — zachovat!)</h2>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:12px;">
+        <div style="background:var(--surface2); padding:16px; border-radius:8px;">
+          <h3 style="color:var(--accent)">Raw Files Cache</h3>
+          <p>SHA256 content-addressed. <strong>7.7 GB</strong>. IROP: 80+ grantu sdili application forms.</p>
+        </div>
+        <div style="background:var(--surface2); padding:16px; border-radius:8px;">
+          <h3 style="color:var(--purple)">Document Cache</h3>
+          <p>Cached markdown by file hash. <strong>150 MB</strong>. Docling = 5-30s per PDF.</p>
+        </div>
+        <div style="background:var(--surface2); padding:16px; border-radius:8px;">
+          <h3 style="color:var(--green)">LLM Cache</h3>
+          <p>Content-addressed (SHA256 of markdown[:30K] + schema). <strong>12K entries, 49 MB</strong>. Redukuje re-run cost ~90%.</p>
+        </div>
+      </div>
+    </div>
+  `,
+
+  skills: () => `
+    <div class="card">
+      <h2>6 SKILL.md souboru</h2>
+      ${[
+        {name:'grant-schemas', desc:'GrantOpportunity schema, povinna pole, enums, skip-field matice', color:'var(--accent)'},
+        {name:'yaml-config', desc:'YAML config format, template per strategy, multi-step field syntax, validace', color:'var(--purple)'},
+        {name:'czech-parsing', desc:'Ceske datumy (36+ variant), castky (mil/mld/tis), ICO, NUTS, email (zavinac)', color:'var(--green)'},
+        {name:'extraction-pipeline', desc:'6-level fallback, confidence scoring, provenance tracking', color:'var(--yellow)'},
+        {name:'quality-scoring', desc:'Lifecycle-aware scoring, per-field completeness, anomaly detection', color:'var(--orange)'},
+        {name:'anti-fabrication', desc:'Null > guess, dual extraction, ceiling checks, LLM agreement', color:'var(--red)'},
+      ].map(s => `
+        <div style="margin:8px 0; padding:10px 16px; background:var(--surface2); border-radius:6px; border-left:3px solid ${s.color};">
+          <h3 style="color:${s.color}; margin:0 0 4px;">${s.name}/SKILL.md</h3>
+          <p style="font-size:12px;">${s.desc}</p>
+        </div>
+      `).join('')}
+    </div>
+  `,
+
+  'custom-tools': () => `
+    <div class="card">
+      <h2>Custom Tools (Agent SDK)</h2>
+      <details>
+        <summary><strong>source_memory</strong> — Persistent knowledge per zdroj</summary>
+        <div class="detail-body">
+          <p>topic: structure | failures | decisions<br>action: read | append | replace<br>Backed by: sources/{slug}/memory/{topic}.md</p>
+          <p style="color:var(--yellow); margin-top:8px;">failures.md je append-only — agent nemuze smazat historii selhani.</p>
+        </div>
+      </details>
+      <details>
+        <summary><strong>hint_read</strong> — Cte hinty (vsichni agenti)</summary>
+        <div class="detail-body">
+          <p>level: source | catalog | opportunity<br>Backed by: sources/{slug}/hints.md</p>
+        </div>
+      </details>
+      <details>
+        <summary><strong>hint_write</strong> — Pise hinty (JEN analyst!)</summary>
+        <div class="detail-body">
+          <p>Jen analyst-source ma pristup.</p>
+        </div>
+      </details>
+      <details>
+        <summary><strong>test_runner</strong> — Spusti scraper v dry-run (config agenti)</summary>
+        <div class="detail-body">
+          <p>config_path, max_items (default 5), timeout_ms (default 60000)<br>Vraci: items + stats</p>
+        </div>
+      </details>
+    </div>
+  `,
+
+  enums: () => `
+    <div class="card">
+      <h2>Enums (kompletni z PoC)</h2>
+      ${[
+        {name:'ContentClassification (9)', items:'grant_call, support_topic, ongoing_program, news_announcement, form_template, completed_project, event, blog_article, administrative'},
+        {name:'GrantLifecycleStage (7)', items:'announced, planned, closed, evaluated, unknown, support_topic, ongoing_project'},
+        {name:'CallType (4)', items:'normal, continuous, competitive, other'},
+        {name:'FundingType (6)', items:'dotace, stipendium, verejna_zakazka, dar, podpora, jine'},
+        {name:'ExtractionMethod (10)', items:'css, xpath, regex, llm, static, listing, document, merged, api, script'},
+        {name:'OrganizationType (19+16 aliasu)', items:'ministry, state, regional, municipal, foundation, university, eu, ngo...'},
+        {name:'ScrapingStrategy (9+5 aliasu)', items:'html_catalog_html_grants, js_catalog_html_grants, api_only, single_page, crawl...'},
+        {name:'PaginationType (16→5)', items:'none, page_param, query_param, next_link, load_more'},
+      ].map(e => `
+        <details>
+          <summary><strong>${e.name}</strong></summary>
+          <div class="detail-body"><code>${e.items}</code></div>
+        </details>
+      `).join('')}
+    </div>
+  `,
+
+  'quality-score': () => `
+    <div class="card">
+      <h2>Quality Score formule</h2>
+      <div style="background:var(--surface2); padding:16px; border-radius:8px; font-family:monospace; font-size:13px; line-height:1.8;">
+        <span style="color:var(--accent)">base</span> = core_completeness * 0.6 + important_completeness * 0.4<br>
+        <span style="color:var(--purple)">validation</span> = date_score * 0.4 + amount_score * 0.4 + enum_score * 0.2<br>
+        <span style="color:var(--green)">content</span> = 0.9 + 0.1 * content_pass_rate<br>
+        <span style="color:var(--yellow)">final</span> = base * (0.9 + 0.1 * validation) * content
+      </div>
+      <h3 style="margin-top:16px;">Povinna pole</h3>
+      <ul>
+        <li><strong>Hard required (jen 2!):</strong> title, url</li>
+        <li><strong>Core scoring (60%):</strong> title, description, provider, url</li>
+        <li><strong>Important scoring (40%):</strong> deadline, amount_max, eligibility</li>
+      </ul>
+      <h3 style="margin-top:16px;">Lifecycle thresholds</h3>
+      <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;">
+        ${[
+          {s:'announced',v:95},{s:'support_topic',v:70},{s:'ongoing_project',v:80},
+          {s:'planned',v:75},{s:'closed',v:85},{s:'evaluated',v:85},{s:'unknown',v:90},
+        ].map(t => `<code>${t.s}: ${t.v}</code>`).join('')}
+      </div>
+    </div>
+  `,
+
+  czech: () => `
+    <div class="card">
+      <h2>Ceske specifika</h2>
+      <details>
+        <summary><strong>Datumy (36+ variant)</strong></summary>
+        <div class="detail-body">
+          <p>2 gramaticke pady x 12 mesicu x s/bez diakritiky</p>
+          <p>Formaty: DD. MM. YYYY, DD.MM.YYYY, D. mesice YYYY, ISO, short</p>
+          <p style="color:var(--yellow)">Extra mezery z HTML: &lt;strong&gt;30&lt;/strong&gt; . dubna</p>
+        </div>
+      </details>
+      <details>
+        <summary><strong>Castky</strong></summary>
+        <div class="detail-body">
+          <p><code>mil.</code> = x1M, <code>mld.</code> = x1B (NE americky billion!), <code>tis.</code> = x1K</p>
+          <p>Non-breaking spaces \\u00a0, decimal comma: 1.234,56 = 1234.56</p>
+          <p style="color:var(--red)">Kontroluj mld PRED mil (prefix collision!)</p>
+          <p>Sanity cap: 100B CZK (> reject)</p>
+        </div>
+      </details>
+      <details>
+        <summary><strong>Email</strong></summary>
+        <div class="detail-body"><p><code>(zavinac)</code> = @ (ceska konvence)</p></div>
+      </details>
+      <details>
+        <summary><strong>PDF surrogaty</strong></summary>
+        <div class="detail-body">
+          <p>10-15% ceskych gov PDF ma broken font encoding (U+D800-U+DFFF)</p>
+          <p>4 defense vrstvy v document parseru</p>
+        </div>
+      </details>
+      <details>
+        <summary><strong>22 deadline keywords</strong></summary>
+        <div class="detail-body"><code>uzaverka, nejpozdeji_do, termin_podani, konec_prijmu...</code></div>
+      </details>
+      <details>
+        <summary><strong>Lifecycle slovnik</strong></summary>
+        <div class="detail-body">
+          <p>Neexistuje standard. "Otevrena" (IROP) vs "Prijem zadosti probiha" (OPZP) vs "Schvalena dotace" (Praha) = vse "active"</p>
+        </div>
+      </details>
+    </div>
+  `,
+
+  cli: () => `
+    <div class="card">
+      <h2>CLI Interface — grantio</h2>
+      <div style="font-size:12px; font-family:monospace; line-height:1.8; background:var(--surface2); padding:16px; border-radius:8px;">
+<pre style="color:var(--text-dim)"><span style="color:var(--text-dim)"># Setup</span>
+grantio init
+<span style="color:var(--text-dim)"># Source management</span>
+grantio add &lt;url&gt; [--name tacr]
+grantio add --bulk urls.txt
+<span style="color:var(--text-dim)"># Agent runs</span>
+grantio scout &lt;source&gt;
+grantio build &lt;source&gt; [--catalog-only] [--dry-run]
+grantio validate &lt;source&gt;
+grantio analyze &lt;source&gt;
+<span style="color:var(--text-dim)"># Collaboration</span>
+grantio hint &lt;source&gt; "text"
+grantio hints &lt;source&gt;
+<span style="color:var(--text-dim)"># Status</span>
+grantio status [source]
+grantio log &lt;source&gt; [--last]
+<span style="color:var(--text-dim)"># Gates</span>
+grantio gate list
+grantio gate approve &lt;source&gt;
+grantio gate reject &lt;source&gt; --reason "..."
+<span style="color:var(--text-dim)"># Ad-hoc</span>
+grantio run &lt;source&gt; "&lt;prompt&gt;"</pre>
+      </div>
+      <h3 style="margin-top:16px;">Dual-stream output</h3>
+      <p><code>stderr</code> = human-readable (progress, emoji) | <code>stdout</code> = JSON (pipeable)</p>
+    </div>
+    <div class="card">
+      <h2>Iteracni plan CLI</h2>
+      <div style="font-size:12px; line-height:2;">
+        ${[
+          {i:0, cmd:'grantio run <url> "<prompt>"', desc:'Jen wrapper nad Agent SDK'},
+          {i:1, cmd:'grantio add + scout', desc:'Scout pipeline (3 subagenty)'},
+          {i:2, cmd:'grantio build', desc:'Config gen + test + validate'},
+          {i:3, cmd:'grantio analyze + gate', desc:'Analyst + production gate'},
+          {i:4, cmd:'grantio hint + status', desc:'Collaboration basics'},
+          {i:5, cmd:'grantio add --bulk', desc:'Bulk operations'},
+          {i:6, cmd:'--json flag, piping', desc:'Unix philosophy'},
+        ].map(it => `
+          <div style="display:flex; gap:12px; align-items:center;">
+            <code style="min-width:40px; color:var(--text-dim);">It.${it.i}</code>
+            <code style="min-width:280px;">${it.cmd}</code>
+            <span style="color:var(--text-dim);">${it.desc}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `,
+
+  ui: () => `
+    <div class="card">
+      <h2>UI Vize — Faze 3</h2>
+      <p style="color:var(--text-dim); margin-bottom:12px;">CLI first. UI az ve fazi 3 (SvelteKit, existujici grantio.cz).</p>
+      <h3>Navigace</h3>
+      <div style="font-family:monospace; font-size:12px; margin:8px 0; line-height:1.8;">
+        /dashboard<br>
+        /sources<br>
+        /sources/:slug <span style="color:var(--text-dim)">← Source Workspace</span><br>
+        /sources/:slug/catalogs/:id <span style="color:var(--text-dim)">← Catalog Workspace</span><br>
+        /sources/:slug/catalogs/:id/opportunities/:id <span style="color:var(--text-dim)">← Detail</span><br>
+        /opportunities <span style="color:var(--text-dim)">← Global search</span><br>
+        /matching <span style="color:var(--text-dim)">← Future</span>
+      </div>
+      <h3 style="margin-top:12px;">Workspace pattern (sdileny vzor)</h3>
+      <p>3 urovne (source, catalog, opportunity), kazda se STEJNYM vzorem:<br>
+      <strong>overview + runs + hints + quality + config</strong></p>
+      <h3 style="margin-top:12px;">Klicove screeny</h3>
+      <ul>
+        <li><strong>Dashboard:</strong> Summary cards, recent runs, quality trends, alerts</li>
+        <li><strong>Source Workspace:</strong> Tabs (overview, catalogs, runs, hints, quality, config)</li>
+        <li><strong>Run Detail:</strong> Session replay z Agent SDK</li>
+        <li><strong>Opportunity Detail:</strong> Vsechna pole s provenance, confidence, attachments, dedup cluster</li>
+      </ul>
+    </div>
+  `,
+
+  numbers: () => `
+    <div class="card">
+      <h2>Cisla z PoC</h2>
+      <div class="metrics">
+        <div class="metric"><div class="val" style="color:var(--accent)">356</div><div class="label">YAML configs</div></div>
+        <div class="metric"><div class="val" style="color:var(--green)">239+</div><div class="label">Zdroju</div></div>
+        <div class="metric"><div class="val" style="color:var(--purple)">6,211</div><div class="label">Grantu</div></div>
+        <div class="metric"><div class="val" style="color:var(--yellow)">~673</div><div class="label">Katalogu</div></div>
+        <div class="metric"><div class="val" style="color:var(--orange)">16 GB</div><div class="label">Output dat</div></div>
+        <div class="metric"><div class="val" style="color:var(--pink)">12K</div><div class="label">LLM cache entries</div></div>
+        <div class="metric"><div class="val" style="color:var(--red)">$2-5</div><div class="label">Per source cost</div></div>
+        <div class="metric"><div class="val" style="color:var(--text-dim)">52</div><div class="label">Transformaci</div></div>
+        <div class="metric"><div class="val" style="color:var(--accent)">68</div><div class="label">Hint souboru</div></div>
+        <div class="metric"><div class="val" style="color:var(--green)">37</div><div class="label">Custom scriptu</div></div>
+        <div class="metric"><div class="val" style="color:var(--purple)">86%</div><div class="label">HTTP (14% Playwright)</div></div>
+        <div class="metric"><div class="val" style="color:var(--yellow)">30%</div><div class="label">WordPress (vzdy API)</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Naklady</h2>
+      <table>
+        <tr><th>Operace</th><th>Naklad</th><th>Model</th></tr>
+        <tr><td>Discovery</td><td>$0.60-$1.50</td><td>Sonnet</td></tr>
+        <tr><td>Config creation</td><td>$1.50-$3.00</td><td>Sonnet (3-10 attempts)</td></tr>
+        <tr><td>Extraction per source</td><td>$0.10-$0.75</td><td><span class="annotate">Haiku<span class="note">KONFLIKT: architecture.md rika "vsude Sonnet", ale extraction je Haiku. 10x rozdil v cene!</span></span></td></tr>
+        <tr><td>Full batch (359 zdroju)</td><td>$35-$270</td><td>Extraction only</td></tr>
+      </table>
+    </div>
+  `,
+
+  'iter-plan': () => `
+    <div class="card">
+      <h2>Iteracni plan — 3 faze</h2>
+      ${[
+        {f:'Faze 1: CLI + Core Pipeline', phase:'1', items:[
+          'Workspace scaffold (grantio init)', 'grantio add + filesystem layout',
+          'Prompt composition engine (7 vrstev)', 'Skills (SKILL.md soubory)',
+          'scout-source, scout-catalog, scout-opportunity',
+          'config-catalog, config-opportunity',
+          'validator-catalog, validator-source',
+          'analyst-source (gate-keeper)',
+          'Production gate (Telegram + CLI)',
+          'grantio status, hint, log',
+          'Memory system (filesystem-based)',
+          'Anti-fabrication checks',
+        ], cil:'3 zdroje end-to-end', color:'var(--accent)'},
+        {f:'Faze 2: Scale + Automation', phase:'2', items:[
+          'Bulk operations (grantio add --bulk)',
+          'fixer-catalog, fixer-opportunity (self-healing)',
+          'dedup-opportunity',
+          'Postgres migration (metadata)',
+          'Apify integration (actors, scheduler)',
+          'Cross-source learning',
+          'Monitoring + alerting',
+        ], cil:'50+ zdroju', color:'var(--purple)'},
+        {f:'Faze 3: UI + Full Automation', phase:'3', items:[
+          'REST API (Hono)',
+          'SvelteKit admin UI',
+          'Session replay v UI',
+          'Auto-discovery (meta-scout)',
+          'Matching engine',
+        ], cil:'300+ zdroju, <20% lidsky zasah', color:'var(--green)'},
+      ].map(f => `
+        <div class="card" data-phase="${f.phase}" style="border-left:3px solid ${f.color};">
+          <h2 style="color:${f.color}">${f.f}</h2>
+          <ul>${f.items.map(i => `<li>${i}</li>`).join('')}</ul>
+          <p style="margin-top:8px; color:${f.color}; font-weight:600;">Cil: ${f.cil}</p>
+        </div>
+      `).join('')}
+    </div>
+  `,
+};
+
+// === App logic ===
+let currentSection = 'overview';
+let issuesPanelOpen = false;
+
+function showSection(id) {
+  currentSection = id;
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  event.target.closest('.nav-item').classList.add('active');
+  renderContent();
+}
+
+function renderContent() {
+  const fn = sections[currentSection];
+  if (fn) {
+    document.getElementById('content').innerHTML = fn();
+  }
+}
+
+function toggleIssues() {
+  issuesPanelOpen = !issuesPanelOpen;
+  document.getElementById('issues-panel').classList.toggle('open', issuesPanelOpen);
+}
+
+function renderIssues(filteredIssues) {
+  const list = filteredIssues || issues;
+  document.getElementById('issue-count').textContent = list.length;
+  document.getElementById('issues-list').innerHTML = list
+    .sort((a,b) => b.severity - a.severity)
+    .map(i => `
+      <div class="issue-item ${i.type}" onclick="showSection('${i.section}'); document.querySelectorAll('.nav-item').forEach(el => { if(el.textContent.trim().startsWith('${i.section}')) el.click(); });">
+        <h4>${i.title}</h4>
+        <p>${i.desc}</p>
+        <div class="loc">${i.section} · severity ${i.severity}/3</div>
+      </div>
+    `).join('');
+}
+
+function filterPhase(phase, el) {
+  document.querySelectorAll('.phase-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  // Phase filtering just highlights, doesn't hide
+}
+
+function handleSearch(query) {
+  if (!query) { renderIssues(); return; }
+  const q = query.toLowerCase();
+  const filtered = issues.filter(i =>
+    i.title.toLowerCase().includes(q) ||
+    i.desc.toLowerCase().includes(q) ||
+    i.section.toLowerCase().includes(q)
+  );
+  renderIssues(filtered);
+
+  // Also highlight matching nav items
+  document.querySelectorAll('.nav-item').forEach(el => {
+    const text = el.textContent.toLowerCase();
+    if (text.includes(q)) {
+      el.style.background = 'rgba(88,166,255,0.1)';
+    } else {
+      el.style.background = '';
+    }
+  });
+}
+
+// Init
+renderContent();
+renderIssues();
+</script>
+
+</body>
+</html>

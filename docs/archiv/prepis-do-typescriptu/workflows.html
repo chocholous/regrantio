@@ -1,0 +1,1767 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grantio — 3 Happy Path Workflows</title>
+<style>
+:root{--bg:#0d1117;--s:#161b22;--s2:#1c2129;--s3:#21262d;--b:#30363d;--t:#c9d1d9;--td:#8b949e;--a:#58a6ff;--g:#3fb950;--y:#d29922;--r:#f85149;--o:#db6d28;--p:#bc8cff;--pk:#f778ba}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--t);font-family:'SF Mono','Fira Code','Cascadia Code',monospace;font-size:13px;line-height:1.6}
+.container{max-width:1200px;margin:0 auto;padding:20px}
+h1{font-size:18px;color:var(--a);margin-bottom:8px}
+.subtitle{color:var(--td);font-size:13px;margin-bottom:24px}
+
+/* Scenario tabs */
+.scenario-tabs{display:flex;gap:4px;margin-bottom:24px;border-bottom:1px solid var(--b);padding-bottom:0}
+.sc-tab{padding:10px 20px;cursor:pointer;color:var(--td);border-bottom:2px solid transparent;transition:all .15s;font-size:13px;font-family:inherit}
+.sc-tab:hover{color:var(--t);background:var(--s2)}
+.sc-tab.active{color:var(--a);border-bottom-color:var(--a)}
+.sc-tab .badge{font-size:10px;padding:2px 6px;border-radius:8px;margin-left:6px}
+.scenario{display:none}.scenario.active{display:block}
+
+/* Scenario header */
+.sc-header{background:var(--s);border:1px solid var(--b);border-radius:8px;padding:20px;margin-bottom:20px}
+.sc-header h2{font-size:15px;color:var(--a);margin-bottom:8px}
+.sc-meta{display:flex;gap:16px;flex-wrap:wrap}
+.sc-meta span{font-size:12px;color:var(--td)}
+.sc-meta code{background:var(--s2);padding:2px 6px;border-radius:4px;color:var(--p)}
+
+/* Step */
+.step{position:relative;margin-bottom:4px}
+.step-header{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--s);border:1px solid var(--b);border-radius:8px;cursor:pointer;transition:all .15s}
+.step-header:hover{background:var(--s2)}
+.step-header.open{border-radius:8px 8px 0 0;border-bottom-color:transparent}
+.step-num{min-width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+.step-agent{font-weight:600;min-width:180px}
+.step-summary{color:var(--td);flex:1;font-size:12px}
+.step-time{font-size:11px;color:var(--td);min-width:60px;text-align:right}
+.step-cost{font-size:11px;color:var(--td);min-width:50px;text-align:right}
+
+.step-body{display:none;background:var(--s);border:1px solid var(--b);border-top:none;border-radius:0 0 8px 8px;padding:0}
+.step-body.open{display:block}
+
+/* Sub-sections in step body */
+.sub{padding:16px 20px;border-bottom:1px solid var(--b)}
+.sub:last-child{border-bottom:none}
+.sub h4{font-size:12px;color:var(--td);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.sub pre{background:var(--s2);padding:12px;border-radius:6px;font-size:12px;overflow-x:auto;white-space:pre-wrap;color:var(--td)}
+.sub .highlight{color:var(--a)}
+.sub .val{color:var(--g)}
+.sub .warn{color:var(--y)}
+.sub .err{color:var(--r)}
+
+/* File refs */
+.file{display:inline-flex;align-items:center;gap:4px;background:var(--s2);padding:2px 8px;border-radius:4px;font-size:11px;margin:2px}
+.file.read{color:var(--a)}
+.file.write{color:var(--g)}
+.file.log{color:var(--y)}
+
+/* Arrow between steps */
+.step-arrow{text-align:center;color:var(--b);font-size:18px;padding:2px 0;margin-left:30px}
+
+/* Connector line */
+.step::before{content:'';position:absolute;left:29px;top:0;bottom:0;width:2px;background:var(--b);z-index:0}
+.step:first-child::before{top:50%}
+.step:last-child::before{bottom:50%}
+.step-header{position:relative;z-index:1}
+
+/* Phase separator */
+.phase-sep{padding:8px 16px;margin:12px 0 12px 14px;font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--td);border-left:2px dashed var(--b)}
+
+/* Data table */
+.data-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+.data-table th{text-align:left;padding:6px 8px;background:var(--s3);color:var(--td);font-weight:500}
+.data-table td{padding:6px 8px;border-bottom:1px solid var(--b)}
+
+/* Tags */
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;margin:1px}
+.tag-tool{background:rgba(88,166,255,0.15);color:var(--a)}
+.tag-scraper{background:rgba(188,140,255,0.15);color:var(--p)}
+.tag-gate{background:rgba(210,153,34,0.15);color:var(--y)}
+
+/* SDK primitiv tags */
+.tag-sdk{background:rgba(247,120,186,0.15);color:var(--pk);font-size:10px;padding:2px 6px;border-radius:4px;margin-left:6px;font-weight:600}
+.sdk-section{background:var(--s3);border-left:3px solid var(--pk);padding:12px 16px;margin:8px 0;border-radius:0 6px 6px 0}
+.sdk-section h5{font-size:11px;color:var(--pk);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.sdk-section pre{background:var(--bg);padding:10px;border-radius:4px;font-size:11px;color:var(--t)}
+.feedback-loop{background:rgba(219,109,40,0.1);border:1px dashed var(--o);border-radius:6px;padding:12px;margin:8px 0}
+.feedback-loop h5{color:var(--o);font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+
+/* Skills */
+.skills-section{margin-top:8px}
+.skill-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(63,185,80,0.1);border:1px solid rgba(63,185,80,0.25);padding:4px 10px;border-radius:6px;font-size:11px;margin:3px;cursor:help;transition:all .15s}
+.skill-tag:hover{background:rgba(63,185,80,0.2);border-color:var(--g)}
+.skill-tag .skill-name{color:var(--g);font-weight:600}
+.skill-tag .skill-why{color:var(--td);font-size:10px;margin-left:4px}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Grantio — Step-by-Step Workflows</h1>
+<p class="subtitle">3 happy path scenare. Klikni na krok pro detail (prompt, data, storage, logy, SDK primitiv). Badge u kroku = SDK primitiv (slash-command, agent, agent+mcp, agent+schema, hook+mcp).</p>
+
+<div class="scenario-tabs">
+  <div class="sc-tab active" onclick="showScenario(0,this)">Scenario 1<span class="badge" style="background:rgba(63,185,80,0.2);color:var(--g)">HTML 1 cat</span></div>
+  <div class="sc-tab" onclick="showScenario(1,this)">Scenario 2<span class="badge" style="background:rgba(210,153,34,0.2);color:var(--y)">XLS+PDF</span></div>
+  <div class="sc-tab" onclick="showScenario(2,this)">Scenario 3<span class="badge" style="background:rgba(188,140,255,0.2);color:var(--p)">API 3 cat</span></div>
+</div>
+
+<div id="scenarios"></div>
+</div>
+
+<script>
+const scenarios = [
+// ============================================================
+// SCENARIO 1: HTML, 1 catalog, 100 grants
+// ============================================================
+{
+  title: "HTML zdroj, 1 katalog, 100 grantu",
+  desc: "Ministerstvo XY — staticka HTML stranka s paginovanym seznamem a detail strankami",
+  meta: { url:"https://dotace.example.cz", type:"html_catalog", catalogs:1, grants:100, pages:10, strategy:"html_catalog_html_grants" },
+  steps: [
+  // --- STEP 0: CLI → Orchestrator ---
+  {
+    agent:"CLI → Orchestrator", color:"var(--y)", time:"<1s", cost:"—",
+    summary: "grantio add https://dotace.example.cz",
+    sdk_type: "slash-command",
+    prompt: `Uzivatel zadal: grantio add https://dotace.example.cz
+Orchestrator SKILL.md rika: vytvor projekt, nastav status CREATED.`,
+    input: `{ url: "https://dotace.example.cz" }`,
+    tools: ["write_status"],
+    actions: `1. Vygeneruje slug: "dotace-example-cz"
+2. Vytvori sources/dotace-example-cz/status.json
+3. Vytvori prazdne adresare: scouts/, configs/, runs/, memory/`,
+    storage: [
+      { op:"WRITE", path:"sources/dotace-example-cz/status.json", content:'{ "source_id": "dotace-example-cz", "url": "https://dotace.example.cz", "phase": "CREATED", "created_at": "2026-03-09T10:00:00Z" }' },
+    ],
+    logs: `[ORCH] Created project dotace-example-cz (https://dotace.example.cz)`,
+    returns: `{ status: "created", slug: "dotace-example-cz" }`,
+    sdk_call: `// .claude/commands/add.md → slash command
+// Uzivatel spusti: /add https://dotace.example.cz
+// Orchestrator session zpracuje jako prompt:
+
+for await (const msg of query({
+  prompt: "/add https://dotace.example.cz",
+  options: {
+    systemPrompt: { preset: "claude_code", append: orchestrationSkill },
+    settingSources: ["project"],  // nacte .claude/commands/add.md
+    mcpServers: { grantio: grantioTools },
+    allowedTools: ["Agent", "Read", "Write", "mcp__grantio__write_status"],
+  }
+}));`,
+    sdk_notes: "Slash command /add je .claude/commands/add.md s frontmatter (allowed-tools, argument-hint). $1 = URL."
+  },
+
+  // --- STEP 1: Scout Source ---
+  { phase: "SCOUTING" },
+  {
+    agent:"scout-source", color:"var(--a)", time:"~15s", cost:"$0.04",
+    sdk_type: "agent",
+    summary: "Analyzuj web, najdi katalogy, urc typ zdroje",
+    skills: [
+      { name:"grant-schemas", use:"ví co hledat (typy zdrojů, katalogů)", why:"Scout potřebuje znát typy grantových zdrojů a katalogů, aby věděl co na webu hledá" },
+      { name:"czech-parsing", use:"rozpozná CZ formáty na webu", why:"Rozpozná české datumy, částky, právní formy přímo na webové stránce" },
+    ],
+    prompt: `## Systemovy prompt (L0)
+Jsi scout-source agent. Tvuj ukol je analyzovat grantovy web a najit katalogy.
+
+## Task prompt (L1)
+Workspace: sources/dotace-example-cz/
+URL: https://dotace.example.cz
+Attempt: 1
+
+Prozkoumej web. Najdi:
+1. Typ zdroje (static HTML, SPA, API, PDF portal)
+2. Vsechny katalogy (stranky se seznamem grantu/vyzev)
+3. Jazyk, anti-bot ochranu, auth
+
+Vysledky zapis do: sources/dotace-example-cz/scouts/
+
+## Domain knowledge (L2)
+Ceske grantove weby typicky maji: /vyzvy, /dotace, /programy...
+
+## Memory (L6) — prazdne (prvni run)`,
+    input: `Zadna data — agent si vsechno fetchne sam.
+Prompt obsahuje jen cestu k workspace a URL.`,
+    tools: ["WebFetch", "WebSearch", "Read", "source_memory"],
+    actions: `1. WebFetch(https://dotace.example.cz) → HTML hlavni stranky
+2. Parsuje navigaci, hleda /vyzvy, /dotace, /granty linky
+3. WebFetch(/vyzvy) → najde HTML listing s 10 polozkami na strance
+4. Detekuje paginaci (?page=2, ?page=3...)
+5. WebFetch(/vyzvy?page=2) → overeni ze paginace funguje
+6. Zapise do source_memory("structure", "replace", "HTML listing na /vyzvy, 10 items/page, ?page= paginace")`,
+    storage: [
+      { op:"WRITE", path:"sources/dotace-example-cz/scouts/2026-03-09_source.json", content:`{
+  "source_type": "static",
+  "catalogs": [{
+    "name": "Vyzvy",
+    "url": "https://dotace.example.cz/vyzvy",
+    "estimated_count": 100,
+    "strategy_hint": "html_catalog_html_grants",
+    "pagination": { "type": "page_param", "param": "page" }
+  }],
+  "anti_bot": false,
+  "auth_required": false,
+  "language": "cs",
+  "confidence": 0.92,
+  "issues": [],
+  "suggestions": ["Paginace ma 10 stranek"]
+}` },
+      { op:"WRITE", path:"sources/dotace-example-cz/memory/structure.md", content:"HTML listing na /vyzvy, 10 items/page, ?page= paginace, 10 pages" },
+    ],
+    logs: `[scout-source] WebFetch https://dotace.example.cz → 200 OK (12KB)
+[scout-source] Found nav links: /vyzvy, /o-nas, /kontakt
+[scout-source] WebFetch /vyzvy → 200 OK (45KB), found 10 listing items
+[scout-source] Detected pagination: ?page=1..10
+[scout-source] Confidence: 0.92, 1 catalog found`,
+    returns: `ScoutSourceOutput {
+  source_type: "static",
+  catalogs: [{ name: "Vyzvy", url: ".../vyzvy", estimated_count: 100 }],
+  confidence: 0.92
+}`,
+    sdk_call: `// Orchestrator dispatchi sub-agenta pres Agent tool:
+// agents config v query() definuje scout-source
+
+agents: {
+  'scout-source': {
+    description: 'Analyzuje grantovy web, najde katalogy, urci typ zdroje',
+    prompt: scoutSourcePromptFactory("dotace-example-cz"),  // L0-L6 compose
+    tools: ['Read', 'Glob', 'Grep', 'WebFetch', 'WebSearch',
+            'mcp__grantio__source_memory'],
+    model: 'sonnet'
+  }
+}
+
+// Orchestrator prompt rika: "Pouzij scout-source agenta na dotace-example-cz"
+// SDK automaticky dispatchi Agent tool s timto promptem.`,
+    sdk_notes: "Agent je definovan programaticky (factory funkce), ne staticky .claude/agents/scout-source.md, protoze prompt se sestavuje dynamicky (7 vrstev)."
+  },
+
+  // --- STEP 2: Scout Catalog ---
+  {
+    agent:"scout-catalog", color:"var(--a)", time:"~10s", cost:"$0.03",
+    sdk_type: "agent",
+    summary: "Zmapuj katalog — listing selektory, pagination, pole",
+    skills: [
+      { name:"grant-schemas", use:"jaká pole očekávat v listingu", why:"Zná GrantOpportunity schema — ví které pole se typicky objeví v listing view vs detail view" },
+    ],
+    prompt: `## L0: Jsi scout-catalog agent.
+## L1: Workspace: sources/dotace-example-cz/
+Precti scouts/2026-03-09_source.json — tam najdes katalogy.
+Zmapuj katalog "Vyzvy" (URL: /vyzvy).
+Najdi: listing CSS selektor, pagination, pole, detail URL pattern.
+Vysledky zapis do: scouts/2026-03-09_catalog-vyzvy.json
+
+## L2: Domain knowledge (ceske granty)
+## L3: Source type = static HTML (html_listing.md)
+Staticke HTML listingy typicky pouzivaji <table> nebo <div class="item">.`,
+    input: `Zadna data v inputu — agent si precte scouts/source.json
+a fetchne HTML stranku sam.`,
+    tools: ["WebFetch", "Read", "source_memory"],
+    actions: `1. WebFetch(/vyzvy) → HTML
+2. Analyzuje DOM: najde .grant-list .grant-item (opakuje se 10x)
+3. V kazdem .grant-item najde: h3 a (title+URL), .date (deadline), .amount
+4. Detekuje detail URL pattern: /vyzvy/{slug}
+5. Overuje paginaci: .pagination a[href] → 10 stranek
+6. WebFetch(/vyzvy?page=10) → overeni posledni stranky`,
+    storage: [
+      { op:"WRITE", path:"sources/dotace-example-cz/scouts/2026-03-09_catalog-vyzvy.json", content:`{
+  "listing_selector": ".grant-list .grant-item",
+  "item_count": 100,
+  "pagination": { "type": "page_param", "param": "page", "total_pages": 10 },
+  "fields_available": ["title", "url", "deadline", "amount_max"],
+  "detail_url_pattern": "/vyzvy/{slug}",
+  "strategy": "html_catalog",
+  "sample_detail_urls": [
+    "https://dotace.example.cz/vyzvy/program-alfa",
+    "https://dotace.example.cz/vyzvy/vyzva-2026-01",
+    "https://dotace.example.cz/vyzvy/podpora-vedy"
+  ],
+  "confidence": 0.95
+}` },
+    ],
+    logs: `[scout-catalog] WebFetch /vyzvy → 200 OK
+[scout-catalog] Found repeating pattern: .grant-list .grant-item (10 items)
+[scout-catalog] Fields in listing: title (h3 a), deadline (.date), amount (.amount)
+[scout-catalog] Detail URL pattern: /vyzvy/{slug}
+[scout-catalog] Pagination: .pagination a → 10 pages confirmed`,
+    returns: `ScoutCatalogOutput {
+  listing_selector: ".grant-list .grant-item",
+  item_count: 100,
+  pagination: { type: "page_param", total_pages: 10 },
+  fields_available: ["title", "url", "deadline", "amount_max"],
+  detail_url_pattern: "/vyzvy/{slug}",
+  confidence: 0.95
+}`,
+    sdk_call: `// Strukturovany output — scout vraci JSON schema:
+agents: {
+  'scout-catalog': {
+    description: '...',
+    prompt: scoutCatalogPromptFactory("dotace-example-cz", "Vyzvy"),
+    tools: ['WebFetch', 'Read', 'mcp__grantio__source_memory'],
+    model: 'sonnet',
+  }
+}
+
+// outputFormat by se dal pridat pro garanci JSON struktury:
+// outputFormat: { type: 'json_schema', schema: ScoutCatalogSchema }
+// Ale scout zapisuje na filesystem, takze output je sekundarni.`,
+    sdk_notes: "Pro vice katalogu orchestrator spousti vice scout-catalog agentu paralelne (kazdy s jinym katalogem v promptu)."
+  },
+
+  // --- STEP 3: Scout Opportunity ---
+  {
+    agent:"scout-opportunity", color:"var(--a)", time:"~12s", cost:"$0.04",
+    sdk_type: "agent",
+    summary: "Zmapuj detail vyzvy — schema mapping, pole, prilohy",
+    skills: [
+      { name:"grant-schemas", use:"mapuje DOM na GrantOpportunity schema", why:"Musí znát všech 18+ polí schema a jejich typy, aby správně namapoval CSS selektory" },
+      { name:"czech-parsing", use:"parsuje vzorkové hodnoty", why:"Rozpozná české datumy ('31. 3. 2026'), částky ('5 mil. Kč') ve vzorcích" },
+      { name:"extraction-pipeline", use:"rozumí 6-level fallback", why:"Ví že CSS first, LLM fallback — navrhuje správnou extraction strategii" },
+    ],
+    prompt: `## L0: Jsi scout-opportunity agent.
+## L1: Workspace: sources/dotace-example-cz/
+Precti scouts/catalog-vyzvy.json — tam najdes sample_detail_urls.
+Zmapuj detail stranku na prvnim URL ze sample.
+Najdi: vsechna pole z GrantOpportunity schema, CSS selektory, prilohy.
+Vysledky zapis do: scouts/2026-03-09_opportunity-sample.json
+
+## L2: Domain knowledge + field definitions
+## L3: Source type = static HTML`,
+    input: `Zadna data — agent si precte scouts/catalog-vyzvy.json,
+vybere sample URL a fetchne detail stranku sam.`,
+    tools: ["WebFetch", "Read", "source_memory"],
+    actions: `1. WebFetch(/vyzvy/program-alfa) → detail HTML
+2. Mapuje DOM na GrantOpportunity schema:
+   - h1.title → title
+   - .description → description
+   - .provider → provider
+   - .deadline-date → deadline
+   - .amount-range → amount_min, amount_max
+   - .eligibility-list li → eligibility
+   - .attachments a[href$=".pdf"] → prilohy
+3. Overuje na 2 dalsich detail strankach (vyzva-2026-01, podpora-vedy)
+4. Zapise findings`,
+    storage: [
+      { op:"WRITE", path:"sources/dotace-example-cz/scouts/2026-03-09_opportunity-sample.json", content:`{
+  "fields": {
+    "title": { "selector": "h1.title", "method": "css", "sample": "Program ALFA", "confidence": 0.99 },
+    "description": { "selector": ".description", "method": "css", "sample": "Program na podporu...", "confidence": 0.95 },
+    "provider": { "selector": ".provider", "method": "css", "sample": "Ministerstvo XY", "confidence": 0.99 },
+    "deadline": { "selector": ".deadline-date", "method": "css+regex", "sample": "31. 3. 2026", "confidence": 0.90 },
+    "amount_min": { "selector": ".amount-range", "method": "css+regex", "sample": "500 000 Kc", "confidence": 0.85 },
+    "amount_max": { "selector": ".amount-range", "method": "css+regex", "sample": "5 mil. Kc", "confidence": 0.85 },
+    "eligibility": { "selector": ".eligibility-list li", "method": "css", "sample": ["s.r.o.", "a.s.", "VS"], "confidence": 0.80 }
+  },
+  "attachments": [
+    { "type": "pdf", "url_pattern": ".attachments a[href$=\\".pdf\\"]", "contains_data": true }
+  ],
+  "schema_coverage": 0.78,
+  "confidence": 0.88
+}` },
+    ],
+    logs: `[scout-opp] WebFetch /vyzvy/program-alfa → 200 OK (28KB)
+[scout-opp] Mapped 7/18 fields from GrantOpportunity schema
+[scout-opp] Found 2 PDF attachments
+[scout-opp] Cross-checked with /vyzvy/vyzva-2026-01 — selectors consistent
+[scout-opp] Schema coverage: 78%, confidence: 0.88`,
+    returns: `ScoutOpportunityOutput {
+  fields: { title: {...}, description: {...}, ... },
+  attachments: [{ type: "pdf", ... }],
+  schema_coverage: 0.78,
+  confidence: 0.88
+}`,
+    sdk_call: `// Scout-opportunity bere sample URLs z predchoziho scouta:
+agents: {
+  'scout-opportunity': {
+    description: 'Zmapuje detail stranku — schema mapping, pole, prilohy',
+    prompt: scoutOpportunityPromptFactory("dotace-example-cz"),
+    tools: ['WebFetch', 'Read', 'mcp__grantio__source_memory'],
+    model: 'sonnet',
+  }
+}
+// Agent si precte scouts/catalog-vyzvy.json → najde sample_detail_urls
+// Cely kontext dostane v promptu (workspace cesta), data cte z filesystemu.`
+  },
+
+  // --- PHASE: BUILDING ---
+  { phase: "BUILDING" },
+
+  // --- STEP 4: Config Catalog ---
+  {
+    agent:"config-catalog", color:"var(--p)", time:"~45s", cost:"$0.15",
+    sdk_type: "agent+mcp",
+    summary: "Generuj listing config, spust scraper, ziskej listing URLs",
+    skills: [
+      { name:"yaml-config", use:"generuje YAML config", why:"Zná YAML config format, templates per strategie (html_catalog, api_catalog...), validační pravidla" },
+      { name:"czech-parsing", use:"nastavuje transforms", why:"Ví které transforms použít: parse_czech_date, parse_czech_amount v YAML field definicích" },
+    ],
+    prompt: `## L0: Jsi config-catalog agent.
+## L1: Workspace: sources/dotace-example-cz/
+Precti scout findings: scouts/*.json
+Vygeneruj YAML config pro listing.
+Zapis config do: configs/catalog.v1.yml
+
+Spust scraper — nejdriv test (prvnich 5 URLs), pak full run.
+Listing URLs uloz do: runs/run-001/listing_urls.json
+
+## L2: Domain knowledge
+## L3: html_listing.md — staticke HTML: pouzij scrapy_run
+## L4: Hints — zadne (prvni run)
+## SKILL: yaml-config`,
+    input: `Zadna data v inputu — agent si precte:
+- scouts/2026-03-09_source.json
+- scouts/2026-03-09_catalog-vyzvy.json
+- scouts/2026-03-09_opportunity-sample.json`,
+    tools: ["Read", "Write", "Edit", "scrapy_run", "WebFetch", "source_memory"],
+    actions: `1. Generuje YAML config (configs/catalog.v1.yml):
+   - source.url, source.name
+   - catalogs[0].listing_url, selector, pagination, fields, detail_url_pattern
+
+2. Write(configs/catalog.v1.yml)
+
+3. scrapy_run(config=catalog.v1.yml, max_items=5) → TEST na 5
+   → 5 items, pagination funguje, URLs OK
+
+4. scrapy_run(config=catalog.v1.yml) → FULL RUN
+   → 100 items, 10 pages, all URLs collected
+
+5. Uklada listing URLs do runs/run-001/listing_urls.json`,
+    storage: [
+      { op:"WRITE", path:"sources/dotace-example-cz/configs/catalog.v1.yml", content:`source:
+  name: "Ministerstvo XY"
+  url: "https://dotace.example.cz"
+catalogs:
+  - name: "Vyzvy"
+    listing_url: "https://dotace.example.cz/vyzvy"
+    selector: ".grant-list .grant-item"
+    pagination:
+      type: page_param
+      param: page
+      max_pages: 20
+    fields:
+      title: { selector: "h3 a" }
+      url: { selector: "h3 a", attribute: href }
+      deadline: { selector: ".date", transform: parse_czech_date }
+      amount_max: { selector: ".amount", transform: parse_czech_amount }
+    detail_url_pattern: "{url}"` },
+      { op:"WRITE", path:"sources/dotace-example-cz/runs/run-001/listing_urls.json", content:`["https://dotace.example.cz/vyzvy/program-alfa",
+ "https://dotace.example.cz/vyzvy/vyzva-2026-01",
+ ... (100 URLs total)]` },
+      { op:"WRITE", path:"sources/dotace-example-cz/runs/run-001/session.json", content:'{ "agent": "config-catalog", "status": "completed", "items_count": 100, "cost": "$0.15" }' },
+    ],
+    logs: `[cfg-cat] Generated YAML config v1
+[cfg-cat] scrapy_run(test, max=5) → 5 items OK, pagination works
+[cfg-cat] scrapy_run(full) → 100 items, 10 pages scraped
+[cfg-cat] All 100 listing URLs collected`,
+    returns: `Zapise vysledky na filesystem. Orchestrator pokracuje validator-catalog.`,
+    sdk_call: `// Config agent pouziva MCP custom tools (scrapy_run):
+agents: {
+  'config-catalog': createConfigAgent("dotace-example-cz", "catalog"),
+  //                 ↑ factory funkce — dynamicky prompt (7 vrstev)
+}
+
+// Factory vraci:
+{
+  description: 'Generuje listing YAML config, spousti scraper',
+  prompt: [L0, L1_skills, L2_identity, L3_source_context,
+           L4_task, L6_guardrails].join('\\n---\\n'),
+  tools: ['Read', 'Write', 'Edit', 'Bash', 'WebFetch',
+          'mcp__grantio__scrapy_run',        // ← custom MCP tool
+          'mcp__grantio__source_memory'],
+  model: 'sonnet',
+}
+
+// Agent vola mcp__grantio__scrapy_run dvakrat:
+// 1. scrapy_run({ config: "catalog.v1.yml", max_items: 5 })  → test
+// 2. scrapy_run({ config: "catalog.v1.yml" })                → full`,
+    sdk_notes: "scrapy_run je custom MCP tool definovany pres createSdkMcpServer(). Agent ho vola primo — neni to orchestrator tool.",
+    feedback_loop: {
+      max_attempts: 3,
+      description: `Pokud validator-catalog vrati needs_fix:
+1. Orchestrator cte validation.json → feedback
+2. Re-spusti config-catalog s L5 feedback vrstvou:
+   createConfigAgent("dotace-example-cz", "catalog", {
+     attempt: 2,
+     feedback: validation.feedback  // ← z validatoru
+   })
+3. Factory prida L5 vrstvu do promptu:
+   "PREDCHOZI POKUS SELHAL. Validator feedback: ..."
+4. Novy config = configs/catalog.v2.yml (immutable versioning)
+5. Max 3 pokusy, pak ESCALATED stav + Telegram alert`
+    }
+  },
+
+  // --- STEP 5: Validator Catalog ---
+  {
+    agent:"validator-catalog", color:"var(--g)", time:"~10s", cost:"$0.03",
+    sdk_type: "agent+schema",
+    summary: "Over listing URLs — existuji? Pocet sedi se scoutem?",
+    skills: [
+      { name:"quality-scoring", use:"URL check thresholds, count tolerance", why:"Ví kolik % URLs musí fungovat, jaká odchylka od scout odhadu je OK" },
+    ],
+    prompt: `## L0: Jsi validator-catalog agent.
+## L1: Workspace: sources/dotace-example-cz/
+Precti: runs/run-001/listing_urls.json (listing URLs z config-catalog)
+Precti: scouts/2026-03-09_source.json (ocekavany pocet ze scouta)
+Precti: scouts/2026-03-09_catalog-vyzvy.json (detail o katalogu)
+
+Over:
+1. Existuji URLs? (HTTP HEAD check na sample 10 z 100)
+2. Pocet sedi s odhadem scouta? (scout rikal ~100)
+3. Zadne duplicity?
+4. Pagination kompletni? (posledni stranka dosazena)
+
+Pokud OK → verdict: approve
+Pokud problem → verdict: needs_fix + konkretni feedback pro config-catalog
+
+Vysledky zapis do: runs/run-001/validation.json`,
+    input: `Zadna data v inputu — agent si precte:
+- runs/run-001/listing_urls.json (100 URLs)
+- scouts/2026-03-09_source.json (estimated_count: 100)`,
+    tools: ["Read", "Bash", "WebFetch"],
+    actions: `1. Read listing_urls.json → 100 URLs
+2. Read source.json → scout estimated 100 items
+3. Count check: 100 actual vs ~100 estimated → OK (delta 0%)
+4. HTTP HEAD na 10 random URLs → 10/10 return 200 OK
+5. Duplicate check: 0 duplicates
+6. Pagination: 10 pages × 10 items = 100 → kompletni
+7. Verdict: APPROVE`,
+    storage: [
+      { op:"WRITE", path:"sources/dotace-example-cz/runs/run-001/validation.json", content:`{
+  "verdict": "approve",
+  "checks": {
+    "urls_exist": { "sampled": 10, "passed": 10, "failed": 0, "errors": [] },
+    "count_vs_scout": { "expected": 100, "actual": 100, "delta_pct": 0 },
+    "pagination_complete": true,
+    "duplicates": 0
+  }
+}` },
+    ],
+    logs: `[val-cat] 100 URLs loaded, scout expected ~100 → match
+[val-cat] HTTP check: 10/10 sampled URLs return 200
+[val-cat] No duplicates, pagination complete
+[val-cat] Verdict: APPROVE`,
+    returns: `ValidatorCatalogOutput { verdict: "approve" }
+
+⚠️ ALTERNATIVA (needs_fix): Pokud by URLs nefungovaly nebo pocet nesedel:
+{
+  verdict: "needs_fix",
+  feedback: {
+    summary: "Jen 73 URLs, scout cekal 100. Stranky 8-10 vraceni 0 items.",
+    missing_pages: [8, 9, 10],
+    suggestions: ["Zkontroluj max_pages — mozna pagination selektor nefunguje po str. 7"]
+  }
+}
+→ Orchestrator posle config-catalog znovu s timto feedbackem v L5 vrstve promptu.`,
+    sdk_call: `// Validator pouziva outputFormat pro garanci JSON struktury:
+agents: {
+  'validator-catalog': {
+    description: 'Overuje listing URLs — existuji? Pocet sedi?',
+    prompt: validatorCatalogPromptFactory("dotace-example-cz"),
+    tools: ['Read', 'Bash', 'WebFetch'],
+    model: 'sonnet',
+  }
+}
+
+// outputFormat zajisti strojove citelny vysledek:
+// (aplikovano pres wrapper, ne primo v agents config)
+outputFormat: {
+  type: 'json_schema',
+  schema: {
+    type: 'object',
+    properties: {
+      verdict: { enum: ['approve', 'needs_fix'] },
+      urls_checked: { type: 'number' },
+      urls_alive: { type: 'number' },
+      count_vs_scout: { type: 'object' },
+      feedback: { type: 'string' },
+    },
+    required: ['verdict', 'urls_checked', 'urls_alive']
+  }
+}
+
+// Orchestrator dostane: msg.structured_output.verdict === "approve"
+// → pokracuje na config-opportunity
+// → nebo re-dispatch config-catalog s feedbackem`,
+    sdk_notes: "Structured output eliminuje parsovani volneho textu. Orchestrator rozhoduje na zaklade strojoveho verdiktu."
+  },
+
+  // --- STEP 6: Config Opportunity ---
+  {
+    agent:"config-opportunity", color:"var(--p)", time:"~3min", cost:"$0.80",
+    sdk_type: "agent+mcp",
+    summary: "Detail config — stav na 5 vzorcich, spust na vsech 100",
+    skills: [
+      { name:"yaml-config", use:"generuje detail YAML config", why:"Zná detail extraction config syntax — field steps, LLM prompts, document processing" },
+      { name:"grant-schemas", use:"field definitions pro extraction", why:"Zná všech 18+ polí GrantOpportunity — ví co extrahovat a jaké typy očekávat" },
+      { name:"czech-parsing", use:"nastavuje transforms", why:"parse_czech_date, parse_czech_amount, extract_deadline — 52 registrovaných transformací" },
+      { name:"extraction-pipeline", use:"implementuje pipeline v YAML", why:"6-level fallback: CSS → regex → transform → LLM. Chaining: [normalize_text, extract_end_date]" },
+      { name:"anti-fabrication", use:"Null > guess, dual extraction", why:"Synthesize povoleno JEN pro ideal_grantee a how_to_apply. Vše ostatní: null pokud nenalezeno" },
+    ],
+    prompt: `## L0: Jsi config-opportunity agent.
+## L1: Workspace: sources/dotace-example-cz/
+Precti scout findings: scouts/2026-03-09_opportunity-sample.json
+Precti listing URLs: runs/run-001/listing_urls.json
+Precti catalog config: configs/catalog.v1.yml
+
+Vyber vzorek 5 URLs, stav detail config.
+Pak spust na VSECH URLs.
+Zapis config do: configs/opportunity.v1.yml
+Vysledky uloz do: runs/run-002/
+
+## L2: Domain knowledge + field definitions
+## L3: html_listing.md
+## SKILL: yaml-config, extraction-pipeline, anti-fabrication
+Pravidla: CSS first, LLM fallback. Null > guess. Dual extraction.`,
+    input: `Zadna data v inputu — agent si precte:
+- scouts/2026-03-09_opportunity-sample.json (selektory, pole)
+- runs/run-001/listing_urls.json (100 URLs z config-catalog)
+- configs/catalog.v1.yml (listing config)`,
+    tools: ["Read", "Write", "Edit", "scrapy_run", "WebFetch", "source_memory"],
+    actions: `1. Precte opportunity-sample.json → selektory, pole
+2. Vybere 5 sample URLs z listing_urls.json
+3. WebFetch 5 sample URLs → analyzuje detail HTML
+4. Generuje detail extraction config:
+   - CSS fields: title, description, provider, deadline, amounts, eligibility
+   - LLM synthesized: ideal_grantee, how_to_apply
+   - PDF processing pro prilohy
+
+5. Write(configs/opportunity.v1.yml)
+
+6. scrapy_run(config=opportunity.v1.yml, urls=5_sample) → TEST
+   → 5/5 items, field coverage OK
+
+7. scrapy_run(config=opportunity.v1.yml, all URLs) → FULL RUN
+   → 100 items extracted
+   → Zapise items.json + report.json do runs/run-002/`,
+    storage: [
+      { op:"WRITE", path:"sources/dotace-example-cz/configs/opportunity.v1.yml", content:`detail:
+  fields:
+    title: { selector: "h1.title" }
+    description: { selector: ".description", transform: normalize_text }
+    provider: { selector: ".provider" }
+    deadline: { selector: ".deadline-date", transform: parse_czech_date }
+    amount_min: { selector: ".amount-range", transform: [parse_czech_amount, extract_min] }
+    amount_max: { selector: ".amount-range", transform: [parse_czech_amount, extract_max] }
+    eligibility: { selector: ".eligibility-list li" }
+    ideal_grantee: { method: llm, prompt: "Profil idealniho zadatele" }
+    how_to_apply: { method: llm, prompt: "Jak podat zadost krok po kroku" }
+  documents:
+    selector: ".attachments a[href$=\\".pdf\\"]"
+    parse: true
+    max_size_kb: 5000
+  llm_extraction:
+    enabled: true
+    model: haiku
+    fields: [ideal_grantee, how_to_apply, category, focus_area]` },
+      { op:"WRITE", path:"sources/dotace-example-cz/runs/run-002/items.json", content:"[...100 grant items with all fields...]" },
+      { op:"WRITE", path:"sources/dotace-example-cz/runs/run-002/report.json", content:`{
+  "total_items": 100,
+  "items_by_type": { "grant_call": 97, "news_announcement": 2, "unknown": 1 },
+  "field_coverage": {
+    "title": 1.0, "description": 0.95, "provider": 0.98,
+    "deadline": 0.92, "amount_max": 0.80, "amount_min": 0.58,
+    "eligibility": 0.62, "ideal_grantee": 0.90, "how_to_apply": 0.88
+  },
+  "fabrication_check": { "css_llm_agreement": 0.94, "suspicious_fields": [] }
+}` },
+      { op:"WRITE", path:"sources/dotace-example-cz/runs/run-002/session.json", content:'{ "agent": "config-opportunity", "status": "completed", "cost": "$0.80" }' },
+    ],
+    logs: `[cfg-opp] Read 100 listing URLs
+[cfg-opp] Fetching 5 sample detail pages...
+[cfg-opp] Generated detail config opportunity.v1.yml
+[cfg-opp] scrapy_run(test, 5 samples) → 5/5 OK
+[cfg-opp] scrapy_run(full, 100 URLs) → 100 items
+[cfg-opp] LLM extraction (Haiku): 100 calls, $0.45`,
+    returns: `Zapise vysledky na filesystem. Orchestrator pokracuje validator-opportunity.`,
+    sdk_call: `// Stejna factory pattern jako config-catalog:
+createConfigAgent("dotace-example-cz", "opportunity")
+
+// Agent ma pristup k MCP tools:
+tools: ['Read', 'Write', 'Edit', 'Bash', 'WebFetch',
+        'mcp__grantio__scrapy_run',
+        'mcp__grantio__source_memory']
+
+// Agent cte zavislosti z filesystemu:
+// requires: runs/{cfg-cat-run}/listing_urls.json
+// requires: configs/catalog.v1.yml
+// optional: scouts/opportunity-sample.json`,
+    sdk_notes: "Orchestrator pred spustenim pouzije list_runs tool — najde approved config-catalog run a preda jeho run ID v promptu.",
+    feedback_loop: {
+      max_attempts: 3,
+      description: `Stejna logika jako config-catalog loop:
+1. validator-opportunity vrati needs_fix → feedback
+2. createConfigAgent("dotace-example-cz", "opportunity", { attempt: 2, feedback })
+3. Nova verze: configs/opportunity.v2.yml
+4. Max 3 pokusy, pak ESCALATED`
+    }
+  },
+
+  // --- STEP 7: Validator Opportunity ---
+  { phase: "VALIDATING" },
+  {
+    agent:"validator-opportunity", color:"var(--g)", time:"~12s", cost:"$0.04",
+    sdk_type: "agent+schema",
+    summary: "Typove specificka validace — grant_call pravidla, quarantine non-grants",
+    prompt: `## L0: Jsi validator-opportunity agent.
+## L1: Workspace: sources/dotace-example-cz/
+Precti: runs/run-002/items.json (extracted items)
+Precti: runs/run-002/report.json (extraction report)
+Precti: scouts/2026-03-09_source.json (source type, katalogy)
+
+Validuj kvalitu dat. Pravidla zavisi na typu opportunity:
+- grant_call: MUSI mit title, provider, deadline, amount. Threshold 80%.
+- news_announcement: QUARANTINE. Jen basic check.
+- unknown: QUARANTINE.
+
+Over:
+1. Klasifikace items podle typu
+2. Povinne pole pro kazdy typ
+3. Field coverage vs threshold
+4. Fabrication check (CSS vs LLM agreement)
+5. Anomalie (deadline v minulosti, nerealne castky...)
+
+Pokud OK → verdict: approve
+Pokud problem → verdict: needs_fix + feedback pro config-opportunity
+
+Vysledky zapis do: runs/run-002/validation.json`,
+    input: `Zadna data v inputu — agent si precte:
+- runs/run-002/items.json (100 items)
+- runs/run-002/report.json (field coverage, types)`,
+    tools: ["Read", "Bash", "WebFetch"],
+    actions: `1. Read items.json → 100 items
+2. Klasifikace: 97 grant_call, 2 news_announcement, 1 unknown
+3. Quarantine: 2 news + 1 unknown = 3 items → QUARANTINE
+
+4. grant_call validace (97 items):
+   - title: 97/97 (100%) ✓
+   - provider: 95/97 (98%) ✓
+   - deadline: 89/97 (92%) ✓ — 8 nemaji (open-ended vyzvy)
+   - amount_max: 78/97 (80%) ✓ — na hrane, ale OK
+   - eligibility: 60/97 (62%) ⚠ — pod 80% ale ne kriticky
+   - Celkova kvalita grant_call: 82% > 80% threshold ✓
+
+5. Fabrication check: CSS vs LLM agreement 94% ✓
+6. Anomalie: 15 items deadline v minulosti (archivni — expected)
+7. Verdict: APPROVE`,
+    storage: [
+      { op:"WRITE", path:"sources/dotace-example-cz/runs/run-002/validation.json", content:`{
+  "verdict": "approve",
+  "quality_score": 82,
+  "items_by_type": {
+    "grant_call": { "count": 97, "quality": 82, "threshold": 80, "passed": true },
+    "news_announcement": { "count": 2, "quarantined": true },
+    "unknown": { "count": 1, "quarantined": true }
+  },
+  "field_coverage": {
+    "title": 1.0, "provider": 0.98, "deadline": 0.92,
+    "amount_max": 0.80, "eligibility": 0.62
+  },
+  "quarantine": { "count": 3, "reasons": ["news_announcement: 2", "unknown: 1"] },
+  "fabrication_check": { "css_vs_llm_agreement": 0.94, "suspicious_fields": [] },
+  "anomalies": ["15 grant_call items have past deadline (archival)"],
+  "warnings": ["eligibility 62% — pod doporucenymi 80%, ale ne blokujici"]
+}` },
+    ],
+    logs: `[val-opp] 100 items: 97 grant_call, 2 news, 1 unknown
+[val-opp] Quarantine: 3 (non-grant types)
+[val-opp] grant_call quality: 82% > 80% threshold → PASS
+[val-opp] Fabrication check: 94% agreement → OK
+[val-opp] Anomaly: 15 past deadlines (archival)
+[val-opp] Verdict: APPROVE`,
+    returns: `ValidatorOpportunityOutput { verdict: "approve", quality: 82 }
+
+⚠️ ALTERNATIVA (needs_fix): Pokud by kvalita nesedela:
+{
+  verdict: "needs_fix",
+  feedback: {
+    summary: "deadline parsovani selhava u 30% grant_call items",
+    weakest_fields: [
+      { field: "deadline", coverage: 0.70, issue: "parse_czech_date nechyta format 'do 31.3.'" }
+    ],
+    sample_failures: [
+      { url: "/vyzvy/program-alfa", field: "deadline", expected: "2026-03-31", got: null }
+    ],
+    suggestions: ["Pridej regex pro format 'do DD.MM.YYYY'"]
+  }
+}
+→ Orchestrator posle config-opportunity znovu s feedbackem.`,
+    sdk_call: `// Type-specific validation se structured output:
+agents: {
+  'validator-opportunity': {
+    description: 'Typove specificka validace — grant_call, subsidy_program...',
+    prompt: validatorOpportunityPromptFactory("dotace-example-cz"),
+    tools: ['Read', 'Bash', 'WebFetch'],
+    model: 'sonnet',
+  }
+}
+
+// Structured output schema:
+outputFormat: {
+  type: 'json_schema',
+  schema: {
+    type: 'object',
+    properties: {
+      verdict: { enum: ['approve', 'needs_fix'] },
+      quality_score: { type: 'number' },
+      items_by_type: { type: 'object' },
+      quarantine: { type: 'object' },
+      feedback: { type: 'object' },
+    },
+    required: ['verdict', 'quality_score']
+  }
+}
+
+// Type-specific thresholds v promptu (L1):
+// grant_call: 80%, must have title+provider+deadline+amount
+// subsidy_program: 70%, must have title+provider+description
+// news/completed: → quarantine`,
+    sdk_notes: "Validator nepise config (nema Write/Edit). Jen cte items a vynasi verdikt. canUseTool blokuje Write operace."
+  },
+
+  // --- STEP 8: Analyst ---
+  { phase: "REVIEWING" },
+  {
+    agent:"analyst-source", color:"var(--o)", time:"~12s", cost:"$0.05",
+    sdk_type: "agent+hook",
+    summary: "Obsahovy review, gate-keeping, verdict: APPROVE",
+    prompt: `## L0: Jsi analyst-source agent. Obsahovy expert na grantova data.
+## L1: Workspace: sources/dotace-example-cz/
+Posud kvalitu dat. Precti:
+- runs/run-002/items.json (grant data)
+- runs/run-002/report.json (extraction report)
+- runs/run-002/validation.json (validator vysledky)
+- memory/ (historie)
+- hints.md (existujici hinty)
+Rozhodnes: approve / needs_work / reject.
+Vysledky zapis do: runs/run-002/analyst.json`,
+    input: `Zadna data v inputu — agent si precte:
+- runs/run-002/items.json, report.json, validation.json
+- memory/*.md (rozhodovaci historie)
+- hints.md (source-level hinty)`,
+    tools: ["Read", "Bash", "hint_write", "source_memory"],
+    actions: `1. Cte sample items — obsahove smysluplne? tituly OK? castky realne?
+2. Validator uz schvalil technickou kvalitu — analyst posuzuje OBSAH
+3. Posouzeni: castky 500K-50M CZK realne pro ceske granty ✓
+4. 15 archivnich = expected (ministerstvo zverejnuje i stare vyzvy)
+5. Navrhne hint pro budouci zlepseni eligibility
+6. Verdict: APPROVE`,
+    storage: [
+      { op:"WRITE", path:"sources/dotace-example-cz/runs/run-002/analyst.json", content:`{
+  "verdict": "approve",
+  "quality_score": 82,
+  "content_assessment": "Data obsahove spravna. Tituly odpovidaji, castky realne (500K-50M CZK). 15 archivnich vyzev je ocekavane.",
+  "issues": [{ "field": "eligibility", "severity": "low", "note": "62% — nektere vyzvy ji nemaji na webu" }],
+  "recommendations": ["Pri improve: zkusit extrahovat eligibility z PDF priloh"]
+}` },
+      { op:"APPEND", path:"sources/dotace-example-cz/hints.md", content:`## Source-level
+- [unresolved] analyst, 2026-03-09: Eligibility 62% — zkusit PDF prilohy` },
+    ],
+    logs: `[analyst] Reviewed sample items — content OK
+[analyst] Amounts realistic for CZ grants ✓
+[analyst] Added hint: eligibility from PDF
+[analyst] Verdict: APPROVE`,
+    returns: `AnalystSourceOutput { verdict: "approve", quality: 82 }`,
+    sdk_call: `// Analyst ma hint_write — jediny agent ktery muze psat hinty:
+agents: {
+  'analyst-source': {
+    description: 'Obsahovy expert — posuzuje kvalitu dat, pise hinty',
+    prompt: analystPromptFactory("dotace-example-cz"),
+    tools: ['Read', 'Bash',
+            'mcp__grantio__hint_write',     // ← jediny s hint_write
+            'mcp__grantio__source_memory'],
+    model: 'sonnet',
+  }
+}
+
+// canUseTool zajistuje ze hint_write ma JEN analyst:
+canUseTool: async (toolName, input) => {
+  if (toolName === 'mcp__grantio__hint_write' &&
+      currentAgent !== 'analyst-source') {
+    return { behavior: 'deny', message: 'Only analyst can write hints' };
+  }
+  return { behavior: 'allow', updatedInput: input };
+}`,
+    sdk_notes: "Analyst je jediny agent s hint_write privilegiem. Bezpecnostni matice je vynucena pres canUseTool callback."
+  },
+
+  // --- PHASE: GATE ---
+  { phase: "PRODUCTION GATE" },
+
+  // --- STEP 9: Gate ---
+  {
+    agent:"Orchestrator (gate)", color:"var(--y)", time:"~1min (ceka na cloveka)", cost:"—",
+    sdk_type: "hook+mcp",
+    summary: "Telegram notifikace, ceka na lidske schvaleni",
+    prompt: `Orchestrator SKILL: Analyst schvalil. Aplikuj production gate.
+Precti: sources/dotace-example-cz/runs/run-002/analyst.json
+1. Zkontroluj gate podminky
+2. Posli Telegram notifikaci
+3. Cekej na lidske schvaleni (grantio gate approve)`,
+    input: `Zadna data v inputu — orchestrator si precte:
+- runs/run-002/analyst.json (verdict: approve, quality: 82)`,
+    tools: ["gate_check", "notify", "write_status"],
+    actions: `1. gate_check("dotace-example-cz") → vsechny podminky splneny
+   - validator-catalog: approve ✓
+   - validator-opportunity: approve ✓
+   - analyst: approve ✓
+2. notify("telegram", "dotace-example-cz: 97 grantu, quality 82%, 3 quarantined. Schvalit?")
+3. ... ceka ...
+4. Uzivatel: grantio gate approve dotace-example-cz
+5. write_status → PRODUCTION`,
+    storage: [
+      { op:"UPDATE", path:"sources/dotace-example-cz/status.json", content:`{
+  "phase": "PRODUCTION",
+  "config_version": "v1",
+  "quality": { "overall": 82, "grant_call": 82, "quarantined": 3 },
+  "approved_at": "2026-03-09T11:15:00Z",
+  "approved_by": "human"
+}` },
+    ],
+    logs: `[ORCH] Gate check: PASS (val-cat ✓, val-opp ✓, analyst ✓)
+[ORCH] Telegram: "dotace-example-cz ceka na schvaleni"
+[ORCH] Received: gate approve
+[ORCH] Status → PRODUCTION (config v1)`,
+    returns: `{ phase: "PRODUCTION", config_version: "v1" }`,
+    sdk_call: `// Gate je orchestrator akce — pouziva MCP tools + hooks:
+
+// PreToolUse hook blokuje production run bez schvaleni:
+hooks: {
+  PreToolUse: [{
+    matcher: 'mcp__grantio__scrapy_run',
+    hooks: [async (input) => {
+      if (input.mode === 'full' && !hasApprovedGate(input.source)) {
+        return { permissionDecision: 'deny',
+                 reason: 'Production gate not approved' };
+      }
+    }]
+  }]
+}
+
+// Orchestrator pouziva gate_check + notify MCP tools:
+// mcp__grantio__gate_check("dotace-example-cz")
+//   → kontroluje: val-cat approve, val-opp approve, analyst approve
+// mcp__grantio__notify("telegram", message)
+//   → posle alert, ceka na /gate approve slash command
+
+// Streaming input mode umoznuje orchestratoru cekat:
+// uzivatel posle "/gate approve dotace-example-cz" jako dalsi zpravu`,
+    sdk_notes: "Gate vyuziva streaming input — orchestrator ceka na dalsi zpravu od uzivatele (/gate approve). Session zustava otevrena."
+  },
+  ]
+},
+
+// ============================================================
+// SCENARIO 2: HTML + 2 XLS catalogs + 20 PDF grants
+// ============================================================
+{
+  title: "HTML zdroj, 2 XLS katalogy, 20 PDF grantu",
+  desc: "Nadace XY — HTML stranka s 2 Excel soubory (aktualni vyzvy, archiv) a detail stranky s PDF prilohami",
+  meta: { url:"https://nadace-xy.cz", type:"html + xls", catalogs:2, grants:20, strategy:"document_portal" },
+  steps: [
+  {
+    agent:"CLI → Orchestrator", color:"var(--y)", time:"<1s", cost:"—",
+    sdk_type: "slash-command",
+    summary: "grantio add https://nadace-xy.cz",
+    prompt: "Vytvor projekt nadace-xy-cz",
+    input: '{ url: "https://nadace-xy.cz" }',
+    tools: ["write_status"],
+    actions: `Vytvori sources/nadace-xy-cz/ s prazdnou strukturou`,
+    storage: [{ op:"WRITE", path:"sources/nadace-xy-cz/status.json", content:'{ "phase": "CREATED" }' }],
+    logs: "[ORCH] Created project nadace-xy-cz",
+    returns: '{ slug: "nadace-xy-cz" }'
+  },
+  { phase: "SCOUTING" },
+  {
+    agent:"scout-source", color:"var(--a)", time:"~20s", cost:"$0.06",
+    sdk_type: "agent",
+    summary: "Najde 2 XLS soubory (aktualni + archiv) a detail stranky",
+    prompt: `## L0: Jsi scout-source agent.
+## L1: Workspace: sources/nadace-xy-cz/
+URL: https://nadace-xy.cz
+Attempt: 1
+Prozkoumej web, najdi katalogy, urc typ zdroje.
+Vysledky zapis do: sources/nadace-xy-cz/scouts/`,
+    input: `Zadna data — agent si vsechno fetchne sam.
+Prompt obsahuje jen cestu k workspace a URL.`,
+    tools: ["WebFetch", "WebSearch", "Read", "source_memory"],
+    actions: `1. WebFetch(nadace-xy.cz) → hlavni stranka
+2. Najde /programy s HTML strankou
+3. Na /programy najde 2 XLS soubory:
+   - "Aktualni vyzvy 2026.xlsx" (12 polozek)
+   - "Archiv vyzev 2020-2025.xlsx" (8 polozek)
+4. Kazda polozka v XLS ma link na detail HTML stranku
+5. Detail stranky maji PDF prilohy (zadavaci dokumentace)
+6. source_type = document_portal (XLS katalog + HTML detail + PDF prilohy)`,
+    storage: [
+      { op:"WRITE", path:"sources/nadace-xy-cz/scouts/2026-03-09_source.json", content:`{
+  "source_type": "document_portal",
+  "catalogs": [
+    { "name": "Aktualni vyzvy 2026", "url": "https://nadace-xy.cz/docs/vyzvy-2026.xlsx", "estimated_count": 12, "strategy_hint": "xls_catalog" },
+    { "name": "Archiv 2020-2025", "url": "https://nadace-xy.cz/docs/archiv.xlsx", "estimated_count": 8, "strategy_hint": "xls_catalog" }
+  ],
+  "language": "cs",
+  "confidence": 0.85
+}` },
+    ],
+    logs: `[scout-source] Found 2 XLS files on /programy
+[scout-source] Detail pages: HTML with PDF attachments
+[scout-source] Type: document_portal`,
+    returns: `{ source_type: "document_portal", catalogs: [{...2 XLS...}], confidence: 0.85 }`
+  },
+  {
+    agent:"scout-catalog ×2 (paralelne)", color:"var(--a)", time:"~15s", cost:"$0.05",
+    sdk_type: "agent×2",
+    summary: "Zmapuj oba XLS soubory — sloupce, URL na detail",
+    prompt: `## L0: Jsi scout-catalog agent.
+## L1: Workspace: sources/nadace-xy-cz/
+Precti scouts/2026-03-09_source.json — tam najdes katalogy.
+Zmapuj oba XLS soubory. Stahni, analyzuj sloupce, najdi URL na detail.
+Vysledky zapis do: scouts/2026-03-09_catalog-*.json
+## L3: source_type = document_portal, xls_catalog strategie`,
+    input: `Zadna data v inputu — agent si precte:
+- scouts/2026-03-09_source.json (katalogy s XLS URL)`,
+    tools: ["WebFetch", "Read", "source_memory"],
+    actions: `1. WebFetch(vyzvy-2026.xlsx) → stahne XLS
+2. Parsuje: sloupce = [Nazev, Datum uzaverky, Max castka, URL detailu, Stav]
+3. 12 radku, 12 URL na detail HTML stranky
+4. Totez pro archiv.xlsx → 8 radku, 8 URL
+5. Celkem 20 detail URLs`,
+    storage: [
+      { op:"WRITE", path:"sources/nadace-xy-cz/scouts/2026-03-09_catalog-aktualni.json", content:'{ "strategy": "xls_catalog", "columns": ["Nazev","Datum uzaverky","Max castka","URL detailu","Stav"], "item_count": 12, "detail_urls": [...12 URLs] }' },
+      { op:"WRITE", path:"sources/nadace-xy-cz/scouts/2026-03-09_catalog-archiv.json", content:'{ "strategy": "xls_catalog", "columns": [...], "item_count": 8, "detail_urls": [...8 URLs] }' },
+    ],
+    logs: `[scout-cat-1] Parsed vyzvy-2026.xlsx: 5 columns, 12 rows
+[scout-cat-2] Parsed archiv.xlsx: 5 columns, 8 rows
+[scout-cat] Total: 20 detail URLs found`,
+    returns: `[ScoutCatalogOutput ×2] — 12+8 URLs, xls_catalog strategy`
+  },
+  {
+    agent:"scout-opportunity", color:"var(--a)", time:"~15s", cost:"$0.05",
+    sdk_type: "agent",
+    summary: "Zmapuj detail HTML stranku + PDF prilohy",
+    prompt: `## L0: Jsi scout-opportunity agent.
+## L1: Workspace: sources/nadace-xy-cz/
+Precti scouts/2026-03-09_catalog-aktualni.json — tam najdes sample detail URLs.
+Zmapuj detail stranku. Pozor: hlavni data mohou byt v PDF prilohach!
+Vysledky zapis do: scouts/2026-03-09_opportunity-sample.json`,
+    input: `Zadna data v inputu — agent si precte:
+- scouts/2026-03-09_catalog-aktualni.json (detail URLs)
+a fetchne detail stranku sam.`,
+    tools: ["WebFetch", "Read", "source_memory"],
+    actions: `1. WebFetch(detail_url) → HTML stranka
+2. Jednoducha HTML stranka: title, popis, 2 PDF prilohy
+3. Castky a eligibility jsou v PDF (ne na HTML strance!)
+4. Mapovani: title=css, description=css, deadline=css, amount=PDF, eligibility=PDF`,
+    storage: [
+      { op:"WRITE", path:"sources/nadace-xy-cz/scouts/2026-03-09_opportunity-sample.json", content:`{
+  "fields": {
+    "title": { "selector": "h1", "method": "css", "confidence": 0.99 },
+    "description": { "selector": ".content", "method": "css", "confidence": 0.90 },
+    "deadline": { "selector": ".meta .date", "method": "css+regex", "confidence": 0.85 },
+    "amount_max": { "selector": null, "method": "pdf+llm", "note": "V PDF priloze", "confidence": 0.70 },
+    "eligibility": { "selector": null, "method": "pdf+llm", "note": "V PDF priloze", "confidence": 0.70 }
+  },
+  "attachments": [
+    { "type": "pdf", "url_pattern": ".attachments a[href$=\\".pdf\\"]", "contains_data": true }
+  ],
+  "schema_coverage": 0.65
+}` },
+    ],
+    logs: `[scout-opp] Detail page: simple HTML + 2 PDF attachments
+[scout-opp] Key data (amounts, eligibility) in PDF — not HTML!
+[scout-opp] Schema coverage 65% (rest needs PDF parsing)`,
+    returns: `{ fields: {...}, attachments: [PDF], schema_coverage: 0.65 }`
+  },
+
+  { phase: "BUILDING" },
+  {
+    agent:"config-catalog", color:"var(--p)", time:"~30s", cost:"$0.10",
+    sdk_type: "agent+mcp",
+    summary: "XLS parsing config — stahni XLS, extrahuj detail URLs",
+    prompt: `## L0: Jsi config-catalog agent.
+## L1: Workspace: sources/nadace-xy-cz/
+Precti scout findings: scouts/*.json
+Generuj config pro XLS katalogy. Strategie: stahni XLS, parsuj radky, extrahuj detail URL.
+Zapis config do: configs/catalog.v1.yml
+
+Spust scraper — nejdriv test (prvnich 5 URLs), pak full run.
+Listing URLs uloz do: runs/run-001/listing_urls.json
+## L3: document_portal — XLS soubory jako katalog`,
+    input: `Zadna data v inputu — agent si precte:
+- scouts/2026-03-09_source.json
+- scouts/2026-03-09_catalog-aktualni.json
+- scouts/2026-03-09_catalog-archiv.json`,
+    tools: ["Read", "Write", "scrapy_run", "WebFetch"],
+    actions: `1. Generuje YAML config pro XLS → URL pipeline
+2. scrapy_run(config, max=5) → TEST: 5 URLs, XLS parsovani OK
+3. scrapy_run(config, full) → 20 URLs z obou XLS (12+8)
+4. Zapise listing_urls.json`,
+    storage: [
+      { op:"WRITE", path:"sources/nadace-xy-cz/configs/catalog.v1.yml", content:`source:
+  name: "Nadace XY"
+  url: "https://nadace-xy.cz"
+catalogs:
+  - name: "Aktualni vyzvy 2026"
+    type: xls_catalog
+    file_url: "https://nadace-xy.cz/docs/vyzvy-2026.xlsx"
+    url_column: "URL detailu"
+    fields:
+      title: { column: "Nazev" }
+      deadline: { column: "Datum uzaverky", transform: parse_czech_date }
+      amount_max: { column: "Max castka", transform: parse_czech_amount }
+  - name: "Archiv 2020-2025"
+    type: xls_catalog
+    file_url: "https://nadace-xy.cz/docs/archiv.xlsx"
+    url_column: "URL detailu"
+    fields: { title: { column: "Nazev" } }` },
+      { op:"WRITE", path:"sources/nadace-xy-cz/runs/run-001/listing_urls.json", content:"[...20 detail URLs]" },
+    ],
+    logs: `[cfg-cat] XLS strategy: download + parse rows + extract URL column
+[cfg-cat] scrapy_run(test, 5) → 5 URLs OK
+[cfg-cat] scrapy_run(full) → 12+8 = 20 URLs`,
+    returns: `Zapise vysledky na filesystem. Orchestrator pokracuje validator-catalog.`
+  },
+  {
+    agent:"validator-catalog", color:"var(--g)", time:"~8s", cost:"$0.02",
+    sdk_type: "agent+schema",
+    summary: "Over 20 listing URLs — existuji? Pocet sedi se scoutem (12+8)?",
+    prompt: `## L0: Jsi validator-catalog agent.
+## L1: Workspace: sources/nadace-xy-cz/
+Precti: runs/run-001/listing_urls.json
+Precti: scouts/2026-03-09_source.json (scout cekal 12+8=20)
+Over URLs, pocet, duplicity.
+Vysledky zapis do: runs/run-001/validation.json`,
+    input: `Zadna data v inputu — agent si precte:
+- runs/run-001/listing_urls.json (20 URLs)
+- scouts/2026-03-09_source.json (expected: 12+8)`,
+    tools: ["Read", "Bash", "WebFetch"],
+    actions: `1. 20 URLs loaded, scout cekal 20 → match
+2. HTTP HEAD na vsech 20 (maly dataset) → 20/20 return 200
+3. 0 duplicit
+4. Verdict: APPROVE`,
+    storage: [
+      { op:"WRITE", path:"sources/nadace-xy-cz/runs/run-001/validation.json", content:`{
+  "verdict": "approve",
+  "checks": {
+    "urls_exist": { "sampled": 20, "passed": 20, "failed": 0 },
+    "count_vs_scout": { "expected": 20, "actual": 20, "delta_pct": 0 },
+    "duplicates": 0
+  }
+}` },
+    ],
+    logs: `[val-cat] 20 URLs, scout expected 20 → match
+[val-cat] HTTP check: 20/20 OK
+[val-cat] Verdict: APPROVE`,
+    returns: `ValidatorCatalogOutput { verdict: "approve" }`
+  },
+  {
+    agent:"config-opportunity", color:"var(--p)", time:"~4min", cost:"$1.20",
+    sdk_type: "agent+mcp",
+    summary: "Detail config s PDF parsing — stavi na 5 vzorcich, spousti na 20",
+    prompt: `## L0: Jsi config-opportunity agent.
+## L1: Workspace: sources/nadace-xy-cz/
+Precti: scouts/2026-03-09_opportunity-sample.json
+Precti: runs/run-001/listing_urls.json (20 URLs)
+Precti: configs/catalog.v1.yml
+
+POZOR: castky a eligibility jsou v PDF!
+Pouzij document processing: PDF → Docling → markdown → LLM extract.
+Zapis config do: configs/opportunity.v1.yml
+Vysledky do: runs/run-002/
+
+## SKILL: extraction-pipeline — PDF data = level 3.
+## SKILL: anti-fabrication — Null > guess.`,
+    input: `Zadna data v inputu — agent si precte:
+- scouts/2026-03-09_opportunity-sample.json (selektory, PDF poznamky)
+- runs/run-001/listing_urls.json (20 URLs)
+- configs/catalog.v1.yml`,
+    tools: ["Read", "Write", "scrapy_run", "WebFetch", "source_memory"],
+    actions: `1. Vybere 5 sample URLs, stavi detail config
+   - HTML fields: title(css), description(css), deadline(css+regex)
+   - PDF fields: amount_min/max(pdf+llm), eligibility(pdf+llm)
+   - LLM synthesized: ideal_grantee, how_to_apply
+2. scrapy_run(test, 5 samples) → OK, PDF parsing 5-30s per PDF
+3. scrapy_run(full, 20 URLs) → 20 items, 20 PDFs parsed`,
+    storage: [
+      { op:"WRITE", path:"sources/nadace-xy-cz/configs/opportunity.v1.yml", content:`detail:
+  fields:
+    title: { selector: "h1" }
+    description: { selector: ".content", transform: normalize_text }
+    deadline: { selector: ".meta .date", transform: parse_czech_date }
+    amount_max: { prefer_docs: true, llm_prompt: "Najdi max castku dotace" }
+    eligibility: { prefer_docs: true, llm_prompt: "Kdo muze zadat?" }
+    ideal_grantee: { method: llm }
+    how_to_apply: { method: llm }
+  documents:
+    selector: ".attachments a[href$=\\".pdf\\"]"
+    parse: true
+    parser: docling
+    max_size_kb: 10000` },
+      { op:"WRITE", path:"sources/nadace-xy-cz/runs/run-002/items.json", content:"[...20 items with PDF-extracted data...]" },
+      { op:"WRITE", path:"sources/nadace-xy-cz/runs/run-002/report.json", content:`{
+  "total": 20,
+  "items_by_type": { "subsidy_program": 12, "grant_call": 6, "completed_project": 2 },
+  "field_coverage": { "title": 1.0, "deadline": 0.90, "amount_max": 0.85, "eligibility": 0.75 },
+  "pdf_parsed": 20
+}` },
+    ],
+    logs: `[cfg-opp] PDF-heavy source: Docling pipeline
+[cfg-opp] 5 samples: PDF parsing 5-30s each
+[cfg-opp] Full run: 20 items, 20 PDFs parsed`,
+    returns: `Zapise vysledky na filesystem. Orchestrator pokracuje validator-opportunity.`
+  },
+
+  { phase: "VALIDATING" },
+  {
+    agent:"validator-opportunity", color:"var(--g)", time:"~8s", cost:"$0.03",
+    sdk_type: "agent+schema",
+    summary: "Typove specificka validace — subsidy_program (70%) + grant_call (80%)",
+    prompt: `## L0: Jsi validator-opportunity agent.
+## L1: Workspace: sources/nadace-xy-cz/
+Precti: runs/run-002/items.json, report.json
+Validuj kvalitu — pravidla podle typu:
+- subsidy_program (12): threshold 70%, MUSI mit title, provider, description
+- grant_call (6): threshold 80%, MUSI mit title, provider, deadline, amount
+- completed_project (2): QUARANTINE
+Vysledky zapis do: runs/run-002/validation.json`,
+    input: `Zadna data v inputu — agent si precte:
+- runs/run-002/items.json (20 items)
+- runs/run-002/report.json (types, coverage)`,
+    tools: ["Read", "Bash", "WebFetch"],
+    actions: `1. Klasifikace: 12 subsidy_program, 6 grant_call, 2 completed_project
+2. Quarantine: 2 completed_project
+
+3. subsidy_program (12): threshold 70%
+   - title 100%, provider 100%, description 92% → quality 78% > 70% ✓
+   - deadline: 50% (prubeznz vyzvy — expected pro subsidy)
+
+4. grant_call (6): threshold 80%
+   - title 100%, deadline 100%, amount_max 83% → quality 81% > 80% ✓
+
+5. PDF extraction check: amount z PDF = 85% uspesnost
+6. Verdict: APPROVE`,
+    storage: [
+      { op:"WRITE", path:"sources/nadace-xy-cz/runs/run-002/validation.json", content:`{
+  "verdict": "approve",
+  "quality_score": 76,
+  "items_by_type": {
+    "subsidy_program": { "count": 12, "quality": 78, "threshold": 70, "passed": true },
+    "grant_call": { "count": 6, "quality": 81, "threshold": 80, "passed": true },
+    "completed_project": { "count": 2, "quarantined": true }
+  },
+  "warnings": ["amount_max z PDF: 85% — 3 vyzvy bez castky v PDF"]
+}` },
+    ],
+    logs: `[val-opp] 20 items: 12 subsidy, 6 grant_call, 2 completed (Q)
+[val-opp] subsidy_program 78% > 70% ✓, grant_call 81% > 80% ✓
+[val-opp] Verdict: APPROVE`,
+    returns: `ValidatorOpportunityOutput { verdict: "approve" }`
+  },
+
+  { phase: "REVIEWING + GATE" },
+  {
+    agent:"analyst + gate", color:"var(--o)", time:"~30s + clovek", cost:"$0.08",
+    sdk_type: "agent+hook+mcp",
+    summary: "Analyst APPROVE, gate schvaleno",
+    prompt: `analyst-source: Workspace: sources/nadace-xy-cz/
+Precti runs/run-002/*.json, memory/, hints.md
+orchestrator gate: Precti runs/run-002/analyst.json`,
+    input: `Zadna data v inputu — agent si precte:
+- runs/run-002/items.json, report.json, validation.json`,
+    tools: ["Read", "Bash", "hint_write", "gate_check", "notify"],
+    actions: `1. analyst-source: obsah OK, PDF data realisticke
+   - hint: "3 vyzvy nemaji castku ani v PDF — mozna jen na pozadani"
+   - verdict: APPROVE
+2. gate_check: val-cat ✓, val-opp ✓, analyst ✓
+3. Telegram → human approve
+4. status → PRODUCTION`,
+    storage: [
+      { op:"UPDATE", path:"sources/nadace-xy-cz/status.json", content:'{ "phase": "PRODUCTION", "config_version": "v1", "quality": 76 }' },
+      { op:"APPEND", path:"sources/nadace-xy-cz/hints.md", content:"- [unresolved] analyst: 3 vyzvy bez castky — info na pozadani" },
+    ],
+    logs: `[analyst] APPROVE — PDF data OK, hint added
+[ORCH] Gate: val-cat ✓, val-opp ✓, analyst ✓
+[ORCH] Gate approved → PRODUCTION`,
+    returns: '{ phase: "PRODUCTION" }'
+  },
+  ]
+},
+
+// ============================================================
+// SCENARIO 3: API + 3 HTML catalogs (grants, news, finished)
+// ============================================================
+{
+  title: "API zdroj, 3 HTML katalogy (granty/news/finished), 10+20+30",
+  desc: "EU fond — REST API vracejici JSON, 3 kategorie obsahu, z toho jen 1 jsou skutecne granty",
+  meta: { url:"https://eufondy.example.cz", type:"api", catalogs:3, grants:"10+20+30", strategy:"api_only" },
+  steps: [
+  {
+    agent:"CLI → Orchestrator", color:"var(--y)", time:"<1s", cost:"—",
+    sdk_type: "slash-command",
+    summary: "grantio add https://eufondy.example.cz",
+    prompt: "Vytvor projekt",
+    input: '{ url: "https://eufondy.example.cz" }',
+    tools: ["write_status"],
+    actions: "Vytvori sources/eufondy-example-cz/",
+    storage: [{ op:"WRITE", path:"sources/eufondy-example-cz/status.json", content:'{ "phase": "CREATED" }' }],
+    logs: "[ORCH] Created project eufondy-example-cz",
+    returns: '{ slug: "eufondy-example-cz" }'
+  },
+  { phase: "SCOUTING" },
+  {
+    agent:"scout-source", color:"var(--a)", time:"~25s", cost:"$0.08",
+    sdk_type: "agent",
+    summary: "Detekuje REST API, najde 3 endpointy/kategorie",
+    prompt: `## L0: Jsi scout-source agent.
+## L1: Workspace: sources/eufondy-example-cz/
+URL: https://eufondy.example.cz
+Attempt: 1
+Prozkoumej web. Hledej API endpointy (XHR, /api/, JSON responses).
+Vysledky zapis do: sources/eufondy-example-cz/scouts/
+## L2: EU fondy casto pouzivaji API backendy. Zkontroluj /api/*, Network tab pattern.`,
+    input: `Zadna data — agent si vsechno fetchne sam.
+Prompt obsahuje jen cestu k workspace a URL.`,
+    tools: ["WebFetch", "WebSearch", "Read", "source_memory"],
+    actions: `1. WebFetch(eufondy.example.cz) → HTML stranka (SPA-like)
+2. V HTML najde <script> s API_BASE_URL = "/api/v1"
+3. WebFetch(/api/v1/calls?type=grant) → JSON, 10 items
+4. WebFetch(/api/v1/calls?type=news) → JSON, 20 items
+5. WebFetch(/api/v1/calls?type=finished) → JSON, 30 items
+6. API vraci strukturovane JSON s detail URL pro kazdy item
+7. Identifikuje 3 "katalogy" (=API query parametry)
+8. DULEZITE: news a finished NEJSOU granty!`,
+    storage: [
+      { op:"WRITE", path:"sources/eufondy-example-cz/scouts/2026-03-09_source.json", content:`{
+  "source_type": "api",
+  "catalogs": [
+    { "name": "Grantove vyzvy", "url": "/api/v1/calls?type=grant", "estimated_count": 10, "strategy_hint": "api_only", "content_type": "grant_call" },
+    { "name": "Novinky", "url": "/api/v1/calls?type=news", "estimated_count": 20, "strategy_hint": "api_only", "content_type": "news_announcement" },
+    { "name": "Dokoncene projekty", "url": "/api/v1/calls?type=finished", "estimated_count": 30, "strategy_hint": "api_only", "content_type": "completed_project" }
+  ],
+  "api_base": "https://eufondy.example.cz/api/v1",
+  "language": "cs",
+  "confidence": 0.90,
+  "issues": ["2 ze 3 katalogu NEJSOU grantove vyzvy (news, finished projects)"],
+  "suggestions": ["Jen 'Grantove vyzvy' katalog obsahuje aktivni vyzvy. News a finished budou quarantined."]
+}` },
+      { op:"WRITE", path:"sources/eufondy-example-cz/memory/structure.md", content:`API zdroj: /api/v1/calls?type={grant|news|finished}
+JSON response, paginated (offset/limit).
+Jen type=grant jsou skutecne grantove vyzvy!
+type=news → news_announcement (QUARANTINE)
+type=finished → completed_project (QUARANTINE)` },
+    ],
+    logs: `[scout-source] Found API: /api/v1/calls
+[scout-source] 3 categories: grant (10), news (20), finished (30)
+[scout-source] WARNING: Only 'grant' are actual grant calls!
+[scout-source] news → news_announcement, finished → completed_project`,
+    returns: `{ source_type: "api", catalogs: [3], confidence: 0.90, issues: ["2/3 not grants"] }`
+  },
+  {
+    agent:"scout-catalog ×3 (paralelne)", color:"var(--a)", time:"~10s", cost:"$0.04",
+    sdk_type: "agent×3",
+    summary: "Zmapuj 3 API endpointy — JSON schema, pagination, pole",
+    prompt: `## L0: Jsi scout-catalog agent.
+## L1: Workspace: sources/eufondy-example-cz/
+Precti scouts/2026-03-09_source.json — tam najdes 3 API endpointy.
+Zmapuj kazdy API endpoint. Analyzuj JSON response schema, pagination, dostupna pole.
+Vysledky zapis do: scouts/2026-03-09_catalog-*.json
+## L3: api_endpoint.md — API zdroje: pouzij offset/limit paginaci, parsuj JSON primo.`,
+    input: `Zadna data v inputu — agent si precte:
+- scouts/2026-03-09_source.json (3 API endpointy)`,
+    tools: ["WebFetch", "Read", "source_memory"],
+    actions: `1. WebFetch(/api/v1/calls?type=grant) → JSON
+   { "data": [...10 items], "pagination": { "total": 10, "offset": 0, "limit": 50 } }
+2. JSON item schema: { "id", "title", "description", "deadline", "amount_min", "amount_max", "detail_url", "status", "type", "attachments": [...] }
+3. Totez pro news (20 items) a finished (30 items) — stejna schema
+4. API vraci VSECHNA pole primo v JSON — detail stranky mozna nejsou potreba!`,
+    storage: [
+      { op:"WRITE", path:"sources/eufondy-example-cz/scouts/2026-03-09_catalog-grants.json", content:'{ "strategy": "api_only", "pagination": { "type": "offset_limit", "limit": 50 }, "item_count": 10, "json_fields": ["id","title","description","deadline","amount_min","amount_max","detail_url","status","type","attachments"] }' },
+      { op:"WRITE", path:"sources/eufondy-example-cz/scouts/2026-03-09_catalog-news.json", content:'{ "strategy": "api_only", "item_count": 20, "content_type": "news_announcement" }' },
+      { op:"WRITE", path:"sources/eufondy-example-cz/scouts/2026-03-09_catalog-finished.json", content:'{ "strategy": "api_only", "item_count": 30, "content_type": "completed_project" }' },
+    ],
+    logs: `[scout-cat-1] API grants: 10 items, rich JSON schema (10 fields direct)
+[scout-cat-2] API news: 20 items (news_announcement — will be quarantined)
+[scout-cat-3] API finished: 30 items (completed_project — will be quarantined)`,
+    returns: `[3x ScoutCatalogOutput] — API schema mapped`
+  },
+  {
+    agent:"scout-opportunity", color:"var(--a)", time:"~8s", cost:"$0.03",
+    sdk_type: "agent",
+    summary: "JSON uz ma vsechna pole — detail stranka jen pro PDF prilohy",
+    prompt: `## L0: Jsi scout-opportunity agent.
+## L1: Workspace: sources/eufondy-example-cz/
+Precti scouts/2026-03-09_catalog-grants.json — tam najdes JSON schema a sample data.
+Zmapuj detail grantu. JSON item ma uz vsechna pole — over co chybi.
+Vysledky zapis do: scouts/2026-03-09_opportunity-sample.json`,
+    input: `Zadna data v inputu — agent si precte:
+- scouts/2026-03-09_catalog-grants.json (JSON schema, sample items)`,
+    tools: ["WebFetch", "Read"],
+    actions: `1. JSON item z API ma: title, description, deadline, amounts, eligibility, status
+2. WebFetch(detail_url) → HTML stranka s EXTRA info: full description, PDF prilohy
+3. Mapovani: vetsina poli z API JSON, ideal_grantee a how_to_apply z detail HTML + PDF`,
+    storage: [
+      { op:"WRITE", path:"sources/eufondy-example-cz/scouts/2026-03-09_opportunity-sample.json", content:`{
+  "fields": {
+    "title": { "method": "api_json", "path": "title", "confidence": 0.99 },
+    "description": { "method": "api_json", "path": "description", "confidence": 0.95 },
+    "deadline": { "method": "api_json", "path": "deadline", "confidence": 0.99 },
+    "amount_min": { "method": "api_json", "path": "amount_min", "confidence": 0.99 },
+    "amount_max": { "method": "api_json", "path": "amount_max", "confidence": 0.99 },
+    "eligibility": { "method": "api_json", "path": "eligibility_types", "confidence": 0.90 },
+    "ideal_grantee": { "method": "html+llm", "note": "Z detail stranky", "confidence": 0.75 },
+    "how_to_apply": { "method": "html+llm", "note": "Z detail stranky", "confidence": 0.75 }
+  },
+  "schema_coverage": 0.90,
+  "note": "API provides most fields directly — high quality expected"
+}` },
+    ],
+    logs: `[scout-opp] API JSON provides 8/18 fields directly (high confidence)
+[scout-opp] Detail HTML adds: ideal_grantee, how_to_apply (LLM synthesized)
+[scout-opp] Schema coverage: 90% — excellent for API source`,
+    returns: `{ fields: {...}, schema_coverage: 0.90, confidence: 0.92 }`
+  },
+
+  { phase: "BUILDING" },
+  {
+    agent:"config-catalog", color:"var(--p)", time:"~20s", cost:"$0.08",
+    sdk_type: "agent+mcp",
+    summary: "API config — 3 endpointy, test na 5, pak full run",
+    prompt: `## L0: Jsi config-catalog agent.
+## L1: Workspace: sources/eufondy-example-cz/
+Precti scout findings: scouts/*.json
+Generuj config pro 3 API endpointy.
+DULEZITE: news a finished budou quarantined! Nastav content_classification.
+
+Spust scraper — nejdriv test (5 items), pak full run.
+Zapis config do: configs/catalog.v1.yml
+Listing URLs uloz do: runs/run-001/listing_urls.json
+## L3: api_endpoint.md — fetch JSON, map fields, offset/limit.
+## SKILL: anti-fabrication — quarantine non-grant content types.`,
+    input: `Zadna data v inputu — agent si precte:
+- scouts/2026-03-09_source.json
+- scouts/2026-03-09_catalog-grants.json
+- scouts/2026-03-09_catalog-news.json
+- scouts/2026-03-09_catalog-finished.json`,
+    tools: ["Read", "Write", "scrapy_run"],
+    actions: `1. Generuje YAML config pro 3 API endpointy
+2. scrapy_run(config, max=5) → TEST: 5 items z grant endpointu
+3. scrapy_run(config, full) → 60 items total (10+20+30)
+4. Content classification: grant_call (10), news (20 Q), finished (30 Q)
+5. Listing URLs: jen 10 grant detail URLs (non-grants excluded)`,
+    storage: [
+      { op:"WRITE", path:"sources/eufondy-example-cz/configs/catalog.v1.yml", content:`source:
+  name: "EU Fondy"
+  url: "https://eufondy.example.cz"
+  api_base: "https://eufondy.example.cz/api/v1"
+catalogs:
+  - name: "Grantove vyzvy"
+    type: api_catalog
+    endpoint: "/calls?type=grant"
+    pagination: { type: offset_limit, limit: 50 }
+    content_classification: grant_call
+    fields:
+      title: { json_path: "title" }
+      url: { json_path: "detail_url" }
+      deadline: { json_path: "deadline" }
+      amount_min: { json_path: "amount_min" }
+      amount_max: { json_path: "amount_max" }
+  - name: "Novinky"
+    type: api_catalog
+    endpoint: "/calls?type=news"
+    content_classification: news_announcement
+  - name: "Dokoncene projekty"
+    type: api_catalog
+    endpoint: "/calls?type=finished"
+    content_classification: completed_project` },
+      { op:"WRITE", path:"sources/eufondy-example-cz/runs/run-001/listing_urls.json", content:"[...10 grant detail URLs]" },
+    ],
+    logs: `[cfg-cat] API config: 3 endpoints
+[cfg-cat] scrapy_run(test, 5) → 5 grant items OK
+[cfg-cat] scrapy_run(full) → 60 items: 10 grants, 20 news (Q), 30 finished (Q)
+[cfg-cat] Listing URLs: 10 (only grant_call)`,
+    returns: `Zapise vysledky na filesystem. Orchestrator pokracuje validator-catalog.`
+  },
+  {
+    agent:"validator-catalog", color:"var(--g)", time:"~6s", cost:"$0.02",
+    sdk_type: "agent+schema",
+    summary: "Over 10 grant URLs + 50 quarantined. Pocty sedi?",
+    prompt: `## L0: Jsi validator-catalog agent.
+## L1: Workspace: sources/eufondy-example-cz/
+Precti: runs/run-001/listing_urls.json
+Precti: scouts/2026-03-09_source.json (scout cekal 10+20+30)
+Over: URLs existuji? Pocty sedi? Quarantine spravny?
+Vysledky zapis do: runs/run-001/validation.json`,
+    input: `Zadna data v inputu — agent si precte:
+- runs/run-001/listing_urls.json (10 grant URLs)
+- scouts/2026-03-09_source.json (expected: 10+20+30)`,
+    tools: ["Read", "Bash", "WebFetch"],
+    actions: `1. 10 grant URLs, scout cekal 10 → match
+2. API response check: /api/v1/calls?type=grant → 10 items
+3. WebFetch 3 detail URLs → 200 OK
+4. Quarantine check: 20 news + 30 finished = 50 items correctly classified
+5. Verdict: APPROVE`,
+    storage: [
+      { op:"WRITE", path:"sources/eufondy-example-cz/runs/run-001/validation.json", content:`{
+  "verdict": "approve",
+  "checks": {
+    "urls_exist": { "sampled": 3, "passed": 3, "failed": 0 },
+    "count_vs_scout": { "expected": 10, "actual": 10, "delta_pct": 0 },
+    "quarantine_correct": { "news": 20, "finished": 30, "total": 50 },
+    "duplicates": 0
+  }
+}` },
+    ],
+    logs: `[val-cat] 10 grant URLs, scout expected 10 → match
+[val-cat] 50 correctly quarantined (20 news + 30 finished)
+[val-cat] Verdict: APPROVE`,
+    returns: `ValidatorCatalogOutput { verdict: "approve" }`
+  },
+  {
+    agent:"config-opportunity", color:"var(--p)", time:"~2min", cost:"$0.50",
+    sdk_type: "agent+mcp",
+    summary: "API JSON + HTML detail — test na 5, full run na 10",
+    prompt: `## L0: Jsi config-opportunity agent.
+## L1: Workspace: sources/eufondy-example-cz/
+Precti: scouts/2026-03-09_opportunity-sample.json
+Precti: runs/run-001/listing_urls.json (10 grant URLs)
+Precti: configs/catalog.v1.yml
+
+API JSON ma vetsinu poli. Pro ideal_grantee a how_to_apply pouzij detail HTML + LLM.
+Zapis config do: configs/opportunity.v1.yml
+Vysledky do: runs/run-002/
+
+## SKILL: extraction-pipeline — API data = level 1 (highest confidence).`,
+    input: `Zadna data v inputu — agent si precte:
+- scouts/2026-03-09_opportunity-sample.json (JSON schema mapping)
+- runs/run-001/listing_urls.json (10 grant URLs)
+- configs/catalog.v1.yml (API config)`,
+    tools: ["Read", "Write", "scrapy_run", "WebFetch"],
+    actions: `1. Vybere 5 sample URLs
+2. API JSON + WebFetch(detail) → LLM extract ideal_grantee, how_to_apply
+3. scrapy_run(test, 5) → 5/5 OK
+4. scrapy_run(full, 10) → 10 items, quality 91%
+5. Vsech 10 = grant_call, 0 quarantine`,
+    storage: [
+      { op:"WRITE", path:"sources/eufondy-example-cz/configs/opportunity.v1.yml", content:`detail:
+  fields:
+    title: { json_path: "title" }
+    description: { json_path: "description" }
+    deadline: { json_path: "deadline", transform: parse_iso_date }
+    amount_min: { json_path: "amount_min" }
+    amount_max: { json_path: "amount_max" }
+    eligibility: { json_path: "eligibility_types" }
+    ideal_grantee: { method: llm, source: html_detail }
+    how_to_apply: { method: llm, source: html_detail }
+  llm_extraction:
+    model: haiku
+    fields: [ideal_grantee, how_to_apply]` },
+      { op:"WRITE", path:"sources/eufondy-example-cz/runs/run-002/items.json", content:"[...10 high-quality grant items...]" },
+      { op:"WRITE", path:"sources/eufondy-example-cz/runs/run-002/report.json", content:`{
+  "total_items": 10,
+  "items_by_type": { "grant_call": 10 },
+  "quality_score": 91,
+  "field_coverage": { "title": 1.0, "deadline": 1.0, "amount_max": 1.0, "eligibility": 0.90, "ideal_grantee": 1.0 }
+}` },
+    ],
+    logs: `[cfg-opp] API source: most fields from JSON (confidence 0.99)
+[cfg-opp] scrapy_run(test, 5) → 5/5 OK
+[cfg-opp] scrapy_run(full, 10) → 10 items, quality 91%`,
+    returns: `Zapise vysledky na filesystem. Orchestrator pokracuje validator-opportunity.`
+  },
+
+  { phase: "VALIDATING" },
+  {
+    agent:"validator-opportunity", color:"var(--g)", time:"~6s", cost:"$0.02",
+    sdk_type: "agent+schema",
+    summary: "Typova validace — 10 grant_call (threshold 80%), API data = high quality",
+    prompt: `## L0: Jsi validator-opportunity agent.
+## L1: Workspace: sources/eufondy-example-cz/
+Precti: runs/run-002/items.json, report.json
+Validuj kvalitu — vsech 10 je grant_call (threshold 80%).
+API data maji vysokou confidence — over konzistenci.
+Vysledky zapis do: runs/run-002/validation.json`,
+    input: `Zadna data v inputu — agent si precte:
+- runs/run-002/items.json (10 items)
+- runs/run-002/report.json (types, coverage)`,
+    tools: ["Read", "Bash", "WebFetch"],
+    actions: `1. 10 items, vsechny grant_call
+2. grant_call validace (threshold 80%):
+   - title 100%, deadline 100%, amount_max 100%, eligibility 90%
+   - quality 91% > 80% ✓
+3. API data konzistence: JSON fields match HTML detail ✓
+4. Fabrication: N/A (API data, ne CSS selektory)
+5. Verdict: APPROVE`,
+    storage: [
+      { op:"WRITE", path:"sources/eufondy-example-cz/runs/run-002/validation.json", content:`{
+  "verdict": "approve",
+  "quality_score": 91,
+  "items_by_type": {
+    "grant_call": { "count": 10, "quality": 91, "threshold": 80, "passed": true }
+  },
+  "field_coverage": { "title": 1.0, "deadline": 1.0, "amount_max": 1.0, "eligibility": 0.90 },
+  "quarantine": { "count": 0 },
+  "note": "API source — data confidence very high"
+}` },
+    ],
+    logs: `[val-opp] 10 grant_call items, quality 91% > 80% ✓
+[val-opp] API data: high confidence, no fabrication risk
+[val-opp] Verdict: APPROVE`,
+    returns: `ValidatorOpportunityOutput { verdict: "approve", quality: 91 }`
+  },
+
+  { phase: "REVIEWING + GATE" },
+  {
+    agent:"analyst + gate", color:"var(--o)", time:"~20s + clovek", cost:"$0.06",
+    sdk_type: "agent+hook+mcp",
+    summary: "Analyst APPROVE (excellent API data), gate schvaleno",
+    prompt: `analyst-source: Workspace: sources/eufondy-example-cz/
+Precti runs/run-002/*.json, memory/, hints.md
+orchestrator gate: Precti runs/run-002/analyst.json`,
+    input: `Zadna data v inputu — agent si precte:
+- runs/run-002/items.json (10 items, quality 91%)
+- runs/run-002/validation.json (approved)`,
+    tools: ["Read", "Bash", "hint_write", "gate_check", "notify"],
+    actions: `1. analyst-source: API data excellent, 50 quarantined = expected
+   - hint: "API zdroj — data primo z JSON, nejvyssi kvalita"
+   - verdict: APPROVE
+2. gate_check: val-cat ✓, val-opp ✓, analyst ✓
+3. Telegram → human approve
+4. status → PRODUCTION`,
+    storage: [
+      { op:"UPDATE", path:"sources/eufondy-example-cz/status.json", content:'{ "phase": "PRODUCTION", "config_version": "v1", "quality": 91 }' },
+    ],
+    logs: `[analyst] APPROVE — API data excellent
+[ORCH] Gate: val-cat ✓, val-opp ✓, analyst ✓
+[ORCH] Gate approved → PRODUCTION`,
+    returns: '{ phase: "PRODUCTION", quality: 91 }'
+  },
+  ]
+},
+];
+
+// ============================================================
+// RENDER
+// ============================================================
+function renderScenario(sc, idx) {
+  let html = `
+    <div class="sc-header">
+      <h2>${sc.title}</h2>
+      <p style="color:var(--td);margin-bottom:8px;">${sc.desc}</p>
+      <div class="sc-meta">
+        <span>URL: <code>${sc.meta.url}</code></span>
+        <span>Type: <code>${sc.meta.type}</code></span>
+        <span>Catalogs: <code>${sc.meta.catalogs}</code></span>
+        <span>Grants: <code>${sc.meta.grants}</code></span>
+        ${sc.meta.strategy ? `<span>Strategy: <code>${sc.meta.strategy}</code></span>` : ''}
+      </div>
+    </div>
+  `;
+
+  let stepNum = 0;
+  sc.steps.forEach((step, i) => {
+    if (step.phase) {
+      html += `<div class="phase-sep">${step.phase}</div>`;
+      return;
+    }
+    stepNum++;
+    const id = `sc${idx}-step${i}`;
+    html += `
+      <div class="step">
+        <div class="step-header" onclick="toggleStep('${id}')">
+          <div class="step-num" style="background:${step.color}">${stepNum}</div>
+          <div class="step-agent">${step.agent}</div>
+          <div class="step-summary">${step.summary}</div>
+          <div class="step-time">${step.time}</div>
+          <div class="step-cost">${step.cost}</div>
+          ${step.sdk_type ? `<span class="tag-sdk">${step.sdk_type}</span>` : ''}
+        </div>
+        <div class="step-body" id="${id}">
+          <div class="sub">
+            <h4>Prompt (co agent dostane)</h4>
+            <pre>${escHtml(step.prompt)}</pre>
+          </div>
+          <div class="sub">
+            <h4>Input data</h4>
+            <pre>${escHtml(step.input)}</pre>
+          </div>
+          <div class="sub">
+            <h4>Tools</h4>
+            <div>${(step.tools||[]).map(t => `<span class="tag ${t.includes('run')?'tag-scraper':'tag-tool'}">${t}</span>`).join(' ')}</div>
+          </div>
+          ${step.skills ? `
+          <div class="sub">
+            <h4>Skills (SKILL.md)</h4>
+            <div class="skills-section">
+              ${step.skills.map(s => `<div class="skill-tag" title="${escHtml(s.why)}"><span class="skill-name">${s.name}</span><span class="skill-why">— ${s.use}</span></div>`).join('')}
+            </div>
+          </div>` : ''}
+          <div class="sub">
+            <h4>Co agent dela (akce)</h4>
+            <pre>${escHtml(step.actions)}</pre>
+          </div>
+          <div class="sub">
+            <h4>Storage (co kam ulozi)</h4>
+            ${(step.storage||[]).map(s => `
+              <div style="margin:6px 0;">
+                <span class="file ${s.op === 'WRITE' ? 'write' : s.op === 'APPEND' ? 'log' : 'read'}">${s.op}</span>
+                <code style="font-size:11px">${s.path}</code>
+                <pre style="margin-top:4px;font-size:11px;">${escHtml(s.content)}</pre>
+              </div>
+            `).join('')}
+          </div>
+          <div class="sub">
+            <h4>Logy</h4>
+            <pre style="color:var(--y)">${escHtml(step.logs)}</pre>
+          </div>
+          <div class="sub">
+            <h4>Return value (co vrati orchestratoru)</h4>
+            <pre style="color:var(--g)">${escHtml(step.returns)}</pre>
+          </div>
+          ${step.sdk_call ? `
+          <div class="sub">
+            <div class="sdk-section">
+              <h5>🔧 SDK Primitiv</h5>
+              <pre>${escHtml(step.sdk_call)}</pre>
+            </div>
+            ${step.sdk_notes ? `<p style="font-size:11px;color:var(--td);margin-top:8px;padding:0 4px">${step.sdk_notes}</p>` : ''}
+          </div>` : ''}
+          ${step.feedback_loop ? `
+          <div class="sub">
+            <div class="feedback-loop">
+              <h5>↩ Feedback Loop (max ${step.feedback_loop.max_attempts} attempts)</h5>
+              <pre>${escHtml(step.feedback_loop.description)}</pre>
+            </div>
+          </div>` : ''}
+        </div>
+      </div>
+    `;
+  });
+
+  return html;
+}
+
+function escHtml(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function toggleStep(id) {
+  const body = document.getElementById(id);
+  const header = body.previousElementSibling;
+  body.classList.toggle('open');
+  header.classList.toggle('open');
+}
+
+function showScenario(idx, el) {
+  document.querySelectorAll('.sc-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('scenarios').innerHTML = `<div class="scenario active">${renderScenario(scenarios[idx], idx)}</div>`;
+}
+
+// Init
+showScenario(0, document.querySelector('.sc-tab'));
+</script>
+</body>
+</html>
