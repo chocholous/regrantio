@@ -102,16 +102,26 @@ def check_product_contract():
 
 
 def check_unit_tests():
-    """Testy kritické logiky (compute_status / upsert merge / derive_deadlines)."""
+    """Testy kritické logiky a publikační cesty.
+
+    ⚠ OBA SOUBORY, ne jen `test_core`. `test_publish` hlídá manifest, otisk,
+    pořadí nahrávání a brány — tedy věci, které se projeví AŽ U ZÁKAZNÍKA
+    (rozbitá synchronizace, stažený kus souboru) a u nás vypadají jako úspěch.
+    """
     import subprocess
-    t = os.path.join(ROOT, "tests", "test_core.py")
-    if not os.path.exists(t):
-        raise Skip("tests/test_core.py chybí")
-    r = subprocess.run([sys.executable, t], capture_output=True, text=True)
-    if r.returncode != 0:
-        tail = (r.stdout or "").strip().splitlines()[-3:]
-        raise RuntimeError("unit testy FAIL: " + " | ".join(tail))
-    print("    (" + (r.stdout or "").strip().splitlines()[-1] + ")")
+    results = []
+    for name in ("test_core.py", "test_identity.py", "test_publish.py"):
+        t = os.path.join(ROOT, "tests", name)
+        if not os.path.exists(t):
+            continue
+        r = subprocess.run([sys.executable, t], capture_output=True, text=True, encoding="utf-8")
+        if r.returncode != 0:
+            tail = (r.stdout or "").strip().splitlines()[-3:]
+            raise RuntimeError(f"{name} FAIL: " + " | ".join(tail))
+        results.append(f"{name}: " + (r.stdout or "").strip().splitlines()[-1])
+    if not results:
+        raise Skip("tests/ chybí")
+    print("    (" + "; ".join(results) + ")")
 
 
 def check_data_quality():
@@ -159,6 +169,94 @@ def check_data_quality():
     print(f"    ({len(grants)} záznamů: data platná, žádné inverzní termíny, tituly neprázdné)")
 
 
+CATALOG = "data/opportunities.jsonl"   # živý katalog (gitignored kromě tohohle souboru)
+
+# Kolik smí nový sběr ztratit proti minule publikovanému exportu, než se to
+# začne považovat za poruchu, a ne za úklid.
+MIN_RATIO = 0.8
+
+
+def check_no_collapse():
+    """PROPAD POČTU ZÁZNAMŮ — pojistka proti publikaci zmrzačeného datasetu.
+
+    ⚠ TOHLE JE JEDINÁ KONTROLA, KTERÁ SE PTÁ „KOLIK", A CHYBĚLA.
+
+    Ostatní brány se dívají na jednotlivý záznam: platné datum, neprázdný titul,
+    unikátní id. Dataset, ze kterého vypadlo pět zdrojů, tím projde bez jediné
+    námitky — každý ze zbylých záznamů je totiž v pořádku. Nejhorší možný běh
+    není ten, který spadne; je to ten, který v tichosti publikuje dvacetinu dat.
+
+    ⚠ POROVNÁVÁ SE PROTI MINULE PUBLIKOVANÉMU EXPORTU, A TO JDE JEN TADY.
+    Brána běží PŘED `export_api.py`, takže `docs/opportunities.json` je v tuhle
+    chvíli ještě ta STARÁ verze a `data/opportunities.jsonl` už ta nová. O krok
+    později by se porovnával export sám se sebou.
+
+    ⚠ RŮST SE NEHLÍDÁ. Nový zdroj přinese skokem stovky záznamů a je to přesně
+    to, co má pipeline dělat. Horní práh by znamenal bránu, která zastaví
+    úspěch.
+
+    Grantio má vlastní pojistku na svém vstupu (`ingest-catalog.mjs`) a ta
+    zůstává: mezi námi a produktem je přenos souboru, což je jiná třída chyb.
+    Tahle hlídá NÁŠ výstup.
+    """
+    if not os.path.exists(CATALOG):
+        raise Skip(f"{CATALOG} není v pracovní kopii")
+    if not os.path.exists(EXPORT):
+        raise Skip(f"{EXPORT} není v pracovní kopii — první publikace nemá s čím porovnávat")
+
+    with open(CATALOG, encoding="utf-8") as fh:
+        now = sum(1 for line in fh if line.strip())
+
+    previous = len(json.load(open(EXPORT, encoding="utf-8")).get("grants") or [])
+    if previous == 0:
+        raise Skip("minulý export je prázdný")
+
+    ratio = now / previous
+    if ratio < MIN_RATIO:
+        raise RuntimeError(
+            f"katalog má {now} záznamů proti {previous} v minulém exportu "
+            f"({ratio * 100:.1f} %, práh {MIN_RATIO * 100:.0f} %). "
+            f"Nejspíš vypadl zdroj — zkontroluj shrnutí refreshe, než tohle publikuješ."
+        )
+
+    print(f"    ({now} záznamů, minule {previous}, {now - previous:+d})")
+
+
+def check_catalog_identity():
+    """Identita záznamů v katalogu: bez id se nedá nic sledovat, duplicita mate.
+
+    ⚠ HLÍDÁ SE TU KATALOG, NE EXPORT. `check_data_quality` kontroluje unikátnost
+    až v exportu — jenže tam se duplicita projeví jako tichý přepis: dva záznamy
+    se stejným id se v produktu slijí v jeden a ten druhý prostě zmizí. V tuhle
+    chvíli ještě jde poznat, který zdroj ho vyrobil.
+    """
+    if not os.path.exists(CATALOG):
+        raise Skip(f"{CATALOG} není v pracovní kopii")
+
+    seen, dupes, missing = set(), [], 0
+    with open(CATALOG, encoding="utf-8") as fh:
+        for line in fh:
+            if not line.strip():
+                continue
+            rec = json.loads(line)
+            rid = rec.get("id")
+            if not rid:
+                missing += 1
+                continue
+            if rid in seen:
+                dupes.append(f"{rec.get('source', '?')}:{str(rid)[:60]}")
+            seen.add(rid)
+
+    problems = []
+    if missing:
+        problems.append(f"{missing} záznamů bez id")
+    if dupes:
+        problems.append(f"{len(dupes)} duplicitních id (např. {dupes[0]})")
+    if problems:
+        raise RuntimeError("; ".join(problems))
+    print(f"    ({len(seen)} unikátních id, žádné chybějící)")
+
+
 def main():
     print("# VALIDATE RELEASE\n")
     check("compile all .py", compile_all)
@@ -166,6 +264,8 @@ def main():
     check("routing.yaml parses", check_routing)
     check("json configs valid", check_json_configs)
     check("kvalita dat (termíny, tituly)", check_data_quality)
+    check("identita záznamů v katalogu", check_catalog_identity)
+    check("propad počtu záznamů (brána)", check_no_collapse)
     print()
     if errors:
         print(f"FAIL — {len(errors)} chyb")

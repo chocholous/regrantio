@@ -3,32 +3,77 @@
 Živý plánovací dokument. **Aktuální stav, co je hotovo, co zbývá a proč.** JAK pracovat (zlatá pravidla,
 recept na zdroj, pasti) = `docs/SESSION_PLAYBOOK.md` + `CLAUDE.md`. Katalog je v gitu, zbytek dat v gitignored `data/`.
 
-> **Status k 2026-08-20.** Dataset **3450 záznamů / 136 poskytovatelů**, export vygenerovaný
-> 2026-08-15 (`docs/opportunities.json`, otisk `262aa549…`). Repo čisté, 23/23 testů,
-> publikační cesta do úschovny hotová (`scripts/publish_export.py`, `refresh_run.py --publish`)
-> a čeká **jen na založení kbelíku `regrantio-exports`** — viz `docs/REFRESH.md §8`.
-> Větev `coverage-expansion-next` je o dva commity napřed proti `main`.
+> **Status k 2026-08-22 (změřeno, ne odhad).** Dataset **3452 záznamů / 129 zdrojů**,
+> export vygenerovaný **2026-08-22** (`docs/opportunities.json`, otisk `fedc3b6b…`,
+> 10,6 MB). **53/53 testů**, `validate_release` prochází včetně dvou nových bran.
+> Publikační cesta do úschovny hotová (`scripts/publish_export.py`,
+> `refresh_run.py --publish`) a čeká **jen na založení kbelíku `regrantio-exports`**
+> — viz `docs/REFRESH.md §8`.
 
 ---
 
-## 📊 Aktuální stav datasetu (live `data/opportunities.jsonl`, k 2026-08-20)
+## 📊 Aktuální stav datasetu (live `data/opportunities.jsonl`, změřeno 2026-08-22)
 
 | metrika | hodnota |
 |---|---|
-| **záznamů celkem** | **3450** (3425 grantů + 25 foundation_mission) |
-| **poskytovatelů** | **136** |
-| status grantů | **685 open** · 45 announced · 1783 closed · 912 unknown |
-| typ poskytovatele | samosprava_kraj 1204 · ministerstvo 866 · samosprava_obec 725 · evropska_komise 341 · nadace 71 · nadacni_fond 63 · statni_agentura 53 · statni_fond 47 · firemni_nadace 42 · zahranicni_fond 38 |
-| vyplněnost grantů | deadline 2513 (73 %) · amount 777 (23 %) |
-| integrita | **0 dup id · 0 bez title · 0 bad amount** — `validate_release` ✓ |
+| **záznamů celkem** | **3452** (3427 grantů + 25 foundation_mission) |
+| **zdrojů (`source`)** | **129** |
+| status grantů | **677 open** · 43 announced · 1795 closed · 912 unknown |
+| termíny | deadline 2515 (73 %) · open_from 2351 (69 %) |
+| částky | amount 777 (23 %) |
+| texty | focus_area 3182 (93 %) · eligible_applicants 2231 (65 %) · source_url 3427 (100 %) |
+| fasety | typ_poskytovatele / forma_podpory / zdroj_financovani / region **100 %** · oblast 3060 (89 %) · typ_zadatele 1279 (37 %) |
+| integrita | **0 dup id · 0 bez id · 0 bez title · 0 inverzních termínů** |
+| export | 3452 záznamů, `content_hash` u **100 %** |
+
+> ⚠ **`typ_zadatele` 37 % je NEJVĚTŠÍ MEZERA V DATECH, ne chyba.** Deterministické
+> harvestery ji nechávají prázdnou schválně (`ingest_kraj.py`: „← LLM vrstva 2,
+> ne keyword") — komu je výzva určená, bývá v próze nebo v PDF pravidel a keyword
+> matching by tam vyrobil nesmysly. Produkt s tím počítá: shoda podle typu
+> žadatele je proto měkký signál, ne tvrdá brána.
+
+> ⚠ **`amount` 23 % a `status` unknown u 912 je taky správně.** Částky bývají jen
+> v PDF a katalogové programy nemají jednu lhůtu — **raději poctivý null než
+> vymyšlené číslo**. Produkt si defaultně filtruje `deadline >= dnes NEBO NULL`,
+> takže archiv nezavazí.
 
 > ⚠ Status v tabulce je SNÍMEK k datu přepočtu. Produkt si stav počítá znovu k dnešku
 > (`build_app.py:computeStatus`, `catalog_status()` v Grantiu), takže se čísla „open/closed"
 > mezi katalogem a aplikací můžou o pár položek lišit — a je to správně.
 
-`amount=null`/`status=unknown` zůstávají VĚTŠINOU správné (částky bývají jen v PDF; katalogové
-programy nemají jednu lhůtu) — **raději poctivý null než vymyšlené číslo**. Produkt si navíc
-defaultně filtruje `deadline >= dnes NEBO NULL`, takže archiv nezavazí.
+---
+
+## ✅ Refresh 2026-08-22 — co proběhlo a co se rozbilo
+
+**13 ze 14 deterministických zdrojů obnoveno**, katalog 3450 → 3452, export
+přegenerován (`docs/opportunities.json`, 2026-08-22).
+
+| zdroj | výsledek |
+|---|---|
+| dotace.khk.cz | ✓ 121 programů |
+| fondvysociny.cz | ✓ 10 (3 aktualizované) |
+| kr-karlovarsky.cz | ✓ 18 programů, 2 změny |
+| msk.cz | ✓ 94 programů, 15 změn |
+| stredoceskykraj.cz | ✓ 91 programů, 8 změn |
+| praha.eu | ✓ 28 programů, 1 změna |
+| kr-ustecky.cz · kraj-jihocesky.cz · olkraj.cz · zlinskykraj.cz · dotace.kraj-lbc.cz · dotace.pardubickykraj.cz · dotace.brno.cz | ✓ beze změny |
+| **kr-jihomoravsky.cz** | ✖ **zdroj je rozbitý** |
+
+### ⚠ kr-jihomoravsky.cz — rozbitý ZDROJ, ne náš harvester
+
+`eud.jmk.cz` (GINIS úřední deska) vrací ASP.NET stránku **„Configuration
+Error"** — chybu jejich aplikace, ne změněnou strukturu. U nás není co
+opravovat; až to poskytovatel spraví, harvester poběží beze změny.
+
+Co se při tom opravilo u nás: harvester na to reagoval **třicetivteřinovým
+timeoutem na selektor a dvacetiřádkovým tracebackem** z Playwrightu — tedy
+hlášením, ze kterého se příčina nedala poznat. Teď skončí za pět vteřin s větou
+o tom, CO na stránce chybí a co je v titulku, a vrací **kód 2** = „zdroj",
+odlišený od kódu 1 = „my". Bez toho rozlišení se čas tráví čtením kódu, který
+je v pořádku.
+
+**Předchozí stav pro srovnání:** 2026-07-31 proběhlo všech 18 tehdejších zdrojů
+bez chyby, takže výpadek JMK je nový a týká se jen jeho.
 
 ---
 

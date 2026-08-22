@@ -63,10 +63,47 @@ def _abs(href):
     return BASE + href.lstrip("/") if href and not href.startswith("http") else href
 
 
+class SourceUnavailable(RuntimeError):
+    """Zdroj odpověděl, ale ne tím, co harvester čeká.
+
+    ⚠ VLASTNÍ TYP, ne obyčejná výjimka. Provozně jsou to DVĚ RŮZNÉ VĚCI:
+
+        zdroj je rozbitý ....... počkej a pusť znovu; u nás není co opravovat
+        harvester je rozbitý ... web se změnil, parser se musí přepsat
+
+    Bez rozlišení vypadají obě stejně („harvest selhal") a čas se pak tráví
+    čtením kódu, který je v pořádku. Naměřeno 2026-08-22: eud.jmk.cz vracel
+    ASP.NET stránku „Configuration Error" a Playwright na to odpověděl
+    třicetivteřinovým timeoutem na selektor a dvacetiřádkovým tracebackem —
+    tedy hlášením, ze kterého se příčina nedala poznat vůbec.
+    """
+
+
+def _guard_listing(pg):
+    """Je na stránce to, co harvester čeká? Když ne, řekni PROČ, ne timeout."""
+    if pg.query_selector("select#m_oKategorie"):
+        return
+
+    title = (pg.title() or "").strip()
+    body = " ".join((pg.inner_text("body") or "").split())[:200]
+    raise SourceUnavailable(
+        chr(10).join(
+            [
+                "Úřední deska nevrátila filtr kategorií (select#m_oKategorie).",
+                f"  titulek stránky: {title!r}",
+                f"  začátek obsahu:  {body!r}",
+                "  → Chybová stránka serveru v titulku = rozbitý ZDROJ; u nás není co opravovat.",
+                "    Stránka, která vypadá normálně = změnila se struktura a parser se musí přepsat.",
+            ]
+        )
+    )
+
+
 def collect_listing(pg):
     """Vyber KAT050, projdi všechny stránky (Další), vrať deduplikované řádky."""
     pg.goto(SEZNAM, wait_until="networkidle", timeout=45000)
     pg.wait_for_timeout(2000)
+    _guard_listing(pg)
     pg.select_option("select#m_oKategorie", KAT_DOTACE)
     pg.click('input[value="OK"]', timeout=10000)
     pg.wait_for_timeout(4000)
@@ -116,7 +153,16 @@ def main():
     with sync_playwright() as p:
         b = p.chromium.launch(headless=not a.headful)
         pg = b.new_page()
-        rows = collect_listing(pg)
+
+        try:
+            rows = collect_listing(pg)
+        except SourceUnavailable as e:
+            # ⚠ NÁVRATOVÝ KÓD 2 = „zdroj", ne „my". `refresh_run.py` běh nezastaví
+            # (jeden poskytovatel nesmí shodit celé kolo), ale ve shrnutí to bude
+            # vidět — a hlavně z toho jde poznat, jestli je co opravovat.
+            print(f"✖ zdroj nedostupný: {e}", file=sys.stderr)
+            b.close()
+            sys.exit(2)
 
         progs, skipped_award = [], 0
         for r in rows:

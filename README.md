@@ -12,10 +12,10 @@ přes data, ne přes kód, a proto může být regrantio kdykoli neveřejné.
 
 | | |
 |---|---|
-| Katalog | `data/opportunities.jsonl` — **3 450 záznamů** (3 425 výzev + 25 profilů nadací), **v gitu** |
+| Katalog | `data/opportunities.jsonl` — **3 452 záznamů** (3 427 výzev + 25 profilů nadací), **v gitu** |
 | Publikovaný export | `docs/opportunities.json` — schema 1.1, `content_hash`, [kontrakt](docs/EXPORT.md) |
 | Jazyk | Python 3.13, bez frameworku |
-| Testy | `python tests/test_core.py` (23) a `python scripts/validate_release.py` |
+| Testy | **53** — `test_core.py` (23) · `test_identity.py` (12) · `test_publish.py` (18); všechny pouští `validate_release.py` |
 | CI | `.github/workflows/validate.yml` na každý push |
 | Větev | jediná: `main` |
 
@@ -43,9 +43,23 @@ získat, je v [Data](#data).
 ## Ověření, že to funguje
 
 ```bash
-python scripts/validate_release.py   # kompilace, testy, konfigurace, kontrakt exportu
+python scripts/validate_release.py   # kompilace, testy, konfigurace, kontrakt exportu, BRÁNY
 python tests/test_core.py            # 23 testů kritické logiky
+python tests/test_identity.py        # 12 testů identity výzvy (rozpad × slití)
+python tests/test_publish.py         # 18 testů publikační cesty (manifest, otisk, brány)
 ```
+
+**Co brány zachytí, než se dataset publikuje** (`validate_release.py`):
+
+| brána | co chytá |
+|---|---|
+| kvalita dat | neplatné datum, termín mimo 2000–2035, `deadline < open_from`, prázdný titul |
+| identita záznamů | chybějící `id`, duplicitní `id` — v produktu by se projevilo tichým přepisem |
+| propad počtu | katalog má míň než 80 % minule publikovaných záznamů → **vypadl zdroj** |
+
+⚠ Poslední z nich je jediná, která se ptá **kolik**. Dataset, ze kterého vypadlo
+pět zdrojů, projde všemi ostatními kontrolami bez námitky — každý ze zbylých
+záznamů je totiž v pořádku.
 
 ## Obnova katalogu
 
