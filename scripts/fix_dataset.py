@@ -45,6 +45,45 @@ DROP_SOURCES = {
 # mk_harvest.py (data z listing tabulek, aktuální ročník); 14/47 titulů se překrývalo.
 VARIANT_DEDUP = {"nadace-agrofert.cz": "nadace-agrofert", "mkcr": "mk"}
 
+# Záznamy, které NEJSOU výzva, ale oznámení, JAK ta výzva dopadla.
+# =============================================================================
+# ⚠ NAMĚŘENO 2026-09-01 v produktu, na katalogu 3 440 záznamů. Jedenáct z nich
+# se tvářilo jako výzva, o kterou lze žádat, a přitom to byla oznámení výsledků:
+#
+#     Výsledky výběrových dotačních řízení na rok 2026
+#     Výsledky grantového řízení 2026 | Nadace OKD
+#     Vyhlášení výsledků VES 2008 – 2011 na základě rozhodnutí ministra
+#     Výsledky stipendijního programu MSPP 2025 (NEWS, NE výzva)
+#
+# Poslední řádek je ten, který to shrnuje: extrakce SAMA do titulku napsala
+# „NE výzva" a záznam přesto vyšel jako `kind=grant`. Anotace bez brány není
+# rozhodnutí, je to poznámka.
+#
+# Škodí to víc, než těch 0,3 % napovídá. Všech jedenáct nemá deadline, takže
+# v produktu spadnou mezi průběžné programy — tedy mezi to, co se nabízí jako
+# „můžete žádat kdykoli". Kdo klikne na „Výsledky grantového řízení 2026"
+# v očekávání, že podá žádost, ztratí důvěru v celý katalog, ne v ten řádek.
+#
+# ⚠ ROZHODUJE TITULEK, NE TĚLO. Řádná výzva o výsledcích minulých kol běžně
+# mluví („výsledky loňského ročníku najdete…"), takže hledat to v textu by
+# zahazovalo platné výzvy. Titulek, který ZAČÍNÁ výsledky, je oznámení.
+#
+# ⚠ PRVNÍ PODOBA PRAVIDLA BYLA PŘEPÁLENÁ. Stálo v ní `^(vyhlášení )?výsledk\w*`,
+# což sedne i na „Výsledkem projektu má být studie proveditelnosti" — tedy na
+# větu z popisu řádné výzvy. Chytil to test (`tests/test_notacall.py`), který
+# zkouší OBĚ strany: co se má chytit i co se chytit nesmí. Pravidlo, které nic
+# nepropustí, je stejně špatné jako pravidlo, které nic nechytí.
+#
+# Proto první pádový tvar, ne kmen: oznámení se jmenují „Výsledky …", kdežto
+# „Výsledkem …" je začátek věty o obsahu projektu.
+NOT_A_CALL = re.compile(
+    r"^\s*výsledky\b"                            # „Výsledky výběrových dotačních řízení…"
+    r"|^\s*(vyhlášení|oznámení)\s+výsledk\w*"     # „Vyhlášení výsledků VES…"
+    r"|^\s*informace\s+o\s+(ne)?přijetí"          # „Informace o nepřijetí…"
+    r"|\(\s*news\s*,\s*ne\s+výzva\s*\)",          # anotace samotné extrakce
+    re.IGNORECASE,
+)
+
 # Konkrétní stray/mis-filed záznamy (nesprávný zdroj nebo ne-grant) → drop pro čistotu.
 DROP_STRAY = [
     # ČMZRB / Národní rozvojová banka = úvěry/záruky (ne dotace), navíc omylem jako mise pod mkcr.
@@ -136,6 +175,13 @@ def main():
     recs = [r for r in recs if r.get("source") not in DROP_SOURCES]
     stray_dropped = [r for r in recs if any(f(r) for f in DROP_STRAY)]
     recs = [r for r in recs if not any(f(r) for f in DROP_STRAY)]
+
+    # ---- A1) oznámení výsledků nejsou výzvy (viz NOT_A_CALL) ----
+    def _oznameni(r):
+        return r.get("kind") == "grant" and bool(NOT_A_CALL.search(r.get("title") or ""))
+
+    notcall_dropped = [r for r in recs if _oznameni(r)]
+    recs = [r for r in recs if not _oznameni(r)]
 
     # ---- A2) variant dedup (agrofert: .cz apify kopie překrývající bohatší bare-slug) ----
     def ntitle(r):
@@ -305,6 +351,10 @@ def main():
     for s, c in dd.most_common():
         print(f"  DROP {s}: {c} záznamů")
     print(f"  celkem smazáno: {len(dropped)}")
+    if notcall_dropped:
+        print(f"\n=== A1) oznámení výsledků (ne výzvy): −{len(notcall_dropped)} ===")
+        for r in notcall_dropped:
+            print(f"  −  {(r.get('source') or '?')[:24]:24}  {(r.get('title') or '')[:64]}")
     if variant_dropped:
         print("\n=== A2) variant dedup (.cz apify kopie) ===")
         for s, c in collections.Counter(r.get("source") for r in variant_dropped).most_common():

@@ -104,16 +104,19 @@ def check_product_contract():
 def check_unit_tests():
     """Testy kritické logiky a publikační cesty.
 
-    ⚠ OBA SOUBORY, ne jen `test_core`. `test_publish` hlídá manifest, otisk,
+    ⚠ VŠECHNY, ne jen `test_core`. `test_publish` hlídá manifest, otisk,
     pořadí nahrávání a brány — tedy věci, které se projeví AŽ U ZÁKAZNÍKA
     (rozbitá synchronizace, stažený kus souboru) a u nás vypadají jako úspěch.
+
+    ⚠ SEZNAM SE NEPÍŠE RUČNĚ. Do 2026-09-01 tu stála trojice jmen natvrdo,
+    takže nově přidaný soubor v `tests/` se tiše nepouštěl — a test, který
+    neběží, je horší než žádný: tváří se, že něco hlídá. Hledá se proto vzorem.
     """
     import subprocess
     results = []
-    for name in ("test_core.py", "test_identity.py", "test_publish.py"):
-        t = os.path.join(ROOT, "tests", name)
-        if not os.path.exists(t):
-            continue
+    soubory = sorted(glob.glob(os.path.join(ROOT, "tests", "test_*.py")))
+    for t in soubory:
+        name = os.path.basename(t)
         r = subprocess.run([sys.executable, t], capture_output=True, text=True, encoding="utf-8")
         if r.returncode != 0:
             tail = (r.stdout or "").strip().splitlines()[-3:]
@@ -167,6 +170,46 @@ def check_data_quality():
     if problems:
         raise RuntimeError("; ".join(problems))
     print(f"    ({len(grants)} záznamů: data platná, žádné inverzní termíny, tituly neprázdné)")
+
+
+def check_only_calls():
+    """V exportu smí být výzva, ne oznámení, jak výzva dopadla.
+
+    ⚠ NAMĚŘENO 2026-09-01 v produktu. Jedenáct z 3 440 záznamů se tvářilo jako
+    výzva, o kterou lze žádat, a byla to oznámení výsledků — mimo jiné jedno
+    s titulkem „Výsledky stipendijního programu MSPP 2025 (NEWS, NE výzva)".
+    Extrakce sama napsala do titulku, že to výzva není, a záznam přesto vyšel
+    jako `kind=grant`.
+
+    Žádná ze stávajících kontrol to chytit nemohla: má platná data, neprázdný
+    titulek, unikátní id i reprodukovatelný otisk. Je to VĚCNĚ špatně, ne
+    formálně — a přesně tomu má tahle brána bránit.
+
+    Čistí to `fix_dataset.py` (sekce A1, `NOT_A_CALL`), který běží před
+    exportem. Tenhle test hlídá výsledek, ne ten skript: kdyby data přišla
+    jinou cestou, chytí je stejně.
+    """
+    import re as _re
+    if not os.path.exists(EXPORT):
+        raise Skip(f"{EXPORT} není v pracovní kopii")
+    # Musí zůstat shodné s `fix_dataset.NOT_A_CALL` — proto to stojí v obou
+    # souborech doslova a ne jako import: brána nesmí spadnout jen proto, že se
+    # nepodařilo naimportovat skript, který právě kontroluje.
+    pat = _re.compile(
+        r"^\s*výsledky\b"
+        r"|^\s*(vyhlášení|oznámení)\s+výsledk\w*"
+        r"|^\s*informace\s+o\s+(ne)?přijetí"
+        r"|\(\s*news\s*,\s*ne\s+výzva\s*\)",
+        _re.IGNORECASE,
+    )
+    grants = json.load(open(EXPORT, encoding="utf-8"))["grants"]
+    bad = [g for g in grants if g.get("kind") == "grant" and pat.search(g.get("title") or "")]
+    if bad:
+        raise RuntimeError(
+            f"{len(bad)} záznamů je oznámení výsledků, ne výzva "
+            f"(např. {(bad[0].get('title') or '')[:70]!r})"
+        )
+    print(f"    ({len(grants)} záznamů, žádné oznámení výsledků mezi výzvami)")
 
 
 CATALOG = "data/opportunities.jsonl"   # živý katalog (gitignored kromě tohohle souboru)
@@ -264,6 +307,7 @@ def main():
     check("routing.yaml parses", check_routing)
     check("json configs valid", check_json_configs)
     check("kvalita dat (termíny, tituly)", check_data_quality)
+    check("výzvy, ne oznámení výsledků", check_only_calls)
     check("identita záznamů v katalogu", check_catalog_identity)
     check("propad počtu záznamů (brána)", check_no_collapse)
     print()

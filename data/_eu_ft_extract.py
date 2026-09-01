@@ -15,6 +15,29 @@ ELIG = ("Právnické osoby z členských států EU a asociovaných zemí (výzk
         "konkrétní výzvy a pracovního programu.")
 
 
+def focus_area(prog, types_of_action, ident):
+    """Podnadpis výzvy — skládá se JEN z toho, co opravdu víme.
+
+    ⚠ NAMĚŘENO 2026-09-01 v Grantiu, na detailu výzvy. Stálo tu
+    `f"Typ akce: {r.get('typesOfAction') or '-'}."` a u výzev, kde EC to pole
+    nevyplňuje, se to zákazníkovi vysázelo doslova:
+
+        Výzva programu Horizon Europe (...). Typ akce: -. Identifikátor HORIZON-CL4-...
+
+    Bylo to u 40 ze 3 187 podnadpisů. Zástupný znak za chybějící hodnotu je
+    v pracovním výpisu v pořádku, ve větě určené člověku ne — a hlavně nejde
+    o „neznámý typ akce", ale o to, že o typu akce nemáme co říct. Věta, která
+    chybějící údaj přeskočí, je pravdivější než věta, která ho pojmenuje
+    pomlčkou.
+    """
+    parts = [f"Výzva programu {prog} (centrálně řízený program Evropské komise)."]
+    if types_of_action:
+        parts.append(f"Typ akce: {types_of_action}.")
+    if ident:
+        parts.append(f"Identifikátor {ident}.")
+    return " ".join(parts)
+
+
 def main():
     recs = [json.loads(l) for l in open("data/eu_ft_documents.jsonl", encoding="utf-8")]
     for d in ("data/eu_ft_in", "data/eu_ft_out"):
@@ -35,8 +58,7 @@ def main():
         rec = {
             "title": title,
             "oblast": (r.get("oblast") or []) + ["EU dotace"],
-            "focus_area": (f"Výzva programu {prog} (centrálně řízený program Evropské komise). "
-                           f"Typ akce: {r.get('typesOfAction') or '-'}. Identifikátor {ident}."),
+            "focus_area": focus_area(prog, r.get("typesOfAction"), ident),
             "open_from": r.get("open_from"), "deadline": r.get("deadline"),
             "castky": [], "vyse_hlavni_czk": None, "spoluucast": True,
             "eligible_applicants": ELIG, "typ_zadatele": [], "cilova_skupina": [], "region": REG,
