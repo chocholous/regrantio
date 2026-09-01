@@ -179,3 +179,37 @@ P3 OP TAK/dotaceeu (Apify/WebForms) · P2b SZIF (proxy) · P4 nadace 17→40+ ·
 7. **Nehalucinovat** — `amount=null`/`deadline=null` zůstává null; žádné fiktivní záznamy.
 8. **Jen jeden proces smí psát `opportunities.jsonl`** — ingesty pouštěj sekvenčně
    (`refresh_run.py` to garantuje; ad-hoc paralelní loops ne).
+
+---
+
+## ⚠ kr-jihomoravsky.cz — zdroj zavřený za autentizací (2026-09-01)
+
+**Změřeno při refreshi 2026-09-01.** Harvester hlásil „Úřední deska nevrátila
+filtr kategorií (select#m_oKategorie)". Není to změna markupu:
+
+```
+https://eud.jmk.cz/Gordic/Ginis/App/UDE01/Seznam.aspx?a=1   →  HTTP 401
+https://www.jmk.cz/                                          →  302 na /my.policy
+```
+
+Celý GINIS i hlavní web JMK je za přihlašovací bránou (F5 `my.policy`).
+
+**Veřejná náhrada hledaná a NENALEZENA.** `dotace.jmk.cz` přesměrovává na
+`dotace.kr-jihomoravsky.cz`, a ten obsahuje jediný odkaz — na
+`data.jmk.cz/pages/dotace-katalog`. To je ArcGIS Hub Open Data portál
+(197 datasetů, DCAT feed na `/api/feed/dcat-us/1.1.json`). Deset datasetů má
+v názvu „dotac", ale všechny jsou **retrospektivní**:
+
+  • Udělené dotace obcím v Jihomoravském kraji
+  • Schválená výše dotace obcím v roce 2025
+  • Čerpání krajských dotací / z fondů EU
+
+Tedy KDO UŽ PENÍZE DOSTAL, ne KAM SE DÁ ŽÁDAT. Pro produkt bezcenné.
+
+**Dopad:** 34 záznamů v katalogu (19 open, 13 closed, 2 unknown) zůstává
+zmrazených ke dni posledního úspěšného sběru. Nemažou se — mizející záznam
+by z uložených výzev udělal prázdné místo.
+
+**Co to odemkne:** přístup k úřední desce JMK (dohoda s krajem), nebo nalezení
+jiné veřejné stránky s VÝZVAMI. Bez toho se zdroj obnovit nedá a žádné množství
+práce na harvesteru s tím nic neudělá.
