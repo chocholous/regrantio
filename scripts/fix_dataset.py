@@ -23,7 +23,8 @@ Spuštění z kořene repa:
    python3 scripts/fix_dataset.py            # in-place, vytvoří .bak
    python3 scripts/fix_dataset.py --dry-run  # jen report
 """
-import argparse, json, os, re, shutil, collections, sys
+import argparse
+import re, json, os, re, shutil, collections, sys
 from datetime import date
 if hasattr(sys.stdout, "reconfigure"):  # Windows cp1250 konzole neumí →·⚠ v diagnostice → vynuť UTF-8 (no-op jinde)
     sys.stdout.reconfigure(encoding="utf-8")
@@ -83,6 +84,10 @@ NOT_A_CALL = re.compile(
     r"|\(\s*news\s*,\s*ne\s+výzva\s*\)",          # anotace samotné extrakce
     re.IGNORECASE,
 )
+
+# KÓD PROGRAMU V TITULKU DOTIS ZÁZNAMU — „Program obnovy venkova (26POVU1)".
+# Je to klíč hlubokého odkazu `/grantProgram/:memo`; viz sekce A5 v `main()`.
+DOTIS_MEMO = re.compile(r"\(([0-9A-Za-z]{4,12})\)\s*$")
 
 # Konkrétní stray/mis-filed záznamy (nesprávný zdroj nebo ne-grant) → drop pro čistotu.
 DROP_STRAY = [
@@ -182,6 +187,32 @@ def main():
 
     notcall_dropped = [r for r in recs if _oznameni(r)]
     recs = [r for r in recs if not _oznameni(r)]
+
+    # ---- A5) DOTIS: odkaz na program, ne na rozcestník portálu ----
+    #
+    # ⚠ NAMĚŘENO 2026-09-02: 148 záznamů (4,3 % katalogu) mělo `source_url`
+    # nastavené na `https://dotace.khk.cz/`, tedy na úvodní stránku portálu.
+    # Produkt u každé výzvy slibuje odkaz na originál; tenhle ho formálně
+    # splňuje a věcně ne — žadatel skončí na rozcestníku a hledá znovu.
+    #
+    # Hluboký odkaz `/grantProgram/<kód>` existuje (cesta je v SPA bundlu)
+    # a kód je v titulku každého záznamu jako `(26POVU1)`. Opravu dělá
+    # `ingest_dotis.py` už při sběru; tohle je doplnění pro záznamy, které
+    # v katalogu leží z dřívějších běhů — a zároveň pojistka, kdyby se
+    # harvester vrátil zpátky.
+    dotis_fixed = 0
+    for r in recs:
+        if (r.get("provenance") or {}).get("platform") != "dotis":
+            continue
+        src = r.get("source") or ""
+        mm = DOTIS_MEMO.search(r.get("title") or "")
+        if not src or not mm:
+            continue
+        deep = f"https://{src}/grantProgram/{mm.group(1)}"
+        for field in ("source_url", "source_doc"):
+            if (r.get(field) or "").rstrip("/") == f"https://{src}":
+                r[field] = deep
+                dotis_fixed += 1
 
     # ---- A2) variant dedup (agrofert: .cz apify kopie překrývající bohatší bare-slug) ----
     def ntitle(r):
@@ -355,6 +386,8 @@ def main():
         print(f"\n=== A1) oznámení výsledků (ne výzvy): −{len(notcall_dropped)} ===")
         for r in notcall_dropped:
             print(f"  −  {(r.get('source') or '?')[:24]:24}  {(r.get('title') or '')[:64]}")
+    if dotis_fixed:
+        print(f"\n=== A5) DOTIS hluboký odkaz: {dotis_fixed} polí opraveno z rozcestníku na /grantProgram/<kód> ===")
     if variant_dropped:
         print("\n=== A2) variant dedup (.cz apify kopie) ===")
         for s, c in collections.Counter(r.get("source") for r in variant_dropped).most_common():

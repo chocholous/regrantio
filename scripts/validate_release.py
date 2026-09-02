@@ -16,6 +16,7 @@ Kontroly:
 Exit 0 = OK, 1 = našla chyby (vypsané). Bez argumentů; pouští se z kořene repa.
 """
 import glob, json, os, sys, py_compile
+import source_health
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
@@ -265,6 +266,46 @@ def check_no_collapse():
     print(f"    ({now} záznamů, minule {previous}, {now - previous:+d})")
 
 
+def check_no_source_collapse():
+    """VYSCHLÝ ZDROJ — pojistka, kterou brána na celkový počet nemá jak nahradit.
+
+    ⚠ CELKOVÝ POČET VYSCHNUTÍ ZDROJE NEUVIDÍ. `check_no_collapse` výš porovnává
+    jediné číslo proti prahu 80 %. Největší zdroj má 341 záznamů z 3 441, tedy
+    deset procent — může tedy zmizet KOMPLETNĚ a brána to pustí. Menší zdroje
+    tím spíš: kraj se sto programy je tři procenta.
+
+    Naměřeno 2026-09-02: ze 136 zdrojů by jich 133 mohlo vyschnout po jednom,
+    aniž by kterýkoli jednotlivý běh brána zastavila.
+
+    Podrobné odůvodnění (a proč se to neřeší polem v `routing.yaml`) je
+    v hlavičce `scripts/source_health.py`.
+    """
+    if not os.path.exists(CATALOG):
+        raise Skip(f"{CATALOG} není v pracovní kopii")
+    if not os.path.exists(EXPORT):
+        raise Skip(f"{EXPORT} není v pracovní kopii — první publikace nemá s čím porovnávat")
+
+    now = source_health.counts_from_catalog(CATALOG)
+    before = source_health.counts_from_export(EXPORT)
+    if not before:
+        raise Skip("minulý export je prázdný")
+
+    dried, collapsed, fresh = source_health.compare(now, before)
+    if dried or collapsed:
+        parts = []
+        if dried:
+            parts.append("vyschlo: " + ", ".join(f"{s} (minule {n})" for s, n in dried[:6]))
+        if collapsed:
+            parts.append("propadlo: " + ", ".join(f"{s} {n}←{had}" for s, n, had in collapsed[:6]))
+        raise RuntimeError(
+            "; ".join(parts)
+            + ". Zkontroluj shrnutí refreshe — tohle celkový počet záznamů neukáže."
+        )
+
+    novy = f", {len(fresh)} nových" if fresh else ""
+    print(f"    ({len(now)} zdrojů, žádný nevyschl ani nepropadl{novy})")
+
+
 def check_catalog_identity():
     """Identita záznamů v katalogu: bez id se nedá nic sledovat, duplicita mate.
 
@@ -310,6 +351,7 @@ def main():
     check("výzvy, ne oznámení výsledků", check_only_calls)
     check("identita záznamů v katalogu", check_catalog_identity)
     check("propad počtu záznamů (brána)", check_no_collapse)
+    check("vyschlý zdroj (brána)", check_no_source_collapse)
     print()
     if errors:
         print(f"FAIL — {len(errors)} chyb")

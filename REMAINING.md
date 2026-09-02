@@ -248,18 +248,96 @@ zdroj" neplatí a odvodit to nejde.
 procházením 81 položek. Vyschlý zdroj se tím pádem pozná až tehdy, když si
 někdo všimne, že v katalogu chybí kraj — což je pozdě.
 
-**Oprava je jedno pole.** Do každé položky `routing.yaml` přidat `source:`
-s hodnotou, kterou ten běh do datasetu zapisuje:
+### ✅ VYŘEŠENO 2026-09-02 — ale jinak, než navrhoval předchozí odstavec
 
-```yaml
-dotace.khk.cz:
-  harvester: [scripts/dotis_harvest.py]
-  source: dotace.khk.cz          # ← tohle chybí
-  note: Královéhradecký kraj (DOTIS, dotisreactfunctions API)
+Navrhovaná oprava zněla „přidat do `routing.yaml` pole `source:`". S daty v ruce
+se ukázalo, že by nestačila:
+
+| | |
+|---|---|
+| položek v `routing.yaml` | **81** |
+| hodnot `source` v datasetu | **136** |
+| z toho routing pokrývá (spárováno podle hostu ze `source_url`) | **74** |
+
+⚠ **`routing.yaml` NENÍ INVENTÁŘ ZDROJŮ A NIKDY JÍM NEBYL.** Je to směrovník
+„platforma → čím to harvestovat". Přes šedesát skutečně sbíraných zdrojů v něm
+položku nemá vůbec, protože jedou přes rodinu (`families:`) nebo přes vlastní
+skript. Doplnit tam `source:` by vyrobilo inventář, který o dvou třetinách sběru
+mlčí — a to je horší než žádný, protože se podle něj rozhoduje. K tomu jedna
+položka (`mk.gov.cz`) zapisuje **tři** různá `source` id, takže jedno pole
+by na ni stejně nestačilo.
+
+**Inventář už existuje a je jím dataset.** Každý záznam nese `source`, takže
+seznam zdrojů, které něco přinesly, je z dat čitelný přesně. Chybělo jediné:
+porovnání s minule publikovaným stavem.
+
+**Hotovo:** `scripts/source_health.py` + brána `vyschlý zdroj` ve
+`validate_release.py`. Porovnává živý katalog proti minule publikovanému
+exportu po jednotlivých zdrojích:
+
+```
+zdrojů v katalogu: 136   (minule 136)
+záznamů:           3441  (minule 3441)
+OK — žádný zdroj nevyschl ani nepropadl
 ```
 
-Pak jde napsat kontrola, která po každém refreshi vypíše zdroje s nulou —
-a `--source` může brát výchozí hodnotu odtud, takže se to nemůže rozejít.
+⚠ **Brána na celkový počet tohle chytit NEMOHLA.** Práh je 80 % a největší
+zdroj má 341 z 3 441 záznamů, tedy 10 % — může tedy zmizet celý a projde.
+Naměřeno: ze 136 zdrojů by jich **133 mohlo vyschnout po jednom**, aniž by
+kterýkoli jednotlivý běh brána zastavila. Osm testů v `tests/test_publish.py`
+hlídá obě strany (co zastavit musí i co pustit musí).
 
-⚠ **Nezapisuj počet zdrojů do dokumentace, dokud tohle pole nebude.** Každé
-takové číslo je dnes odhad a všechna dosavadní byla nesprávná.
+**Co zbývá:** propojení `routing.yaml` se `source` id je pořád nedodělek,
+ale je to úkol pro pohodlí („čím se ten zdroj sbírá"), ne pro bezpečnost
+(„co vyschlo"). Ta druhá otázka je zodpovězená.
+
+---
+
+## ✅ 148 záznamů odkazovalo na rozcestník, ne na výzvu (2026-09-02)
+
+**4,3 % celého katalogu** — všechno `dotace.khk.cz` (DOTIS, Královéhradecký
+kraj) — mělo `source_url` i `source_doc` nastavené na `https://dotace.khk.cz/`,
+tedy na ÚVODNÍ STRÁNKU portálu.
+
+Produkt u každé výzvy slibuje odkaz na originál. Tenhle odkaz ten slib formálně
+plní a věcně ne: žadatel skončí na rozcestníku se stovkou programů a hledá
+znovu. URL byla platná, stránka se otevřela, čtvrt roku si toho nikdo nevšiml —
+a přesně proto to nemohla chytit žádná stávající brána.
+
+**Hluboký odkaz existoval celou dobu.** DOTIS je React SPA; cesty jsou
+v `static/js/main.*.js` a mezi nimi `path:"/grantProgram/:memo"`. Klíč `memo`
+je kód programu (`26POVU1`), který už v titulku každého záznamu je. Ověřeno
+v prohlížeči: `https://dotace.khk.cz/grantProgram/26POVU1` vykreslí číselné
+označení, název i účel programu.
+
+Opraveno na dvou místech — v harvesteru (`ingest_dotis.py:dotis_url`, aby to
+tak přicházelo rovnou) i v úklidu (`fix_dataset.py` sekce A5, kvůli záznamům
+z dřívějších běhů). Tři testy v `test_core.py` hlídají obojí i to, že se
+odkaz NEVYROBÍ bez kódu: vymyšlený kód vykreslí prázdný detail, což je horší
+než rozcestník.
+
+⚠ **Změna `source_url` mění `content_hash`, ale ne to, co uvidí zákazník.**
+Ingest v Grantiu zakládá `catalog_grant_change` jen při posunu termínu nebo
+částky, takže 148 přepsaných odkazů neudělá 148 upozornění.
+
+---
+
+## ⚠ Čtyři organizace mají v datech dvojí identitu (2026-09-02, neopraveno)
+
+| krátké id | doménové id | co je v tom doménovém |
+|---|---|---|
+| `nadacevia` (24) | `nadacevia.cz` (1) | rozcestník „Nabídka programů" |
+| `nadacecez` (16) | `nadacecez.cz` (1) | vypadá jako řádná výzva |
+| `nadace-agrofert` (7) | `nadace-agrofert.cz` (1) | homepage nadace |
+| `vdv` (5) | `vdv.cz` (1) | výzva pro HODNOTITELE, ne pro žadatele |
+
+Dvě z těch čtyř nejsou výzvy (rozcestník a homepage), jedna míří na jinou
+cílovou skupinu. `fix_dataset.py` má sekci A2 přesně na tenhle vzor
+(`VARIANT_DEDUP`), ale ta maže jen při SHODĚ TITULKŮ — a tady se tituly liší,
+protože jde o jiné stránky téhož webu.
+
+**Proč to nechávám otevřené:** správná oprava není smazat čtyři řádky, ale
+poznat, že záznam je rozcestník. Pravidlo „URL je kořen webu" NEPLATÍ —
+naměřeno, sedne na 153 záznamů a 148 z nich jsou řádné programy KHK (viz
+oddíl výš). Rozhodovat to bez pravidla znamená ruční zásah, který se při
+příštím sběru vrátí.

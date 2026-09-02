@@ -24,6 +24,29 @@ from upsert import upsert
 # Kód programu (memo) i program_name se ukládají do extra/focus_area, ať z nich LLM může čerpat.
 
 
+
+def dotis_url(source, memo):
+    """Odkaz na KONKRÉTNÍ program, ne na rozcestník portálu.
+
+    ⚠ 148 ZÁZNAMŮ MÍŘILO NA HOMEPAGE (naměřeno 2026-09-02). To je 4,3 %
+    celého katalogu a zároveň největší jednotlivý zdroj, který má v produktu
+    u každé výzvy stát „odkaz na originál". Odkaz na `https://dotace.khk.cz/`
+    ten slib formálně plní a věcně ne: žadatel skončí na úvodní stránce
+    portálu se stovkou programů a hledá znovu.
+
+    Bylo to napsané jako `f"https://{source}/"` a čtvrt roku si toho nikdo
+    nevšiml, protože URL byla platná a stránka se otevřela.
+
+    ⚠ HLUBOKÝ ODKAZ EXISTUJE A JE V BUNDLU. DOTIS je React SPA; cesty jsou
+    v `static/js/main.*.js` a mezi nimi `path:"/grantProgram/:memo"` — tedy
+    klíčem je `memo`, což je přesně kód programu (`26POVU1`), který už
+    v každém záznamu máme. Ověřeno v prohlížeči 2026-09-02: stránka vykreslí
+    číselné označení, název i účel programu. Neexistující kód nespadne, jen
+    vykreslí prázdný detail — proto se odkaz staví jen tam, kde kód je.
+    """
+    base = f"https://{source}"
+    return f"{base}/grantProgram/{memo}" if memo else f"{base}/"
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("inp")
@@ -51,11 +74,11 @@ def main():
             title = f"{name} ({memo})" if memo else name
             gid = canon_key("grant", title, source + "/" + memo)
             rec = {
-                "kind": "grant", "source": source, "source_url": f"https://{source}/",
+                "kind": "grant", "source": source, "source_url": dotis_url(source, memo),
                 "title": title, "focus_area": prog_name, "open_from": of, "deadline": dl,
                 "status": st, "status_confidence": conf, "amount": None,
                 "eligible_applicants": None, "required_attachments": [],
-                "how_to_apply": f"Žádost přes dotační portál {source}", "source_doc": f"https://{source}/", "id": gid,
+                "how_to_apply": f"Žádost přes dotační portál {source}", "source_doc": dotis_url(source, memo), "id": gid,
                 "facets": {
                     "oblast": [], "typ_zadatele": [], "sektor_zadatele": [],     # ← LLM vrstva 2
                     "typ_poskytovatele": "samosprava_kraj", "forma_podpory": ["dotace"],
@@ -66,7 +89,7 @@ def main():
                                "celostatni": False, "_conf": "high"},
                 },
                 "provenance": {"layer": 1, "harvester": "dotis_harvest.py", "platform": "dotis",
-                               "harvest_url": f"https://{source}/", "harvest_file": a.inp,
+                               "harvest_url": dotis_url(source, memo), "harvest_file": a.inp,
                                "api_base": H.get("api_base"), "documents": []},
                 "extra": {"memo": memo, "program": prog_name, "id_Def_Subproject": s.get("id_Def_Subproject"),
                           "state": s.get("state")},

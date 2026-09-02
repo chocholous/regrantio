@@ -15,7 +15,8 @@ import datetime
 import os
 import sys
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "scripts"))
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(ROOT, "scripts"))
 
 from opportunities import compute_status          # noqa: E402
 from upsert import merge, _enriched            # noqa: E402
@@ -172,6 +173,51 @@ def test_czech_sentence_at():
     t = "Úvodní věta. Lhůta pro podání žádosti je do 31. 12. 2026 včetně."
     s = czech.sentence_at(t, t.find("31. 12."))
     assert "Lhůta pro podání" in s and "Úvodní věta" not in s
+
+
+# ---------------------------------------------------- odkaz vede na výzvu, ne na rozcestník
+#
+# ⚠ 148 ZÁZNAMŮ (4,3 % KATALOGU) MÍŘILO NA ÚVODNÍ STRÁNKU PORTÁLU.
+# Produkt u každé výzvy slibuje „odkaz na originál". Odkaz na
+# `https://dotace.khk.cz/` ten slib formálně plní a věcně ne: žadatel skončí
+# na rozcestníku se stovkou programů a hledá znovu. Platná URL, otevře se,
+# čtvrt roku si toho nikdo nevšiml.
+#
+# Hluboký odkaz `/grantProgram/:memo` je v SPA bundlu a `memo` je kód, který
+# už v titulku každého záznamu je. Testuje se OBOJÍ směr: že se kód použije,
+# když je, a že se odkaz nevyrobí, když není — vymyšlený kód vykreslí prázdný
+# detail, což je horší než rozcestník.
+
+
+def test_dotis_odkaz_miri_na_program():
+    import ingest_dotis
+    assert ingest_dotis.dotis_url("dotace.khk.cz", "26POVU1") == "https://dotace.khk.cz/grantProgram/26POVU1"
+
+
+def test_dotis_bez_kodu_zustane_na_rozcestniku():
+    import ingest_dotis
+    assert ingest_dotis.dotis_url("dotace.khk.cz", "") == "https://dotace.khk.cz/"
+    assert ingest_dotis.dotis_url("dotace.khk.cz", None) == "https://dotace.khk.cz/"
+
+
+def test_katalog_nema_dotis_zaznam_na_rozcestniku():
+    """Vlastnost výsledku, ne skriptu: kdyby data přišla jinou cestou, chytne je to stejně."""
+    import json as _json
+    path = os.path.join(ROOT, "data", "opportunities.jsonl")
+    if not os.path.exists(path):
+        return
+    bad = []
+    with open(path, encoding="utf-8") as fh:
+        for line in fh:
+            if not line.strip():
+                continue
+            r = _json.loads(line)
+            if (r.get("provenance") or {}).get("platform") != "dotis":
+                continue
+            src = r.get("source") or ""
+            if (r.get("source_url") or "").rstrip("/") == f"https://{src}":
+                bad.append(r.get("title"))
+    assert not bad, f"{len(bad)} DOTIS záznamů míří na rozcestník (např. {bad[0]!r})"
 
 
 # ---------------------------------------------------------------- mini-runner (bez pytestu)

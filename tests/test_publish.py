@@ -17,6 +17,9 @@ Proč zrovna tohle:
                     kdy ukazuje na soubor, který ještě nedoputoval.
   • brána         — propad počtu záznamů. Dataset, ze kterého vypadlo pět
                     zdrojů, projde všemi kontrolami jednotlivého záznamu.
+  • zdraví zdrojů — a propad počtu neuvidí vyschnutí JEDNOHO zdroje. Největší
+                    z nich má deset procent záznamů, takže i ten se vejde pod
+                    práh 80 %; menší tím spíš.
 
 Spuštění:  python tests/test_publish.py
 """
@@ -28,6 +31,7 @@ import tempfile
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "scripts"))
 
 import publish_export as pub  # noqa: E402
+import source_health  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -220,6 +224,91 @@ def test_identita_zastavi_chybejici_id():
     passed, msg = _identity([{"id": "a"}, {"source": "kraj.cz"}])
     assert not passed
     assert "bez id" in msg
+
+
+# ------------------------------------------------------------- vyschlý zdroj
+#
+# ⚠ CELKOVÝ POČET ZÁZNAMŮ VYSCHNUTÍ ZDROJE NEUVIDÍ, a to je celý důvod, proč
+# tahle brána existuje vedle té výš. Naměřeno 2026-09-02 na ostrém katalogu:
+# 3 441 záznamů ze 136 zdrojů, největší z nich 341 záznamů = 10 % celku. Práh
+# na propad je 80 %, takže i ten největší zdroj může zmizet celý a brána na
+# počet ho pustí. Menší tím spíš — kraj se sto programy jsou tři procenta.
+
+
+def _health(now, before):
+    """Vrátí (prošlo, popis) pro dvojici snímků {zdroj: počet}."""
+    dried, collapsed, fresh = source_health.compare(now, before)
+    parts = []
+    if dried:
+        parts.append("vyschlo: " + ", ".join(s for s, _ in dried))
+    if collapsed:
+        parts.append("propadlo: " + ", ".join(s for s, _, _ in collapsed))
+    if fresh:
+        parts.append("nové: " + ", ".join(s for s, _ in fresh))
+    return (not dried and not collapsed), "; ".join(parts)
+
+
+def test_zdravi_pusti_beze_zmeny():
+    passed, _ = _health({"kraj.cz": 100, "mesto.cz": 5}, {"kraj.cz": 100, "mesto.cz": 5})
+    assert passed
+
+
+def test_zdravi_zastavi_vyschly_zdroj():
+    passed, msg = _health({"kraj.cz": 100}, {"kraj.cz": 100, "mesto.cz": 5})
+    assert not passed
+    assert "mesto.cz" in msg
+
+
+def test_zdravi_pusti_zmizeni_drobku():
+    """Zdroj se dvěma záznamy spadne na nulu, kdykoli poskytovatel zavře
+    poslední výzvu. To není porucha sběru, to je normální život."""
+    passed, _ = _health({"kraj.cz": 100}, {"kraj.cz": 100, "drobek.cz": 2})
+    assert passed
+
+
+def test_zdravi_zastavi_propad_velkeho_zdroje():
+    passed, msg = _health({"kraj.cz": 20}, {"kraj.cz": 100})
+    assert not passed
+    assert "kraj.cz" in msg
+
+
+def test_zdravi_pusti_bezny_ubytek():
+    """Uzavřené výzvy z katalogu nemizí, ale zdroj přesto kolísá. Polovina je
+    práh; deset procent je běžný týden."""
+    passed, _ = _health({"kraj.cz": 90}, {"kraj.cz": 100})
+    assert passed
+
+
+def test_zdravi_pusti_novy_zdroj():
+    """Růst se nehlídá — nový zdroj je přesně to, co má pipeline dělat."""
+    passed, msg = _health({"kraj.cz": 100, "novy.cz": 300}, {"kraj.cz": 100})
+    assert passed
+    assert "novy.cz" in msg
+
+
+def test_zdravi_nezastavi_maly_zdroj_na_propadu():
+    """Pod deseti záznamy se poměr nehlídá vůbec: ze čtyř na jeden je jedna
+    uzavřená výzva, ne porucha."""
+    passed, _ = _health({"maly.cz": 1}, {"maly.cz": 4})
+    assert passed
+
+
+def test_zdravi_cte_katalog_i_export():
+    """Brána musí umět přečíst OBA tvary — živý katalog je JSONL, minulý export
+    je JSON s polem `grants`. Kdyby se lišily, porovnávalo by se jablko
+    s hruškou a nikdo by si toho nevšiml."""
+    with tempfile.TemporaryDirectory() as tmp:
+        cat = os.path.join(tmp, "opportunities.jsonl")
+        with open(cat, "w", encoding="utf-8") as fh:
+            for src in ["a.cz", "a.cz", "b.cz"]:
+                fh.write(json.dumps({"id": src, "source": src}) + "\n")
+        exp = os.path.join(tmp, "opportunities.json")
+        with open(exp, "w", encoding="utf-8") as fh:
+            json.dump({"meta": {}, "grants": [{"source": "a.cz"}, {"source": "c.cz"}]}, fh)
+
+        assert source_health.counts_from_catalog(cat) == {"a.cz": 2, "b.cz": 1}
+        assert source_health.counts_from_export(exp) == {"a.cz": 1, "c.cz": 1}
+
 
 
 # ---------------------------------------------------------------- mini-runner
