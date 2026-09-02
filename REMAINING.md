@@ -213,3 +213,53 @@ by z uložených výzev udělal prázdné místo.
 **Co to odemkne:** přístup k úřední desce JMK (dohoda s krajem), nebo nalezení
 jiné veřejné stránky s VÝZVAMI. Bez toho se zdroj obnovit nedá a žádné množství
 práce na harvesteru s tím nic neudělá.
+
+---
+
+## ⚠ Kolik zdrojů funguje? Repozitář na to neumí odpovědět (2026-09-01)
+
+**Vazba mezi `routing.yaml` a `source` v datech neexistuje nikde v repozitáři.**
+
+Tři mechanické pokusy o spočítání funkčních zdrojů daly tři různé odpovědi:
+
+| jak | výsledek | proč je špatně |
+| --- | --- | --- |
+| klíče v `routing.yaml` | **81** | klíčuje se doménami (`esfcr.cz`), data krátkými id (`esfcr`) |
+| normalizace jmen | **51 spárováno** | heuristika; `msmt.gov.cz` ≠ `msmt`, `nadace-adra.cz` ≠ `nadace_adra` |
+| `source` vyčtený z harvesteru | **33** | u 48 zdrojů se nenajde, včetně těch se 148 záznamy |
+
+A `docs/PREHLED.md` v Grantiu tvrdilo **136** — počet různých hodnot `source`
+v datasetu, tedy zase něco jiného.
+
+**Příčina.** Sdílené harvestery berou `source` jako argument:
+
+```
+python3 scripts/dotis_harvest.py --web https://dotace.khk.cz \
+        --source dotace.khk.cz --out data/h_dotis_khk.json
+```
+
+`routing.yaml` u toho záznamu nese jen `harvester` a `note`. Identifikátor,
+pod kterým se záznamy do datasetu zapíšou, tedy nestojí ve skriptu ani
+v routeru — je jen ve způsobu, jakým se skript spustí. Jeden skript
+(`dotis_harvest.py`) přitom obsluhuje víc krajů, takže „jeden skript = jeden
+zdroj" neplatí a odvodit to nejde.
+
+**Důsledek.** Na otázku „který zdroj vyschl" se dnes odpovídá ručním
+procházením 81 položek. Vyschlý zdroj se tím pádem pozná až tehdy, když si
+někdo všimne, že v katalogu chybí kraj — což je pozdě.
+
+**Oprava je jedno pole.** Do každé položky `routing.yaml` přidat `source:`
+s hodnotou, kterou ten běh do datasetu zapisuje:
+
+```yaml
+dotace.khk.cz:
+  harvester: [scripts/dotis_harvest.py]
+  source: dotace.khk.cz          # ← tohle chybí
+  note: Královéhradecký kraj (DOTIS, dotisreactfunctions API)
+```
+
+Pak jde napsat kontrola, která po každém refreshi vypíše zdroje s nulou —
+a `--source` může brát výchozí hodnotu odtud, takže se to nemůže rozejít.
+
+⚠ **Nezapisuj počet zdrojů do dokumentace, dokud tohle pole nebude.** Každé
+takové číslo je dnes odhad a všechna dosavadní byla nesprávná.
