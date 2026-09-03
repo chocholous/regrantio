@@ -35,6 +35,14 @@ CHYTIT = [
     "Vyhlášení výsledku jednostupňové veřejné soutěže o účelovou podporu",
     "Výsledky stipendijního programu MSPP 2025 (NEWS, NE výzva)",
     "  výsledky grantového řízení 2026",  # odsazení a malá písmena nesmí pravidlo obejít
+    # Nábor do hodnotící komise — JE to výzva, ale pro někoho jiného než pro
+    # organizaci, která shání peníze.
+    "Výzva pro hodnotitelky a hodnotitele programu EEA Civil Society Fund",
+    "Nábor hodnotitelů projektových žádostí",
+    # Rozcestník — stránka, ze které se teprve na programy odbočuje.
+    "Nabídka programů - Nadace Via",
+    "Přehled dotačních programů",
+    "Seznam výzev | Ministerstvo",
 ]
 
 PROPUSTIT = [
@@ -46,6 +54,20 @@ PROPUSTIT = [
     "Grantové řízení Nadace OKD 2027",
     "Informace o podmínkách podání žádosti",
     "Výsledkem projektu má být studie proveditelnosti",
+    # ⚠ HODNOTITEL V TITULKU JEŠTĚ NEDĚLÁ NÁBOR. Tohle je dotace, která
+    # vzdělávání hodnotitelů FINANCUJE — rozdíl nese předložka, ne slovo.
+    "Výzva č. 12 — podpora vzdělávání hodnotitelů kvality",
+    "Program na rozvoj hodnotitelských kapacit v kultuře",
+    # ⚠ ROZCESTNÍK MUSÍ TITULEK VYČERPAT. Za tímhle pokračuje předmět podpory,
+    # takže je to konkrétní program, ne stránka s odkazy.
+    "Nabídka dotací na výměnu kotlů 2027",
+    "Přehled programů podpory bydlení pro obce",
+    # Falešné poplachy zamítnutého pravidla „titulek je jméno organizace“ —
+    # všechny čtyři jsou řádné programy (naměřeno na celém katalogu).
+    "Nadace ČEZ – Program Stromy",
+    "Nadace OKD obcím",
+    "Nadační fond Karlovarského kraje",
+    "Nadační fond Hyundai (Nadace OSF)",
 ]
 
 
@@ -80,6 +102,9 @@ def test_brana_ma_stejne_pravidlo():
         r"^\s*(vyhlášení|oznámení)\s+výsledk\w*",
         r"^\s*informace\s+o\s+(ne)?přijetí",
         r"\(\s*news\s*,\s*ne\s+výzva\s*\)",
+        r"^\s*výzva\s+pro\s+[^\n]{0,30}hodnotitel",
+        r"^\s*(nábor|hledáme)\s+[^\n]{0,20}hodnotitel",
+        r"(programů|dotací|výzev)\s*($|[-–—|(])",
     ):
         assert fragment in gate, f"brána nezná část pravidla: {fragment!r}"
         assert NOT_A_CALL.pattern.find(fragment) >= 0, f"čistička nezná část pravidla: {fragment!r}"

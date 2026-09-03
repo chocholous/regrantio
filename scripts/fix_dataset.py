@@ -77,11 +77,46 @@ VARIANT_DEDUP = {"nadace-agrofert.cz": "nadace-agrofert", "mkcr": "mk"}
 #
 # Proto první pádový tvar, ne kmen: oznámení se jmenují „Výsledky …", kdežto
 # „Výsledkem …" je začátek věty o obsahu projektu.
+#
+# ⚠ DVĚ DALŠÍ PODOBY „NENÍ TO VÝZVA PRO ŽADATELE" (přidáno 2026-09-03).
+# Oznámení výsledků byl jen nejčastější případ. Zbyly dva jiné, každý s jedním
+# záznamem v katalogu — a jednička sem patří stejně jako jedenáctka, protože
+# rozhoduje, jestli je pravidlo pravdivé, ne kolik řádků zrovna trefí:
+#
+#   • NÁBOR HODNOTITELŮ. „Výzva pro hodnotitelky a hodnotitele programu EEA
+#     Civil Society Fund" JE výzva — jenže pro někoho jiného. Katalog nabízí
+#     peníze organizacím; nabídnout jim práci v hodnotící komisi je jiná věc
+#     a v seznamu výzev k podání žádosti je to matoucí řádek.
+#
+#     ⚠ ROZHODUJE PŘEDLOŽKA, NE SLOVO. První tvar zněl „^výzva … hodnotitel"
+#     s libovolnými 40 znaky mezi tím — a ten sedne i na „Výzva č. 12 —
+#     podpora vzdělávání hodnotitelů kvality", tedy na ŘÁDNOU výzvu, která
+#     hodnotitele financuje. „Výzva PRO hodnotitele" je nábor; „výzva na
+#     vzdělávání hodnotitelů" je dotace. Ten rozdíl nese předložka.
+#
+#   • ROZCESTNÍK. „Nabídka programů - Nadace Via" je stránka, ze které se
+#     teprve na programy odbočuje. Vedle ní je v katalogu 24 skutečných
+#     programů téže nadace, takže rozcestník nic nepřidává a jen zdvojuje.
+#
+#     ⚠ MUSÍ TÍM TITULEK KONČIT (nebo pokračovat pomlčkou se jménem webu).
+#     Bez té kotvy pravidlo sebere i „Nabídka dotací na výměnu kotlů 2027",
+#     což je konkrétní program. Rozcestník se jmenuje celý „Nabídka programů";
+#     co za tím pokračuje předmětem podpory, je výzva.
+#
+# ⚠ CO SE ZKOUŠELO A ZAHODILO: pravidlo „titulek je jméno organizace" (tvar
+# „Nadace X"). Naměřeno na celém katalogu — trefilo 4 záznamy a všechny čtyři
+# jsou ŘÁDNÉ programy: „Nadace ČEZ – Program Stromy", „Nadace OKD obcím",
+# „Nadační fond Karlovarského kraje", „Nadační fond Hyundai (Nadace OSF)".
+# Nadace svoje programy běžně pojmenovávají po sobě. Pravidlo neprošlo.
 NOT_A_CALL = re.compile(
     r"^\s*výsledky\b"                            # „Výsledky výběrových dotačních řízení…"
     r"|^\s*(vyhlášení|oznámení)\s+výsledk\w*"     # „Vyhlášení výsledků VES…"
     r"|^\s*informace\s+o\s+(ne)?přijetí"          # „Informace o nepřijetí…"
-    r"|\(\s*news\s*,\s*ne\s+výzva\s*\)",          # anotace samotné extrakce
+    r"|\(\s*news\s*,\s*ne\s+výzva\s*\)"           # anotace samotné extrakce
+    r"|^\s*výzva\s+pro\s+[^\n]{0,30}hodnotitel"   # „Výzva PRO hodnotitele…"
+    r"|^\s*(nábor|hledáme)\s+[^\n]{0,20}hodnotitel"       # „Nábor hodnotitelů…"
+    r"|^\s*(nabídka|přehled|seznam)\s+(dotačních\s+|grantových\s+)?"
+    r"(programů|dotací|výzev)\s*($|[-–—|(])",     # rozcestník, ne výzva
     re.IGNORECASE,
 )
 

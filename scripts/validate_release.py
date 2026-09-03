@@ -25,6 +25,30 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(ROOT)
 errors = []
 EXPORT = "docs/opportunities.json"   # veřejný kontrakt (generuje scripts/export_api.py)
+CATALOG = "data/opportunities.jsonl"  # živý katalog = TO, CO SE PRÁVĚ CHYSTÁ VYJÍT
+
+
+def _ke_zverejneni():
+    """Záznamy, které se chystají ven — tedy KATALOG, ne minulý export.
+
+    ⚠ KONTROLA OBSAHU BYLA O JEDEN BĚH POZADU. `check_only_calls` a
+    `check_data_quality` četly `docs/opportunities.json`, jenže v `refresh_run`
+    stojí brána PŘED `export_api.py` — takže ten soubor je v tu chvíli ještě
+    MINULÁ publikace. Špatný záznam, který dnes přibyl, tedy branou prošel,
+    vyšel ven, a brána si na něj postěžovala až při dalším běhu.
+
+    Naměřeno 2026-09-03: po rozšíření pravidla `NOT_A_CALL` o nábory a
+    rozcestníky čistička ty dva záznamy z katalogu odstranila a brána přesto
+    spadla — na exportu, ve kterém pořád byly. Ukázalo se to jako selhání
+    tam, kde už bylo opraveno.
+
+    Brány na POČET (propad, vyschlý zdroj, stáří) porovnávají katalog proti
+    minulému exportu schválně — potřebují obojí. Brány na OBSAH potřebují
+    jen to, co jde ven.
+    """
+    if not os.path.exists(CATALOG):
+        raise Skip(f"{CATALOG} není v pracovní kopii")
+    return [json.loads(l) for l in open(CATALOG, encoding="utf-8") if l.strip()]
 
 
 class Skip(Exception):
@@ -135,9 +159,7 @@ def check_data_quality():
     (audit 2026-07-31) → umí vyrobit 2026-13-45. Dnes to zachytí sanitizace ve fix_dataset,
     ale to je záchranná síť bez pojistky. Tahle kontrola je ta pojistka."""
     import datetime as _dt
-    if not os.path.exists(EXPORT):
-        raise Skip(f"{EXPORT} není v pracovní kopii")
-    grants = json.load(open(EXPORT, encoding="utf-8"))["grants"]
+    grants = _ke_zverejneni()
     bad_date, bad_range, inverted, empty_title = [], [], [], 0
     for g in grants:
         for f in ("open_from", "deadline"):
@@ -191,8 +213,6 @@ def check_only_calls():
     jinou cestou, chytí je stejně.
     """
     import re as _re
-    if not os.path.exists(EXPORT):
-        raise Skip(f"{EXPORT} není v pracovní kopii")
     # Musí zůstat shodné s `fix_dataset.NOT_A_CALL` — proto to stojí v obou
     # souborech doslova a ne jako import: brána nesmí spadnout jen proto, že se
     # nepodařilo naimportovat skript, který právě kontroluje.
@@ -200,20 +220,22 @@ def check_only_calls():
         r"^\s*výsledky\b"
         r"|^\s*(vyhlášení|oznámení)\s+výsledk\w*"
         r"|^\s*informace\s+o\s+(ne)?přijetí"
-        r"|\(\s*news\s*,\s*ne\s+výzva\s*\)",
+        r"|\(\s*news\s*,\s*ne\s+výzva\s*\)"
+        r"|^\s*výzva\s+pro\s+[^\n]{0,30}hodnotitel"
+        r"|^\s*(nábor|hledáme)\s+[^\n]{0,20}hodnotitel"
+        r"|^\s*(nabídka|přehled|seznam)\s+(dotačních\s+|grantových\s+)?"
+        r"(programů|dotací|výzev)\s*($|[-–—|(])",
         _re.IGNORECASE,
     )
-    grants = json.load(open(EXPORT, encoding="utf-8"))["grants"]
+    grants = _ke_zverejneni()
     bad = [g for g in grants if g.get("kind") == "grant" and pat.search(g.get("title") or "")]
     if bad:
         raise RuntimeError(
-            f"{len(bad)} záznamů je oznámení výsledků, ne výzva "
+            f"{len(bad)} záznamů není výzva pro žadatele "
             f"(např. {(bad[0].get('title') or '')[:70]!r})"
         )
-    print(f"    ({len(grants)} záznamů, žádné oznámení výsledků mezi výzvami)")
+    print(f"    ({len(grants)} záznamů, žádné oznámení, nábory ani rozcestníky mezi výzvami)")
 
-
-CATALOG = "data/opportunities.jsonl"   # živý katalog (gitignored kromě tohohle souboru)
 
 # Kolik smí nový sběr ztratit proti minule publikovanému exportu, než se to
 # začne považovat za poruchu, a ne za úklid.
