@@ -69,8 +69,22 @@ python scripts/refresh_run.py               # harvest → ingest → přepočet 
 python scripts/refresh_run.py --publish     # a rovnou publikuj do úschovny
 ```
 
-14 zdrojů se obnovuje **deterministicky, bez modelu**. Zbytek potřebuje vrstvu 2
-(`scripts/extract_wf.js` uvnitř Claude Code) — podrobně v [docs/REFRESH.md](docs/REFRESH.md).
+**28 zdrojů se obnovuje bez modelu**, ve dvou třídách:
+
+| | jak | kolik | spustí |
+|---|---|---|---|
+| A | harvest → strukturní ingest | 14 | `refresh_run.py` |
+| B | harvest → `data/_<slug>_extract.py` → `ingest_rich` | 14 | `refresh_run.py --tier extract` |
+| C | harvest → **model** (`extract_wf.js`) → `ingest_rich` | zbytek | jen uvnitř Claude Code |
+
+⚠ **Souborů `data/_*_extract.py` je 42, ale jen 15 z nich vstup opravdu ČTE.**
+Zbytek má data napsaná natvrdo — je to přepis jedné extrakce z 2026‑06/07, ne
+parser. Vypadají stejně, spustí se, vytisknou „wrote N grants" a skončí nulou;
+jenže `ingest_rich` páruje obsah se zdrojem podle POŘADÍ vstupních souborů,
+takže po každé změně listingu dostane záznam cizí odkaz. Jsou proto vedené
+v `refresh_run.TRANSCRIBED`, do registru nepatří a čeká je třída C.
+
+Podrobně v [docs/REFRESH.md](docs/REFRESH.md).
 
 ## Publikování pro produkt
 
@@ -102,8 +116,8 @@ později (`msmt_files`, `esfcr_files`, `czechaid_files`, `hzs_files`, `mk_files`
 `plone_ostrava_files`, dohromady ~6,5 GB) v žádném balíku nejsou a existují
 **v jediné kopii na jednom disku**. Jejich obnova = re-harvest.
 
-⚠ **Dokumenty nejsou potřeba k běžné obnově.** 14 deterministických zdrojů je
-nečte; slouží jako korpus pro opakovanou extrakci vrstvou 2.
+⚠ **Dokumenty nejsou potřeba k běžné obnově.** 28 zdrojů tříd A a B je
+nečte; slouží jako korpus pro opakovanou extrakci vrstvou 2 (třída C).
 
 | balík | co obsahuje | rozbalí |
 |---|---|---|

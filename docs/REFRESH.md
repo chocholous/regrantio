@@ -7,7 +7,7 @@ z produktu kvůli rozbitému běhu.
 Doprovodné nástroje:
 - **`python scripts/refresh.py`** = živý checklist (zdroj → harvester → tier → počet záznamů →
   příkaz) + gap-check. Řekne, CO by se dalo obnovit.
-- **`python scripts/refresh_run.py`** = JEDEN příkaz, který to UDĚLÁ pro 14 deterministických
+- **`python scripts/refresh_run.py`** = JEDEN příkaz, který to UDĚLÁ pro 28 zdrojů bez modelu (14 + `--tier extract`)
   zdrojů (harvest → strukturní ingest → přepočet → brána kvality → export). Před během zálohuje
   dataset do `.pre-refresh.bak`; selhání jednoho zdroje kolo neshodí, jen se přizná ve shrnutí
   a v návratovém kódu. `--list` vypíše registr, `--tier structured|html` a `--only a,b` zúží
@@ -15,7 +15,7 @@ Doprovodné nástroje:
 
 ⚠ **`refresh_run.py` NEPŘINESE nové výzvy u zdrojů, které jedou přes model.** Ty potřebují
 `build_extract_input` → `extract_wf.js` (workflow uvnitř Claude Code) → `ingest_rich`, a to není
-věc cronu. Deterministických zdrojů je 14 z 81, ale patří mezi ně ty nejobjemnější krajské
+věc cronu. Zdrojů bez modelu je 28, ale patří mezi ně ty nejobjemnější krajské
 (Vysočina, Liberecký, Pardubický, Ústecký, MSK, Středočeský, Karlovarský, Jihomoravský,
 Jihočeský, Olomoucký, Zlínský, Praha, Brno, Královéhradecký).
 

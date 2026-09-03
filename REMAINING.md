@@ -3,9 +3,9 @@
 Živý plánovací dokument. **Aktuální stav, co je hotovo, co zbývá a proč.** JAK pracovat (zlatá pravidla,
 recept na zdroj, pasti) = `docs/SESSION_PLAYBOOK.md` + `CLAUDE.md`. Katalog je v gitu, zbytek dat v gitignored `data/`.
 
-> **Status k 2026-09-03 (změřeno, ne odhad).** Dataset **3448 záznamů / 134 zdrojů**,
-> export vygenerovaný **2026-09-03** (`docs/opportunities.json`, 10,9 MB).
-> **71/71 testů**, `validate_release` prochází přes **devět** bran.
+> **Status k 2026-09-03 (změřeno, ne odhad).** Dataset **3525 záznamů / 134 zdrojů**,
+> export vygenerovaný **2026-09-03** (`docs/opportunities.json`, 11,1 MB).
+> **74/74 testů**, `validate_release` prochází přes **deset** bran.
 > Publikační cesta do úschovny hotová (`scripts/publish_export.py`,
 > `refresh_run.py --publish`) a čeká **jen na založení kbelíku** — viz
 > `docs/REFRESH.md §8`. Jméno kbelíku se doladí spolu s přejmenováním
@@ -17,21 +17,26 @@ recept na zdroj, pasti) = `docs/SESSION_PLAYBOOK.md` + `CLAUDE.md`. Katalog je v
 
 | metrika | hodnota |
 |---|---|
-| **záznamů celkem** | **3448** (3423 grantů + 25 foundation_mission) |
+| **záznamů celkem** | **3525** (3500 grantů + 25 foundation_mission) |
 | **zdrojů (`source`)** | **134** |
-| status grantů | **655 open** · 38 announced · 1817 closed · 913 unknown |
-| termíny | deadline 2510 (73 %) · open_from 2363 (69 %) |
-| částky | amount 776 (23 %) |
-| texty | focus_area 3166 (92 %) · eligible_applicants 2227 (65 %) · source_url 3423 (100 %) |
-| fasety | typ_poskytovatele **100 %** · oblast 3034 (89 %) · typ_zadatele 1273 (37 %) |
-| **známé stáří** | **733 (21 %)** — `provenance.fetched_at`, viz níž |
+| **obnovitelných bez modelu** | **28** (14 strukturních + 14 s vlastním parserem) |
+| status grantů | **755 open** · 38 announced · 1794 closed · 913 unknown |
+| termíny | deadline 2587 (74 %) · open_from 2438 (70 %) |
+| částky | amount 778 (22 %) |
+| texty | focus_area 3243 (93 %) · eligible_applicants 2304 (66 %) · source_url 3500 (100 %) |
+| **známé stáří** | **1457 (41 %)** — `provenance.fetched_at`, viz níž |
 | integrita | **0 dup id · 0 bez id · 0 bez title · 0 inverzních termínů** |
-| export | 3448 záznamů, `content_hash` u **100 %** |
+| export | 3525 záznamů, `content_hash` u **100 %** |
 
 > ⚠ **NOVÁ METRIKA: ZNÁMÉ STÁŘÍ.** Do 2026-09-03 katalog neuměl říct, kdy
 > byl který záznam naposled ověřen u zdroje — `provenance` datum nenesla.
-> Deterministicky obnovit jde **14 zdrojů ze 134**; u zbylých 120 čeká obnova
-> na modelovou vrstvu, takže razítko nemají a jejich stáří je neznámé.
+> Bez modelu obnovit jde **28 zdrojů ze 134** (14 strukturních + 14 s vlastním
+> deterministickým parserem — viz `refresh_run.py --list`); u zbylých čeká
+> obnova na modelovou vrstvu, takže razítko nemají a jejich stáří je neznámé.
+>
+> ⚠ Do 2026‑09‑03 tu stálo „14 z 134" a bylo to vedle na obě strany: třída B
+> v žádném registru nebyla, a 28 „extraktorů" má naopak data natvrdo, takže
+> obnovu jen předstírají (`refresh_run.TRANSCRIBED`).
 >
 > `null` znamená **„nevíme"**, ne „staré". Štítek „neaktuální" by u čtyř pětin
 > katalogu tvrdil něco, co o něm nevíme. Číslo poroste s každou obnovou; hlídá
@@ -436,3 +441,57 @@ oddíl výš). Rozhodovat to bez pravidla znamená ruční zásah, který se př
 příštím sběru vrátí.
 
 </details>
+
+---
+
+## ✅ Obnova 2026-09-03 — třída B objevena, 28 „extraktorů" odhaleno
+
+**+77 záznamů** (3448 → 3525), z toho 75 z EU Funding & Tenders portálu.
+
+### Co se ukázalo
+
+`refresh_run.py` znal jednu cestu bez modelu (harvest → strukturní ingest, 14
+zdrojů). Cesta číslo dvě — harvest → `build_extract_input` →
+`data/_<slug>_extract.py` → `ingest_rich` — byla popsaná v `docs/REFRESH.md`,
+ale v žádném registru. Ověřeno živě na `opd`: 12 výzev, nula účasti modelu.
+
+Přibylo `EXTRACT_SOURCES` a `--tier extract`.
+
+### A hned nato ta nepříjemnější půlka
+
+Ze 42 souborů `data/_*_extract.py` jich **jen 15 vstup opravdu čte**. Zbytek má
+výsledek napsaný natvrdo — přepis jedné extrakce z 2026‑06/07 do literálů.
+
+Nebezpečné je, že se to nepozná: spustí se, vytiskne „wrote N grants", skončí
+nulou. A protože `ingest_rich` páruje obsah se zdrojem podle **pořadí**
+vstupních souborů, dostane po každé změně listingu záznam **cizí odkaz**:
+
+| titulek (z června) | odkaz (z dnešního harvestu) |
+|---|---|
+| Výzva č. 31_22_019 – Nákup nízkoemisních vozidel | `/vyzva-c.-31_22_002-budovani-kapacit-detskych-skupin` |
+| Dotace … Bílá stuha | `/dotace-na-podporu-rodiny-pro-nestatni-neziskove-organizace` |
+
+Prvním během to stihlo zapsat 7 záznamů a orazítkovat 350 dalších jako ověřené
+dnes. Vráceno, razítka odebrána, zdroje vedeny v `refresh_run.TRANSCRIBED`.
+**Cesta ven je pro ně tatáž jako pro třídu C — model.**
+
+### Uklizeno při tom
+
+- **8 harvesterů mělo `--seeds` povinný a jeho soubor gitignorovaný** → po
+  čerstvém klonu nespustitelné. `.gitignore` má teď třetí výjimku (vstup je
+  kód, ne data); čtyři chybějící soubory zrekonstruovány z katalogu.
+- **Brána „známé stáří" se ptala špatně.** Počítala razítka všech zdrojů, takže
+  vyřazení nedůvěryhodného zdroje hlásila jako ztrátu. Ptá se teď jen na zdroje
+  z registru.
+- **`pages.yml` běžel na každý push** a publikoval web, který má GitHub Pages
+  vypnuté (`/pages` i stránka vrací 404) — 49 s a `fetch-depth: 0` nad 2GB
+  historií. Teď jen `workflow_dispatch`; zapnutí Pages je jedno kliknutí
+  vlastníka repa.
+
+### Zbývá u tří zdrojů
+
+| zdroj | co je | čí to je |
+|---|---|---|
+| `sfpi` | `sfpi.cz/wp-json/wp/v2/pages` → **404**, WP REST API zrušeno | zdroj |
+| `eeagrants` | harvest neskončil do 30 min | k prověření |
+| `kr-jihomoravsky` | úřední deska za přihlášením (**401**) | zdroj |

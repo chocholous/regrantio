@@ -86,8 +86,9 @@ python3 scripts/derive_deadlines.py       # doplni deadline tam, kde je termin v
 python3 scripts/fix_dataset.py            # deterministická oprava: dedup (Ústí/variant) + reclasifikace null poskytovatele + přepočet statusu k --today (default dnešek); idempotentní, .bak
 python3 scripts/build_app.py              # → data/grants_app.html (fasetový prohlížeč; STATUS se počítá KLIENTSKY k dnešku, nezastará)
 
-# OBNOVA KATALOGU — jeden příkaz (14 deterministických zdrojů, bez modelu)
-python3 scripts/refresh_run.py            # harvest → ingest → přepočet → brána kvality → export
+# OBNOVA KATALOGU — jeden příkaz (28 zdrojů bez modelu, ve DVOU třídách)
+python3 scripts/refresh_run.py            # třída A: harvest → ingest → přepočet → brána → export
+python3 scripts/refresh_run.py --tier extract   # třída B: + deterministická vrstva 2 (14 zdrojů)
 python3 scripts/refresh_run.py --list     # co je v registru; --tier/--only zúží, --tail-only bez sítě
 ```
 > **Obnova → produkt:** `refresh_run.py` v regrantiu vyrobí `docs/opportunities.json`; Grantio si
@@ -123,7 +124,7 @@ python3 scripts/refresh_run.py --list     # co je v registru; --tier/--only zú�
 - `docs/SESSION_PLAYBOOK.md` — **JAK pracovat** (handoff pro příští session): zlatá pravidla (NIKDY nemergovat do main, nehalucinovat, status v kódu), recept na přidání zdroje (8 kroků), pasti (cp1250 konzole, TLS, WebForms/Kentico/page-builder, JOIN, …), deploy+export. **Přečti na začátku session.**
 - `REMAINING.md` (root) — **plán rozšiřování (CO)**: co je hotovo, co zbývá (priority P1–P7), stav datasetu, vlajky. Aktualizuj po každém přidaném zdroji.
 - `docs/EXPORT.md` — **publikovaná podoba katalogu** (`docs/opportunities.json`): tvar souboru, schéma polí, `content_hash`, status jako odvozená hodnota, záruky kvality, pojistka proti kolapsu. Generuje `scripts/export_api.py`.
-- `docs/REFRESH.md` — **update/refresh strategie**: co/jak často/jak bezpečně re-harvestovat (kadence per tier), pojistka proti kolapsu datasetu, known refresh-gapy. Dva nástroje: `scripts/refresh.py` = živý checklist (co by šlo obnovit), **`scripts/refresh_run.py` = jeden příkaz, který to pro 14 deterministických zdrojů UDĚLÁ** (harvest → ingest → přepočet → brána → export).
+- `docs/REFRESH.md` — **update/refresh strategie**: co/jak často/jak bezpečně re-harvestovat (kadence per tier), pojistka proti kolapsu datasetu, known refresh-gapy. Dva nástroje: `scripts/refresh.py` = živý checklist (co by šlo obnovit), **`scripts/refresh_run.py` = jeden příkaz, který to pro 28 zdrojů bez modelu UDĚLÁ** (harvest → ingest → přepočet → brána → export).
 - `docs/platform_playbook.md` — definice VŠECH CMS rodin → podpis/harvester/metoda
 - `docs/detection.md` — 3 vrstvy detekce platformy + lekce o slitých labelech
 - `docs/data_reuse.md` — index UŽ STAŽENÝCH dat k reuse (klíčové: harvest = REUSE-first)
