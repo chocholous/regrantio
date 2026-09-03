@@ -1,6 +1,6 @@
 # Regrantio — datový systém pro dotační výzvy
 
-Sbírá dotační a grantové výzvy ze **136 zdrojů** (kraje, města, ministerstva,
+Sbírá dotační a grantové výzvy ze **134 zdrojů** (kraje, města, ministerstva,
 státní fondy a agentury, nadace, evropské programy), sjednocuje je do jednoho
 katalogu a publikuje **validovaný export**, ze kterého žije produkt
 [Grantio](https://github.com/chocholous/the-machine-app).

@@ -3,28 +3,39 @@
 Živý plánovací dokument. **Aktuální stav, co je hotovo, co zbývá a proč.** JAK pracovat (zlatá pravidla,
 recept na zdroj, pasti) = `docs/SESSION_PLAYBOOK.md` + `CLAUDE.md`. Katalog je v gitu, zbytek dat v gitignored `data/`.
 
-> **Status k 2026-08-22 (změřeno, ne odhad).** Dataset **3452 záznamů / 129 zdrojů**,
-> export vygenerovaný **2026-08-22** (`docs/opportunities.json`, otisk `fedc3b6b…`,
-> 10,6 MB). **53/53 testů**, `validate_release` prochází včetně dvou nových bran.
+> **Status k 2026-09-03 (změřeno, ne odhad).** Dataset **3448 záznamů / 134 zdrojů**,
+> export vygenerovaný **2026-09-03** (`docs/opportunities.json`, 10,9 MB).
+> **71/71 testů**, `validate_release` prochází přes **devět** bran.
 > Publikační cesta do úschovny hotová (`scripts/publish_export.py`,
-> `refresh_run.py --publish`) a čeká **jen na založení kbelíku `regrantio-exports`**
-> — viz `docs/REFRESH.md §8`.
+> `refresh_run.py --publish`) a čeká **jen na založení kbelíku** — viz
+> `docs/REFRESH.md §8`. Jméno kbelíku se doladí spolu s přejmenováním
+> repozitáře (`regrantio` → `grantio-data`), aby se nezakládal dvakrát.
 
 ---
 
-## 📊 Aktuální stav datasetu (live `data/opportunities.jsonl`, změřeno 2026-08-22)
+## 📊 Aktuální stav datasetu (live `data/opportunities.jsonl`, změřeno 2026-09-03)
 
 | metrika | hodnota |
 |---|---|
-| **záznamů celkem** | **3452** (3427 grantů + 25 foundation_mission) |
-| **zdrojů (`source`)** | **129** |
-| status grantů | **677 open** · 43 announced · 1795 closed · 912 unknown |
-| termíny | deadline 2515 (73 %) · open_from 2351 (69 %) |
-| částky | amount 777 (23 %) |
-| texty | focus_area 3182 (93 %) · eligible_applicants 2231 (65 %) · source_url 3427 (100 %) |
-| fasety | typ_poskytovatele / forma_podpory / zdroj_financovani / region **100 %** · oblast 3060 (89 %) · typ_zadatele 1279 (37 %) |
+| **záznamů celkem** | **3448** (3423 grantů + 25 foundation_mission) |
+| **zdrojů (`source`)** | **134** |
+| status grantů | **655 open** · 38 announced · 1817 closed · 913 unknown |
+| termíny | deadline 2510 (73 %) · open_from 2363 (69 %) |
+| částky | amount 776 (23 %) |
+| texty | focus_area 3166 (92 %) · eligible_applicants 2227 (65 %) · source_url 3423 (100 %) |
+| fasety | typ_poskytovatele **100 %** · oblast 3034 (89 %) · typ_zadatele 1273 (37 %) |
+| **známé stáří** | **733 (21 %)** — `provenance.fetched_at`, viz níž |
 | integrita | **0 dup id · 0 bez id · 0 bez title · 0 inverzních termínů** |
-| export | 3452 záznamů, `content_hash` u **100 %** |
+| export | 3448 záznamů, `content_hash` u **100 %** |
+
+> ⚠ **NOVÁ METRIKA: ZNÁMÉ STÁŘÍ.** Do 2026-09-03 katalog neuměl říct, kdy
+> byl který záznam naposled ověřen u zdroje — `provenance` datum nenesla.
+> Deterministicky obnovit jde **14 zdrojů ze 134**; u zbylých 120 čeká obnova
+> na modelovou vrstvu, takže razítko nemají a jejich stáří je neznámé.
+>
+> `null` znamená **„nevíme"**, ne „staré". Štítek „neaktuální" by u čtyř pětin
+> katalogu tvrdil něco, co o něm nevíme. Číslo poroste s každou obnovou; hlídá
+> ho brána `známé stáří záznamů`, aby razítko nikdo tiše nezahodil.
 
 > ⚠ **`typ_zadatele` 37 % je NEJVĚTŠÍ MEZERA V DATECH, ne chyba.** Deterministické
 > harvestery ji nechávají prázdnou schválně (`ingest_kraj.py`: „← LLM vrstva 2,
@@ -40,6 +51,41 @@ recept na zdroj, pasti) = `docs/SESSION_PLAYBOOK.md` + `CLAUDE.md`. Katalog je v
 > ⚠ Status v tabulce je SNÍMEK k datu přepočtu. Produkt si stav počítá znovu k dnešku
 > (`build_app.py:computeStatus`, `catalog_status()` v Grantiu), takže se čísla „open/closed"
 > mezi katalogem a aplikací můžou o pár položek lišit — a je to správně.
+
+---
+
+## ✅ Refresh 2026-09-03 — co proběhlo
+
+**13 ze 14 deterministických zdrojů obnoveno**, katalog 3441 → 3450 (+9),
+po vyčištění 3448. Brána prošla přes devět kontrol.
+
+| zdroj | výsledek |
+|---|---|
+| dotace.brno.cz | ✓ 32 programů, 19 změn |
+| dotace.khk.cz | ✓ 17 programů / 861 podprojektů, 4 změny |
+| dotace.kraj-lbc.cz | ✓ 104 programů (25 otevřených), 4 změny |
+| msk.cz | ✓ 91 programů, 13 změn |
+| stredoceskykraj.cz | ✓ 91 programů, 8 změn |
+| praha.eu | ✓ 33 programů, 7 změn |
+| fondvysociny.cz | ✓ 10 programů, 3 změny |
+| kr-karlovarsky.cz | ✓ 18 programů, 2 změny |
+| kr-ustecky.cz · kraj-jihocesky.cz · olkraj.cz · zlinskykraj.cz · dotace.pardubickykraj.cz | ✓ beze změny |
+| **kr-jihomoravsky.cz** | ✖ **HTTP 401 Unauthorized** |
+
+### kr-jihomoravsky.cz — potvrzeno, že je to zdroj
+
+2026-08-22 vracel „Configuration Error", 2026-09-01 se zavřel za autentizaci,
+dnes vrací **`401 - Unauthorized: Access is denied due to invalid credentials`**.
+Tři různé chyby v řadě za sebou, všechny na jejich straně. U nás není co
+opravovat a harvester to hlásí kódem 2 („zdroj"), ne kódem 1 („my").
+
+### ⚠ Co se u téhle obnovy naučilo
+
+`fetched_at` se doplnilo **až po** běhu, tedy druhým průchodem ingestů nad
+už staženými soubory. Ukázalo to pořadí, na které je potřeba dát pozor:
+ingest zapisuje syrová fakta z listingu, `fix_dataset` je pak přepočítá.
+Kdo pustí ingest znovu PO přepočtu, přepíše přepočtené syrovým a musí dojet
+`refresh_run.py --tail-only`. Samotný `refresh_run` to pořadí drží správně.
 
 ---
 
@@ -158,6 +204,23 @@ Každý níže byl v této session ŽIVĚ přeověřen; „blocker" = ověřená
 **Poznatek k obcházení blokací:** HTTP 403 u Visegradu, ERSTE a obou Interregů padalo na
 DEFAULTNÍM urllib User-Agentu — stačily realistické prohlížečové hlavičky (UA + Accept-Language
 + `Accept-Encoding: identity`). Než označíš zdroj za blokovaný, zkus tohle.
+
+### Živé přeověření 2026-09-03 (realistické hlavičky, přímý HTTP)
+
+Blokery výš jsou z 2026-07-31. Dnes přeověřeno, protože „blocker" starý pět
+týdnů je odhad, ne měření:
+
+| zdroj | dnes | závěr |
+|---|---|---|
+| **SZIF** | `ConnectionResetError` na `szif.cz` i `szif.gov.cz` | blocker **potvrzen** — WAF řeže TCP spojení, hlavičky nepomáhají. Chce proxy nebo jinou IP |
+| **Interreg Danube** | `/calls` = 404, ale **`/calls-for-proposals` vrací 200** | adresa v tabulce výš je **mrtvá**; nová funguje. Obsah jsou ale kola z 2022–2024, **žádná otevřená výzva** → nepřidáno, ale příště se na 404 neztrácí čas |
+| **Interreg Central Europe** | 200, `/calls-for-proposals/` | verdikt „všechna kola uzavřená" **platí dál** — na stránce jsou jen výsledky (first/second/third/strategic call) |
+
+⚠ **Poznámka k měření:** první pokus počítal výskyty vzorů v Node.js a hlásil
+nulu tam, kde data byla. `\b` v JavaScriptu nezná `ů` (slovní znak je jen
+`[A-Za-z0-9_]`), takže `programů\b` nikdy nesedlo. V Pythonu je `\b`
+unicode-aware a vzor sedí. **Vzory nad českým textem měř tím jazykem,
+ve kterém pak poběží.**
 
 ## 🎯 Priority příští coverage session (s rozpočtem na nástroje)
 P3 OP TAK/dotaceeu (Apify/WebForms) · P2b SZIF (proxy) · P4 nadace 17→40+ · grantovydiar login.
@@ -322,6 +385,36 @@ Ingest v Grantiu zakládá `catalog_grant_change` jen při posunu termínu nebo
 
 ---
 
+## ✅ Dvojí identita organizací — vyřešeno ze tří čtvrtin (2026-09-03)
+
+Ze čtyř případů níže zbývá **jeden**, a to způsobem, před kterým ten odstavec
+sám varoval: pravidlem, ne ručním smazáním čtyř řádků.
+
+| případ | stav k 2026-09-03 |
+|---|---|
+| `nadacevia.cz` (1) | **pryč** — „Nabídka programů" je rozcestník, chytá ho `NOT_A_CALL` |
+| `vdv.cz` (1) | **pryč** — nábor hodnotitelů, chytá ho `NOT_A_CALL` |
+| `nadacecez.cz` (1) | **problém to nikdy nebyl** — je to řádná výzva s termíny (Zaměstnanecké granty 2026, 1. 3. – 31. 3.). Ověřeno v datech, ne odhadnuto |
+| `nadace-agrofert.cz` (1) | **zbývá** — záznam je homepage nadace |
+
+Obě odstraněné byly zároveň jediné záznamy svých doménových zdrojů, takže
+počet zdrojů klesl 136 → 134 a dvojí identita u nich zanikla celá.
+
+**Proč `nadace-agrofert.cz` zůstává:** není to rozcestník ani nábor, je to
+homepage s titulkem konkrétního fondu („Nadace AGROFERT — Fond na Podporu
+rodičů samoživitelů"). Chce to pravidlo na DUPLICITU ORGANIZACE, ne na druh
+stránky — a to je jiná úloha. Ruční smazání by se při příštím sběru vrátilo.
+
+**Zamítnuté pravidlo (ať se nezkouší znovu):** „titulek je jméno organizace"
+(tvar `Nadace X`). Naměřeno na celém katalogu — trefí 4 záznamy a **všechny
+čtyři jsou řádné programy**: „Nadace ČEZ – Program Stromy", „Nadace OKD
+obcím", „Nadační fond Karlovarského kraje", „Nadační fond Hyundai (Nadace
+OSF)". Nadace svoje programy běžně pojmenovávají po sobě. Zůstává jako
+`PROPUSTIT` v `tests/test_notacall.py`.
+
+<details>
+<summary>Původní zápis z 2026-09-02 (pro kontext)</summary>
+
 ## ⚠ Čtyři organizace mají v datech dvojí identitu (2026-09-02, neopraveno)
 
 | krátké id | doménové id | co je v tom doménovém |
@@ -341,3 +434,5 @@ poznat, že záznam je rozcestník. Pravidlo „URL je kořen webu" NEPLATÍ —
 naměřeno, sedne na 153 záznamů a 148 z nich jsou řádné programy KHK (viz
 oddíl výš). Rozhodovat to bez pravidla znamená ruční zásah, který se při
 příštím sběru vrátí.
+
+</details>
