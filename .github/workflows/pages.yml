@@ -1,11 +1,33 @@
 name: Deploy branch apps to Pages
 
-# Při push do JAKÉKOLI větve přestaví celý Pages site: app každé větve do /branches/<name>/
-# + rozcestníkovou homepage. Publikuje na větev gh-pages (force_orphan = jeden commit, bez bloatu).
+# ⚠ SPOUŠTÍ SE JEN RUČNĚ. Do 2026-09-03 běželo tohle na KAŽDÝ push do JAKÉKOLI
+# větve — a publikovalo web, který nikdo neviděl.
+#
+# Naměřeno 2026-09-03:
+#   • `GET /repos/chocholous/regrantio/pages`  → 404 (Pages NEJSOU zapnuté)
+#   • `https://chocholous.github.io/regrantio/` → 404
+#   • větev `gh-pages` přesto aktualizovaná týž den v 16:58 tímhle workflow
+#   • 49 s a `fetch-depth: 0` nad repozitářem, který má **2 GB** historie,
+#     na každý push
+#
+# Nešlo o rozbitou věc — build i deploy fungují. Chybí jedno kliknutí. Než
+# padne, jestli má ten web existovat, nemá cenu ho stavět pořád dokola.
+#
+# ZAPNOUT ZPÁTKY = dvě věci, obojí musí udělat vlastník repa (`chocholous`):
+#   1. Settings → Pages → Source: „Deploy from a branch", větev `gh-pages`, `/`
+#   2. v tomhle souboru odkomentovat blok `push:` níž
+#
+# Do té doby se dá web postavit a nasadit kdykoli ručně:
+#   Actions → „Deploy branch apps to Pages" → Run workflow
+#
+# ⚠ POZOR NA VIDITELNOST. `regrantio` je dnes VEŘEJNÝ repozitář; README ale
+# počítá s tím, že se může kdykoli zneveřejnit. Pages nad soukromým repem
+# vyžadují placený plán — a hlavně by ten web zveřejnil celý katalog, což je
+# rozhodnutí, ne vedlejší efekt CI.
 
 on:
-  push:
-    branches: ['**']
+  # push:
+  #   branches: ['**']
   workflow_dispatch:
 
 permissions:

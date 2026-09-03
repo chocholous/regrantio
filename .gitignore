@@ -16,9 +16,17 @@ __pycache__/
 #      ze které se dopočítávají odvozené termíny. Zároveň je to podmínka pro běh v CI.
 #   2. per-source vrstva-2 extraktory `data/_<src>_extract.py` jsou KÓD (ne data) → jinak
 #      fresh clone nedokáže reprodukovat vrstvu 2 (harvester je v scripts/, extraktor chyběl).
+#   3. `data/<src>_seeds.json` = VSTUP, bez kterého se harvester nespustí. Osm harvesterů
+#      (albert, eagri, hlavka, leontinka, nadace_adra, partnerstvi, sirius, veronica) má
+#      `--seeds` jako POVINNÝ argument, takže bez tohohle souboru končí návratovým kódem 2
+#      a chybovou hláškou o použití. Platí tu doslova totéž co u výjimky 2: sledovaný
+#      skript, jehož jediný povinný vstup v repozitáři není, je po čerstvém klonu
+#      nespustitelný. Jsou to desítky bajtů seznamu URL, ne data.
+#      Naměřeno 2026-09-03: přesně na tomhle padlo 8 z 38 zdrojů třídy B.
 /data/*
 !/data/opportunities.jsonl
 !/data/_*_extract.py
+!/data/*_seeds.json
 data/*.bak
 data/*.pre-refresh.bak
 *.out.json

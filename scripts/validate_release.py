@@ -342,14 +342,28 @@ def check_freshness_stamp():
     čerstvé. Hlídá se proto POČET orazítkovaných proti minulému exportu,
     stejným způsobem jako vyschlý zdroj.
 
+    ⚠ POČÍTAJÍ SE JEN ZDROJE Z REGISTRU OBNOVY, a to je to podstatné.
+    První podoba brány počítala razítka VŠECHNA — a hned první den spadla na
+    věci, která byla správně: ze 28 zdrojů se ukázalo, že jejich „extraktor"
+    má data natvrdo (`refresh_run.TRANSCRIBED`), vyřadily se z registru a
+    jejich 350 razítek muselo pryč, protože tvrdila čerstvost, kterou nikdo
+    neověřil. Brána to hlásila jako „razítko někdo zahodil po cestě".
+
+    Rozdíl mezi „ztratilo se nám razítko" a „zdroj přestal být důvěryhodný"
+    neuvidí brána, která umí jen sčítat. Ptá se proto na užší množinu:
+    kolik razítek mají zdroje, o kterých DNES tvrdíme, že je umíme obnovit.
+    Vyřazení zdroje pak číslo nesnižuje a rozbitá zápisová cesta ano.
+
     Práh je „nesmí klesnout", ne „musí růst": zdroj, který zrovna neběžel,
     razítko nepřidá a to je v pořádku.
     """
+    import refresh_run
+    obnovitelne = set(refresh_run.SOURCES) | set(refresh_run.EXTRACT_SOURCES)
     if not os.path.exists(CATALOG):
         raise Skip(f"{CATALOG} není v pracovní kopii")
 
     today = datetime.date.today().isoformat()
-    now, budouci = 0, []
+    now, vsechna, budouci = 0, 0, []
     for line in open(CATALOG, encoding="utf-8"):
         if not line.strip():
             continue
@@ -357,7 +371,11 @@ def check_freshness_stamp():
         f = (r.get("provenance") or {}).get("fetched_at")
         if not f:
             continue
-        now += 1
+        vsechna += 1
+        if r.get("source") in obnovitelne:
+            now += 1
+        # Razítko z budoucnosti = špatně předaný --today nebo posunuté hodiny;
+        # kontroluje se u VŠECH, ne jen u registrovaných.
         if f > today:
             budouci.append((r.get("id"), f))
 
@@ -371,20 +389,21 @@ def check_freshness_stamp():
     if os.path.exists(EXPORT):
         try:
             for g in json.load(open(EXPORT, encoding="utf-8")).get("grants", []):
-                if g.get("fetched_at"):
+                if g.get("fetched_at") and g.get("source") in obnovitelne:
                     before += 1
         except Exception:  # noqa: BLE001
             before = 0
 
     if now < before:
         raise RuntimeError(
-            f"orazítkovaných záznamů ubylo: {now} ← {before}. Razítko někdo zahodil "
-            f"po cestě (upsert → fix_dataset → consolidate → export)."
+            f"u obnovitelných zdrojů ubylo razítek: {now} ← {before}. Razítko někdo "
+            f"zahodil po cestě (upsert → fix_dataset → consolidate → export). "
+            f"Vyřazení zdroje z registru tohle číslo snížit NEMÁ."
         )
 
     celkem = sum(1 for line in open(CATALOG, encoding="utf-8") if line.strip())
-    print(f"    ({now}/{celkem} záznamů se známým stářím = {round(now / celkem * 100)} %, "
-          f"minule {before})")
+    print(f"    ({now} razítek u {len(obnovitelne)} obnovitelných zdrojů, minule {before}; "
+          f"v celém katalogu {vsechna}/{celkem} = {round(vsechna / celkem * 100)} %)")
 
 
 def check_catalog_identity():

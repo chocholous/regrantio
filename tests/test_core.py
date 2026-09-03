@@ -269,6 +269,78 @@ def test_katalog_nema_dotis_zaznam_na_rozcestniku():
 
 
 # ---------------------------------------------------------------- mini-runner (bez pytestu)
+
+# ---------------------------------------------------------------- registr obnovy
+def test_registr_neobsahuje_extraktor_s_daty_natvrdo():
+    """⚠ NEJHORŠÍ MOŽNÝ ZDROJ NENÍ TEN, KTERÝ SPADNE. Je to ten, který doběhne,
+    nic nezmění a tváří se, že obnovil.
+
+    Souborů `data/_<slug>_extract.py` je 42, ale jen 15 z nich vstup opravdu
+    ČTE. Zbytek jsou přepisy jedné extrakce z 2026-06/07 do pythonních
+    literálů — spustí se, vytisknou „wrote N grants" a skončí nulou.
+
+    Zaregistrovat takový soubor do obnovy znamená vyrobit běh, který:
+      1. opravdu stáhne stránku,
+      2. přepíše přes ni červnová data,
+      3. ohlásí ✓ a orazítkuje záznamy jako ověřené dnes.
+
+    Naměřeno 2026-09-03: přesně tohle se stalo 350 záznamům, než se to zachytilo.
+    Test hlídá, že se to nevrátí — a je to strukturální kontrola, ne seznam:
+    ptá se KAŽDÉHO registrovaného extraktoru, jestli čte vstup.
+    """
+    import glob
+    import re as _re
+
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    sys.path.insert(0, os.path.join(root, "scripts"))
+    import refresh_run
+
+    cte_vstup = _re.compile(
+        r"json\.load\s*\(\s*open|open\s*\([^)]*_in/|glob\.glob\s*\([^)]*_in|listdir\s*\([^)]*_in"
+    )
+    hriche = []
+    for slug in refresh_run.EXTRACT_SOURCES:
+        p = os.path.join(root, "data", f"_{slug}_extract.py")
+        assert os.path.exists(p), f"registrovaný zdroj {slug} nemá extraktor {p}"
+        if not cte_vstup.search(open(p, encoding="utf-8").read()):
+            hriche.append(slug)
+    assert not hriche, (
+        "v registru obnovy jsou extraktory s daty natvrdo (nečtou vstup): "
+        + ", ".join(hriche)
+    )
+
+
+def test_prepsane_zdroje_nejsou_v_registru():
+    """Druhá strana téhož: seznam přepsaných a registr se nesmí protnout."""
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    sys.path.insert(0, os.path.join(root, "scripts"))
+    import refresh_run
+
+    prekryv = set(refresh_run.EXTRACT_SOURCES) & set(refresh_run.TRANSCRIBED)
+    assert not prekryv, f"zdroj je zároveň registrovaný i vedený jako přepsaný: {prekryv}"
+
+    prekryv2 = set(refresh_run.SOURCES) & set(refresh_run.EXTRACT_SOURCES)
+    assert not prekryv2, f"zdroj je ve dvou registrech naráz: {prekryv2}"
+
+
+def test_registrovany_harvest_ma_svuj_skript():
+    """Registr smí jmenovat jen skripty, které existují — jinak `--list` lže."""
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    sys.path.insert(0, os.path.join(root, "scripts"))
+    import refresh_run
+
+    chybi = []
+    for slug, (harvest, _tier) in refresh_run.EXTRACT_SOURCES.items():
+        if not os.path.exists(os.path.join(root, "scripts", harvest[0])):
+            chybi.append(f"{slug} → {harvest[0]}")
+        # `--seeds` ukazuje na soubor, který musí být V REPOZITÁŘI (.gitignore výjimka 3)
+        if "--seeds" in harvest:
+            seed = harvest[harvest.index("--seeds") + 1]
+            if not os.path.exists(os.path.join(root, seed)):
+                chybi.append(f"{slug} → chybí {seed}")
+    assert not chybi, "registr jmenuje neexistující soubory: " + ", ".join(chybi)
+
+
 if __name__ == "__main__":
     fails = []
     tests = [(n, f) for n, f in sorted(globals().items())
