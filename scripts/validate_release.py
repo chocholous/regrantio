@@ -15,7 +15,7 @@ Kontroly:
 
 Exit 0 = OK, 1 = našla chyby (vypsané). Bez argumentů; pouští se z kořene repa.
 """
-import glob, json, os, sys, py_compile
+import datetime, glob, json, os, sys, py_compile
 import source_health
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -306,6 +306,65 @@ def check_no_source_collapse():
     print(f"    ({len(now)} zdrojů, žádný nevyschl ani nepropadl{novy})")
 
 
+def check_freshness_stamp():
+    """STÁŘÍ ZÁZNAMU — údaj, který se ztratí tiše a nikde jinde nechybí.
+
+    `provenance.fetched_at` říká, KDY JSME ZÁZNAM NAPOSLED VIDĚLI U ZDROJE.
+    Není to datum změny: záznam, který se nezměnil, ho dostane taky, protože
+    „ověřeno, že u zdroje pořád je" je jiná informace než „výzva je stará".
+
+    ⚠ PROČ TO POTŘEBUJE BRÁNU. Razítko nemá vlastní chování — je to klíč navíc
+    ve slovníku. Kterýkoli přepis zápisové cesty (`upsert`, `ingest_rich`,
+    `fix_dataset`, `export_api`) ho může zahodit, aniž by cokoli spadlo:
+    data zůstanou platná, testy zelené, jen produkt přestane vědět, co je
+    čerstvé. Hlídá se proto POČET orazítkovaných proti minulému exportu,
+    stejným způsobem jako vyschlý zdroj.
+
+    Práh je „nesmí klesnout", ne „musí růst": zdroj, který zrovna neběžel,
+    razítko nepřidá a to je v pořádku.
+    """
+    if not os.path.exists(CATALOG):
+        raise Skip(f"{CATALOG} není v pracovní kopii")
+
+    today = datetime.date.today().isoformat()
+    now, budouci = 0, []
+    for line in open(CATALOG, encoding="utf-8"):
+        if not line.strip():
+            continue
+        r = json.loads(line)
+        f = (r.get("provenance") or {}).get("fetched_at")
+        if not f:
+            continue
+        now += 1
+        if f > today:
+            budouci.append((r.get("id"), f))
+
+    # Razítko z budoucnosti = špatně předaný --today nebo posunuté hodiny.
+    # Pustit ho dál znamená tvrdit o datech víc, než víme.
+    if budouci:
+        ukazka = ", ".join(f"{i} → {d}" for i, d in budouci[:5])
+        raise RuntimeError(f"{len(budouci)} záznamů má fetched_at v budoucnosti ({ukazka})")
+
+    before = 0
+    if os.path.exists(EXPORT):
+        try:
+            for g in json.load(open(EXPORT, encoding="utf-8")).get("grants", []):
+                if g.get("fetched_at"):
+                    before += 1
+        except Exception:  # noqa: BLE001
+            before = 0
+
+    if now < before:
+        raise RuntimeError(
+            f"orazítkovaných záznamů ubylo: {now} ← {before}. Razítko někdo zahodil "
+            f"po cestě (upsert → fix_dataset → consolidate → export)."
+        )
+
+    celkem = sum(1 for line in open(CATALOG, encoding="utf-8") if line.strip())
+    print(f"    ({now}/{celkem} záznamů se známým stářím = {round(now / celkem * 100)} %, "
+          f"minule {before})")
+
+
 def check_catalog_identity():
     """Identita záznamů v katalogu: bez id se nedá nic sledovat, duplicita mate.
 
@@ -347,11 +406,13 @@ def main():
     check("unit testy (kritická logika)", check_unit_tests)
     check("routing.yaml parses", check_routing)
     check("json configs valid", check_json_configs)
+    check("kontrakt publikovaného exportu", check_product_contract)
     check("kvalita dat (termíny, tituly)", check_data_quality)
     check("výzvy, ne oznámení výsledků", check_only_calls)
     check("identita záznamů v katalogu", check_catalog_identity)
     check("propad počtu záznamů (brána)", check_no_collapse)
     check("vyschlý zdroj (brána)", check_no_source_collapse)
+    check("známé stáří záznamů (brána)", check_freshness_stamp)
     print()
     if errors:
         print(f"FAIL — {len(errors)} chyb")

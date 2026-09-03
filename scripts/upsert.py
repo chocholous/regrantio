@@ -17,12 +17,49 @@ Použití (v ingest skriptu):
     from upsert import upsert
     stats = upsert(out_path, recs)      # → {"new": n, "updated": n, "unchanged": n, "total": n}
 """
+import datetime
 import json
 import os
 
 # Fakta z listingu, která smí refresh přepsat i u záznamu obohaceného vrstvou 2.
 REFRESHABLE = ("open_from", "deadline", "status", "status_confidence", "amount", "source_url")
 REFRESHABLE_FACETS = ("vyse_alokace_czk", "vyse_max_zadatel_czk")
+
+
+def _today():
+    return datetime.date.today().isoformat()
+
+
+def stamp(rec, when=None):
+    """Zapiš do záznamu DEN, KDY JSME HO NAPOSLED VIDĚLI U ZDROJE.
+
+    ⚠ NENÍ to „datum změny". Záznam, který se po refreshi nezměnil, dostane
+    dnešní razítko taky — a je to ten důležitější případ: znamená „ověřeno,
+    že u zdroje pořád je". Bez toho se „výzva je stará" nedá odlišit od
+    „výzvu jsme dlouho nekontrolovali", což jsou dvě různé věci a produkt
+    na ně reaguje opačně.
+    """
+    prov = dict(rec.get("provenance") or {})
+    prov["fetched_at"] = when or _today()
+    rec["provenance"] = prov
+    return rec
+
+
+def _without_stamp(rec):
+    """Kopie záznamu bez razítka — pro POROVNÁNÍ obsahu.
+
+    ⚠ BEZ TOHOTO by razítko zničilo signál, kvůli kterému refresh existuje:
+    kdyby se `fetched_at` porovnávalo taky, lišil by se po něm KAŽDÝ záznam
+    a statistika by hlásila „updated" u všech 3450. Číslo, které je vždycky
+    stejné, se přestane číst.
+    """
+    if "provenance" not in rec:
+        return rec
+    out = dict(rec)
+    prov = dict(out.get("provenance") or {})
+    prov.pop("fetched_at", None)
+    out["provenance"] = prov
+    return out
 
 
 def _enriched(rec):
@@ -73,8 +110,14 @@ def write(out_path, order, byid):
             o.write(json.dumps(byid[rid], ensure_ascii=False) + "\n")
 
 
-def upsert(out_path, recs):
-    """Upsertni `recs` do jsonl `out_path` (viz modul docstring). Vrací statistiky."""
+def upsert(out_path, recs, when=None):
+    """Upsertni `recs` do jsonl `out_path` (viz modul docstring). Vrací statistiky.
+
+    Každý záznam, který tudy projde, dostane `provenance.fetched_at` — i ten
+    beze změny. Porovnává se ale obsah BEZ razítka, takže `updated` dál znamená
+    „u zdroje se něco změnilo", ne „proběhl refresh".
+    """
+    when = when or _today()
     order, byid = load(out_path)
     new = upd = keep = 0
     for r in recs:
@@ -83,14 +126,15 @@ def upsert(out_path, recs):
             continue
         if rid in byid:
             merged = merge(byid[rid], r)
-            if merged == byid[rid]:
+            if _without_stamp(merged) == _without_stamp(byid[rid]):
                 keep += 1
             else:
                 upd += 1
-            byid[rid] = merged
+            byid[rid] = stamp(merged, when)
         else:
             order.append(rid)
-            byid[rid] = r
+            byid[rid] = stamp(r, when)
             new += 1
     write(out_path, order, byid)
-    return {"new": new, "updated": upd, "unchanged": keep, "total": len(order)}
+    return {"new": new, "updated": upd, "unchanged": keep, "total": len(order),
+            "fetched_at": when}

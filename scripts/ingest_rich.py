@@ -21,6 +21,7 @@ from datetime import date
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from opportunities import compute_status, resolve_citations, _pd, _host  # reuse
+import upsert                                                    # sdílené razítko fetched_at
 
 # rich pole, která se NEvkládají do extra (jsou už v core/facets/citations) — zbytek = lossless extra
 CORE_GRANT = {"title", "focus_area", "open_from", "deadline", "oblast", "typ_zadatele", "cilova_skupina",
@@ -225,10 +226,14 @@ def main():
         rec = (_rec_mission(f, gid, host, surl, prov, body) if is_mission
                else _rec_grant(f, gid, host, surl, prov, today, body))
         resolve_citations(rec)
+        upsert.stamp(rec, today.isoformat())   # den, kdy jsme záznam viděli u zdroje
         out_recs.append(rec)
         rich_ids.add(gid)
 
     # passthrough: vše z existing, co jsme NEnahradili
+    # ⚠ ZÁMĚRNĚ BEZ RAZÍTKA. Tyhle záznamy jsme dnes u zdroje NEVIDĚLI — jen je
+    # opisujeme dál. Orazítkovat je by znamenalo tvrdit, že jsou ověřené, a
+    # celý údaj o stáří by přestal něco znamenat.
     passth = [r for rid, r in existing.items() if rid not in rich_ids]
 
     os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)

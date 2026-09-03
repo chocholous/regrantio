@@ -32,11 +32,14 @@ PUBLIC = ["id", "kind", "source", "source_url", "title", "focus_area",
           "open_from", "deadline", "status", "status_confidence",
           "amount", "eligible_applicants", "required_attachments", "how_to_apply", "source_doc",
           "facets", "citations",
-          "name", "mission", "support_topics", "regions"]
+          "name", "mission", "support_topics", "regions",
+          "fetched_at"]
 
 # content_hash = otisk VĚCNÝCH polí. Vyloučeno: `status`/`status_confidence` (derivovaný snapshot,
-# mění se sám jak míjejí deadliny → jinak by hash „blikal" každý den) a `id` (je to klíč, ne obsah).
-HASH_EXCLUDE = {"status", "status_confidence", "id"}
+# mění se sám jak míjejí deadliny → jinak by hash „blikal" každý den), `id` (je to klíč, ne obsah)
+# a `fetched_at` (den kontroly, ne obsah — jinak by po každé obnově vypadalo všech 3450 záznamů
+# jako změněných a inkrementální sync by ztratil smysl, kvůli kterému existuje).
+HASH_EXCLUDE = {"status", "status_confidence", "id", "fetched_at"}
 HASH_FIELDS = [k for k in PUBLIC if k not in HASH_EXCLUDE]
 
 
@@ -60,6 +63,11 @@ def main():
         if not line.strip():
             continue
         r = json.loads(line)
+        # `fetched_at` je uvnitř `provenance` (to se ven nepouští celé) — vytáhni ho nahoru.
+        # Chybí u záznamů, kterých se od zavedení razítka nedotkla žádná obnova; ven jde
+        # rovnou jako null, protože „nevíme" je pravdivější než vymyšlené datum.
+        prov = r.get("provenance") or {}
+        r = {**r, "fetched_at": prov.get("fetched_at")}
         g = {k: r[k] for k in PUBLIC if k in r}
         g["content_hash"] = content_hash(g)
         grants.append(g)

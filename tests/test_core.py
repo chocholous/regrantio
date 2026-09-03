@@ -19,7 +19,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 
 from opportunities import compute_status          # noqa: E402
-from upsert import merge, _enriched            # noqa: E402
+from upsert import merge, _enriched, upsert, stamp, _without_stamp  # noqa: E402
 import derive_deadlines as dd                     # noqa: E402
 import czech                                     # noqa: E402
 
@@ -78,6 +78,54 @@ def test_merge_syrovy_zaznam_se_prepise_cely():
     old, new = _raw(title="staré"), _raw(title="nové", deadline="2026-09-09")
     out = merge(old, new)
     assert out["title"] == "nové" and out["deadline"] == "2026-09-09"
+
+
+def test_razitko_neudela_ze_vsech_zaznamu_zmenene(tmpdir=None):
+    """⚠ TOHLE JE CELÝ DŮVOD, PROČ `_without_stamp` EXISTUJE.
+
+    `fetched_at` se zapisuje i záznamu, který se nezměnil. Kdyby vstupovalo do
+    porovnání, hlásil by druhý běh nad TÝMIŽ daty „updated" u všech záznamů —
+    a statistika, která je vždycky stejná, se přestane číst. Test tedy pouští
+    upsert dvakrát nad identickým vstupem a trvá na tom, že podruhé je
+    všechno `unchanged`.
+    """
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        p = os.path.join(d, "k.jsonl")
+        recs = [_raw(id="a"), _raw(id="b")]
+        first = upsert(p, [dict(r) for r in recs], when="2026-09-01")
+        assert (first["new"], first["updated"], first["unchanged"]) == (2, 0, 0)
+
+        # druhý běh, JINÝ den, ale stejná data
+        second = upsert(p, [dict(r) for r in recs], when="2026-09-03")
+        assert (second["new"], second["updated"]) == (0, 0), second
+        assert second["unchanged"] == 2, second
+
+        # razítko se ale přesto posunulo — „viděli jsme to dnes"
+        import json as _j
+        got = {r["id"]: r["provenance"]["fetched_at"]
+               for r in map(_j.loads, open(p, encoding="utf-8"))}
+        assert got == {"a": "2026-09-03", "b": "2026-09-03"}, got
+
+
+def test_razitko_nezastini_skutecnou_zmenu():
+    """Opačný směr: když se fakt změní, `updated` to pořád musí poznat."""
+    import json as _j, tempfile
+    with tempfile.TemporaryDirectory() as d:
+        p = os.path.join(d, "k.jsonl")
+        upsert(p, [_raw(id="a", deadline="2026-01-01")], when="2026-09-01")
+        out = upsert(p, [_raw(id="a", deadline="2026-12-31")], when="2026-09-03")
+        assert out["updated"] == 1 and out["unchanged"] == 0, out
+        rec = _j.loads(open(p, encoding="utf-8").read().strip())
+        assert rec["deadline"] == "2026-12-31"
+
+
+def test_razitko_nesahne_na_ostatni_provenance():
+    """Razítko přidává klíč, nepřepisuje původ (harvester, dokumenty, vrstva)."""
+    r = stamp({"provenance": {"layer": 2, "harvester": "extract_wf"}}, "2026-09-03")
+    assert r["provenance"] == {"layer": 2, "harvester": "extract_wf",
+                               "fetched_at": "2026-09-03"}
+    assert _without_stamp(r)["provenance"] == {"layer": 2, "harvester": "extract_wf"}
 
 
 def test_merge_obohaceny_zaznam_si_nechá_facety_a_popis():
