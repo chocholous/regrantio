@@ -1,0 +1,122 @@
+name: Týdenní obnova katalogu
+
+# =============================================================================
+# DATA SE OBNOVUJÍ SAMA — pro zdroje, které to zvládnou bez modelu.
+#
+# Do 2026-09-04 se obnova pouštěla jen ručně z vývojového stroje. Znamenalo to,
+# že katalog stárnul přesně tak rychle, jak dlouho se k němu nikdo nedostal:
+# termíny míjely, výzvy se zavíraly a produkt to ukazoval jako aktuální stav.
+#
+# CO TENHLE BĚH UDĚLÁ
+#   1. `refresh_run.py --tier all` — 35 zdrojů (14 strukturních + 21 s vlastním
+#      deterministickým parserem), harvest → ingest → přepočet → BRÁNA KVALITY
+#      → export
+#   2. zapíše výsledek do databáze produktu (`publish_db.py`) — jen když jsou
+#      nastavená tajemství, viz níž
+#   3. commitne obnovený katalog zpátky do repozitáře
+#
+# ⚠ CO NEUDĚLÁ: nepřinese nové výzvy u zdrojů, které potřebují modelovou
+# vrstvu. Těch je většina a čekají na klíč k API (`workflows/README.md`).
+# U VŠECH záznamů ale srovná termíny a status k dnešku — a to je ta část
+# zastarávání, která se děje sama každý den, i když nikdo nic nepublikoval.
+#
+# ⚠ BEZ TAJEMSTVÍ BĚH NESPADNE, JEN NEZAPÍŠE DO DATABÁZE. `publish_db.py` bez
+# přístupů projde celý postup až po zápis a skončí úspěchem. Data v repozitáři
+# se obnoví tak jako tak, takže má smysl i tehdy.
+#
+# CO K TOMU POTŘEBUJE VLASTNÍK REPOZITÁŘE (`chocholous`):
+#   Settings → Secrets and variables → Actions → New repository secret
+#     PUBLIC_SUPABASE_URL        https://<ref>.supabase.co
+#     SUPABASE_SERVICE_ROLE_KEY  <service role klíč>
+#   Bez nich se krok zápisu do databáze přeskočí.
+#
+# VYPNOUT: zakomentovat blok `schedule:` níž.
+# =============================================================================
+
+on:
+  schedule:
+    # Pondělí 3:00 UTC. Před týdenními úlohami produktu (ty běží v 5:00), aby
+    # shoda a upozornění počítaly nad čerstvými daty — ale ne ve stejnou minutu,
+    # protože jedno na druhém nesmí stát.
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: 'Které zdroje obnovit'
+        type: choice
+        options: ['all', 'structured', 'html', 'extract']
+        default: 'all'
+
+# Dva souběžné běhy by si přepisovaly týž katalog.
+concurrency:
+  group: refresh-catalog
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        # ⚠ MĚLKÝ KLON. Historie tohohle repozitáře má 2 GB (`data_bundle/`);
+        # plný klon by na každém běhu stahoval gigabajty úplně zbytečně.
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+
+      - name: Závislosti
+        run: |
+          pip install -r requirements.txt
+          pip install -r requirements-browser.txt
+          python -m playwright install --with-deps chromium
+
+      - name: Obnova katalogu
+        # ⚠ `|| true` NENÍ lajdáctví. `refresh_run.py` vrací nenulový kód, když
+        # SELHAL BYŤ JEDEN ZDROJ — a to se stává běžně (weby krajů padají, mění
+        # se, jsou pomalé). Zastavit kvůli tomu celý běh by znamenalo zahodit
+        # i zdroje, které dopadly dobře. Skutečná pojistka je brána kvality
+        # uvnitř a kontrola níž, ne návratový kód harvestu.
+        run: |
+          python scripts/refresh_run.py --tier "${{ inputs.tier || 'all' }}" || true
+
+      - name: Brána kvality (rozhoduje o pokračování)
+        # Tohle UŽ spadnout smí a má: publikovat dataset, který neprošel branou,
+        # znamená pustit vadu k uživatelům.
+        run: python scripts/validate_release.py
+
+      - name: Zápis do databáze produktu
+        env:
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          if [ -z "$PUBLIC_SUPABASE_URL" ] || [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "::notice::Přístupy k databázi nejsou nastavené — data se obnovila jen v repozitáři."
+            exit 0
+          fi
+          python scripts/publish_db.py
+
+      - name: Commit obnovených dat
+        run: |
+          git config user.name  "regrantio-refresh"
+          git config user.email "noreply@grantio.cz"
+          git add data/opportunities.jsonl docs/opportunities.json
+          if git diff --cached --quiet; then
+            echo "::notice::Katalog se nezměnil — není co commitovat."
+            exit 0
+          fi
+          POCET=$(wc -l < data/opportunities.jsonl)
+          git commit -m "Týdenní obnova katalogu ($POCET záznamů)" \
+                     -m "Automatický běh .github/workflows/refresh.yml (--tier all)."
+          git push
+
+      # Pád naplánovaného běhu nesmí zapadnout mezi zelené zaškrtávátka.
+      - name: Nahlásit selhání
+        if: failure()
+        run: echo "::error::Týdenní obnova katalogu selhala — zkontroluj bránu kvality."

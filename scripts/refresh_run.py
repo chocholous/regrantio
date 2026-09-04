@@ -7,7 +7,8 @@ pro zdroje, které to zvládnou bez jazykového modelu.
     python scripts/refresh_run.py --list          # co je v registru a čím se obnoví
     python scripts/refresh_run.py                 # obnov vše deterministické + tail
     python scripts/refresh_run.py --tier structured
-    python scripts/refresh_run.py --tier extract   # deterministická vrstva 2 (14 zdrojů)
+    python scripts/refresh_run.py --tier extract   # deterministická vrstva 2 (21 zdrojů)
+    python scripts/refresh_run.py --tier all       # obojí = všech 35 zdrojů bez modelu
     python scripts/refresh_run.py --only dotace.khk.cz,fondvysociny.cz
     python scripts/refresh_run.py --tail-only     # jen přepočet + export (bez sítě)
     python scripts/refresh_run.py --publish-db    # a rovnou zapiš do databáze produktu
@@ -370,8 +371,9 @@ def counts(path="data/opportunities.jsonl"):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--only", help="čárkou oddělené hosty z registru")
-    ap.add_argument("--tier", choices=["structured", "html", "extract"],
-                    help="structured/html = strukturní ingest; extract = deterministická vrstva 2")
+    ap.add_argument("--tier", choices=["structured", "html", "extract", "all"],
+                    help="structured/html = strukturní ingest (třída A); extract = "
+                         "deterministická vrstva 2 (třída B); all = obojí")
     ap.add_argument("--list", action="store_true", help="vypiš registr a skonči")
     ap.add_argument("--tail-only", action="store_true", help="jen přepočet a export, bez sítě")
     ap.add_argument("--skip-tail", action="store_true", help="jen harvest a ingest")
@@ -396,9 +398,14 @@ def main():
 
     # Dva registry, dvě cesty. `--only` hledá v obou, aby uživatel nemusel vědět,
     # do které třídy zdroj patří — od toho je tenhle skript.
+    # ⚠ VÝCHOZÍ BĚH JE JEN TŘÍDA A, a je to schválně. Třída B je dalších 21 webů,
+    # tedy podstatně delší běh po síti — kdo chce obojí, řekne si `--tier all`.
+    # Právě to dělá plánovaná obnova (`.github/workflows/refresh.yml`).
     chosen, chosen_extract = sorted(SOURCES), []
     if a.tier == "extract":
         chosen, chosen_extract = [], sorted(EXTRACT_SOURCES)
+    elif a.tier == "all":
+        chosen, chosen_extract = sorted(SOURCES), sorted(EXTRACT_SOURCES)
     elif a.tier:
         chosen = [h for h in chosen if SOURCES[h][3] == a.tier]
     if a.only:
