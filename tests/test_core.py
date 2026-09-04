@@ -288,25 +288,25 @@ def test_registr_neobsahuje_extraktor_s_daty_natvrdo():
     Test hlídá, že se to nevrátí — a je to strukturální kontrola, ne seznam:
     ptá se KAŽDÉHO registrovaného extraktoru, jestli čte vstup.
     """
-    import glob
-    import re as _re
-
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     sys.path.insert(0, os.path.join(root, "scripts"))
     import refresh_run
 
-    cte_vstup = _re.compile(
-        r"json\.load\s*\(\s*open|open\s*\([^)]*_in/|glob\.glob\s*\([^)]*_in|listdir\s*\([^)]*_in"
-    )
-    hriche = []
-    for slug in refresh_run.EXTRACT_SOURCES:
-        p = os.path.join(root, "data", f"_{slug}_extract.py")
-        assert os.path.exists(p), f"registrovaný zdroj {slug} nemá extraktor {p}"
-        if not cte_vstup.search(open(p, encoding="utf-8").read()):
-            hriche.append(slug)
+    # ⚠ POUŽÍVÁ SE DETEKTOR Z `refresh_run`, NE VLASTNÍ KOPIE VZORU.
+    # První verze tohohle testu si nesla vlastní regulární výraz — a ten byl
+    # navíc ŠPATNĚ: hledal jen čtení ze složky `_in/`, takže šest extraktorů,
+    # které čtou rovnou harvest, označil za přepisy. Dvě kopie pravidla znamenají,
+    # že se jedna z nich mýlí a nikdo to nepozná.
+    hriche = [s for s in refresh_run.EXTRACT_SOURCES if not refresh_run.cte_vstup(s)]
     assert not hriche, (
         "v registru obnovy jsou extraktory s daty natvrdo (nečtou vstup): "
         + ", ".join(hriche)
+    )
+
+    # Opačný směr: přepisem se nesmí zbytečně říkat parseru.
+    zbytecne = [s for s in refresh_run.TRANSCRIBED if refresh_run.cte_vstup(s)]
+    assert not zbytecne, (
+        "vedeno jako přepis, ale vstup čte (patří do registru): " + ", ".join(zbytecne)
     )
 
 

@@ -49,6 +49,7 @@ nezávisí a je to to nejlevnější, co se dá pro čerstvost udělat.
 import argparse
 import datetime
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -178,6 +179,34 @@ SOURCES = {
 # ⚠ VE VÝCHOZÍM BĚHU SE NESPOUŠTÍ. Je to 14 webů, tedy dlouhý běh po síti, a
 # hlavně: každý z nich je ověřený jen do té míry, do jaké se pustil. Bere se
 # výslovně — `--tier extract` nebo `--only <slug>` — dokud nebude odbytý celý.
+def cte_vstup(slug):
+    """Je `data/_<slug>_extract.py` PARSER, nebo přepis dat do literálů?
+
+    ⚠ JEDINÁ DEFINICE. Ptá se na to registr, test i dokumentace — kdyby si
+    každý nesl vlastní vzor, rozejdou se a jeden z nich začne tiše lhát.
+
+    ⚠ PRVNÍ PODOBA TOHOHLE PRAVIDLA BYLA ŠPATNĚ a stálo to šest zdrojů.
+    Hledala jen čtení ze složky `data/<slug>_in/`, jenže část extraktorů čte
+    rovnou harvest (`data/<slug>_documents.jsonl`) a složku `_in` nepotřebuje.
+    `opzp`, `opst`, `nsa`, `tacr`, `opjak` a `eeagrants` jsou plnohodnotné
+    parsery — 272 záznamů — a byly vyřazené jako přepisy.
+
+    Ptá se proto na to, co je podstatné: SÁHNE TEN SOUBOR NA NĚJAKÝ VSTUP?
+    """
+    p = os.path.join(ROOT, "data", f"_{slug}_extract.py")
+    if not os.path.exists(p):
+        return False
+    src = open(p, encoding="utf-8").read()
+    return bool(re.search(
+        r"open\s*\(\s*[^)]*(_documents\.jsonl|_in/|_in\"|_in'|\.jsonl)"
+        r"|json\.load\s*\(\s*open"
+        r"|glob\.glob"
+        r"|os\.listdir"
+        r"|for\s+line\s+in\s+open",
+        src,
+    ))
+
+
 EXTRACT_SOURCES = {
     # slug → (argumenty harvestu, tier)
     #
@@ -191,6 +220,7 @@ EXTRACT_SOURCES = {
     # (`.gitignore` výjimka 3).
     "czechaid": (["czechaid_harvest.py"], "html"),
     "esfcr": (["esfcr_harvest.py"], "html"),
+    "eeagrants": (["eeagrants.py"], "html"),
     "eu_ft": (["eu_ft.py"], "structured"),
     "hzs": (["hzs_harvest.py"], "html"),
     "interreg": (["interreg.py"], "structured"),
@@ -198,15 +228,24 @@ EXTRACT_SOURCES = {
     "mk": (["mk_harvest.py"], "html"),
     "msmt": (["msmt_harvest.py"], "html"),
     "nadace_spa": (["nadace_spa.py"], "html"),
+    "nsa": (["nsa.py"], "structured"),
     "nadacevia": (["nadacevia.py"], "html"),
     "opd": (["opd.py"], "html"),
+    "opjak": (["opjak.py"], "html"),
+    "opst": (["opst.py"], "html"),
+    "opzp": (["opzp.py"], "html"),
     "osf": (["osf.py"], "html"),
     "plone_ostrava": (["plone_ostrava.py"], "html"),
+    "tacr": (["tacr.py"], "structured"),
     "vlada": (["vlada.py"], "html"),
     # ⚠ BEZ VLASTNÍHO HARVESTERU. Extraktor v `data/` mají, sběrač ne — dostaly
     # se do katalogu jinou cestou (jednorázové běhy 2026-06). Zaregistrované
     # nejsou schválně: registr má říkat, co JDE pustit.
     #   mzcr (83 záznamů) · mzp (16) · mv (7) · nadacecs (2)
+    #
+    # ⚠ `mzcr` je přitom PLNOHODNOTNÝ PARSER (čte `data/mzcr_in/`) — chybí mu
+    # jen sběrač. Nepatří tedy mezi přepsané; je to jediný zdroj, u kterého
+    # stačí dopsat harvester a rovnou se zaregistruje.
 }
 
 # -----------------------------------------------------------------------------
@@ -231,10 +270,9 @@ EXTRACT_SOURCES = {
 # Cesta ven je pro ně TÁŽ jako pro třídu C: modelová vrstva. Držet je tu jako
 # seznam má smysl proto, aby je příště nikdo znovu „nenašel" jako hotové.
 TRANSCRIBED = (
-    "albert", "eagri", "eeagrants", "gacr", "hlavka", "leontinka", "mmr", "mpo",
-    "mpsv", "mv", "mzcr", "mzp", "nadace_adra", "nadacecs", "nsa", "opjak",
-    "opst", "opzp", "partnerstvi", "sfa", "sfdi", "sfk", "sfpi", "sfzp",
-    "sirius", "tacr", "veronica", "vinarskyfond",
+    "albert", "eagri", "gacr", "hlavka", "leontinka", "mmr", "mpo",
+    "mpsv", "mv", "mzp", "nadace_adra", "nadacecs", "partnerstvi", "sfa", "sfdi", "sfk", "sfpi", "sfzp",
+    "sirius", "veronica", "vinarskyfond",
 )
 
 
