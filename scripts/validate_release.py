@@ -5,7 +5,7 @@ Chytá třídu chyb, co prošla do produkce (rozbitý routing.yaml = ASCII `"` v
 publikovaný export (docs/opportunities.json). Spouštěj lokálně před pushem i v GitHub Actions.
 
 Kontroly:
-  1. py_compile všech scripts/*.py + data/_*_extract.py (syntax)
+  1. py_compile všech scripts/*.py + scripts/extractors/*.py (syntax)
   1b. unit testy tests/test_core.py — compute_status, upsert merge, derive_deadlines
   2. routing.yaml se parsuje (yaml.safe_load) + má `families`/`sources`/`default`
   3. platform_map.json + limits.json jsou validní JSON
@@ -68,7 +68,7 @@ def check(name, fn):
 
 def compile_all():
     bad = []
-    files = glob.glob("scripts/*.py") + glob.glob("data/_*_extract.py")
+    files = glob.glob("scripts/*.py") + glob.glob("scripts/extractors/*.py")
     for f in files:
         try:
             py_compile.compile(f, doraise=True)

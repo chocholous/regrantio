@@ -7,7 +7,7 @@
 1. **Najdi nejodlišnější zdroje** — `scripts/diversity_finder.py` skenuje korpus na doménové markery
    (věda/výzkum, půjčky/fin.nástroje, de-minimis, rolling, voucher; EU/SK mimo scope) → nejodlišnější
    DOSUD NEVZORKOVANÉ zdroje. Cílit divergentní >> náhodné.
-2. **Vytěž formulace + záludnosti** — `scripts/type_coverage_wf.js` (dvouvrstvě: typ + per-typ pole).
+2. **Vytěž formulace + záludnosti** — `workflows/type_coverage_wf.js` (dvouvrstvě: typ + per-typ pole).
    Sonnet čte stratifikovaný vzorek reálných dokumentů, hlásí (a) formulace jak viděl pole/typ,
    (b) confusably. Orchestrátor měří **saturační křivku** (distinct kumulativně po dávkách).
 3. **Diff proti minulému** — kolik NOVÝCH formulací/záludností přibylo = informační zisk.

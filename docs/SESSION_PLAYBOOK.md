@@ -31,7 +31,7 @@ v `REMAINING.md`). Aktuálně **3372 záznamů / 133 poskytovatelů** na větvi 
 2. HARVEST   scripts/<src>.py → data/<src>_documents.jsonl
              tvar: {url, host, title, body_text, attachments:[{url,label}], n_attachments}
 3. INPUT     python scripts/build_extract_input.py data/<src>_documents.jsonl --source <src> --out-dir data/<src>_in --force-type grant
-4. VRSTVA 2  data/_<src>_extract.py  → data/<src>_out/grant_NN.json   (JOIN je podle BASENAME = stejný index jako _in!)
+4. VRSTVA 2  scripts/extractors/<src>.py  → data/<src>_out/grant_NN.json   (JOIN je podle BASENAME = stejný index jako _in!)
              skip nějaký záznam = NEzapisuj jeho out soubor.
 5. INGEST    python scripts/ingest_rich.py --out-dir data/<src>_out --src data/<src>_in --existing data/opportunities.jsonl --out data/opportunities.jsonl --harvest-file data/<src>_documents.jsonl --today <YYYY-MM-DD>
 6. TAIL      consolidate.py → fix_dataset.py --today <dnes> → build_app.py
@@ -44,11 +44,11 @@ v `REMAINING.md`). Aktuálně **3372 záznamů / 133 poskytovatelů** na větvi 
 ```
 
 **Vzory harvesterů/extraktorů (kopíruj podle podobnosti):**
-- WP REST strukturované: `gacr.py`, `sfzp.py`, `tacr.py` (+ jejich `data/_*_extract.py`).
+- WP REST strukturované: `gacr.py`, `sfzp.py`, `tacr.py` (+ jejich `scripts/extractors/*.py`).
 - Front-end HTML (REST chudý/401): `sfdi.py` (blok „Základní údaje"), `tacr.py` (front-end info).
 - Seed-driven landing pages (velký web): `mpo.py`, `eagri.py`, `marwel.py`.
 - Kentico kategorie + filtr ročníku: `mmr.py`.
-- Vyčištění existujícího harvestu: `data/_eeagrants_extract.py` (strip JS/nav).
+- Vyčištění existujícího harvestu: `scripts/extractors/eeagrants.py` (strip JS/nav).
 
 ---
 
@@ -93,13 +93,13 @@ v `REMAINING.md`). Aktuálně **3372 záznamů / 133 poskytovatelů** na větvi 
   ⚠ **Stejná past kousla `routing.yaml`** (2026-06-30): `„open"` (české otevírací `„` + ASCII zavírací `"`)
   v note u ec.europa.eu předčasně ukončilo YAML double-quoted string → `routing.py` padal od eu_ft commitu.
   Po editaci YAML/JSON/PY s českým textem VŽDY parse-test (`python -c "import yaml; yaml.safe_load(open(...))"`)
-  nebo `py_compile`/`ast.parse`. Smoke-test celého repa: `py_compile` všech `scripts/*.py` + `data/_*_extract.py`.
+  nebo `py_compile`/`ast.parse`. Smoke-test celého repa: `py_compile` všech `scripts/*.py` + `scripts/extractors/*.py`.
 - **ingest JOIN = basename** `grant_NN.json`; out musí mít stejné indexy jako in; přeskočení = nezapsat soubor.
 - **Velké downloady** (build_extract_input s desítkami příloh) pusť na pozadí (`run_in_background`);
   **foreground `sleep` je blokovaný** — nečekej sleepem, čekej na notifikaci.
 - **Gitignored:** `data/` celé (`*_documents.jsonl`, `opportunities.jsonl`, `<src>_out/`, doc-store…)
-  — VÝJIMKA: `data/_<src>_extract.py` se TRACKUJÍ (`.gitignore`: `/data/*` + `!/data/_*_extract.py`), jsou to
-  vrstva-2 extraktory = kód. **Trackuj:** `scripts/*.py`, `data/_<src>_extract.py`, `routing.yaml`,
+  — VÝJIMKA: `scripts/extractors/<src>.py` se TRACKUJÍ (`.gitignore`: `/data/*` + `!/scripts/extractors/*.py`), jsou to
+  vrstva-2 extraktory = kód. **Trackuj:** `scripts/*.py`, `scripts/extractors/<src>.py`, `routing.yaml`,
   `platform_map.json`, `CLAUDE.md`, `REMAINING.md`, `docs/grants_app.html`, `docs/opportunities.json`.
 
 ---

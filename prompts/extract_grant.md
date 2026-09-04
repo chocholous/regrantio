@@ -1,6 +1,6 @@
 # Prompt — VRSTVA 2: extrakce polí oportunity
 
-> **Tady prompt NEŽIJE.** Živý extrakční prompt je **inline v `scripts/extract_wf.js`**:
+> **Tady prompt NEŽIJE.** Živý extrakční prompt je **inline v `workflows/extract_wf.js`**:
 > `COMMON` (společná hlavička) + `SYS.grant` (výzva) + `SYS.foundation_mission` (mise) + `SHAPE` (kontrakt tvaru vnořených objektů, odvozený ze `SCHEMAS`).
 >
 > **Proč inline a ne v tomhle souboru:** workflow běží v JS sandboxu **bez přístupu k filesystému za běhu** (viz nástroj Workflow) — `agent()` dostává prompt jako JS string, takže ho NELZE načíst ze souboru. Inline je proto **jediný zdroj pravdy**; tenhle .md je historický ukazatel, aby nevznikla druhá divergující kopie (což se stalo: tahle verze zaostala o celou bohatou revizi — 8 plochých polí vs. živých ~27 polí s multi/region/částky/příjemci/sběrače/evidence).

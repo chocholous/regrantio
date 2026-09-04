@@ -23,7 +23,7 @@ Union-find na **Jaccard ≥ 0.30** → **CMS RODINY**. Detekuje příbuznost bez
 - chytí nové instance známých (dotace.chyne/medlanky = dsw2)
 - ⚠ pozor na tranzitivní šum (řetěz přes generické jquery/bootstrap) → vyžaduj ≥1 diskriminační token.
 
-### 3. Sonnet nad důkazy (UNKNOWN tail) — `scripts/detect_platforms_wf.js`
+### 3. Sonnet nad důkazy (UNKNOWN tail) — `workflows/detect_platforms_wf.js`
 Pro weby bez čistého podpisu (`save_unknown_evidence.py` uloží trimovaný HTML důkaz do
 `platform_evidence/<host>.txt`): Sonnet agenti čtou důkazy, rozpoznají platformu i **pojmenují
 NOVÉ** (footer „provozuje/redakční systém", vendor, cookie, bundle). **Sdílený registr podpisů**
@@ -55,7 +55,7 @@ u poskytovatelů ověř ručně.
    - **Pozor co seznam reálně obsahuje:** otevřené výzvy vs. rozhodnuté žádosti (granty.praha „Přehled projektů" = jen Schválená/Nepřidělená dotace = `project`, ne výzvy). Zkontroluj `stav`/`title` seznamu.
 3. Najdi přílohový handler → ověř `dsw2_fetch.sniff_ext` (univerzální). **Ověř živě, že přílohy v datech opravdu jsou** (vismo krnov měl 0 v datech, 5 na živé stránce — host-specific díra selektoru).
 4. Zapiš do `platform_playbook.md`: podpis + harvester + metoda + jdou-detaily-snadno.
-5. Vrstva 2 (`scripts/extract_wf.js`) dostane PLNÝ text + plné přílohy (žádný ořez — `amount` 27 %→90 %), 1 oportunita = 1 agent.
+5. Vrstva 2 (`workflows/extract_wf.js`) dostane PLNÝ text + plné přílohy (žádný ořez — `amount` 27 %→90 %), 1 oportunita = 1 agent.
 
 ## Artefakty
 - `platform_refingerprint_out.json` — deterministická detekce 507 hostů

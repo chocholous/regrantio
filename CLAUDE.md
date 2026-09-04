@@ -48,7 +48,7 @@ python3 scripts/eeagrants.py         # EHP a Norské fondy (eeagrants.cz; NKM = 
 python3 scripts/tacr.py              # TA ČR (tacr.gov.cz) — aplikovaný výzkum, veřejné soutěže národních programů (SIGMA/TREND/DOPRAVA 2030/THÉTA 2/PRODEF/Prostředí pro život 2). WP CPT call+programme; lhůty jen ve FRONT-END HTML; --since aktuální cyklus
 python3 scripts/nsa.py               # NSA – Národní sportovní agentura (agenturasport.cz→nsa.gov.cz) — dotace do sportu: neinvestiční (Můj klub, sportovní organizace olympijského/paralympijského hnutí, významné akce, reprezentace, parasport) + investiční (Regiony/Standardizovaná/Movité infrastruktura, obnova po povodních). WP+Elementor; výzvy = pages /dotace/<slug>/, content.rendered STAČÍ (strukturní blok); batch-fetch content přes include= (sekvenční fetch přes WAF je pomalý); --year filtruje aktuální cyklus. typ=statni_agentura
 
-# Rozšíření 2026-06/07 (harvest → build_extract_input --no-prefilter → data/_<src>_extract.py → ingest_rich)
+# Rozšíření 2026-06/07 (harvest → build_extract_input --no-prefilter → scripts/extractors/<src>.py → ingest_rich)
 python3 scripts/mk_harvest.py        # MK ČR (mk.gov.cz) — centrální listing 8 HTML tabulek per oblast; OD/DO deterministicky z buněk; url záznamu = detail#slug-hash (1 stránka = víc programů)
 python3 scripts/msmt_harvest.py      # MŠMT plný BFS dotačních rubrik (nahradil seed-driven marwel pro msmt.gov.cz); _msmt_extract filtruje aktuální cyklus (--since-year)
 python3 scripts/esfcr_harvest.py     # ESF ČR / OPZ+ + OPZ (esfcr.cz, Liferay) — strukturovaná pole detailu (Platnost od/do, Alokace); 'Typ výzvy: uzavřená' = REŽIM, ne status
@@ -97,7 +97,9 @@ python3 scripts/refresh_run.py --list     # co je v registru; --tier/--only zú�
 > **UPSERT sémantika (2026-07-31):** strukturní layer-1 ingesty (`ingest_kraj`/`ingest_dotis`/`ingest_kentico`/`ingest_fondvysociny`) zapisují do katalogu přes sdílený `scripts/upsert.py` — re-harvest AKTUALIZUJE existující záznamy (dřív append-only skip → html-tier fakticky nešel refreshovat). Záznam obohacený vrstvou 2 se přepisuje jen ve FAKTECH (datumy/status/částky), LLM facety+citace zůstávají. `ingest_rich` je upsert dle id odjakživa.
 > **Windows pozn.:** skripty tisknou diagnostiku s `→ · ⚠` — konzole cp1250 to neumí. Pipeline-skripty (`consolidate`, `fix_dataset`, `build_extract_input`, `routing`) si proto na startu vynutí UTF-8 stdout (`sys.stdout.reconfigure`); jinak `UnicodeEncodeError`.
 
-**`scripts/*.js` NEJSOU node skripty** — jsou to **Claude Code Workflow** definice (`export const meta`, `agent()`, `parallel()`). Spouští se nástrojem Workflow uvnitř Claude Code, ne `node coverage_wf.js`. Jsou to LLM orchestrace pro coverage (`coverage_wf.js`, `type_coverage_wf.js`) a re-detekci platforem (`detect_platforms_wf.js`).
+**Agentní workflow bydlí v [`workflows/`](workflows/), ne v `scripts/`.** Jsou to definice pro nástroj Workflow uvnitř Claude Code (`export const meta`, `agent()`, `parallel()`) — Nodem se nespouštějí. Tři jsou produkční (`extract_wf.js`, `facet_wf.js`, `classify_wf.js`), pět je na měření a ladění promptů; rozpis je ve [`workflows/README.md`](workflows/README.md).
+
+⚠ Do 2026‑09‑04 ležely v `scripts/` mezi 122 pythonními CLI a stálo tu varování, že to nejsou node skripty. **Varování v dokumentaci je náplast na strukturu**; složka je oprava. Ve `scripts/` teď žádný `.js` není.
 
 ## Architektura — co vyžaduje přečíst víc souborů
 
@@ -114,7 +116,7 @@ python3 scripts/refresh_run.py --list     # co je v registru; --tier/--only zú�
 6. **LIMITY JEN NA SONDY; DATA VŽDY CELÁ** (v každé vrstvě i fázi). Bounded smí být jen **probe** (detekce platformy, sniff typu, vzorek pro MĚŘENÍ kvality) a **safety** (runaway-pojistka, vysoko, při dosažení NAHLAS `⚠` log = bug, ne coverage cap). **Sběr dat = žádný strop na stránky/dokumenty/přílohy, žádný ořez textu, žádné vzorkování** (`acquisition.*` = null/unbounded). Vše v `limits.json` (root), NIKDY natvrdo; kód čte `scripts/limits.py` → `L('cesta.klic')`. Struktura: `probe` / `acquisition` (vše null) / `safety` (vysoké pojistky). Než zavedeš JAKÝKOLI limit, je to sonda nebo safety? Když ne → nepatří tam, ber data celá.
 7. **STRUKTURA PŘED PRÓZOU** (`docs/detection.md` krok ⓪) — vždy nejdřív zkus strukturovaný endpoint (API/XHR/inline-JS/šablona/WP REST); LLM vrstva 2 až když je detail neredukovatelně próza/PDF. Ověř CO endpoint dá (award-DB ≠ otevřené výzvy).
 
-**LLM vrstva 2 = Claude-řízené WORKFLOW s Haiku agenty** (NE stub): `scripts/classify_wf.js` (klasifikace base_type) + `scripts/extract_wf.js` (extrakce polí per typ, 1 oportunita = 1 agent, plný text). Spouští se nástrojem Workflow uvnitř Claude Code; status dopočítá kód po běhu. Empiricky: na plném textu ~88 % polí grantu; ořez vstupu sráží `amount` na 27 %.
+**LLM vrstva 2 = Claude-řízené WORKFLOW s Haiku agenty** (NE stub): `workflows/classify_wf.js` (klasifikace base_type) + `workflows/extract_wf.js` (extrakce polí per typ, 1 oportunita = 1 agent, plný text). Spouští se nástrojem Workflow uvnitř Claude Code; status dopočítá kód po běhu. Empiricky: na plném textu ~88 % polí grantu; ořez vstupu sráží `amount` na 27 %.
 
 **Přístupové metody vrstvy 1 (5 archetypů):** REST (WP) / inline-JS (dsw2) / HTML-listing (vismo, eeagrants statické HTTP) / SPA-postback (Apify) / **SPA-grid se skrytým JSON-XHR → 1× odposlech Playwrightem (`scripts/lewis_discover.py`) → čistý HTTP replay bez Apify (`lewis_dynamo.py`)**. `requirements.txt` = playwright (jen pro discover).
 

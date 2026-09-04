@@ -275,7 +275,7 @@ def test_registr_neobsahuje_extraktor_s_daty_natvrdo():
     """⚠ NEJHORŠÍ MOŽNÝ ZDROJ NENÍ TEN, KTERÝ SPADNE. Je to ten, který doběhne,
     nic nezmění a tváří se, že obnovil.
 
-    Souborů `data/_<slug>_extract.py` je 42, ale jen 15 z nich vstup opravdu
+    Souborů `scripts/extractors/<slug>.py` je 42, ale jen 15 z nich vstup opravdu
     ČTE. Zbytek jsou přepisy jedné extrakce z 2026-06/07 do pythonních
     literálů — spustí se, vytisknou „wrote N grants" a skončí nulou.
 
@@ -324,7 +324,7 @@ def test_prepsane_zdroje_nejsou_v_registru():
 
 
 def test_zadny_extraktor_nezustane_nezarazeny():
-    """Každý `data/_*_extract.py` musí být v NĚČEM — jinak se na něj zapomene.
+    """Každý `scripts/extractors/*.py` musí být v NĚČEM — jinak se na něj zapomene.
 
     ⚠ TOHLE JE TA KONTROLA, KTERÁ CHYBĚLA. Souborů je 43 a rozpadají se do tří
     osudů: registr obnovy (parser + harvester), seznam přepisů (data natvrdo),
@@ -343,8 +343,8 @@ def test_zadny_extraktor_nezustane_nezarazeny():
     # ne pravidlo — jakmile harvester vznikne, zdroj se přesune do registru.
     BEZ_SBERACE = {"mzcr"}
 
-    vsechny = {os.path.basename(p)[1:-11]
-               for p in glob.glob(os.path.join(root, "data", "_*_extract.py"))}
+    vsechny = {os.path.basename(p)[:-3]
+               for p in glob.glob(os.path.join(root, "scripts", "extractors", "*.py"))}
     zarazene = set(refresh_run.EXTRACT_SOURCES) | set(refresh_run.TRANSCRIBED) | BEZ_SBERACE
 
     chybi = vsechny - zarazene

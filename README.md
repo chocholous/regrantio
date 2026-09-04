@@ -74,10 +74,10 @@ python scripts/refresh_run.py --publish     # a rovnou publikuj do úschovny
 | | jak | kolik | spustí |
 |---|---|---|---|
 | A | harvest → strukturní ingest | 14 | `refresh_run.py` |
-| B | harvest → `data/_<slug>_extract.py` → `ingest_rich` | 14 | `refresh_run.py --tier extract` |
+| B | harvest → `scripts/extractors/<slug>.py` → `ingest_rich` | 14 | `refresh_run.py --tier extract` |
 | C | harvest → **model** (`extract_wf.js`) → `ingest_rich` | zbytek | jen uvnitř Claude Code |
 
-⚠ **Souborů `data/_*_extract.py` je 42, ale jen 15 z nich vstup opravdu ČTE.**
+⚠ **Souborů `scripts/extractors/*.py` je 42, ale jen 15 z nich vstup opravdu ČTE.**
 Zbytek má data napsaná natvrdo — je to přepis jedné extrakce z 2026‑06/07, ne
 parser. Vypadají stejně, spustí se, vytisknou „wrote N grants" a skončí nulou;
 jenže `ingest_rich` páruje obsah se zdrojem podle POŘADÍ vstupních souborů,
@@ -233,12 +233,12 @@ Publikovaná verze: **[chocholous.github.io/regrantio](https://chocholous.github
 ### Fáze 2.5 — Strukturální pre-filtr (volitelné, `scripts/prefilter.py`) — 100% bezpečné
 - **Broad harvest je OK, data se berou celá** — obsahový šum (news zmiňující dotace) filtruje až fáze 3 (classify) per-record. Pre-filtr smí odstranit **JEN strukturálně neextrahovatelné**: prázdné (text<`limits.prefilter_empty_text_max` & 0 dok), exact-dup, nav/archiv URL. **NIKDY content/keyword/density** — má false-negativy („veřejná soutěž / výběrové řízení = grant"). Šetří jen volání klasifikátoru (h19 batch: −24 % nula rizika).
 
-### Fáze 3 — Klasifikace TYPU (Claude-workflow `scripts/classify_wf.js`, Haiku — `prompts/classify_type.md`)
+### Fáze 3 — Klasifikace TYPU (Claude-workflow `workflows/classify_wf.js`, Haiku — `prompts/classify_type.md`)
 - Mnou řízené workflow, 1 dokument = 1 Haiku agent, naslepo. Výstup: `base_type ∈ {grant, project, news, foundation_mission, administrative, other}`.
 - **Status NEklasifikuj** — počítá se ve fázi 5.
 - Pozor na záměny: **úřednědeskový obal** ≠ administrativa když obsah je dotační program; **„veřejná soutěž / výběrové řízení na poskytnutí prostředků" = grant** (regex by to splet → klasifikuj LLM, ne regexem). Viz `prompts/pitfalls.md`.
 
-### Fáze 4 — Extrakce POLÍ per typ (Claude-workflow `scripts/extract_wf.js`, Haiku — `prompts/extract_grant.md`)
+### Fáze 4 — Extrakce POLÍ per typ (Claude-workflow `workflows/extract_wf.js`, Haiku — `prompts/extract_grant.md`)
 - Mnou řízené workflow, **1 oportunita = 1 agent**, plný text + plné přílohy z doc-store.
 - **grant:** focus_area, amount, deadline, open_from, eligible_applicants, required_attachments, how_to_apply.
 - **NEOŘEZÁVAT vstup** (kontext ~200k) — měřeno: ořez sráží `amount` 27 %→90 %. Limity jen v `limits.json`.
@@ -259,7 +259,7 @@ Publikovaná verze: **[chocholous.github.io/regrantio](https://chocholous.github
 ## Průběžně — Coverage & active learning (zlepšování promptů)
 Cyklus, který je MĚŘENÝ (ne nora):
 1. `scripts/diversity_finder.py` → nejodlišnější dosud nevzorkované zdroje (data-driven).
-2. coverage workflow (`scripts/coverage_wf.js`, typ+pole) → vytěž nové formulace + záludnosti.
+2. coverage workflow (`workflows/coverage_wf.js`, typ+pole) → vytěž nové formulace + záludnosti.
 3. **diff proti minulému** → vyčísli zisk (39 divergentních dok = +144 formulací/+101 záludností).
 4. Stop, až zisk klesne (saturace). Nové záludnosti → `prompts/pitfalls.md`.
 
@@ -282,7 +282,7 @@ Cyklus, který je MĚŘENÝ (ne nora):
 - `docs/apify_howto.md` — kdy a jak Apify (SPA/postback zdroje)
 - `platform_data/` — **měřené výsledky detekce a pokrytí** (cms_clusters, detect_platforms_result, diversity_candidates, *_cov_result); autoritativní mapa host→platforma je `platform_map.json` v kořeni
 - `scripts/` — detekce (cms_similarity, platform_refingerprint, detect_platforms_wf) + harvestery (wp/vismo/kentico/mv/dsw2/**eeagrants/praha_grants/lewis_dynamo**) + **doc-store** (`docstore.py`) + dsw2_fetch + coverage/diversity
-- **`scripts/extract_wf.js` / `classify_wf.js`** — Claude-workflow vrstvy 2/1 (Haiku, 1 oportunita/agent, plný text)
+- **`workflows/extract_wf.js` / `classify_wf.js`** — Claude-workflow vrstvy 2/1 (Haiku, 1 oportunita/agent, plný text)
 - **`scripts/lewis_discover.py`** — Playwright objev skrytého XHR (SPA/grid) → endpoint pro HTTP replay
 - **`scripts/opportunities.py`** — kanonické úložiště `data/opportunities.jsonl` (jednotné schéma + status + extra lossless + provenance)
 - **`routing.yaml` + `scripts/routing.py`** — platforma→harvester (jediný zdroj pravdy; `--host`/`--platform`/`--all`)

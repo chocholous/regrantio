@@ -57,7 +57,7 @@ existujícím parserem. Pro zdroj `<src>` s harvesterem `scripts/<h>.py`:
 1. HARVEST   python scripts/<h>.py                  # → data/<src>_documents.jsonl (přepíše)
              u WP/listingových zdrojů s ročníky použij --since/--year ať nebereš staré ročníky
 2. INPUT     python scripts/build_extract_input.py data/<src>_documents.jsonl --source <src> --out-dir data/<src>_in --force-type grant
-3. VRSTVA 2  python data/_<src>_extract.py           # deterministický extraktor (TRACKOVANÝ v gitu)
+3. VRSTVA 2  python scripts/extractors/<src>.py           # deterministický extraktor (TRACKOVANÝ v gitu)
 4. INGEST    python scripts/ingest_rich.py --out-dir data/<src>_out --src data/<src>_in \
                 --existing data/opportunities.jsonl --out data/opportunities.jsonl \
                 --harvest-file data/<src>_documents.jsonl --today <YYYY-MM-DD>
@@ -115,7 +115,7 @@ per-zdroj (re-harvest celý zdroj → nahraď jeho podmnožinu), ne plošně.
      fondpaliativnipece 12, nadaceokd 8, kellner 5, vdv 5, nasedite 4, krasapomoci 2, nadacecs 2,
      kontobariery 1, nadacetm 1, voracek 1…): sklizeno **generickým `harvest_site.py` (BFS)** a
      protaženo **starou LLM-workflow cestou** (`harvest19_*`/`h19_*.jsonl` → classify_wf/extract_wf →
-     merge do katalogu), proto NEmají per-source `data/_<src>_extract.py` (výjimka:
+     merge do katalogu), proto NEmají per-source `scripts/extractors/<src>.py` (výjimka:
      `nadacecs`). **Reprodukční stav:** v principu obnovitelné (generic `harvest_site.py <domain>` +
      LLM vrstva 2), ale NE pinned recept jako deterministické zdroje; navíc většina jsou **`foundation_mission`**
      (nadace bez otevřené výzvy) a část webů je ne-WP/blokující (viz REMAINING recon). **Doporučení:**

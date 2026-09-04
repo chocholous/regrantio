@@ -18,7 +18,7 @@ TŘI TŘÍDY ZDROJŮ, a rozdíl je zásadní
   A) strukturní    harvest → ingest_kraj/dotis/… Celá cesta je kód. 14 zdrojů,
                    běží ve výchozím `refresh_run.py`.
   B) deterministická vrstva 2
-                   harvest → build_extract_input → `data/_<slug>_extract.py`
+                   harvest → build_extract_input → `scripts/extractors/<slug>.py`
                    → ingest_rich. **TAKY BEZ MODELU** — ten extraktor je obyčejný
                    parser. 14 zdrojů; bere se výslovně `--tier extract`.
   C) modelové      harvest → build_extract_input → extract_wf.js (LLM) → ingest_rich.
@@ -31,7 +31,7 @@ hotový harvester i deterministický parser a čekalo na modelovou vrstvu, ktero
 vůbec nepotřebují.
 
 ⚠ A POZOR NA DRUHOU CHYBU, DO KTERÉ SE PŘITOM DÁ SPADNOUT. Souborů
-`data/_<slug>_extract.py` je 42, ale jen 15 z nich vstup opravdu ČTE; zbytek má
+`scripts/extractors/<slug>.py` je 42, ale jen 15 z nich vstup opravdu ČTE; zbytek má
 data natvrdo (viz `TRANSCRIBED` níž). Počítat je všechny jako obnovitelné
 znamená vyrobit běh, který se tváří jako obnova a nic neobnoví.
 
@@ -158,9 +158,9 @@ SOURCES = {
 # (všechno ostatní). Naměřeno: existuje **42** extraktorů, z toho **38** má i
 # vlastní harvester. JEN 15 Z NICH ALE ČTE VSTUP — zbytek má data natvrdo
 # a do registru nepatří (viz `TRANSCRIBED`). Mají v `data/`
-# vlastní extraktor `_<slug>_extract.py` — a ten NENÍ model. Jsou to obyčejné
+# vlastní extraktor `scripts/extractors/<slug>.py` — a ten NENÍ model. Jsou to obyčejné
 # parsery: „harvester už rozparsoval datum vyhlášení a datum ukončení příjmu,
-# takže se tu nic nehádá" (hlavička `data/_opd_extract.py`).
+# takže se tu nic nehádá" (hlavička `scripts/extractors/opd.py`).
 #
 # Po odečtení přepsaných zbývá 14 zdrojů, které jdou obnovit jedním příkazem už
 # dnes, bez klíče k modelu — a nikdo o tom nevěděl, protože `--list` hlásil 14
@@ -172,7 +172,7 @@ SOURCES = {
 # CESTY SE NEOPISUJÍ, ODVOZUJÍ SE. Konvence je popsaná v `docs/REFRESH.md` §1–4:
 #     harvest    → data/<slug>_documents.jsonl
 #     vstup      → data/<slug>_in/
-#     extraktor  → data/_<slug>_extract.py
+#     extraktor  → scripts/extractors/<slug>.py
 #     výstup     → data/<slug>_out/
 # Registr proto drží jen to, co se odvodit nedá: čím se harvestuje a jaký je tier.
 #
@@ -180,7 +180,7 @@ SOURCES = {
 # hlavně: každý z nich je ověřený jen do té míry, do jaké se pustil. Bere se
 # výslovně — `--tier extract` nebo `--only <slug>` — dokud nebude odbytý celý.
 def cte_vstup(slug):
-    """Je `data/_<slug>_extract.py` PARSER, nebo přepis dat do literálů?
+    """Je `scripts/extractors/<slug>.py` PARSER, nebo přepis dat do literálů?
 
     ⚠ JEDINÁ DEFINICE. Ptá se na to registr, test i dokumentace — kdyby si
     každý nesl vlastní vzor, rozejdou se a jeden z nich začne tiše lhát.
@@ -193,7 +193,7 @@ def cte_vstup(slug):
 
     Ptá se proto na to, co je podstatné: SÁHNE TEN SOUBOR NA NĚJAKÝ VSTUP?
     """
-    p = os.path.join(ROOT, "data", f"_{slug}_extract.py")
+    p = os.path.join(ROOT, "scripts", "extractors", f"{slug}.py")
     if not os.path.exists(p):
         return False
     src = open(p, encoding="utf-8").read()
@@ -262,7 +262,7 @@ EXTRACT_SOURCES = {
 # -----------------------------------------------------------------------------
 # ⚠ EXTRAKTOR, KTERÝ NIC NEEXTRAHUJE — 27 souborů, a do registru NEPATŘÍ
 # -----------------------------------------------------------------------------
-# Naměřeno 2026-09-03: z 42 souborů `data/_<slug>_extract.py` jich jen **15**
+# Naměřeno 2026-09-03: z 42 souborů `scripts/extractors/<slug>.py` jich jen **15**
 # skutečně čte vstup (`json.load(open(... _in/ ...))`). Zbylých 27 má výsledek
 # NAPSANÝ NATVRDO v kódu — jsou to přepisy jedné extrakce z 2026-06/07 do
 # pythonních literálů, ne parsery.
@@ -294,7 +294,7 @@ def extract_chain(slug, harvest, today):
         (harvest, "harvest"),
         (["build_extract_input.py", docs, "--source", slug,
           "--out-dir", f"data/{slug}_in", "--force-type", "grant"], "příprava vstupu"),
-        ([f"data/_{slug}_extract.py"], "extrakce (bez modelu)"),
+        ([f"scripts/extractors/{slug}.py"], "extrakce (bez modelu)"),
         (["ingest_rich.py", "--out-dir", f"data/{slug}_out", "--src", f"data/{slug}_in",
           "--existing", "data/opportunities.jsonl", "--out", "data/opportunities.jsonl",
           "--harvest-file", docs, "--today", today], "ingest"),
@@ -386,10 +386,10 @@ def main():
         for host, (h, _out, i, tier) in sorted(SOURCES.items()):
             print(f"  {host:26} {tier:11} {h[0]:26} → {i[0]}")
         print(f"\nB) DETERMINISTICKÁ VRSTVA 2 ({len(EXTRACT_SOURCES)}) — harvest → vstup →"
-              " data/_<slug>_extract.py → ingest_rich")
+              " scripts/extractors/<slug>.py → ingest_rich")
         print("   TAKY BEZ MODELU. Bere se výslovně: --tier extract nebo --only <slug>.\n")
         for slug, (h, tier) in sorted(EXTRACT_SOURCES.items()):
-            print(f"  {slug:26} {tier:11} {h[0]:26} → data/_{slug}_extract.py")
+            print(f"  {slug:26} {tier:11} {h[0]:26} → extractors/{slug}.py")
         print("\nC) MODELOVÁ VRSTVA — zdroje bez vlastního extraktoru; potřebují"
               " extract_wf.js (LLM).\n   Viz docs/REFRESH.md. Tenhle skript je neumí.")
         return 0

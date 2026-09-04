@@ -452,14 +452,14 @@ příštím sběru vrátí.
 
 `refresh_run.py` znal jednu cestu bez modelu (harvest → strukturní ingest, 14
 zdrojů). Cesta číslo dvě — harvest → `build_extract_input` →
-`data/_<slug>_extract.py` → `ingest_rich` — byla popsaná v `docs/REFRESH.md`,
+`scripts/extractors/<slug>.py` → `ingest_rich` — byla popsaná v `docs/REFRESH.md`,
 ale v žádném registru. Ověřeno živě na `opd`: 12 výzev, nula účasti modelu.
 
 Přibylo `EXTRACT_SOURCES` a `--tier extract`.
 
 ### A hned nato ta nepříjemnější půlka
 
-Ze 42 souborů `data/_*_extract.py` jich **jen 15 vstup opravdu čte**. Zbytek má
+Ze 42 souborů `scripts/extractors/*.py` jich **jen 15 vstup opravdu čte**. Zbytek má
 výsledek napsaný natvrdo — přepis jedné extrakce z 2026‑06/07 do literálů.
 
 Nebezpečné je, že se to nepozná: spustí se, vytiskne „wrote N grants", skončí

@@ -16,15 +16,13 @@ __pycache__/
 # jak tu stálo od začátku: přibylo šest korpusů (msmt, esfcr, czechaid, hzs, mk,
 # plone), z toho samotné `data/files` má 7 GB binárních originálů.
 # Rozbor velikostí a co je odkud obnovitelné je v README §Data.
-# DVĚ VÝJIMKY, obě záměrné:
+# DVĚ VÝJIMKY, obě záměrné (třetí zanikla — viz níž):
 #   1. `data/opportunities.jsonl` = KATALOG, hlavní produkt pipeline. Verzuje se, protože
 #      jinak existuje v jediné kopii na jediném stroji a je nenahraditelný: publikovaný
 #      export `docs/opportunities.json` nese 11 polí z 12 (chybí `provenance` a `extra`),
 #      takže by po ztrátě disku zmizela vazba na zdrojové dokumenty i bezeztrátová zásoba,
 #      ze které se dopočítávají odvozené termíny. Zároveň je to podmínka pro běh v CI.
-#   2. per-source vrstva-2 extraktory `data/_<src>_extract.py` jsou KÓD (ne data) → jinak
-#      fresh clone nedokáže reprodukovat vrstvu 2 (harvester je v scripts/, extraktor chyběl).
-#   3. `data/<src>_seeds.json` = VSTUP, bez kterého se harvester nespustí. Osm harvesterů
+#   2. `data/<src>_seeds.json` = VSTUP, bez kterého se harvester nespustí. Osm harvesterů
 #      (albert, eagri, hlavka, leontinka, nadace_adra, partnerstvi, sirius, veronica) má
 #      `--seeds` jako POVINNÝ argument, takže bez tohohle souboru končí návratovým kódem 2
 #      a chybovou hláškou o použití. Platí tu doslova totéž co u výjimky 2: sledovaný
@@ -33,7 +31,6 @@ __pycache__/
 #      Naměřeno 2026-09-03: přesně na tomhle padlo 8 z 38 zdrojů třídy B.
 /data/*
 !/data/opportunities.jsonl
-!/data/_*_extract.py
 !/data/*_seeds.json
 data/*.bak
 data/*.pre-refresh.bak
@@ -44,3 +41,9 @@ data/*.pre-refresh.bak
 
 # Claude Code runtime (locks, scheduled tasks)
 .claude/
+
+# ⚠ TŘETÍ VÝJIMKA ZANIKLA 2026-09-04. Extraktory vrstvy 2 bydlely v `data/`
+# a musela pro ně tady být výjimka, protože je to KÓD, ne data. Přestěhovaly se
+# do `scripts/extractors/`, kde žádnou nepotřebují — a `data/` je od té chvíle
+# opravdu jen data. Výjimka, kterou je potřeba vysvětlovat, bývá příznak toho,
+# že soubor leží na špatném místě.
