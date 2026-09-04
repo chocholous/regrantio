@@ -10,6 +10,7 @@ pro zdroje, které to zvládnou bez jazykového modelu.
     python scripts/refresh_run.py --tier extract   # deterministická vrstva 2 (14 zdrojů)
     python scripts/refresh_run.py --only dotace.khk.cz,fondvysociny.cz
     python scripts/refresh_run.py --tail-only     # jen přepočet + export (bez sítě)
+    python scripts/refresh_run.py --publish-db    # a rovnou zapiš do databáze produktu
     python scripts/refresh_run.py --dry-run       # ukaž příkazy, nic nespouštěj
 
 TŘI TŘÍDY ZDROJŮ, a rozdíl je zásadní
@@ -272,6 +273,15 @@ TAIL = [
 # Bez přístupů skript nepokračuje potichu: skončí s vysvětlením, co chybí.
 PUBLISH = (["publish_export.py"], "publikace do úschovny (pro produkt)")
 
+# ⚠ PŘÍMO DO DATABÁZE PRODUKTU. Do 2026-09-04 vedla tahle cesta přes druhý
+# repozitář: export → GitHub → `node scripts/ingest-catalog.mjs` v
+# `the-machine-app`. Dva příkazy ve dvou prostředích a stažení souboru po HTTP,
+# přestože leží na disku vedle. Teď je to jeden krok — `scripts/publish_db.py`.
+#
+# Stejně jako `--publish` se bere VÝSLOVNĚ: je to okamžik, kdy se data stanou
+# viditelná pro zákazníky, a to nemá udělat nikdo omylem.
+PUBLISH_DB = (["publish_db.py"], "zápis do databáze produktu")
+
 
 def run(args, label, dry):
     """Spustí krok. Vrací (ok, poslední řádek výstupu).
@@ -317,6 +327,7 @@ def main():
     ap.add_argument("--tail-only", action="store_true", help="jen přepočet a export, bez sítě")
     ap.add_argument("--skip-tail", action="store_true", help="jen harvest a ingest")
     ap.add_argument("--publish", action="store_true", help="po exportu nahraj do úschovny (pro produkt)")
+    ap.add_argument("--publish-db", action="store_true", help="po exportu zapiš přímo do databáze produktu")
     ap.add_argument("--dry-run", action="store_true", help="ukaž příkazy, nic nespouštěj")
     a = ap.parse_args()
 
@@ -415,6 +426,15 @@ def main():
                 failed.append(PUBLISH[1])
         elif a.publish:
             print("    · publikace přeskočena — přepočet neprošel")
+
+        # Táž podmínka a týž důvod: do databáze produktu se nesmí dostat data,
+        # která neprošla bránou kvality.
+        if a.publish_db and tail_ok:
+            ok, _ = run(PUBLISH_DB[0], PUBLISH_DB[1], a.dry_run)
+            if not ok:
+                failed.append(PUBLISH_DB[1])
+        elif a.publish_db:
+            print("    · zápis do databáze přeskočen — přepočet neprošel")
 
     after = counts()
     print(f"\n═══ SHRNUTÍ ═══")

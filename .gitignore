@@ -1,3 +1,11 @@
+# ⚠ SECRETS. Do 2026-09-04 tenhle blok CHYBĚL — repozitář je veřejný a nic
+# nebránilo tomu, aby se `.env` se service-role klíčem k databázi produktu
+# dostal do commitu. Přišlo se na to při zavádění `scripts/publish_db.py`,
+# tedy ve chvíli, kdy tu ten soubor poprvé vznikl.
+.env
+.env.*
+!.env.example
+
 # Python
 .venv/
 venv/
