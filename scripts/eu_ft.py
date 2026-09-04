@@ -24,9 +24,23 @@ if hasattr(sys.stdout, "reconfigure"):
 
 API = "https://api.tech.ec.europa.eu/search-api/prod/rest/search?apiKey=SEDIA&text=***&pageSize={n}&pageNumber={p}"
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+# Kódy stavu, jak je používá SEDIA search-api.
+STATUS = {"open": "31094502", "forthcoming": "31094501", "closed": "31094503"}
+
+# ⚠ BEROU SE I PŘIPRAVOVANÉ VÝZVY, nejen otevřené.
+#
+# Do 2026-09-04 tu stálo `status: ["31094502"]`, tedy JEN otevřené. Naměřeno
+# téhož dne: otevřených je 780, připravovaných **627** — portál tedy dopředu
+# oznamuje skoro tolik výzev, kolik jich zrovna běží, a katalog o nich mlčel.
+#
+# Pro produkt je to ta cennější polovina. Na otevřenou výzvu z Horizontu se
+# nedá reagovat za týden; kdo se chce ucházet, potřebuje vědět, že se otevře
+# za tři měsíce. Status se nefabrikuje — `compute_status` z `open_from`
+# v budoucnosti sám udělá `announced`.
+#
 # query přesně jako F&T SPA (každá část = file part s Content-Type application/json)
 QUERY = {"bool": {"must": [{"terms": {"type": ["1", "2", "8"]}},
-                           {"terms": {"status": ["31094502"]}},
+                           {"terms": {"status": [STATUS["open"], STATUS["forthcoming"]]}},
                            {"terms": {"language": ["en"]}}]}}
 DISPLAY = ["type", "identifier", "reference", "callccm2Id", "title", "status", "caName",
            "projectAcronym", "startDate", "deadlineDate", "deadlineModel", "frameworkProgramme", "typesOfAction"]
@@ -108,11 +122,16 @@ def main():
     ap.add_argument("--min-deadline", default=date.today().isoformat(),
                     help="ber jen výzvy s deadline >= (default dnešek) — EC status 'open' nese i staré "
                          "prošlé cutoffy multi-stage výzev; ty nejsou aktuální příležitost")
+    ap.add_argument("--status", default="open,forthcoming",
+                    choices=["open", "forthcoming", "open,forthcoming"],
+                    help="které stavy brát (default obojí — připravovaná výzva je "
+                         "pro žadatele cennější než ta, která zítra zavírá)")
     args = ap.parse_args()
+    QUERY["bool"]["must"][1]["terms"]["status"] = [STATUS[x] for x in args.status.split(",")]
     first = fetch_page(1, 100)
     total = first.get("totalResults", 0)
     pages = (total + 99) // 100
-    print(f"  discovery: {total} otevřených výzev → {pages} stran", flush=True)
+    print(f"  discovery: {total} výzev ({args.status}) → {pages} stran", flush=True)
     results = list(first.get("results", []))
     for p in range(2, pages + 1):
         results += fetch_page(p, 100).get("results", [])
@@ -138,6 +157,8 @@ def main():
         body = (f"{prog} – {ident}\n{title}\n\nTyp akce: {toa or '-'}\n"
                 f"Zahájení: {iso(g(m, 'startDate')) or '-'} · Uzávěrka: {iso(g(m, 'deadlineDate')) or '-'}\n"
                 f"Centrálně řízený program EU (Evropská komise), otevřený pro žadatele z ČR.")
+        # QUERY se mění až v main(), takže `global` není potřeba — `multipart_body`
+        # ho čte v okamžiku volání.
         recs.append({"url": r.get("url") or f"https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/opportunities/topic-details/{ident}",
                      "host": "ec.europa.eu", "title": f"{title} ({ident})" if title else ident,
                      "body_text": body, "identifier": ident, "programme": prog, "oblast": obl,
