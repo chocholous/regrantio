@@ -197,7 +197,7 @@ Každý níže byl v této session ŽIVĚ přeověřen; „blocker" = ověřená
 | Zdroj | Blocker (ověřeno) |
 |---|---|
 | **SZIF (PRV/SZP)** | `ConnectionResetError` — WAF blokuje na úrovni TCP spojení; realistické hlavičky NEPOMOHLY (na rozdíl od Visegradu/ERSTE). Chce proxy nebo jinou IP |
-| **OP TAK** | web API (agentura-api.org) je prázdný SPA shell — i po Playwright renderu jen 58 znaků. `dotaceeu.cz/…/vyzvy` má výzvy za FILTROVACÍM formulářem (postback) → Apify/viewstate |
+| ~~**OP TAK**~~ | ✅ **VYŘEŠENO 2026-09-04** — nebyl blokovaný, jen se přestěhoval. `agentura-api.org` je mrtvá doména; program běží na `optak.gov.cz` jako server-rendered web. Sebráno univerzálním `harvest_site.py`, 17 výzev. |
 | **Interreg AT-CZ** | HTTP 200, ale 0 výzvových odkazů — obsah je za JS/filtrem; chce Playwright recon |
 | **Interreg Central Europe** | ověřeno: VŠECHNA 4 kola uzavřená (poslední 11/2025), žádné otevřené výzvy → vědomě nepřidáno |
 | **Interreg Danube** | 404 na /calls — změněná struktura, chce recon |

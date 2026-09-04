@@ -323,6 +323,40 @@ def test_prepsane_zdroje_nejsou_v_registru():
     assert not prekryv2, f"zdroj je ve dvou registrech naráz: {prekryv2}"
 
 
+def test_zadny_extraktor_nezustane_nezarazeny():
+    """Každý `data/_*_extract.py` musí být v NĚČEM — jinak se na něj zapomene.
+
+    ⚠ TOHLE JE TA KONTROLA, KTERÁ CHYBĚLA. Souborů je 43 a rozpadají se do tří
+    osudů: registr obnovy (parser + harvester), seznam přepisů (data natvrdo),
+    nebo „parser bez sběrače". Kdo přidá čtvrtý soubor a nikam ho nezapíše,
+    vyrobí kód, který se nikdy nespustí a nikdo o něm neví.
+
+    Test proto netrvá na tom, KAM patří — trvá na tom, že někam patří.
+    """
+    import glob
+
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    sys.path.insert(0, os.path.join(root, "scripts"))
+    import refresh_run
+
+    # Parsery, kterým chybí jen sběrač. Drží se jmenovitě, protože je to STAV,
+    # ne pravidlo — jakmile harvester vznikne, zdroj se přesune do registru.
+    BEZ_SBERACE = {"mzcr"}
+
+    vsechny = {os.path.basename(p)[1:-11]
+               for p in glob.glob(os.path.join(root, "data", "_*_extract.py"))}
+    zarazene = set(refresh_run.EXTRACT_SOURCES) | set(refresh_run.TRANSCRIBED) | BEZ_SBERACE
+
+    chybi = vsechny - zarazene
+    assert not chybi, (
+        "extraktor není ani v registru, ani mezi přepsanými, ani mezi parsery "
+        f"bez sběrače: {sorted(chybi)}"
+    )
+
+    prebyva = zarazene - vsechny - set(refresh_run.SOURCES)
+    assert not prebyva, f"jmenuje se extraktor, který neexistuje: {sorted(prebyva)}"
+
+
 def test_registrovany_harvest_ma_svuj_skript():
     """Registr smí jmenovat jen skripty, které existují — jinak `--list` lže."""
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

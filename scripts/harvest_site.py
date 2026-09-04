@@ -24,8 +24,30 @@ GRANT = re.compile(r"grant|dotac|výzv|vyzv|program|žádost|zadost|podpor|nada�
 def fetch(url, timeout):
     return http_util.urlopen(urllib.request.Request(url, headers=UA), timeout=timeout).read().decode("utf-8", "replace")
 
+# Bloky, jejichž OBSAH není text stránky. Musí padnout PŘED odstraněním značek —
+# `<[^>]+>` sundá jen `<script>` a `</script>`, kód mezi nimi nechá.
+NETEXT = re.compile(r"<(script|style|noscript|template)\b[^>]*>.*?</\1\s*>", re.I | re.S)
+
+
 def clean(s):
-    return re.sub(r"\s+", " ", H.unescape(re.sub(r"<[^>]+>", " ", s or ""))).strip()
+    """HTML → text. Obsah skriptů a stylů se ZAHAZUJE, nejen jejich značky.
+
+    ⚠ NAMĚŘENO 2026-09-04 na optak.gov.cz. Bez tohohle začínal text výzvy
+    takhle:
+
+        { "@context": "http://schema.org", "@type": "Article", … }
+        window.dataLayer = window.dataLayer || []; function gtag(){…}
+
+    — tedy JSON-LD a Google Tag Manager. Vrstva 2 pak dostane vstup, kde je
+    několik kilobajtů JavaScriptu před první větou o dotaci, a ať je to model
+    nebo parser, hledá informaci v šumu. U modelu se tím navíc platí za tokeny,
+    které nic neříkají.
+
+    Týká se to KAŽDÉHO zdroje sbíraného tímhle univerzálním harvesterem, ne jen
+    toho, na kterém se to našlo.
+    """
+    s = NETEXT.sub(" ", s or "")
+    return re.sub(r"\s+", " ", H.unescape(re.sub(r"<[^>]+>", " ", s))).strip()
 
 def docs_in(url, html):
     return sorted({urljoin(url, H.unescape(u)) for u in re.findall(r'href="([^"]+\.(?:pdf|docx?|xlsx?|pptx?|odt|ods|rtf|zip))"', html, re.I)}

@@ -197,6 +197,15 @@ def cte_vstup(slug):
     if not os.path.exists(p):
         return False
     src = open(p, encoding="utf-8").read()
+    # ⚠ HLEDÁ SE OTEVŘENÍ KONKRÉTNÍ CESTY, ne „čte a někde zmiňuje vstup".
+    #
+    # Volnější podoba pravidla se zkoušela a byla HORŠÍ: přepsané extraktory
+    # svou vstupní složku běžně zmiňují (`shutil.copyfile("data/x_in/…")`),
+    # takže se jich jedenáct začalo tvářit jako parsery. Přesnost je tu
+    # důležitější než pohodlí — od toho pravidlo je.
+    #
+    # Cenou je, že extraktor musí cestu otevřít PŘÍMO, ne přes konstantu.
+    # Je to konvence celého `data/`, ne omezení: všech 43 souborů ji drží.
     return bool(re.search(
         r"open\s*\(\s*[^)]*(_documents\.jsonl|_in/|_in\"|_in'|\.jsonl)"
         r"|json\.load\s*\(\s*open"
@@ -233,6 +242,8 @@ EXTRACT_SOURCES = {
     "opd": (["opd.py"], "html"),
     "opjak": (["opjak.py"], "html"),
     "opst": (["opst.py"], "html"),
+    "optak": (["harvest_site.py", "--base", "https://optak.gov.cz", "--source", "optak",
+               "--out", "data/optak_documents.jsonl"], "html"),
     "opzp": (["opzp.py"], "html"),
     "osf": (["osf.py"], "html"),
     "plone_ostrava": (["plone_ostrava.py"], "html"),
