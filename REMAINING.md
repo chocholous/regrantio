@@ -196,11 +196,11 @@ Každý níže byl v této session ŽIVĚ přeověřen; „blocker" = ověřená
 
 | Zdroj | Blocker (ověřeno) |
 |---|---|
-| **SZIF (PRV/SZP)** | `ConnectionResetError` — WAF blokuje na úrovni TCP spojení; realistické hlavičky NEPOMOHLY (na rozdíl od Visegradu/ERSTE). Chce proxy nebo jinou IP |
+| **SZIF (PRV/SZP)** | ⚠ **VERDIKT OPRAVEN 2026-09-04.** Není to blok na IP: skutečný prohlížeč (Playwright, Chrome UA) se na `szif.gov.cz` dostane bez potíží, `urllib` ne — WAF tedy filtruje podle TLS otisku klienta, ne podle adresy. Zbývající překážka je jiná: obsah programů visí na odkazech `CmDocument?rid=…`, které přímým `goto` vracejí `ERR_CONNECTION_RESET` a proklikem nenavigují. Listing `/cs/narodni-dotace` ale sám nese jména programů i věty o zahájení příjmu žádostí — sběr z něj je realistický. Chce vlastní session, ne proxy. |
 | ~~**OP TAK**~~ | ✅ **VYŘEŠENO 2026-09-04** — nebyl blokovaný, jen se přestěhoval. `agentura-api.org` je mrtvá doména; program běží na `optak.gov.cz` jako server-rendered web. Sebráno univerzálním `harvest_site.py`, 17 výzev. |
 | **Interreg AT-CZ** | HTTP 200, ale 0 výzvových odkazů — obsah je za JS/filtrem; chce Playwright recon |
 | **Interreg Central Europe** | ověřeno: VŠECHNA 4 kola uzavřená (poslední 11/2025), žádné otevřené výzvy → vědomě nepřidáno |
-| **Interreg Danube** | 404 na /calls — změněná struktura, chce recon |
+| **Interreg Danube** | Adresa se změnila na `/calls-for-proposals` (ověřeno 2026-09-03; starý `/calls` je 404). Obsah je ale archiv — poslední kolo 2024, nic otevřeného → vědomě nepřidáno. |
 | **grantovydiar.cz** | login-gate (veřejné id okno je 100 % closed) |
 | **Zbylé nadace** (ČEZ detail, Neuron, Karla Janečka, Charty 77) | 403/DNS chyby nebo obsah jen v PDF |
 | Chybějící města (ČB, Zlín, Šumperk, Třebíč) | ověřeno Playwrightem: víceúrovňová navigace + PDF, render vrátil ~0 programů |
@@ -217,7 +217,7 @@ týdnů je odhad, ne měření:
 
 | zdroj | dnes | závěr |
 |---|---|---|
-| **SZIF** | `ConnectionResetError` na `szif.cz` i `szif.gov.cz` | blocker **potvrzen** — WAF řeže TCP spojení, hlavičky nepomáhají. Chce proxy nebo jinou IP |
+| **SZIF** | `ConnectionResetError` jen z `urllib` | ⚠ **přehodnoceno 2026-09-04** — prohlížeč projde, blok je na TLS otisku klienta. Viz oddíl blokerů výš. |
 | **Interreg Danube** | `/calls` = 404, ale **`/calls-for-proposals` vrací 200** | adresa v tabulce výš je **mrtvá**; nová funguje. Obsah jsou ale kola z 2022–2024, **žádná otevřená výzva** → nepřidáno, ale příště se na 404 neztrácí čas |
 | **Interreg Central Europe** | 200, `/calls-for-proposals/` | verdikt „všechna kola uzavřená" **platí dál** — na stránce jsou jen výsledky (first/second/third/strategic call) |
 
@@ -228,7 +228,8 @@ unicode-aware a vzor sedí. **Vzory nad českým textem měř tím jazykem,
 ve kterém pak poběží.**
 
 ## 🎯 Priority příští coverage session (s rozpočtem na nástroje)
-P3 OP TAK/dotaceeu (Apify/WebForms) · P2b SZIF (proxy) · P4 nadace 17→40+ · grantovydiar login.
+P1 **SZIF přes prohlížeč** (největší zbývající zdroj; blok je na TLS otisku, ne na IP) · P2 dotaceeu.cz — výzvy za filtrovacím formulářem · P3 nadace 17→40+ · P4 grantovydiar login.
+~~OP TAK~~ hotovo 2026-09-04 (přestěhoval se na `optak.gov.cz`, 17 výzev).
 
 ---
 
