@@ -248,8 +248,35 @@ def has_changed(row, stored_hash):
     return row["content_hash"] != stored_hash
 
 
+def eligibility(row):
+    """Snímek rozměrů, podle kterých aplikace počítá shodu.
+
+    ⚠ TYHLE TŘI A ŽÁDNÉ JINÉ. `src/lib/match/rules.ts` váží typ žadatele 40,
+    území 25 a oblast 25 — jen jejich posun umí výzvu překlopit z „vhodná“ na
+    „nevhodná“. Volný text `eligible_applicants` se sem ZÁMĚRNĚ nepočítá:
+    přeformuluje se při každém přesazení zdrojového dokumentu, takže by hlásil
+    změnu tam, kde se nezměnilo nic.
+
+    ⚠ POLE SE ŘADÍ. Pořadí faset nikde nic neznamená, ale kdyby se snímek bral
+    tak, jak přišel, stačilo by zdroji prohodit dvě položky a katalog by ohlásil
+    změnu oprávněnosti u výzvy, která je beze změny. Setříděný snímek má navíc
+    stabilní otisk, na kterém stojí klíč jednoznačnosti upozornění.
+    """
+    if not row:
+        return None
+    return {
+        "applicant": sorted(row.get("typ_zadatele") or []),
+        "area": sorted(row.get("oblast") or []),
+        "region": {
+            "kraj": row.get("kraj"),
+            "obec": row.get("obec"),
+            "celostatni": row.get("celostatni"),
+        },
+    }
+
+
 def change_worth_recording(before, after):
-    """Ne každý přepis je událost — řádek vzniká jen u posunu LHŮTY nebo ČÁSTKY.
+    """Ne každý přepis je událost — řádek vzniká u posunu LHŮTY, ČÁSTKY nebo OPRÁVNĚNOSTI.
 
     ⚠ POROVNÁNÍ ČÍSEL PŘES `float(x or nan)` JE PAST a v Node verzi stálo 155
     prázdných řádků v ostré databázi: `NaN != NaN`, takže se každá výzva BEZ
@@ -269,7 +296,10 @@ def change_worth_recording(before, after):
 
     deadline_moved = str(before.get("deadline") or "") != str(after.get("deadline") or "")
     amount_moved = num(before.get("amount")) != num(after.get("amount"))
-    return deadline_moved or amount_moved
+    # ⚠ TŘETÍ DŮVOD, A TEN NEJDRAŽŠÍ. U posunutého termínu si člověk přečte nové
+    # datum; u změněné oprávněnosti může přijít o rozpracovanou žádost.
+    eligibility_moved = eligibility(before) != eligibility(after)
+    return deadline_moved or amount_moved or eligibility_moved
 
 
 # ---------------------------------------------------------------- PostgREST
@@ -424,7 +454,13 @@ def main():
         last = db.select("catalog_import?select=generated_at&status=eq.ok"
                          "&order=finished_at.desc&limit=1")
         previous_generated = (last[0]["generated_at"] if last else None)
-        for r in db.select_all("catalog_grant", "id,content_hash,deadline,amount,withdrawn_at"):
+        # ⚠ FASETY SE MUSÍ NAČÍST TAKY. Bez nich by `eligibility(prev)` vracelo
+        # prázdný snímek a KAŽDÁ změněná výzva by vypadala, že se jí změnila
+        # oprávněnost — táž past jako `NaN != NaN` u částek, jen dražší.
+        for r in db.select_all(
+            "catalog_grant",
+            "id,content_hash,deadline,amount,withdrawn_at,typ_zadatele,oblast,kraj,obec,celostatni",
+        ):
             existing[r["id"]] = r
         print(f"· V databázi je {len(existing)} záznamů")
 
@@ -512,6 +548,11 @@ def main():
                     "deadline_after": row["deadline"],
                     "amount_before": (prev or {}).get("amount"),
                     "amount_after": row["amount"],
+                    # U nového záznamu zůstává `before` prázdné a je to záměr:
+                    # funkce `pending_change_notifications` podle toho pozná, že
+                    # není co porovnávat, a upozornění na oprávněnost nevytvoří.
+                    "eligibility_before": eligibility(prev),
+                    "eligibility_after": eligibility(row),
                 })
 
         payload = []
