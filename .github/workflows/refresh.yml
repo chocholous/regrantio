@@ -84,7 +84,12 @@ jobs:
         # i zdroje, které dopadly dobře. Skutečná pojistka je brána kvality
         # uvnitř a kontrola níž, ne návratový kód harvestu.
         run: |
-          python scripts/refresh_run.py --tier "${{ inputs.tier || 'all' }}" || true
+          # ⚠ Nebufferovaný výstup a rozpočet na čas (2026‑09‑11): běh 7. 9.
+          # skončil po 90 minutách bez jediného řádku v logu (Python
+          # bufferuje stdout mimo terminál) a bez exportu. Rozpočet zastaví
+          # sklizeň v 60. minutě, zbylé zdroje zůstanou z minula, přepočet,
+          # brána a zápis proběhnou.
+          PYTHONUNBUFFERED=1 python scripts/refresh_run.py --tier "${{ inputs.tier || 'all' }}" --budget-min 60 || true
 
       - name: Brána kvality (rozhoduje o pokračování)
         # Tohle UŽ spadnout smí a má: publikovat dataset, který neprošel branou,

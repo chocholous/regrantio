@@ -375,6 +375,9 @@ def main():
                     help="structured/html = strukturní ingest (třída A); extract = "
                          "deterministická vrstva 2 (třída B); all = obojí")
     ap.add_argument("--list", action="store_true", help="vypiš registr a skonči")
+    ap.add_argument("--budget-min", type=int, default=0,
+                    help="časový rozpočet na HARVEST v minutách; po vyčerpání se zbylé zdroje přeskočí "
+                         "(zůstanou v katalogu z minula) a běh pokračuje přepočtem a exportem. 0 = bez rozpočtu")
     ap.add_argument("--tail-only", action="store_true", help="jen přepočet a export, bez sítě")
     ap.add_argument("--skip-tail", action="store_true", help="jen harvest a ingest")
     ap.add_argument("--publish", action="store_true", help="po exportu nahraj do úschovny (pro produkt)")
@@ -429,10 +432,25 @@ def main():
         shutil.copyfile(src, src + ".pre-refresh.bak")
         print(f"· záloha před během → data/opportunities.jsonl.pre-refresh.bak ({before} záznamů)\n")
 
+    # ⚠ ROZPOČET NA ČAS (2026‑09‑11). Týdenní běh v GitHub Actions má strop
+    # 90 minut a 7. 9. do něj nedoběhl: 28 zdrojů × až 30 minut na krok je
+    # víc, a jeden zaseknutý zdroj vzal s sebou přepočet, bránu i export —
+    # tedy i to, co se stihlo sklidit. Rozpočet zastaví SKLIZEŇ, ne běh:
+    # zbylé zdroje zůstanou v katalogu z minula (upsert nic nemaže), přepočet
+    # a export proběhnou nad tím, co je, a přeskočené zdroje jsou v souhrnu.
+    t_start = time.time()
+    skipped_budget = []
+
+    def over_budget():
+        return a.budget_min > 0 and (time.time() - t_start) > a.budget_min * 60
+
     if not a.tail_only:
         print(f"═══ HARVEST + INGEST ({len(chosen)} zdrojů) ═══")
         for host in chosen:
             harvest, out, ingest, _tier = SOURCES[host]
+            if over_budget():
+                skipped_budget.append(host)
+                continue
             print(f"\n  {host}")
             ok, _ = run(harvest, "harvest", a.dry_run)
             if not ok:
@@ -452,6 +470,9 @@ def main():
         print(f"\n═══ DETERMINISTICKÁ VRSTVA 2 ({len(chosen_extract)} zdrojů) ═══")
         for slug in chosen_extract:
             harvest, _tier = EXTRACT_SOURCES[slug]
+            if over_budget():
+                skipped_budget.append(slug)
+                continue
             print(f"\n  {slug}")
             # ⚠ ŘETĚZ SE ZASTAVÍ NA PRVNÍM KROKU, KTERÝ NEPROŠEL. Pustit ingest
             # nad vstupem, který extrakce nevyrobila, znamená zapsat do katalogu
@@ -495,6 +516,9 @@ def main():
     after = counts()
     print(f"\n═══ SHRNUTÍ ═══")
     print(f"  záznamů v katalogu: {before} → {after}  ({after - before:+d})")
+    if skipped_budget:
+        print(f"  ⚠ rozpočet {a.budget_min} min vyčerpán, přeskočeno {len(skipped_budget)}: {', '.join(skipped_budget)}")
+        print("  Zůstávají v katalogu z minulého běhu; pusť je zvlášť (--only).")
     if failed:
         print(f"  ✖ selhalo: {', '.join(failed)}")
         print("  Ostatní zdroje proběhly; oprav a pusť znovu jen ty selhané (--only).")
