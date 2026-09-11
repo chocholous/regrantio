@@ -174,7 +174,12 @@
   "samosprava": "obec_verejny_subjekt",
   "obec": "obec_verejny_subjekt",
   "energetické společenství": "firma",
-  "zemědělský podnikatel": "osvc_podnikatel"
+  "zemědělský podnikatel": "osvc_podnikatel",
+  "nestatni_neziskova_organizace": "neziskovka",
+  "nno": "neziskovka",
+  "nestátní nezisková organizace": "neziskovka",
+  "poskytovatel_soc_sluzeb": "neziskovka",
+  "vlastnik_nemovitosti": "fyzicka_osoba"
  },
  "forma_podpory": {
   "dotace": "dotace",

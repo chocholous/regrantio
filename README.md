@@ -56,10 +56,18 @@ python tests/test_publish.py         # 18 testů publikační cesty (manifest, o
 | kvalita dat | neplatné datum, termín mimo 2000–2035, `deadline < open_from`, prázdný titul |
 | identita záznamů | chybějící `id`, duplicitní `id` — v produktu by se projevilo tichým přepisem |
 | propad počtu | katalog má míň než 80 % minule publikovaných záznamů → **vypadl zdroj** |
+| kontrakt polí | `eligible_applicants` není řetězec (strukturní ingesty dávaly seznam); zdroj bez jména v `data/source_names.json` |
 
 ⚠ Poslední z nich je jediná, která se ptá **kolik**. Dataset, ze kterého vypadlo
 pět zdrojů, projde všemi ostatními kontrolami bez námitky — každý ze zbylých
 záznamů je totiž v pořádku.
+
+⚠ **`pdftotext` VŽDY s `-enc UTF-8`** (2026‑09‑11). Bez toho na Windows píše
+Latin‑1 a znaky ř ž ě č š ů ň ť ď zahodí — „pedkládání zádostí". Postihlo to
+3 641 z 8 513 textů v korpusu (všechno konvertované po přechodu na Windows);
+model z toho češtinu ještě složil, deterministické parsery ne. Opravu
+existujících textů dělá `python scripts/fix_txt_encoding.py` (z originálů
+vedle textu; 32 textů bez originálu se opraví re‑harvestem).
 
 ## Obnova katalogu
 

@@ -128,7 +128,7 @@ def parse_program_pdf(pdf_bytes):
     with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as f:
         f.write(pdf_bytes); path = f.name
     try:
-        txt = subprocess.run(["pdftotext", "-layout", path, "-"],
+        txt = subprocess.run(["pdftotext", "-layout", "-enc", "UTF-8", path, "-"],
                              capture_output=True, timeout=60).stdout.decode("utf-8", "replace")
     except Exception as e:
         print(f"  warn pdftotext: {str(e)[:50]}", file=sys.stderr)

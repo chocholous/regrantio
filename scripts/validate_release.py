@@ -160,7 +160,11 @@ def check_data_quality():
     ale to je záchranná síť bez pojistky. Tahle kontrola je ta pojistka."""
     import datetime as _dt
     grants = _ke_zverejneni()
-    bad_date, bad_range, inverted, empty_title = [], [], [], 0
+    bad_date, bad_range, inverted, empty_title, wrong_type = [], [], [], 0, []
+    # Každý zdroj má jméno poskytovatele (`data/source_names.json`), jinak by se
+    # v produktu ukázal slug sběru („optak") místo jména (2026‑09‑11).
+    source_names = json.load(open("data/source_names.json", encoding="utf-8"))
+    unnamed = set()
     for g in grants:
         for f in ("open_from", "deadline"):
             v = g.get(f)
@@ -181,7 +185,17 @@ def check_data_quality():
             pass
         if g.get("kind") == "grant" and not (g.get("title") or "").strip():
             empty_title += 1
+        if g.get("source") not in source_names:
+            unnamed.add(g.get("source"))
+        # Kontrakt EXPORT.md: `eligible_applicants` je string | null. Seznam projde
+        # schématem i produktem, ale ten ho vypíše jako `["obec"]` (2026‑09‑11).
+        if g.get("eligible_applicants") is not None and not isinstance(g.get("eligible_applicants"), str):
+            wrong_type.append(g.get("id", "?")[:50])
     problems = []
+    if wrong_type:
+        problems.append(f"{len(wrong_type)} × eligible_applicants není string|null ({wrong_type[0]})")
+    if unnamed:
+        problems.append(f"{len(unnamed)} zdrojů bez jména v data/source_names.json ({sorted(unnamed)[0]})")
     if bad_date:
         problems.append(f"{len(bad_date)} neplatných dat ({bad_date[0]})")
     if bad_range:

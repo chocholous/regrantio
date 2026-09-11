@@ -144,6 +144,7 @@ PROVIDER_TYPE = {
     "opst": "ministerstvo",           # OP Spravedlivá transformace 2021–2027 (opst.cz) — EU OP, řídící orgán MŽP
     "opjak": "ministerstvo",          # OP Jan Amos Komenský 2021–2027 (opjak.cz) — EU OP MŠMT (vzdělávání+výzkum)
     "opd": "ministerstvo",            # OP Doprava 2021–2027 (opd3.opd.cz) — EU OP, řídící orgán MD
+    "optak": "ministerstvo",          # OP TAK 2021–2027 — EU OP, řídící orgán MPO; 17 záznamů bez typu (2026‑09‑11)
     "mk": "ministerstvo",             # Ministerstvo kultury (mk.gov.cz) — dotační řízení (mk_harvest)
     "esfcr": "ministerstvo",          # OPZ+/OPZ (esfcr.cz) — EU OP, řídící orgán MPSV
     "hzs": "ministerstvo",            # HZS ČR (hzscr.gov.cz) — MV, generální ředitelství HZS
@@ -451,6 +452,27 @@ def main():
 
     print(f"\n=== D) region.kraj ===")
     print(f"  samospráva kraj doplněn z hostu: +{kraj_filled} · národní celostatni=true: +{celost_filled}")
+
+    # ---- E) eligible_applicants je string | null (kontrakt EXPORT.md) ----
+    # Strukturní ingesty krajů tam dávaly seznam; produkt ho vypisoval jako
+    # `["obec"]`. Brána v `validate_release.py` od 2026‑09‑11 typ hlídá, takže
+    # normalizace musí být tady, v katalogu — ne až v exportu.
+    ea_fixed = 0
+    for r in recs:
+        ea = r.get("eligible_applicants")
+        if isinstance(ea, list):
+            r["eligible_applicants"] = ", ".join(str(x).strip() for x in ea if str(x).strip()) or None
+            ea_fixed += 1
+        elif isinstance(ea, str) and not ea.strip():
+            r["eligible_applicants"] = None
+            ea_fixed += 1
+        # esfcr: štítek publika stránky („Určeno pro: Veřejnost, Žadatel") NENÍ
+        # okruh žadatelů — extraktor ho už neposílá, tohle uklízí, co v katalogu
+        # zbylo z dřívějších běhů (169 záznamů k 2026‑09‑11).
+        elif r.get("source") == "esfcr" and isinstance(ea, str) and set(x.strip() for x in ea.split(",")) <= {"Veřejnost", "Žadatel", "Příjemce"}:
+            r["eligible_applicants"] = None
+            ea_fixed += 1
+    print(f"\n=== E) eligible_applicants seznam → věta / štítek publika → null: {ea_fixed} ===")
 
     nulls_after = sum(1 for r in recs if not (r.get("facets") or {}).get("typ_poskytovatele"))
     print("\n=== souhrn ===")

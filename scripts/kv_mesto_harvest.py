@@ -56,7 +56,7 @@ def pdf_text(pdf_bytes):
     with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as f:
         f.write(pdf_bytes); path = f.name
     try:
-        r = subprocess.run(["pdftotext", "-layout", path, "-"],
+        r = subprocess.run(["pdftotext", "-layout", "-enc", "UTF-8", path, "-"],  # -enc: viz dsw2_fetch
                            capture_output=True, timeout=60)
         return r.stdout.decode("utf-8", "replace") if r.returncode == 0 else ""
     except Exception:

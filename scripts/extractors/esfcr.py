@@ -97,7 +97,15 @@ def build(rec):
         "open_from": open_from, "deadline": deadline,
         "castky": ([{"typ": "alokace", "hodnota": amount}] if amount else []),
         "vyse_hlavni_czk": amount, "spoluucast": None,
-        "eligible_applicants": (rec.get("urceno_pro") or None),
+        # ⚠ `urceno_pro` NENÍ okruh žadatelů (2026‑09‑11). Pole „Určeno pro:" na
+        # esfcr.cz je štítek PUBLIKA stránky — Veřejnost / Žadatel / Příjemce —
+        # a do katalogu šlo 169× jako „Veřejnost, Žadatel", tedy jako odpověď
+        # na otázku „kdo smí žádat". V produktu to stálo na detailu pod „Kdo
+        # může žádat" a shoda z toho nic nepoznala. Skutečný okruh je v textu
+        # výzvy („Pro tuto výzvu jsou oprávněnými žadateli: …", 160 z 262
+        # výzev), jenže pdftotext ho z tabulky prokládá sousedním sloupcem;
+        # bere si ho vrstva 2. Bez ní je poctivé „neuvedeno".
+        "eligible_applicants": None,
         "typ_zadatele": [], "cilova_skupina": [],
         "region": CR,
         "forma_podpory": ["dotace"], "zdroj_financovani": ["eu_fondy"],

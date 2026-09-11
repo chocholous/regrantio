@@ -62,6 +62,10 @@ python3 scripts/intl_funds.py        # Visegrad Fund (5 programu, pevne uzaverky
 python3 scripts/nadace_spa.py        # JS-renderovane nadace pres Playwright (Partnerstvi/OSF/Vodafone/LPR/CLF/Abakus) - 1 harvester, 6 webu
 python3 scripts/grantovydiar_harvest.py --ids A-B  # Grantový diář (agregátor) — FUNKČNÍ, ale NEingestováno: veřejné id okno je 100% closed (probe 07/2026), čerstvé za loginem
 
+# Kvalita korpusu a jmena zdroju (2026-09-11)
+python3 scripts/fix_txt_encoding.py   # prekonvertuje texty z PDF, ktere pdftotext bez `-enc UTF-8` zapsal v Latin-1 (bez r z e c s)
+#   data/source_names.json = slug `source` -> jmeno poskytovatele; export ho vypisuje jako `provider` (mimo hash), brana hlida, ze kazdy zdroj jmeno ma
+
 # Sdilene moduly (POUZIVEJ V NOVEM KODU misto vlastnich kopii)
 python3 -c "import czech"            # scripts/czech.py - kanonicke parsovani: cz_date_to_iso (VALIDUJE, 31.2. -> None), cz_dates_all, strip_tags, sentence_at
                                      #   duvod: audit napocital 38 vlastnich kopii "ceske datum -> ISO", z toho 24 BEZ validace rozsahu
@@ -114,7 +118,8 @@ python3 scripts/refresh_run.py --list     # co je v registru; --tier/--only zú�
 4. **NEOŘEZÁVAT vstup do LLM** — plný markdown + přílohy (kontext ~200k).
 5. **Negativní pravidla z `prompts/pitfalls.md`** patří do promptů — vytěžené záměny (`platnost:`/`realizace` ≠ deadline; `úvěr`/`jistina` ≠ dotace; `cílová skupina` ≠ žadatel; soubory-ke-stažení ≠ povinné přílohy).
 6. **LIMITY JEN NA SONDY; DATA VŽDY CELÁ** (v každé vrstvě i fázi). Bounded smí být jen **probe** (detekce platformy, sniff typu, vzorek pro MĚŘENÍ kvality) a **safety** (runaway-pojistka, vysoko, při dosažení NAHLAS `⚠` log = bug, ne coverage cap). **Sběr dat = žádný strop na stránky/dokumenty/přílohy, žádný ořez textu, žádné vzorkování** (`acquisition.*` = null/unbounded). Vše v `limits.json` (root), NIKDY natvrdo; kód čte `scripts/limits.py` → `L('cesta.klic')`. Struktura: `probe` / `acquisition` (vše null) / `safety` (vysoké pojistky). Než zavedeš JAKÝKOLI limit, je to sonda nebo safety? Když ne → nepatří tam, ber data celá.
-7. **STRUKTURA PŘED PRÓZOU** (`docs/detection.md` krok ⓪) — vždy nejdřív zkus strukturovaný endpoint (API/XHR/inline-JS/šablona/WP REST); LLM vrstva 2 až když je detail neredukovatelně próza/PDF. Ověř CO endpoint dá (award-DB ≠ otevřené výzvy).
+7a. **`pdftotext` jen s `-enc UTF-8`.** Výchozí výstup na Windows je Latin‑1 a české znaky mimo ni se ZAHODÍ, potichu; naměřeno na 3 641 textech korpusu (2026‑09‑11). Všech sedm volajících míst to má; nové musí taky.
+8. **STRUKTURA PŘED PRÓZOU** (`docs/detection.md` krok ⓪) — vždy nejdřív zkus strukturovaný endpoint (API/XHR/inline-JS/šablona/WP REST); LLM vrstva 2 až když je detail neredukovatelně próza/PDF. Ověř CO endpoint dá (award-DB ≠ otevřené výzvy).
 
 **LLM vrstva 2 = Claude-řízené WORKFLOW s Haiku agenty** (NE stub): `workflows/classify_wf.js` (klasifikace base_type) + `workflows/extract_wf.js` (extrakce polí per typ, 1 oportunita = 1 agent, plný text). Spouští se nástrojem Workflow uvnitř Claude Code; status dopočítá kód po běhu. Empiricky: na plném textu ~88 % polí grantu; ořez vstupu sráží `amount` na 27 %.
 

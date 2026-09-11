@@ -91,7 +91,7 @@ def doc_to_text(data):
         if is_pdf:
             if not shutil.which("pdftotext"):
                 return ""
-            out = subprocess.run(["pdftotext", "-layout", tmp, "-"],
+            out = subprocess.run(["pdftotext", "-layout", "-enc", "UTF-8", tmp, "-"],
                                  capture_output=True, timeout=60)
             return out.stdout.decode("utf-8", "replace")
         else:

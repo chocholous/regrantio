@@ -184,7 +184,12 @@ def convert(path: str, ext: str, txt_path: str, timeout: int):
     """Vrátí (chars:int|None, err:str|None) a zapíše text do txt_path."""
     try:
         if ext == "pdf":
-            subprocess.run(["pdftotext", "-q", path, txt_path],
+            # ⚠ `-enc UTF-8` JE POVINNÉ (2026‑09‑11). Bez něj pdftotext na Windows
+            # píše Latin‑1 a znaky mimo ni (ř ž ě č š ů ň ť ď) ZAHODÍ: „Výzva
+            # k pedkládání zádostí". Naměřeno: 3 854 z 8 513 textů v korpusu
+            # bylo takhle poškozených — všechno, co se konvertovalo po přechodu
+            # na Windows. Oprava existujících: `scripts/fix_txt_encoding.py`.
+            subprocess.run(["pdftotext", "-q", "-enc", "UTF-8", path, txt_path],
                            timeout=timeout, check=False)
             text = open(txt_path, encoding="utf-8", errors="replace").read() \
                 if os.path.exists(txt_path) else ""

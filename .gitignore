@@ -32,6 +32,12 @@ __pycache__/
 /data/*
 !/data/opportunities.jsonl
 !/data/*_seeds.json
+# Konfigurace, bez které export nevznikne (jméno poskytovatele per zdroj) —
+# týž důvod jako u seedů: sledovaný skript s povinným vstupem mimo repo je po
+# čerstvém klonu nespustitelný. `consolidation_maps.json` je sledovaný z dřívějška
+# (přidaný silou), tenhle řádek to říká nahlas.
+!/data/source_names.json
+!/data/consolidation_maps.json
 data/*.bak
 data/*.pre-refresh.bak
 *.out.json

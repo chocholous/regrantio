@@ -75,7 +75,7 @@ def pdftotext(data):
     with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as f:
         f.write(data); path = f.name
     try:
-        r = subprocess.run(["pdftotext", "-layout", path, "-"],
+        r = subprocess.run(["pdftotext", "-layout", "-enc", "UTF-8", path, "-"],
                            capture_output=True, timeout=120)
         return r.stdout.decode("utf-8", "replace")
     except Exception as e:

@@ -40,9 +40,14 @@ jen při reálné změně obsahu.
 
 ## 2. Pole
 
-**Společná:** `id` (URL, primární klíč) · `kind` · `source` (slug/host) · `source_url` ·
+**Společná:** `id` (URL, primární klíč) · `kind` · `source` (slug/host) ·
+`provider` (jméno poskytovatele podle slugu — `data/source_names.json`; od 2026‑09‑11,
+**mimo `content_hash`**, protože jméno zdroje není obsah výzvy) · `source_url` ·
 `facets` (kanonizované filtrovací osy) · `citations` (grounding: pole → doslovná citace ze zdroje) ·
 `content_hash`.
+
+⚠ `source` je INTERNÍ identifikátor sběru („optak", „esfcr", „eu_ft") a nikdy se
+nemá ukazovat člověku — do 2026‑09‑11 ho produkt vypisoval jako poskytovatele.
 
 **`kind = "grant"`:**
 
@@ -55,7 +60,7 @@ jen při reálné změně obsahu.
 | `status` | enum | `open`/`announced`/`closed`/`unknown` — **snapshot z buildu, viz §3** |
 | `status_confidence` | string | `parsed` / `derived` (odvozeno z opakující se lhůty) |
 | `amount` | number \| null | hlavní částka v CZK; **null = neuvedeno, ne 0** |
-| `eligible_applicants` | string \| null | kdo může žádat (próza) |
+| `eligible_applicants` | string \| null | kdo může žádat (próza). **Vždy řetězec**, nikdy pole — hlídá `validate_release.py` (do 2026‑09‑11 173 záznamů neslo seznam) |
 | `required_attachments` | array | povinné přílohy (může být prázdné) |
 | `how_to_apply` | string \| null | jak podat |
 | `source_doc` | string \| null | odkaz na zdrojový dokument (PDF výzvy…) |

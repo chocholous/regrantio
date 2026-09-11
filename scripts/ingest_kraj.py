@@ -90,6 +90,8 @@ def main():
             else:
                 st, conf = compute_status(of, dl, today)
             eligible = p.get("eligible")
+            if isinstance(eligible, list):  # kontrakt: string | null, ne seznam (fix_dataset E)
+                eligible = ", ".join(str(x).strip() for x in eligible if str(x).strip()) or None
             gid = canon_key("grant", nazev, p.get("url") or source + "/" + (p.get("kod") or nazev[:30]))
             rec = {
                 "kind": "grant", "source": source, "source_url": p.get("url"),

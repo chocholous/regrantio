@@ -28,7 +28,13 @@ if hasattr(sys.stdout, "reconfigure"):
 
 SCHEMA_VERSION = "1.1"  # 1.1: + content_hash per grant; meta.generated_date + meta.content_hash_fields
 # Veřejná pole (přítomná se převezmou; mission záznamy mají name/mission/support_topics/regions).
-PUBLIC = ["id", "kind", "source", "source_url", "title", "focus_area",
+# Jméno poskytovatele podle slugu zdroje (`data/source_names.json`). Katalog nese
+# jen TYP (ministerstvo, kraj…); jméno je vlastnost ZDROJE, ne záznamu, a proto
+# se dosazuje až tady. Mimo otisk: změna jména není změna výzvy.
+SOURCE_NAMES_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "source_names.json")
+SOURCE_NAMES = {k: v for k, v in json.load(open(SOURCE_NAMES_PATH, encoding="utf-8")).items() if not k.startswith("_")}
+
+PUBLIC = ["id", "kind", "source", "source_url", "provider", "title", "focus_area",
           "open_from", "deadline", "status", "status_confidence",
           "amount", "eligible_applicants", "required_attachments", "how_to_apply", "source_doc",
           "facets", "citations",
@@ -39,7 +45,7 @@ PUBLIC = ["id", "kind", "source", "source_url", "title", "focus_area",
 # mění se sám jak míjejí deadliny → jinak by hash „blikal" každý den), `id` (je to klíč, ne obsah)
 # a `fetched_at` (den kontroly, ne obsah — jinak by po každé obnově vypadalo všech 3450 záznamů
 # jako změněných a inkrementální sync by ztratil smysl, kvůli kterému existuje).
-HASH_EXCLUDE = {"status", "status_confidence", "id", "fetched_at"}
+HASH_EXCLUDE = {"status", "status_confidence", "id", "fetched_at", "provider"}
 HASH_FIELDS = [k for k in PUBLIC if k not in HASH_EXCLUDE]
 
 
@@ -67,8 +73,18 @@ def main():
         # Chybí u záznamů, kterých se od zavedení razítka nedotkla žádná obnova; ven jde
         # rovnou jako null, protože „nevíme" je pravdivější než vymyšlené datum.
         prov = r.get("provenance") or {}
-        r = {**r, "fetched_at": prov.get("fetched_at")}
+        r = {**r, "fetched_at": prov.get("fetched_at"), "provider": SOURCE_NAMES.get(r.get("source"))}
         g = {k: r[k] for k in PUBLIC if k in r}
+        # ⚠ KONTRAKT: `eligible_applicants` je string | null (EXPORT.md). Strukturní
+        # ingesty krajů (lbc, stredoceskykraj, pardubice, ostrava…) tam dávaly SEZNAM
+        # — 173 záznamů v rozporu s kontraktem, produkt to četl jako řetězec
+        # a vypisoval `["obec"]`. Seznam se tu sklízí do jedné věty; typ hlídá
+        # brána v `validate_release.py`.
+        ea = g.get("eligible_applicants")
+        if isinstance(ea, list):
+            g["eligible_applicants"] = ", ".join(str(x).strip() for x in ea if str(x).strip()) or None
+        elif isinstance(ea, str) and not ea.strip():
+            g["eligible_applicants"] = None
         g["content_hash"] = content_hash(g)
         grants.append(g)
 

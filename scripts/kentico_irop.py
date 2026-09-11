@@ -21,7 +21,14 @@ FIELDS = {
     "open_from": r"Zah[áa]jen[íi] p[řr][íi]jmu\s+[žz][áa]dost[íi]:?\s*" + DATE_RE,
     "deadline": r"Ukon[čc]en[íi] p[řr][íi]jmu\s+[žz][áa]dost[íi]:?\s*" + DATE_RE,
     "announced": r"Datum vyhl[áa][šs]en[íi]:?\s*" + DATE_RE,
-    "eligible": r"Opr[áa]vn[ěe]n[íi] [žz]adatel[ée]:?\s*([^|]{5,180})",
+    # ⚠ 2 000, NE 180 (2026‑09‑11). Okruh žadatelů IROP je výčet přes několik
+    # řádků a strop 180 znaků ho uřízl uprostřed slova u 120 výzev
+    # („…nepřetržitě poskytovaly"). V produktu to stálo pod „Kdo může žádat"
+    # jako uříznutá věta. Ostatní pole (míra, alokace) jsou krátká a strop
+    # jim zůstává.
+    # Končí před dalším blokem stránky („Připojené soubory", „Míra podpory", …),
+    # ne na pevném počtu znaků.
+    "eligible": r"Opr[áa]vn[ěe]n[íi] [žz]adatel[ée]:?\s*(.{5,2000}?)(?=\s*(?:P[řr]ipojen[ée] soubory|M[íi]ra podpory|Alokace|Celkov[áa] alokace|Datum vyhl|Zah[áa]jen[íi] p[řr][íi]jmu|Ukon[čc]en[íi] p[řr][íi]jmu|Kontakt|$))",
     "support_rate": r"M[íi]ra podpory:?\s*([^|]{2,80})",
     "allocation": r"(?:Celkov[áa] )?[Aa]lokace[^:]{0,20}:?\s*([^|]{2,80})",
 }
@@ -72,7 +79,7 @@ def process(url, files_dir, do_att, timeout, max_bytes):
     rec["title"] = to_text(h1.group(1)) if h1 else None
     for k, pat in FIELDS.items():
         m = re.search(pat, txt, re.I)
-        rec[k] = m.group(1).strip()[:180] if m else None
+        rec[k] = m.group(1).strip()[: (2000 if k == "eligible" else 180)] if m else None
     # status z dat
     of, dl = pdate(rec.get("open_from")), pdate(rec.get("deadline"))
     if dl:
