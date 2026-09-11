@@ -459,7 +459,11 @@ def main():
         # oprávněnost — táž past jako `NaN != NaN` u částek, jen dražší.
         for r in db.select_all(
             "catalog_grant",
-            "id,content_hash,deadline,amount,withdrawn_at,typ_zadatele,oblast,kraj,obec,celostatni",
+            # `provider` je MIMO otisk (jméno zdroje není obsah výzvy), takže se
+            # jeho doplnění nebo změna musí porovnat zvlášť — jinak by v `raw`
+            # zůstal stav z minulé publikace (naměřeno 2026‑09‑11: 3 429 řádků
+            # bez jména poskytovatele po běhu, který ho poprvé nesl).
+            "id,content_hash,deadline,amount,withdrawn_at,typ_zadatele,oblast,kraj,obec,celostatni,provider:raw->>provider",
         ):
             existing[r["id"]] = r
         print(f"· V databázi je {len(existing)} záznamů")
@@ -471,7 +475,11 @@ def main():
         prev = existing.get(row["id"])
         if not prev:
             to_insert.append(row)
-        elif has_changed(row, prev.get("content_hash")) or prev.get("withdrawn_at"):
+        elif (
+            has_changed(row, prev.get("content_hash"))
+            or prev.get("withdrawn_at")
+            or (prev.get("provider") or None) != (row["raw"].get("provider") or None)
+        ):
             to_update.append(row)
         else:
             unchanged += 1
