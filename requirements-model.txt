@@ -1,0 +1,3 @@
+# VRSTVA 2 PŘES API — jen když je ANTHROPIC_API_KEY (scripts/extract_api.py).
+# Bez klíče skript skončí kódem 2; pipeline bez modelu (28 zdrojů) ho nepotřebuje.
+anthropic==1.5.0

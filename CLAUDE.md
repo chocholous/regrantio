@@ -62,6 +62,9 @@ python3 scripts/intl_funds.py        # Visegrad Fund (5 programu, pevne uzaverky
 python3 scripts/nadace_spa.py        # JS-renderovane nadace pres Playwright (Partnerstvi/OSF/Vodafone/LPR/CLF/Abakus) - 1 harvester, 6 webu
 python3 scripts/grantovydiar_harvest.py --ids A-B  # Grantový diář (agregátor) — FUNKČNÍ, ale NEingestováno: veřejné id okno je 100% closed (probe 07/2026), čerstvé za loginem
 
+# Vrstva 2 pres Claude API (2026-09-11) — tyz prompt jako extract_wf.js (cte ho z JS), tyz vystup pro ingest_rich
+python3 scripts/extract_api.py --in-dir data/<src>_in --out-dir data/<src>_out [--limit N] [--dry-run]   # ANTHROPIC_API_KEY, pip install -r requirements-model.txt
+
 # Kvalita korpusu a jmena zdroju (2026-09-11)
 python3 scripts/fix_txt_encoding.py   # prekonvertuje texty z PDF, ktere pdftotext bez `-enc UTF-8` zapsal v Latin-1 (bez r z e c s)
 #   data/source_names.json = slug `source` -> jmeno poskytovatele; export ho vypisuje jako `provider` (mimo hash), brana hlida, ze kazdy zdroj jmeno ma

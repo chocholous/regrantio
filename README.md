@@ -83,7 +83,23 @@ python scripts/refresh_run.py --publish     # a rovnou publikuj do úschovny
 |---|---|---|---|
 | A | harvest → strukturní ingest | 14 | `refresh_run.py` |
 | B | harvest → `scripts/extractors/<slug>.py` → `ingest_rich` | 14 | `refresh_run.py --tier extract` |
-| C | harvest → **model** (`extract_wf.js`) → `ingest_rich` | zbytek | jen uvnitř Claude Code |
+| C | harvest → **model** → `ingest_rich` | zbytek | `scripts/extract_api.py` (Claude API, potřebuje `ANTHROPIC_API_KEY`); dřív jen `extract_wf.js` uvnitř Claude Code |
+
+⚠ **Třída C je od 2026‑09‑11 spustitelná ze skriptu.** `scripts/extract_api.py`
+volá týž prompt jako workflow (čte ho z `workflows/extract_wf.js`, ne z kopie)
+přes Messages API a píše týž výstup pro `ingest_rich.py`. Bez klíče skončí
+kódem 2 a řekne to. Do té doby platilo, že dvě třetiny katalogu se dají
+obnovit jen v lidském sezení — a katalog, který se bez sezení neobnoví, není
+produkční zdroj dat. Zapojení do `refresh_run.py` (registr zdrojů třídy C)
+je další krok; dnes se pouští ručně po zdrojích:
+
+```bash
+pip install -r requirements-model.txt
+python scripts/build_extract_input.py data/h_<zdroj>.jsonl --source <zdroj> --out-dir data/<zdroj>_in
+python scripts/extract_api.py --in-dir data/<zdroj>_in --out-dir data/<zdroj>_out --limit 3   # sonda
+python scripts/extract_api.py --in-dir data/<zdroj>_in --out-dir data/<zdroj>_out
+python scripts/ingest_rich.py --out-dir data/<zdroj>_out --src data/<zdroj>_in
+```
 
 ⚠ **Souborů `scripts/extractors/*.py` je 42, ale jen 15 z nich vstup opravdu ČTE.**
 Zbytek má data napsaná natvrdo — je to přepis jedné extrakce z 2026‑06/07, ne
