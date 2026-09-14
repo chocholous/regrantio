@@ -1,21 +1,24 @@
 # Regrantio — datový systém pro dotační výzvy
 
-Sbírá dotační a grantové výzvy ze **134 zdrojů** (kraje, města, ministerstva,
+Sbírá dotační a grantové výzvy ze **135 zdrojů** (kraje, města, ministerstva,
 státní fondy a agentury, nadace, evropské programy), sjednocuje je do jednoho
-katalogu a publikuje **validovaný export**, ze kterého žije produkt
+katalogu a publikuje ho **validovaný přímo do databáze** produktu
 [Grantio](https://github.com/chocholous/the-machine-app).
 
 **Jedna odpovědnost:** data. Regrantio neví nic o uživatelích, organizacích ani
-o produktu — jeho výstup je jeden soubor s otiskem. Produkt naopak nesahá do
-tohohle repozitáře; bere si publikovaný artefakt. Hranice mezi projekty vede
+o produktu — jeho výstup je jeden export s otiskem a zápis do jedné tabulky. Produkt naopak nesahá do
+tohohle repozitáře. Hranice mezi projekty vede
 přes data, ne přes kód, a proto může být regrantio kdykoli neveřejné.
 
 | | |
 |---|---|
-| Katalog | `data/opportunities.jsonl` — **3 452 záznamů** (3 427 výzev + 25 profilů nadací), **v gitu** |
-| Publikovaný export | `docs/opportunities.json` — schema 1.1, `content_hash`, [kontrakt](docs/EXPORT.md) |
+| Katalog | `data/opportunities.jsonl` — **3 822 záznamů** (3 797 výzev + 25 profilů nadací), **v gitu** |
+| Publikovaný export | `docs/opportunities.json` — schema **1.2**, `content_hash`, [kontrakt](docs/EXPORT.md) |
+| Do produktu | `scripts/publish_db.py` zapisuje přímo do Postgresu Grantia (úschovna je volitelný archiv) |
+| Kvalita | [`docs/QUALITY.md`](docs/QUALITY.md) — měřeno při každé obnově, ne tvrzeno |
+| Inventář zdrojů | `data/sources.json` — 135 zdrojů, třída obnovy u každého |
 | Jazyk | Python 3.13, bez frameworku |
-| Testy | **53** — `test_core.py` (23) · `test_identity.py` (12) · `test_publish.py` (18); všechny pouští `validate_release.py` |
+| Testy | **122** v šesti souborech; všechny pouští `validate_release.py` |
 | CI | `.github/workflows/validate.yml` na každý push |
 | Větev | jediná: `main` |
 
@@ -77,29 +80,23 @@ python scripts/refresh_run.py               # harvest → ingest → přepočet 
 python scripts/refresh_run.py --publish     # a rovnou publikuj do úschovny
 ```
 
-**28 zdrojů se obnovuje bez modelu**, ve dvou třídách:
+Zdroje se obnovují ve **třech třídách** (`data/sources.json`, sloupec `refresh`):
 
-| | jak | kolik | spustí |
-|---|---|---|---|
-| A | harvest → strukturní ingest | 14 | `refresh_run.py` |
-| B | harvest → `scripts/extractors/<slug>.py` → `ingest_rich` | 14 | `refresh_run.py --tier extract` |
-| C | harvest → **model** → `ingest_rich` | zbytek | `scripts/extract_api.py` (Claude API, potřebuje `ANTHROPIC_API_KEY`); dřív jen `extract_wf.js` uvnitř Claude Code |
+| | jak | zdrojů | spustí |
+|---|---|---:|---|
+| A | harvest → strukturní ingest (vlastní skript nebo rodina vismo / dsw2 / kentico / plone) | 55 | `refresh_run.py` |
+| B | harvest → `scripts/extractors/<slug>.py` → `ingest_rich` | 21 | `refresh_run.py --tier extract` |
+| C | harvest → `build_extract_input` → **`extract_api.py` (model)** → `ingest_rich` | 37 (17 v registru) | `refresh_run.py --tier model` — chce `ANTHROPIC_API_KEY` |
 
-⚠ **Třída C je od 2026‑09‑11 spustitelná ze skriptu.** `scripts/extract_api.py`
-volá týž prompt jako workflow (čte ho z `workflows/extract_wf.js`, ne z kopie)
-přes Messages API a píše týž výstup pro `ingest_rich.py`. Bez klíče skončí
-kódem 2 a řekne to. Do té doby platilo, že dvě třetiny katalogu se dají
-obnovit jen v lidském sezení — a katalog, který se bez sezení neobnoví, není
-produkční zdroj dat. Zapojení do `refresh_run.py` (registr zdrojů třídy C)
-je další krok; dnes se pouští ručně po zdrojích:
+⚠ **Třída C je od 2026‑09‑14 v registru obnovy.** `extract_api.py` volá týž
+prompt jako workflow v Claude Code (čte ho z `workflows/extract_wf.js`, ne
+z kopie) přes Messages API. Bez klíče se třída C přeskočí s větou, ne pádem;
+`--model-limit N` je sonda, `--budget-min` platí i tady. Dvacet zdrojů C bez
+položky v registru (města s vlastním harvesterem) a sedmnáct jednorázových
+nadačních sběrů („?") čeká na zapsání cesty — inventář to ukazuje.
 
-```bash
-pip install -r requirements-model.txt
-python scripts/build_extract_input.py data/h_<zdroj>.jsonl --source <zdroj> --out-dir data/<zdroj>_in
-python scripts/extract_api.py --in-dir data/<zdroj>_in --out-dir data/<zdroj>_out --limit 3   # sonda
-python scripts/extract_api.py --in-dir data/<zdroj>_in --out-dir data/<zdroj>_out
-python scripts/ingest_rich.py --out-dir data/<zdroj>_out --src data/<zdroj>_in
-```
+Týdenní obnova (`.github/workflows/refresh.yml`) pouští `--tier all`:
+A + B vždy, C jen s klíčem v secrets.
 
 ⚠ **Souborů `scripts/extractors/*.py` je 42, ale jen 15 z nich vstup opravdu ČTE.**
 Zbytek má data napsaná natvrdo — je to přepis jedné extrakce z 2026‑06/07, ne
@@ -113,16 +110,28 @@ Podrobně v [docs/REFRESH.md](docs/REFRESH.md).
 ## Publikování pro produkt
 
 ```bash
-python scripts/publish_export.py --dry-run  # spočítej otisk, nic nenahrávej
-python scripts/publish_export.py            # nahraj export a pak manifest
+python scripts/publish_db.py --dry-run   # co by se zapsalo (čte databázi, nezapisuje)
+python scripts/publish_db.py             # zápis do Postgresu Grantia; nebo `refresh_run.py --publish-db`
 ```
 
-Nahrává **dva soubory a na pořadí záleží**: nejdřív export pod verzovaným
-klíčem, teprve pak `manifest.json`, který na něj ukazuje. Obráceně by existoval
-okamžik, kdy manifest míří na soubor, který ještě nedoputoval.
+Zapisuje export **přímo do tabulky `catalog_grant`** pod service role
+(`PUBLIC_SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` v `.env`, nikdy v gitu).
+Tři pojistky: export nesmí být starší než data v katalogu, musí mít aspoň
+80 % dosavadních záznamů a nesmí naráz stáhnout víc než pětinu. Nic se
+nemaže — zmizelý záznam dostane `withdrawn_at`. Odvozené sloupce kontraktu
+1.2 se porovnávají zvlášť (`derived_changed`), protože nejsou v otisku.
 
-Potřebuje `SUPABASE_URL` a `SUPABASE_SERVICE_ROLE_KEY` — klíč do úschovny, nic
-o databázi Grantia. Co přesně založit: [docs/REFRESH.md §8](docs/REFRESH.md).
+`publish_export.py` (verzovaný export + manifest do úschovny Supabase Storage)
+zůstává jako volitelný archiv; není povinnou mezivrstvou.
+
+## Kvalita jako číslo
+
+`scripts/quality_report.py` běží v tailu každé obnovy a píše
+[`docs/QUALITY.md`](docs/QUALITY.md): živé výzvy, vyplněnost polí (lhůta,
+částka, žadatel…), čerstvost, doložitelnost citacemi, rodiny ročníků a stav
+každého zdroje (ok · stárne · bez cesty · zmrazený). K 2026‑09‑14: 1 971
+živých výzev, lhůta u 53 %, částka u 8 %, typ žadatele u 30 %, citace
+dohledané u 47 %, zdrojů ověřených do 21 dnů 30 ze 135.
 
 ---
 

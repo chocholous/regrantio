@@ -57,3 +57,6 @@ data/*.pre-refresh.bak
 # do `scripts/extractors/`, kde žádnou nepotřebují — a `data/` je od té chvíle
 # opravdu jen data. Výjimka, kterou je potřeba vysvětlovat, bývá příznak toho,
 # že soubor leží na špatném místě.
+
+# Prohlížeč dat je build (`scripts/build_app.py`), 16 MB na každou obnovu; Pages jsou vypnuté (2026-09-14).
+/docs/grants_app.html

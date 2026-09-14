@@ -1,143 +1,97 @@
-# CLAUDE.md
+# CLAUDE.md — regrantio
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Datový základ Grantia: sbírá dotační výzvy ze **135 zdrojů**, sjednocuje je do
+jednoho katalogu a publikuje je **přímo do databáze produktu**. Neví nic
+o uživatelích, organizacích ani o produktu; hranice vede přes data, ne přes kód.
 
-> Plný recept a zdůvodnění architektury je v `README.md` (česky, vyčerpávající). Tenhle soubor přidává jen to, co README neřeší: operační příkazy, závislost na rodičovském repu a netriviální pasti. Nečti to jako náhradu README — čti obojí.
+> Recept a zdůvodnění architektury je v [`README.md`](README.md). Kontrakt
+> publikovaných dat je [`docs/EXPORT.md`](docs/EXPORT.md). Kvalita datové
+> základny je ČÍSLO, ne tvrzení: [`docs/QUALITY.md`](docs/QUALITY.md).
 
-## Soběstačnost & data (nejdůležitější fakt)
+## Co tu je a co ne
 
-Repo je **samostatný a soběstačný** (osamostatněno z rodiče 2026-06-01). Všechny cesty jsou lokální:
+| | |
+|---|---|
+| Katalog | `data/opportunities.jsonl` — **jediný zdroj pravdy, v gitu** (řádek = záznam, 12 polí včetně `provenance`, `extra`, `citations`) |
+| Export | `docs/opportunities.json` — kurátorovaná podoba katalogu, kontrakt 1.2 (`export_api.py`) |
+| Inventář zdrojů | `data/sources.json` — jméno, typ, třída obnovy, harvester, počty, stáří (`sources_inventory.py`) |
+| Kvalita | `docs/QUALITY.md` + `data/quality.json` (`quality_report.py`) |
+| Jazyk | Python 3.13 ve venv, bez frameworku; `pyyaml`; Playwright jen pro objev SPA |
+| Testy | `tests/test_*.py`, všechny pouští `validate_release.py` (brána) i CI |
+| Stažené dokumenty | `data/` mimo katalog je **gitignored** (~15 GB); obnova je re‑harvest nebo `data_bundle/` |
 
-- **JEDEN katalog: `data/opportunities.jsonl`** (řádek = záznam) = interní zdroj pravdy. Všechno do něj upsertuje (`ingest_rich`, `scripts/upsert.py`), všechno z něj čte (`consolidate`, `fix_dataset`, `build_app`, `export_api`). Jeho publikovaná podoba je `docs/opportunities.json` (viz `docs/EXPORT.md`). Žádné v1/v2 verze — starší varianty jsou v `data/_archiv_v1/` (lokálně, gitignored).
-- **Katalog je V GITU** (jediná datová výjimka — je nenahraditelný a CI ho potřebuje). Ostatní data v `./data/` (~1 GB, **gitignored** — viz `.gitignore`): `wp_full/` (127 souborů, WP reuse korpus), `vismo_files/` (1371 PDF→txt), `vismo_documents.jsonl`, `dsw2_files/`, `dsw2_programs.jsonl`, `dsw2_links.jsonl`. Mapa host→platforma je `./platform_map.json` (root).
-- **`scripts/*.py` používají relativní cesty `data/...`** (argparse defaulty) → spouštěj je **z kořene repa** (CWD = `opportunity_pipeline/`), jinak nenajdou data.
-- Data jsou kopie z rodičovského `re-grantio/data/` k datu osamostatnění. Nejsou v gitu, takže **fresh clone je nemá** — refresh = znovu zkopírovat z rodiče nebo re-harvestovat (`scripts/*harvest*`).
+⚠ **Skripty se spouštějí z kořene repa** (cesty `data/...` jsou relativní).
+⚠ **Windows:** `python`, `.venv\Scripts\activate`; konzole je cp1250, skripty si
+vynucují UTF‑8 stdout; `pdftotext` jen s `-enc UTF-8`.
 
-## Příkazy
-
-Prostředí: vyvíjeno na macOS, **běží i na Windows** (aktuální pracovní stroj — viz `docs/SESSION_PLAYBOOK.md §3`
-cp1250/TLS pasti). Python **3.13** ve venv. **POZOR na příkazy níže:** jsou psané `python3` + `source .venv/bin/activate`
-(macOS/Linux); na **Windows** je to `python` + `.venv\Scripts\activate`. Žádné build/test/lint — je to skriptová
-pipeline, ne aplikace.
+## Příkazy, které se používají
 
 ```bash
-# Harvestery (vrstva 1) — každý je samostatný CLI, spouští se z rodiče kvůli ../data
-python3 scripts/wp_harvest.py        # WP REST, lossless
-python3 scripts/vismo.py             # listing výzev
-python3 scripts/vismo_detail.py      # detail + přílohy + status
-python3 scripts/dsw2.py              # /explore/fonds + /explore/appeals (inline JSON)
-python3 scripts/kentico_irop.py      # IROP/dotaceEU Kentico inline
-python3 scripts/mv_cms.py            # ASP.NET /clanek/*.aspx (MV ČR mv.gov.cz)
-python3 scripts/marwel.py --seeds <JSON>  # MŠMT (msmt.gov.cz) Marwel CMS — <div id=article> + /file/NNNNN přílohy
+python scripts/refresh_run.py --list           # registr zdrojů po třídách A · B · C
+python scripts/refresh_run.py                  # A: harvest → ingest → přepočet → brána → export
+python scripts/refresh_run.py --tier extract   # B: + vlastní deterministické parsery
+python scripts/refresh_run.py --tier model     # C: vrstva 2 přes model (chce ANTHROPIC_API_KEY)
+python scripts/refresh_run.py --tier all --budget-min 60 --publish-db   # týdenní obnova (A + B, C jen s klíčem)
+python scripts/refresh_run.py --tail-only      # jen přepočet, brána, export, kvalita (bez sítě)
 
-# gov.cz portálový CMS (server-rendered, NE SPA) — MZe + MPSV sdílí jeden harvester
-python3 scripts/eagri.py --seeds <JSON>   # MZe/eAGRI národní dotace (ea-content-block + příloha Zásady)
-python3 scripts/mpsv.py                    # MPSV (mpsv.gov.cz) — reuse eagri.process + rozcestník→detail discovery
+python scripts/publish_db.py --dry-run         # co by se zapsalo do databáze Grantia
+python scripts/publish_db.py                   # zápis (PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY v .env)
 
-# Nadace / nadační fondy + jednorázové bespoke zdroje — 1 web = 1 parser (host→parser je v routing.yaml `sources:`)
-python3 scripts/nadacevia.py · albert.py · sirius.py · leontinka.py · partnerstvi.py  # Nadace Via, Albert, Sirius, Leontinka, Partnerství
-python3 scripts/nadace_adra.py · veronica.py · hlavka.py · vinarskyfond.py · sfa.py    # ADRA, Veronica, Hlávkova nadace, Vinařský fond, SF audiovize
-python3 scripts/sfzp.py              # SFŽP (sfzp.gov.cz) — WP REST výzva-* stránky (FN/PU půjčky) + Modernizační fond detail-vyzvy/?id=NN (RES+/HEAT/TRANSGov…)
-python3 scripts/gacr.py              # GA ČR (gacr.cz) — WP posty „Vyhlášení veřejné soutěže" (Standardní/JUNIOR STAR/EXPRO/POSTDOC/…) + LA/bilaterální „Výzva pro podávání" (--since = aktuální roční kolo)
-python3 scripts/sfpi.py              # SFPI/SFRB (sfpi.cz) — WP program-hub pages, bydlení (úvěry+dotace): Úsporné BD, Živel, Dostupné nájemní bydlení, BD bez bariér…
-python3 scripts/sfdi.py              # SFDI (sfdi.gov.cz) — příspěvky na dopravu: cyklostezky, bezbariérové chodníky, bezpečnost silnic, letiště, ETCS… (FRONT-END HTML, /prispevky/<slug>/ jsou přes REST 401)
-python3 scripts/sfk.py               # SFK – Státní fond kultury ČR (na mk.gov.cz; dedikovaná doména mrtvá) — projektové dotace v kultuře, 3 výzvy/rok přes DP MK. POZOR: mk.gov.cz = ASP.NET WebForms (NEstrip <form>)
-python3 scripts/mpo.py               # MPO (mpo.gov.cz) — NÁRODNÍ programy (TREND/TRIO/TWIST/CFF/Obchůdek/Czech Rise Up/brownfieldy/strategické investice), seed-driven. OP TAK/PIK = P3 EU, MIMO
-python3 scripts/mmr.py               # MMR (mmr.gov.cz) — NÁRODNÍ dotace /cs/narodni-dotace (PORR, euroregiony, hroby, bezbariérové obce, cestovní ruch, NNO…), Kentico. MIMO: IROP/EU (P3) + Podpora bydlení (=SFPI)
-python3 scripts/eeagrants.py         # EHP a Norské fondy (eeagrants.cz; NKM = MF) — výzvy 2014–2021 (ukončené). typ_poskytovatele=zahranicni_fond, zdroj=ehp_norsko
-python3 scripts/tacr.py              # TA ČR (tacr.gov.cz) — aplikovaný výzkum, veřejné soutěže národních programů (SIGMA/TREND/DOPRAVA 2030/THÉTA 2/PRODEF/Prostředí pro život 2). WP CPT call+programme; lhůty jen ve FRONT-END HTML; --since aktuální cyklus
-python3 scripts/nsa.py               # NSA – Národní sportovní agentura (agenturasport.cz→nsa.gov.cz) — dotace do sportu: neinvestiční (Můj klub, sportovní organizace olympijského/paralympijského hnutí, významné akce, reprezentace, parasport) + investiční (Regiony/Standardizovaná/Movité infrastruktura, obnova po povodních). WP+Elementor; výzvy = pages /dotace/<slug>/, content.rendered STAČÍ (strukturní blok); batch-fetch content přes include= (sekvenční fetch přes WAF je pomalý); --year filtruje aktuální cyklus. typ=statni_agentura
-
-# Rozšíření 2026-06/07 (harvest → build_extract_input --no-prefilter → scripts/extractors/<src>.py → ingest_rich)
-python3 scripts/mk_harvest.py        # MK ČR (mk.gov.cz) — centrální listing 8 HTML tabulek per oblast; OD/DO deterministicky z buněk; url záznamu = detail#slug-hash (1 stránka = víc programů)
-python3 scripts/msmt_harvest.py      # MŠMT plný BFS dotačních rubrik (nahradil seed-driven marwel pro msmt.gov.cz); _msmt_extract filtruje aktuální cyklus (--since-year)
-python3 scripts/esfcr_harvest.py     # ESF ČR / OPZ+ + OPZ (esfcr.cz, Liferay) — strukturovaná pole detailu (Platnost od/do, Alokace); 'Typ výzvy: uzavřená' = REŽIM, ne status
-python3 scripts/czechaid_harvest.py  # Česká rozvojová agentura (czechaid.gov.cz) — BFS /dotace, ZIP přílohy (cp852, MAX_PATH guard); deadline z prózy (nejpozdější = prodloužení)
-python3 scripts/hzs_harvest.py       # HZS ČR (hzscr.gov.cz) — ASP.NET s <base href>, víceleté články (záložky chnum); vrstva 2 bere jen standing programy/aktuální lhůty
-python3 scripts/vismo_modern.py + vismo_modern_detail.py + vismo_modern_gapfill.py  # vismo "modern" (webhouse minbase 4.x, slug URL) - listing -> detail+prilohy -> gap-fill z coverage_verify
-python3 scripts/plone_ostrava.py     # ~20 ostravských městských obvodů (sdílený Plone) — roční rámce; vrstva 2 jen aktuální programy (>= since-year)
-python3 scripts/opd.py               # OP Doprava 2021-2027 (opd3.opd.cz) - tabulka vyzev, OD/DO z bunek (5 otevrenych k 07/2026)
-python3 scripts/interreg.py          # Interreg SK-CZ (WP REST kategorie) + CZ-PL (REST zavreny -> HTML listing); 403 bez UA hlavicek
-python3 scripts/intl_funds.py        # Visegrad Fund (5 programu, pevne uzaverky 1.2./1.6./1.10.) + ERSTE Foundation; 403 bez UA hlavicek
-python3 scripts/nadace_spa.py        # JS-renderovane nadace pres Playwright (Partnerstvi/OSF/Vodafone/LPR/CLF/Abakus) - 1 harvester, 6 webu
-python3 scripts/grantovydiar_harvest.py --ids A-B  # Grantový diář (agregátor) — FUNKČNÍ, ale NEingestováno: veřejné id okno je 100% closed (probe 07/2026), čerstvé za loginem
-
-# Vrstva 2 pres Claude API (2026-09-11) — tyz prompt jako extract_wf.js (cte ho z JS), tyz vystup pro ingest_rich
-python3 scripts/extract_api.py --in-dir data/<src>_in --out-dir data/<src>_out [--limit N] [--dry-run]   # ANTHROPIC_API_KEY, pip install -r requirements-model.txt
-
-# Kvalita korpusu a jmena zdroju (2026-09-11)
-python3 scripts/fix_txt_encoding.py   # prekonvertuje texty z PDF, ktere pdftotext bez `-enc UTF-8` zapsal v Latin-1 (bez r z e c s)
-#   data/source_names.json = slug `source` -> jmeno poskytovatele; export ho vypisuje jako `provider` (mimo hash), brana hlida, ze kazdy zdroj jmeno ma
-
-# Sdilene moduly (POUZIVEJ V NOVEM KODU misto vlastnich kopii)
-python3 -c "import czech"            # scripts/czech.py - kanonicke parsovani: cz_date_to_iso (VALIDUJE, 31.2. -> None), cz_dates_all, strip_tags, sentence_at
-                                     #   duvod: audit napocital 38 vlastnich kopii "ceske datum -> ISO", z toho 24 BEZ validace rozsahu
-python3 -c "import upsert"        # scripts/upsert.py - upsert do katalogu (obohaceny zaznam se prepisuje jen ve faktech)
-python3 tests/test_core.py           # 23 testu kriticke logiky (status/upsert/derive/czech); bezi i ve validate_release a CI
-
-# Univerzální doc→text (vrstva 2) — používají harvestery i pipeline
-python3 scripts/dsw2_fetch.py        # sniff_ext + pdftotext/textutil (PDF/DOC/DOCX/XLS/ODT)
-
-# Detekce platformy / coverage analýza (data-driven)
-python3 scripts/cms_similarity.py        # strukturální shlukování otisků → 1 shluk = 1 parser
-python3 scripts/platform_refingerprint.py
-python3 scripts/diversity_finder.py      # nejodlišnější nevzorkované zdroje
-
-# Deterministická vrstva 2 (strukturní část kolem LLM extrakce) — POŘADÍ: build_extract_input → extract_wf.js → ingest_rich → consolidate
-python3 scripts/build_extract_input.py <layer1.jsonl> --source <slug> --out-dir <dir>   # → grant_NN.json: PLNÝ text + PLNÝ text příloh (žádný ořez) pro extract_wf.js
-python3 scripts/ingest_rich.py --out-dir <extract_out> --src <ei_dir>                    # bohatá extrakce → data/opportunities.jsonl (status v KÓDU, ne LLM)
-python3 scripts/consolidate.py            # remap facet variant→kanon (oblast/typ_zadatele/cílová/kraj) dle data/consolidation_maps.json; --dry-run pro report
-
-# Kvalita datasetu + build prohlížecí appky (nad data/opportunities.jsonl)
-python3 scripts/derive_deadlines.py       # doplni deadline tam, kde je termin ve zdroji jen jako text (opakujici se "kazdorocne 15.11." -> nejblizsi budouci vyskyt); znaci status_confidence=derived
-python3 scripts/fix_dataset.py            # deterministická oprava: dedup (Ústí/variant) + reclasifikace null poskytovatele + přepočet statusu k --today (default dnešek); idempotentní, .bak
-python3 scripts/build_app.py              # → data/grants_app.html (fasetový prohlížeč; STATUS se počítá KLIENTSKY k dnešku, nezastará)
-
-# OBNOVA KATALOGU — jeden příkaz (28 zdrojů bez modelu, ve DVOU třídách)
-python3 scripts/refresh_run.py            # třída A: harvest → ingest → přepočet → brána → export
-python3 scripts/refresh_run.py --tier extract   # třída B: + deterministická vrstva 2 (14 zdrojů)
-python3 scripts/refresh_run.py --list     # co je v registru; --tier/--only zúží, --tail-only bez sítě
+python scripts/validate_release.py             # brána: testy, kontrakt, kvalita, propad, vyschlý zdroj, stáří, inventář
+python scripts/quality_report.py               # docs/QUALITY.md + data/quality.json
+python scripts/sources_inventory.py            # přepočítá data/sources.json (kurátorovaná pole zachová)
 ```
-> **Obnova → produkt:** `refresh_run.py` v regrantiu vyrobí `docs/opportunities.json`; Grantio si
-> ho vezme svým `pnpm jobs:live all`. Jsou to DVA příkazy, každý ve svém repozitáři — hranice mezi
-> projekty vede přes data, ne přes kód (viz `the-machine-app/docs/SYNC.md`).
-> **UPSERT sémantika (2026-07-31):** strukturní layer-1 ingesty (`ingest_kraj`/`ingest_dotis`/`ingest_kentico`/`ingest_fondvysociny`) zapisují do katalogu přes sdílený `scripts/upsert.py` — re-harvest AKTUALIZUJE existující záznamy (dřív append-only skip → html-tier fakticky nešel refreshovat). Záznam obohacený vrstvou 2 se přepisuje jen ve FAKTECH (datumy/status/částky), LLM facety+citace zůstávají. `ingest_rich` je upsert dle id odjakživa.
-> **Windows pozn.:** skripty tisknou diagnostiku s `→ · ⚠` — konzole cp1250 to neumí. Pipeline-skripty (`consolidate`, `fix_dataset`, `build_extract_input`, `routing`) si proto na startu vynutí UTF-8 stdout (`sys.stdout.reconfigure`); jinak `UnicodeEncodeError`.
 
-**Agentní workflow bydlí v [`workflows/`](workflows/), ne v `scripts/`.** Jsou to definice pro nástroj Workflow uvnitř Claude Code (`export const meta`, `agent()`, `parallel()`) — Nodem se nespouštějí. Tři jsou produkční (`extract_wf.js`, `facet_wf.js`, `classify_wf.js`), pět je na měření a ladění promptů; rozpis je ve [`workflows/README.md`](workflows/README.md).
+Třídy obnovy (`data/sources.json`, sloupec `refresh`):
 
-⚠ Do 2026‑09‑04 ležely v `scripts/` mezi 122 pythonními CLI a stálo tu varování, že to nejsou node skripty. **Varování v dokumentaci je náplast na strukturu**; složka je oprava. Ve `scripts/` teď žádný `.js` není.
+| třída | cesta | zdrojů |
+|---|---|---:|
+| A | harvest → strukturní ingest (`ingest_kraj`, `ingest_dotis`, rodiny vismo / dsw2 / kentico / plone) | 55 |
+| B | harvest → `scripts/extractors/<slug>.py` → `ingest_rich` | 21 |
+| C | harvest → `build_extract_input` → `extract_api.py` (model) → `ingest_rich` | 37 |
+| T | „extraktor" opisuje červnová data, obnovu jen předstírá; bez harvesteru | 3 |
+| F | zmrazený (zdroj za přihlášením nebo mrtvý) | 2 |
+| ? | jednorázový sběr bez zapsané cesty k obnově | 17 |
 
-## Architektura — co vyžaduje přečíst víc souborů
+## Pevná pravidla
 
-**Dvouvrstvý model** (`README.md` + `schema/opportunity_schema.md`):
-- **Vrstva 1 (harvest, `scripts/`):** ~12 tenkých parserů per CMS-rodina → jen TEXT + DOKUMENTY. Liší se mezi CMS.
-- **Vrstva 2 (extrakce, LLM):** JEDEN univerzální extraktor próza+PDF → opportunity schema. Společné napříč zdroji. `dsw2_fetch.py` (doc→md) je taky univerzální napříč všemi handlery (`File.ashx`, `/soubor`, `/getmedia`, přímé `.pdf`).
+1. **Status se počítá v kódu, ne modelem** (`opportunities.py:compute_status`).
+   Uložený `status` je snímek; produkt si ho přepočítá k dnešku.
+2. **Nehalucinovat.** `amount = null`, `deadline = null` zůstává null. Odvozené
+   hodnoty (`derive_deadlines`, kontrakt 1.2 `scope` / `deadline_kind` /
+   rodiny ročníků) jsou DOKLADOVANÉ a mimo `content_hash`.
+3. **Jen jeden proces píše `opportunities.jsonl`.** Ingesty sekvenčně.
+4. **Katalog je v gitu, data ne.** Export se v gitu commituje s obnovou
+   (14 MB týdně; otevřené rozhodnutí, viz README §Data).
+5. **Limity jen na sondy a pojistky** (`limits.json`); data se berou celá.
+6. **Brána před publikací.** `validate_release.py` stojí v tailu obnovy PŘED
+   exportem; co neprojde, ven nejde.
+7. **Nemergovat do `main` z cizí větve bez brány**; CI pouští totéž.
+8. **`source` je interní slug.** Jméno poskytovatele nese `provider`
+   (`data/source_names.json`), člověku se slug neukazuje nikdy.
 
-**Pevná pravidla, která se snadno poruší:**
-1. **STATUS se POČÍTÁ v kódu, ne LLM.** Otevřená a uzavřená výzva jsou textově identické — liší se jen datem vs. dnešek. LLM klasifikuje TYP, kód počítá status. Kanonická funkce je `scripts/opportunities.py:compute_status(open_from, deadline, today)` — jediná; nikde jinde status nepočítej. Uložené `status` v `opportunities.jsonl` je SNAPSHOT z build-time (`fix_dataset.py --today`, default dnešek); **appka ho ignoruje a počítá status KLIENTSKY k reálnému dnešku** (`build_app.py:computeStatus`, zrcadlí `opportunities.py`), takže badge/filtr nezastarají.
-2. **Nevěř platform labelu** z detekce — ověř strukturální otisk (`cms_similarity.py`). Labely `mv_legacy`/`gordic_ginis` slévaly 3 různé CMS; ~65 grantových zdrojů bylo schováno v `UNKNOWN`. Příklad záměny: `mpsv.gov.cz` byl detekcí označen `custom_spa` (protože stará homepage `www.mpsv.cz` JE Nuxt SPA) — ve skutečnosti je dotační portál server-rendered gov.cz CMS jako MZe → opraveno na `eagri_portal` (harvestuje `eagri.py`/`mpsv.py`).
-3. **Dvě vrstvy obsahu, v pořadí:** nejdřív TYP (`prompts/classify_type.md` → grant/project/news/foundation_mission/administrative/other), pak POLE typu (`prompts/extract_grant.md`).
-4. **NEOŘEZÁVAT vstup do LLM** — plný markdown + přílohy (kontext ~200k).
-5. **Negativní pravidla z `prompts/pitfalls.md`** patří do promptů — vytěžené záměny (`platnost:`/`realizace` ≠ deadline; `úvěr`/`jistina` ≠ dotace; `cílová skupina` ≠ žadatel; soubory-ke-stažení ≠ povinné přílohy).
-6. **LIMITY JEN NA SONDY; DATA VŽDY CELÁ** (v každé vrstvě i fázi). Bounded smí být jen **probe** (detekce platformy, sniff typu, vzorek pro MĚŘENÍ kvality) a **safety** (runaway-pojistka, vysoko, při dosažení NAHLAS `⚠` log = bug, ne coverage cap). **Sběr dat = žádný strop na stránky/dokumenty/přílohy, žádný ořez textu, žádné vzorkování** (`acquisition.*` = null/unbounded). Vše v `limits.json` (root), NIKDY natvrdo; kód čte `scripts/limits.py` → `L('cesta.klic')`. Struktura: `probe` / `acquisition` (vše null) / `safety` (vysoké pojistky). Než zavedeš JAKÝKOLI limit, je to sonda nebo safety? Když ne → nepatří tam, ber data celá.
-7a. **`pdftotext` jen s `-enc UTF-8`.** Výchozí výstup na Windows je Latin‑1 a české znaky mimo ni se ZAHODÍ, potichu; naměřeno na 3 641 textech korpusu (2026‑09‑11). Všech sedm volajících míst to má; nové musí taky.
-8. **STRUKTURA PŘED PRÓZOU** (`docs/detection.md` krok ⓪) — vždy nejdřív zkus strukturovaný endpoint (API/XHR/inline-JS/šablona/WP REST); LLM vrstva 2 až když je detail neredukovatelně próza/PDF. Ověř CO endpoint dá (award-DB ≠ otevřené výzvy).
+## Struktura
 
-**LLM vrstva 2 = Claude-řízené WORKFLOW s Haiku agenty** (NE stub): `workflows/classify_wf.js` (klasifikace base_type) + `workflows/extract_wf.js` (extrakce polí per typ, 1 oportunita = 1 agent, plný text). Spouští se nástrojem Workflow uvnitř Claude Code; status dopočítá kód po běhu. Empiricky: na plném textu ~88 % polí grantu; ořez vstupu sráží `amount` na 27 %.
+```
+scripts/            harvestery (1 web nebo 1 rodina CMS = 1 skript), ingesty, tail
+scripts/extractors/ deterministické parsery vrstvy 2 (třída B)
+scripts/enrich.py   odvozená pole kontraktu 1.2 · dedup.py rodiny ročníků
+workflows/          definice pro nástroj Workflow v Claude Code (extract_wf.js = prompt vrstvy 2)
+prompts/            prompty vrstvy 2 a vytěžené záludnosti (pitfalls.md)
+data/               katalog (v gitu), seeds, jména zdrojů, inventář, kvalita; zbytek gitignored
+docs/               EXPORT (kontrakt) · REFRESH (obnova) · QUALITY (měření) · SESSION_PLAYBOOK · rodiny CMS
+tests/              test_core · test_identity · test_notacall · test_publish · test_publish_db · test_enrich
+```
 
-**Přístupové metody vrstvy 1 (5 archetypů):** REST (WP) / inline-JS (dsw2) / HTML-listing (vismo, eeagrants statické HTTP) / SPA-postback (Apify) / **SPA-grid se skrytým JSON-XHR → 1× odposlech Playwrightem (`scripts/lewis_discover.py`) → čistý HTTP replay bez Apify (`lewis_dynamo.py`)**. `requirements.txt` = playwright (jen pro discover).
+## Rozcestník
 
-**Coverage je MĚŘENÝ cyklus, ne hádání** (`docs/coverage.md`): `diversity_finder.py` → coverage workflow → diff proti minulému běhu (vyčísli zisk) → stop při saturaci. Nové záludnosti jdou do `prompts/pitfalls.md`.
-
-## Rozcestník dokumentace
-- `docs/SESSION_PLAYBOOK.md` — **JAK pracovat** (handoff pro příští session): zlatá pravidla (NIKDY nemergovat do main, nehalucinovat, status v kódu), recept na přidání zdroje (8 kroků), pasti (cp1250 konzole, TLS, WebForms/Kentico/page-builder, JOIN, …), deploy+export. **Přečti na začátku session.**
-- `REMAINING.md` (root) — **plán rozšiřování (CO)**: co je hotovo, co zbývá (priority P1–P7), stav datasetu, vlajky. Aktualizuj po každém přidaném zdroji.
-- `docs/EXPORT.md` — **publikovaná podoba katalogu** (`docs/opportunities.json`): tvar souboru, schéma polí, `content_hash`, status jako odvozená hodnota, záruky kvality, pojistka proti kolapsu. Generuje `scripts/export_api.py`.
-- `docs/REFRESH.md` — **update/refresh strategie**: co/jak často/jak bezpečně re-harvestovat (kadence per tier), pojistka proti kolapsu datasetu, known refresh-gapy. Dva nástroje: `scripts/refresh.py` = živý checklist (co by šlo obnovit), **`scripts/refresh_run.py` = jeden příkaz, který to pro 28 zdrojů bez modelu UDĚLÁ** (harvest → ingest → přepočet → brána → export).
-- `docs/platform_playbook.md` — definice VŠECH CMS rodin → podpis/harvester/metoda
-- `docs/detection.md` — 3 vrstvy detekce platformy + lekce o slitých labelech
-- `docs/data_reuse.md` — index UŽ STAŽENÝCH dat k reuse (klíčové: harvest = REUSE-first)
-- `docs/apify_howto.md` — kdy Apify (SPA/grantys, WebForms postback)
-- `docs/coverage.md` — coverage & active learning
-- `schema/opportunity_schema.md` — kanonický model + „kde které pole hledat" (HTML/md/doc-md)
+| Téma | Soubor |
+|---|---|
+| Recept, architektura, data na disku | [`README.md`](README.md) |
+| Kontrakt exportu (1.2) | [`docs/EXPORT.md`](docs/EXPORT.md) |
+| Obnova: třídy, kadence, pojistky | [`docs/REFRESH.md`](docs/REFRESH.md) |
+| Kvalita dat, stav zdrojů | [`docs/QUALITY.md`](docs/QUALITY.md) |
+| Jak pracovat, pasti | [`docs/SESSION_PLAYBOOK.md`](docs/SESSION_PLAYBOOK.md) |
+| Co zbývá, blokery | [`REMAINING.md`](REMAINING.md) |
+| Rodiny CMS, detekce | [`docs/platform_playbook.md`](docs/platform_playbook.md) · [`docs/detection.md`](docs/detection.md) |
+| Model dat | [`schema/opportunity_schema.md`](schema/opportunity_schema.md) |

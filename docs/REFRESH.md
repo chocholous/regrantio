@@ -13,11 +13,10 @@ Doprovodné nástroje:
   a v návratovém kódu. `--list` vypíše registr, `--tier structured|html` a `--only a,b` zúží
   výběr, `--tail-only` přepočítá a vyexportuje bez sítě, `--dry-run` jen ukáže příkazy.
 
-⚠ **`refresh_run.py` NEPŘINESE nové výzvy u zdrojů, které jedou přes model.** Ty potřebují
-`build_extract_input` → `extract_wf.js` (workflow uvnitř Claude Code) → `ingest_rich`, a to není
-věc cronu. Zdrojů bez modelu je 28, ale patří mezi ně ty nejobjemnější krajské
-(Vysočina, Liberecký, Pardubický, Ústecký, MSK, Středočeský, Karlovarský, Jihomoravský,
-Jihočeský, Olomoucký, Zlínský, Praha, Brno, Královéhradecký).
+⚠ **Zdroje přes model (třída C) obnovuje `refresh_run.py --tier model`** (od 2026‑09‑14):
+harvest → `build_extract_input` → `extract_api.py` (Messages API, `ANTHROPIC_API_KEY`) →
+`ingest_rich`. Bez klíče se třída přeskočí s větou. Registr tříd je v `refresh_run.py`
+(`SOURCES`, `EXTRACT_SOURCES`, `MODEL_SOURCES`), stav každého zdroje v `data/sources.json`.
 
 ---
 

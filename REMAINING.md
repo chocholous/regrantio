@@ -3,13 +3,17 @@
 Živý plánovací dokument. **Aktuální stav, co je hotovo, co zbývá a proč.** JAK pracovat (zlatá pravidla,
 recept na zdroj, pasti) = `docs/SESSION_PLAYBOOK.md` + `CLAUDE.md`. Katalog je v gitu, zbytek dat v gitignored `data/`.
 
-> **Status k 2026-09-03 (změřeno, ne odhad).** Dataset **3525 záznamů / 134 zdrojů**,
-> export vygenerovaný **2026-09-03** (`docs/opportunities.json`, 11,1 MB).
-> **74/74 testů**, `validate_release` prochází přes **deset** bran.
-> Publikační cesta do úschovny hotová (`scripts/publish_export.py`,
-> `refresh_run.py --publish`) a čeká **jen na založení kbelíku** — viz
-> `docs/REFRESH.md §8`. Jméno kbelíku se doladí spolu s přejmenováním
-> repozitáře (`regrantio` → `grantio-data`), aby se nezakládal dvakrát.
+> **Status k 2026-09-14 (změřeno, ne odhad).** Dataset **3 822 záznamů / 135 zdrojů**,
+> export schema **1.2** (`docs/opportunities.json`, 14 MB), publikace přímo do
+> databáze produktu (`publish_db.py`, běh #40). **122/122 testů**, brána má
+> **jedenáct** kontrol. Kvalita je měřená: [`docs/QUALITY.md`](docs/QUALITY.md)
+> — 1 971 živých výzev, lhůta 53 %, částka 8 %, typ žadatele 30 %, citace
+> dohledané 47 %, zdrojů ověřených do 21 dnů 30 ze 135.
+>
+> **Otevřené (rozhodnutí, ne kód):** klíč k modelu v secrets obnovy (třída C,
+> 37 zdrojů), zapsat cestu k obnově u 17 jednorázových nadačních sběrů, JMK za
+> přihlášením, SZIF přes prohlížeč, a jestli export dál commitovat (14 MB
+> týdně) nebo nechat jen v úschovně.
 
 ---
 
