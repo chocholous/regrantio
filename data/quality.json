@@ -173,15 +173,15 @@
 		"recurring": 257
 	},
 	"sources_by_state": {
-		"bez_cesty": 37,
+		"neovereno": 83,
 		"ok": 30,
-		"neovereno": 66,
+		"bez_cesty": 20,
 		"zmrazeny": 2
 	},
 	"live_by_source_state": {
-		"bez_cesty": 104,
+		"neovereno": 612,
 		"ok": 1274,
-		"neovereno": 569,
+		"bez_cesty": 61,
 		"zmrazeny": 24
 	},
 	"sources_table": [
@@ -189,12 +189,12 @@
 			"slug": "albert",
 			"name": "Nadační fond Albert",
 			"type": "firemni_nadace",
-			"refresh": "T",
+			"refresh": "C",
 			"records": 3,
 			"live": 0,
 			"last_fetched": null,
 			"days": null,
-			"state": "bez_cesty"
+			"state": "neovereno"
 		},
 		{
 			"slug": "czechaid",
@@ -497,12 +497,12 @@
 			"slug": "eagri",
 			"name": "Ministerstvo zemědělství",
 			"type": "ministerstvo",
-			"refresh": "T",
+			"refresh": "C",
 			"records": 10,
 			"live": 6,
 			"last_fetched": null,
 			"days": null,
-			"state": "bez_cesty"
+			"state": "neovereno"
 		},
 		{
 			"slug": "eeagrants",
@@ -585,12 +585,12 @@
 			"slug": "gacr",
 			"name": "Grantová agentura ČR",
 			"type": "statni_agentura",
-			"refresh": "T",
+			"refresh": "C",
 			"records": 14,
 			"live": 2,
 			"last_fetched": null,
 			"days": null,
-			"state": "bez_cesty"
+			"state": "neovereno"
 		},
 		{
 			"slug": "granty.chomutov.cz",
@@ -629,12 +629,12 @@
 			"slug": "hlavka",
 			"name": "Nadání Josefa, Marie a Zdeňky Hlávkových",
 			"type": "nadace",
-			"refresh": "T",
+			"refresh": "C",
 			"records": 4,
 			"live": 0,
 			"last_fetched": null,
 			"days": null,
-			"state": "bez_cesty"
+			"state": "neovereno"
 		},
 		{
 			"slug": "hodonin.eu",
@@ -827,12 +827,12 @@
 			"slug": "leontinka",
 			"name": "Nadace Leontinka",
 			"type": "nadace",
-			"refresh": "T",
+			"refresh": "C",
 			"records": 2,
 			"live": 0,
 			"last_fetched": null,
 			"days": null,
-			"state": "bez_cesty"
+			"state": "neovereno"
 		},
 		{
 			"slug": "letnany.cz",
@@ -959,34 +959,34 @@
 			"slug": "mmr",
 			"name": "Ministerstvo pro místní rozvoj",
 			"type": "ministerstvo",
-			"refresh": "T",
+			"refresh": "C",
 			"records": 9,
 			"live": 6,
 			"last_fetched": null,
 			"days": null,
-			"state": "bez_cesty"
+			"state": "neovereno"
 		},
 		{
 			"slug": "mpo",
 			"name": "Ministerstvo průmyslu a obchodu",
 			"type": "ministerstvo",
-			"refresh": "T",
+			"refresh": "C",
 			"records": 9,
 			"live": 7,
 			"last_fetched": null,
 			"days": null,
-			"state": "bez_cesty"
+			"state": "neovereno"
 		},
 		{
 			"slug": "mpsv",
 			"name": "Ministerstvo práce a sociálních věcí",
 			"type": "ministerstvo",
-			"refresh": "T",
+			"refresh": "C",
 			"records": 11,
 			"live": 3,
 			"last_fetched": null,
 			"days": null,
-			"state": "bez_cesty"
+			"state": "neovereno"
 		},
 		{
 			"slug": "msk.cz",
@@ -1102,12 +1102,12 @@
 			"slug": "nadace_adra",
 			"name": "Nadace ADRA",
 			"type": "nadace",
-			"refresh": "T",
+			"refresh": "C",
 			"records": 3,
 			"live": 2,
 			"last_fetched": null,
 			"days": null,
-			"state": "bez_cesty"
+			"state": "neovereno"
 		},
 		{
 			"slug": "nadace_spa",
@@ -1388,12 +1388,12 @@
 			"slug": "partnerstvi",
 			"name": "Nadace Partnerství",
 			"type": null,
-			"refresh": "T",
+			"refresh": "C",
 			"records": 1,
 			"live": 0,
 			"last_fetched": null,
 			"days": null,
-			"state": "bez_cesty"
+			"state": "neovereno"
 		},
 		{
 			"slug": "plone_ostrava",
@@ -1454,34 +1454,34 @@
 			"slug": "sfa",
 			"name": "Státní fond audiovize",
 			"type": "statni_fond",
-			"refresh": "T",
+			"refresh": "C",
 			"records": 8,
 			"live": 2,
 			"last_fetched": null,
 			"days": null,
-			"state": "bez_cesty"
+			"state": "neovereno"
 		},
 		{
 			"slug": "sfdi",
 			"name": "Státní fond dopravní infrastruktury",
 			"type": "statni_fond",
-			"refresh": "T",
+			"refresh": "C",
 			"records": 8,
 			"live": 4,
 			"last_fetched": null,
 			"days": null,
-			"state": "bez_cesty"
+			"state": "neovereno"
 		},
 		{
 			"slug": "sfk",
 			"name": "Státní fond kultury",
 			"type": "statni_fond",
-			"refresh": "T",
+			"refresh": "C",
 			"records": 1,
 			"live": 0,
 			"last_fetched": null,
 			"days": null,
-			"state": "bez_cesty"
+			"state": "neovereno"
 		},
 		{
 			"slug": "sfpi",
@@ -1498,23 +1498,23 @@
 			"slug": "sfzp",
 			"name": "Státní fond životního prostředí",
 			"type": "statni_fond",
-			"refresh": "T",
+			"refresh": "C",
 			"records": 19,
 			"live": 11,
 			"last_fetched": null,
 			"days": null,
-			"state": "bez_cesty"
+			"state": "neovereno"
 		},
 		{
 			"slug": "sirius",
 			"name": "Nadace Sirius",
 			"type": null,
-			"refresh": "T",
+			"refresh": "C",
 			"records": 1,
 			"live": 0,
 			"last_fetched": null,
 			"days": null,
-			"state": "bez_cesty"
+			"state": "neovereno"
 		},
 		{
 			"slug": "socialninadacnifond",
@@ -1619,23 +1619,23 @@
 			"slug": "veronica",
 			"name": "Nadace Veronica",
 			"type": null,
-			"refresh": "T",
+			"refresh": "C",
 			"records": 1,
 			"live": 0,
 			"last_fetched": null,
 			"days": null,
-			"state": "bez_cesty"
+			"state": "neovereno"
 		},
 		{
 			"slug": "vinarskyfond",
 			"name": "Vinařský fond",
 			"type": "statni_fond",
-			"refresh": "T",
+			"refresh": "C",
 			"records": 5,
 			"live": 0,
 			"last_fetched": null,
 			"days": null,
-			"state": "bez_cesty"
+			"state": "neovereno"
 		},
 		{
 			"slug": "vlada",

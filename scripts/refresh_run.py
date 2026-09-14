@@ -287,6 +287,50 @@ TRANSCRIBED = (
     "sirius", "veronica", "vinarskyfond",
 )
 
+# -----------------------------------------------------------------------------
+# TŘÍDA C: HARVEST → build_extract_input → MODEL (extract_api.py) → ingest_rich
+# -----------------------------------------------------------------------------
+# ⚠ OD 2026‑09‑14 JE MODELOVÁ VRSTVA V REGISTRU. `extract_api.py` uměl totéž
+# co workflow v Claude Code už od 11. 9., ale spouštěl se ručně po zdrojích,
+# takže „obnova" pořád znamenala lidské sezení. Tady je řetěz pro zdroje,
+# jejichž „extraktor" jen opisoval červnová data (`TRANSCRIBED`) — ty MAJÍ
+# harvester a jejich jediná poctivá cesta k dnešku vede přes model.
+#
+# Bere se JEN výslovně (`--tier model`), a JEN s `ANTHROPIC_API_KEY`: bez
+# klíče se třída C přeskočí s větou, ne s pádem. Každý dokument je jedno
+# volání modelu nad plným textem, takže `--budget-min` platí i tady a
+# `--model-limit` umožňuje sondu (prvních N dokumentů na zdroj).
+#
+# Zdroje bez harvesteru v repozitáři (mv, mzp, nadacecs — sklizené kdysi
+# jinou cestou) tu nejsou; inventář (`data/sources.json`) je vede jako „?".
+def _seeds(slug):
+    p = f"data/{slug}_seeds.json"
+    return ["--seeds", p] if os.path.exists(os.path.join(ROOT, p)) else []
+
+
+MODEL_SOURCES = {
+    slug: [f"{slug}.py", *_seeds(slug)]
+    for slug in ("albert", "eagri", "gacr", "hlavka", "leontinka", "mmr", "mpo", "mpsv",
+                 "nadace_adra", "partnerstvi", "sfa", "sfdi", "sfk", "sfzp", "sirius", "veronica", "vinarskyfond")
+}
+
+
+def model_chain(slug, harvest, today, limit=0):
+    """Čtyři kroky třídy C pro jeden zdroj. Tvar cest je týž jako u třídy B."""
+    docs = f"data/{slug}_documents.jsonl"
+    extract = ["extract_api.py", "--in-dir", f"data/{slug}_in", "--out-dir", f"data/{slug}_out"]
+    if limit:
+        extract += ["--limit", str(limit)]
+    return [
+        (harvest, "harvest"),
+        (["build_extract_input.py", docs, "--source", slug,
+          "--out-dir", f"data/{slug}_in", "--force-type", "grant"], "příprava vstupu"),
+        (extract, "extrakce modelem"),
+        (["ingest_rich.py", "--out-dir", f"data/{slug}_out", "--src", f"data/{slug}_in",
+          "--existing", "data/opportunities.jsonl", "--out", "data/opportunities.jsonl",
+          "--harvest-file", docs, "--today", today], "ingest"),
+    ]
+
 
 def extract_chain(slug, harvest, today):
     """Čtyři kroky deterministické vrstvy 2 pro jeden zdroj (docs/REFRESH.md §1–4)."""
@@ -373,9 +417,12 @@ def counts(path="data/opportunities.jsonl"):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--only", help="čárkou oddělené hosty z registru")
-    ap.add_argument("--tier", choices=["structured", "html", "extract", "all"],
+    ap.add_argument("--tier", choices=["structured", "html", "extract", "model", "all"],
                     help="structured/html = strukturní ingest (třída A); extract = "
-                         "deterministická vrstva 2 (třída B); all = obojí")
+                         "deterministická vrstva 2 (třída B); model = vrstva 2 přes model "
+                         "(třída C, chce ANTHROPIC_API_KEY); all = A + B (C jen s klíčem)")
+    ap.add_argument("--model-limit", type=int, default=0,
+                    help="třída C: jen prvních N dokumentů na zdroj (sonda); 0 = všechny")
     ap.add_argument("--list", action="store_true", help="vypiš registr a skonči")
     ap.add_argument("--budget-min", type=int, default=0,
                     help="časový rozpočet na HARVEST v minutách; po vyčerpání se zbylé zdroje přeskočí "
@@ -397,8 +444,10 @@ def main():
         print("   TAKY BEZ MODELU. Bere se výslovně: --tier extract nebo --only <slug>.\n")
         for slug, (h, tier) in sorted(EXTRACT_SOURCES.items()):
             print(f"  {slug:26} {tier:11} {h[0]:26} → extractors/{slug}.py")
-        print("\nC) MODELOVÁ VRSTVA — zdroje bez vlastního extraktoru; potřebují"
-              " extract_wf.js (LLM).\n   Viz docs/REFRESH.md. Tenhle skript je neumí.")
+        print(f"\nC) MODELOVÁ VRSTVA ({len(MODEL_SOURCES)}) — harvest → vstup → extract_api.py → ingest_rich")
+        print("   Chce ANTHROPIC_API_KEY. Bere se výslovně: --tier model (nebo all s klíčem).\n")
+        for slug, h in sorted(MODEL_SOURCES.items()):
+            print(f"  {slug:26} {'model':11} {h[0]:26} → extract_api.py")
         return 0
 
     # Dva registry, dvě cesty. `--only` hledá v obou, aby uživatel nemusel vědět,
@@ -406,22 +455,31 @@ def main():
     # ⚠ VÝCHOZÍ BĚH JE JEN TŘÍDA A, a je to schválně. Třída B je dalších 21 webů,
     # tedy podstatně delší běh po síti — kdo chce obojí, řekne si `--tier all`.
     # Právě to dělá plánovaná obnova (`.github/workflows/refresh.yml`).
-    chosen, chosen_extract = sorted(SOURCES), []
+    chosen, chosen_extract, chosen_model = sorted(SOURCES), [], []
+    has_key = bool(os.environ.get("ANTHROPIC_API_KEY"))
     if a.tier == "extract":
         chosen, chosen_extract = [], sorted(EXTRACT_SOURCES)
+    elif a.tier == "model":
+        chosen, chosen_model = [], sorted(MODEL_SOURCES)
     elif a.tier == "all":
         chosen, chosen_extract = sorted(SOURCES), sorted(EXTRACT_SOURCES)
+        chosen_model = sorted(MODEL_SOURCES) if has_key else []
     elif a.tier:
         chosen = [h for h in chosen if SOURCES[h][3] == a.tier]
     if a.only:
         want = [s.strip() for s in a.only.split(",") if s.strip()]
-        unknown = [w for w in want if w not in SOURCES and w not in EXTRACT_SOURCES]
+        known = set(SOURCES) | set(EXTRACT_SOURCES) | set(MODEL_SOURCES)
+        unknown = [w for w in want if w not in known]
         if unknown:
             print(f"✖ Neznámé zdroje: {', '.join(unknown)}")
-            print(f"  Známé: {', '.join(sorted(set(SOURCES) | set(EXTRACT_SOURCES)))}")
+            print(f"  Známé: {', '.join(sorted(known))}")
             return 2
         chosen = [w for w in want if w in SOURCES]
         chosen_extract = [w for w in want if w in EXTRACT_SOURCES]
+        chosen_model = [w for w in want if w in MODEL_SOURCES]
+    if chosen_model and not has_key and not a.dry_run:
+        print(f"· třída C ({len(chosen_model)} zdrojů) přeskočena: chybí ANTHROPIC_API_KEY")
+        chosen_model = []
 
     before = counts()
     failed = []
@@ -480,6 +538,20 @@ def main():
             # nad vstupem, který extrakce nevyrobila, znamená zapsat do katalogu
             # výsledek minulého běhu a tvářit se, že je dnešní.
             for args, label in extract_chain(slug, harvest, today):
+                ok, _ = run(args, label, a.dry_run)
+                if not ok:
+                    failed.append(f"{slug} ({label})")
+                    break
+
+    if not a.tail_only and chosen_model:
+        today = datetime.date.today().isoformat()
+        print(f"\n═══ MODELOVÁ VRSTVA 2 ({len(chosen_model)} zdrojů) ═══")
+        for slug in chosen_model:
+            if over_budget():
+                skipped_budget.append(slug)
+                continue
+            print(f"\n  {slug}")
+            for args, label in model_chain(slug, MODEL_SOURCES[slug], today, a.model_limit):
                 ok, _ = run(args, label, a.dry_run)
                 if not ok:
                     failed.append(f"{slug} ({label})")

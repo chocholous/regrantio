@@ -80,6 +80,10 @@ def _registry():
         out[slug] = ("B", spec[0][0] if spec and isinstance(spec[0], list) else None)
     for slug in rr.TRANSCRIBED:
         out[slug] = ("T", None)
+    # Přepsaný extraktor s harvesterem má od 2026‑09‑14 cestu přes model
+    # (`refresh_run.py --tier model`): třída C, ne T.
+    for slug, spec in getattr(rr, "MODEL_SOURCES", {}).items():
+        out[slug] = ("C", spec[0])
     return out
 
 

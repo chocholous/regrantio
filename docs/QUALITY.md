@@ -64,8 +64,8 @@ Citací celkem 16972, ve zdroji dohledaných **7970 (47.0 %)**. Nedohledaná cit
 |---|---:|---:|
 | ok (ověřeno do 21 dnů) | 30 | 1274 |
 | stárne (nad 21 dnů) | 0 | 0 |
-| má cestu, nikdy neověřeno | 66 | 569 |
-| bez zapsané cesty k obnově | 37 | 104 |
+| má cestu, nikdy neověřeno | 83 | 612 |
+| bez zapsané cesty k obnově | 20 | 61 |
 | zmrazený | 2 | 24 |
 
 | zdroj | typ | obnova | záznamů | živých | ověřeno | stav |
@@ -100,7 +100,7 @@ Citací celkem 16972, ve zdroji dohledaných **7970 (47.0 %)**. Nedohledaná cit
 | OP Životní prostředí (SFŽP) (`opzp`) | ministerstvo | B | 107 | 12 | 2026-09-04 | ok |
 | Brno‑Medlánky (`dotace.medlanky.cz`) | samosprava_obec | A | 12 | 11 |  | neovereno |
 | Město Havířov (`havirov-city.cz`) | samosprava_obec | C | 11 | 11 |  | neovereno |
-| Státní fond životního prostředí (`sfzp`) | statni_fond | T | 19 | 11 |  | bez_cesty |
+| Státní fond životního prostředí (`sfzp`) | statni_fond | C | 19 | 11 |  | neovereno |
 | Město Chomutov (`granty.chomutov.cz`) | samosprava_obec | C | 11 | 10 |  | neovereno |
 | Ministerstvo životního prostředí (`mzp`) | ministerstvo | T | 16 | 10 |  | bez_cesty |
 | Jihočeský kraj (`kraj-jihocesky.cz`) | samosprava_kraj | A | 11 | 9 | 2026-09-11 | ok |
@@ -114,19 +114,19 @@ Citací celkem 16972, ve zdroji dohledaných **7970 (47.0 %)**. Nedohledaná cit
 | Praha 2 (`dotace.praha2.cz`) | samosprava_obec | A | 8 | 7 |  | neovereno |
 | Město Kladno (`mestokladno.cz`) | samosprava_obec | A | 7 | 7 |  | neovereno |
 | Město Karlovy Vary (`mmkv.cz`) | samosprava_obec | C | 8 | 7 |  | neovereno |
-| Ministerstvo průmyslu a obchodu (`mpo`) | ministerstvo | T | 9 | 7 |  | bez_cesty |
+| Ministerstvo průmyslu a obchodu (`mpo`) | ministerstvo | C | 9 | 7 |  | neovereno |
 | Nadace Via (`nadacevia`) | nadace | B | 26 | 7 | 2026-09-03 | ok |
 | Olomoucký kraj (`olkraj.cz`) | samosprava_kraj | A | 12 | 7 | 2026-09-11 | ok |
 | OP Jan Amos Komenský (MŠMT) (`opjak`) | ministerstvo | B | 8 | 7 | 2026-09-04 | ok |
 | Sociální nadační fond Praha (`socialninadacnifond`) | nadacni_fond | ? | 12 | 7 |  | bez_cesty |
 | Zlínský kraj (`zlinskykraj.cz`) | samosprava_kraj | A | 13 | 7 | 2026-09-11 | ok |
 | Praha 12 (`dotace.praha12.cz`) | samosprava_obec | A | 9 | 6 |  | neovereno |
-| Ministerstvo zemědělství (`eagri`) | ministerstvo | T | 10 | 6 |  | bez_cesty |
+| Ministerstvo zemědělství (`eagri`) | ministerstvo | C | 10 | 6 |  | neovereno |
 | Visegrad Fund / ERSTE Foundation (`intl_funds`) | zahranicni_fond | B | 6 | 6 | 2026-09-03 | ok |
 | Město Kroměříž (`kromeriz.dsw2.otevrenamesta.cz`) | samosprava_obec | A | 10 | 6 |  | neovereno |
 | Město Jablonec nad Nisou (`mestojablonec.cz`) | samosprava_obec | C | 14 | 6 |  | neovereno |
 | Město Děčín (`mmdecin.cz`) | samosprava_obec | C | 13 | 6 |  | neovereno |
-| Ministerstvo pro místní rozvoj (`mmr`) | ministerstvo | T | 9 | 6 |  | bez_cesty |
+| Ministerstvo pro místní rozvoj (`mmr`) | ministerstvo | C | 9 | 6 |  | neovereno |
 | Město Česká Lípa (`mucl.cz`) | samosprava_obec | A | 14 | 6 |  | neovereno |
 | Nadace ČEZ (`nadacecez`) | firemni_nadace | C | 16 | 6 |  | neovereno |
 | Nadace OKD (`nadaceokd`) | firemni_nadace | ? | 7 | 6 |  | bez_cesty |
@@ -145,27 +145,27 @@ Citací celkem 16972, ve zdroji dohledaných **7970 (47.0 %)**. Nedohledaná cit
 | Město Karviná (`karvina.cz`) | samosprava_obec | C | 15 | 4 |  | neovereno |
 | Nadace Agrofert (`nadace-agrofert`) | firemni_nadace | ? | 7 | 4 |  | bez_cesty |
 | Město Pardubice (`pardubice.eu`) | samosprava_obec | C | 12 | 4 |  | neovereno |
-| Státní fond dopravní infrastruktury (`sfdi`) | statni_fond | T | 8 | 4 |  | bez_cesty |
+| Státní fond dopravní infrastruktury (`sfdi`) | statni_fond | C | 8 | 4 |  | neovereno |
 | Výbor dobré vůle – Nadace Olgy Havlové (`vdv`) | nadace | ? | 5 | 4 |  | bez_cesty |
 | Město Plzeň (`dotace.plzen.eu`) | samosprava_obec | C | 20 | 3 |  | neovereno |
 | Obec Štěpánov (`dotace.stepanov.cz`) | samosprava_obec | A | 4 | 3 |  | neovereno |
 | Město Hradec Králové (`hradeckralove.org`) | samosprava_obec | A | 4 | 3 |  | neovereno |
 | Město Jihlava (`jihlava.cz`) | samosprava_obec | A | 11 | 3 |  | neovereno |
 | Město Loket (`loket.dsw2.otevrenamesta.cz`) | samosprava_obec | A | 6 | 3 |  | neovereno |
-| Ministerstvo práce a sociálních věcí (`mpsv`) | ministerstvo | T | 11 | 3 |  | bez_cesty |
+| Ministerstvo práce a sociálních věcí (`mpsv`) | ministerstvo | C | 11 | 3 |  | neovereno |
 | Ministerstvo vnitra (`mv`) | ministerstvo | T | 7 | 3 |  | bez_cesty |
 | Nadace Naše dítě (`nasedite`) | nadace | ? | 4 | 3 |  | bez_cesty |
 | Pardubický kraj (`pardubickykraj.cz`) | samosprava_kraj | C | 4 | 3 |  | neovereno |
 | Státní fond podpory investic (`sfpi`) | statni_fond | F | 6 | 3 |  | zmrazeny |
 | Středočeský kraj (`stredoceskykraj.dsw2.otevrenamesta.cz`) | samosprava_kraj | A | 3 | 3 |  | neovereno |
-| Grantová agentura ČR (`gacr`) | statni_agentura | T | 14 | 2 |  | bez_cesty |
+| Grantová agentura ČR (`gacr`) | statni_agentura | C | 14 | 2 |  | neovereno |
 | Město Liberec (`granty.liberec.cz`) | samosprava_obec | C | 7 | 2 |  | neovereno |
 | Nadace The Kellner Family Foundation (`kellner`) | firemni_nadace | ? | 5 | 2 |  | bez_cesty |
 | Město Krnov (`krnov.cz`) | samosprava_obec | A | 3 | 2 |  | neovereno |
 | Ministerstvo kultury (`mk`) | ministerstvo | B | 53 | 2 | 2026-09-03 | ok |
-| Nadace ADRA (`nadace_adra`) | nadace | T | 3 | 2 |  | bez_cesty |
+| Nadace ADRA (`nadace_adra`) | nadace | C | 3 | 2 |  | neovereno |
 | Město Ostrava (`ostrava.dsw2.otevrenamesta.cz`) | samosprava_obec | A | 4 | 2 |  | neovereno |
-| Státní fond audiovize (`sfa`) | statni_fond | T | 8 | 2 |  | bez_cesty |
+| Státní fond audiovize (`sfa`) | statni_fond | C | 8 | 2 |  | neovereno |
 | Město Teplice (`teplice.cz`) | samosprava_obec | A | 6 | 2 |  | neovereno |
 | Plzeňský kraj (`dotace.plzensky-kraj.cz`) | samosprava_kraj | C | 20 | 1 |  | neovereno |
 | Nadační fond pro rozvoj paliativní péče (`fondpaliativnipece`) | nadacni_fond | ? | 10 | 1 |  | bez_cesty |
@@ -179,14 +179,14 @@ Citací celkem 16972, ve zdroji dohledaných **7970 (47.0 %)**. Nedohledaná cit
 | Praha 6 (`praha6.dsw2.otevrenamesta.cz`) | samosprava_obec | A | 2 | 1 |  | neovereno |
 | Město Sokolov (`sokolov.cz`) | samosprava_obec | A | 3 | 1 |  | neovereno |
 | Technologická agentura ČR (`tacr`) | statni_agentura | B | 10 | 1 | 2026-09-04 | ok |
-| Nadační fond Albert (`albert`) | firemni_nadace | T | 3 | 0 |  | bez_cesty |
+| Nadační fond Albert (`albert`) | firemni_nadace | C | 3 | 0 |  | neovereno |
 | Praha 4 (`dotace.praha4.cz`) | samosprava_obec | A | 1 | 0 |  | neovereno |
 | Praha 8 (`dotace.praha8.cz`) | samosprava_obec | A | 3 | 0 |  | neovereno |
 | EHP a Norské fondy (`eeagrants`) | zahranicni_fond | B | 26 | 0 |  | neovereno |
-| Nadání Josefa, Marie a Zdeňky Hlávkových (`hlavka`) | nadace | T | 4 | 0 |  | bez_cesty |
+| Nadání Josefa, Marie a Zdeňky Hlávkových (`hlavka`) | nadace | C | 4 | 0 |  | neovereno |
 | Konto Bariéry (`kontobariery`) |  | ? | 1 | 0 |  | bez_cesty |
 | Nadační fond Krása pomoci (`krasapomoci`) | nadacni_fond | ? | 2 | 0 |  | bez_cesty |
-| Nadace Leontinka (`leontinka`) | nadace | T | 2 | 0 |  | bez_cesty |
+| Nadace Leontinka (`leontinka`) | nadace | C | 2 | 0 |  | neovereno |
 | Praha 18 (Letňany) (`letnany.cz`) | samosprava_obec | A | 2 | 0 |  | neovereno |
 | Praha‑Libuš (`libus.dsw2.otevrenamesta.cz`) | samosprava_obec | A | 4 | 0 |  | neovereno |
 | Město Mladá Boleslav (`mb-net.cz`) | samosprava_obec | A | 3 | 0 |  | neovereno |
@@ -197,12 +197,12 @@ Citací celkem 16972, ve zdroji dohledaných **7970 (47.0 %)**. Nedohledaná cit
 | Nadace rozvoje občanské společnosti (`nros.cz`) | nadace | ? | 1 | 0 |  | bez_cesty |
 | Město Opava (`opava-city.cz`) | samosprava_obec | C | 7 | 0 |  | neovereno |
 | Nadace OSF (`osf`) |  | B | 1 | 0 | 2026-09-03 | ok |
-| Nadace Partnerství (`partnerstvi`) |  | T | 1 | 0 |  | bez_cesty |
+| Nadace Partnerství (`partnerstvi`) |  | C | 1 | 0 |  | neovereno |
 | Město Prostějov (`prostejov.eu`) | samosprava_obec | C | 3 | 0 |  | neovereno |
-| Státní fond kultury (`sfk`) | statni_fond | T | 1 | 0 |  | bez_cesty |
-| Nadace Sirius (`sirius`) |  | T | 1 | 0 |  | bez_cesty |
-| Nadace Veronica (`veronica`) |  | T | 1 | 0 |  | bez_cesty |
-| Vinařský fond (`vinarskyfond`) | statni_fond | T | 5 | 0 |  | bez_cesty |
+| Státní fond kultury (`sfk`) | statni_fond | C | 1 | 0 |  | neovereno |
+| Nadace Sirius (`sirius`) |  | C | 1 | 0 |  | neovereno |
+| Nadace Veronica (`veronica`) |  | C | 1 | 0 |  | neovereno |
+| Vinařský fond (`vinarskyfond`) | statni_fond | C | 5 | 0 |  | neovereno |
 | Úřad vlády ČR (`vlada`) | ministerstvo | B | 7 | 0 | 2026-09-03 | ok |
 | Nadace Jakuba Voráčka (`voracek`) |  | ? | 1 | 0 |  | bez_cesty |
 
