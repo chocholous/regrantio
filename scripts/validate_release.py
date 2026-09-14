@@ -420,6 +420,23 @@ def check_freshness_stamp():
           f"v celém katalogu {vsechna}/{celkem} = {round(vsechna / celkem * 100)} %)")
 
 
+def check_sources_inventory():
+    """Každý zdroj v katalogu má položku v `data/sources.json` a jméno.
+
+    Inventář je jediné místo, které říká, čím se zdroj obnovuje a jestli
+    vůbec. Zdroj, který v něm chybí, je sběr, o kterém repozitář neví —
+    a přesně tak vznikaly čtyři různé odpovědi na „kolik zdrojů máme".
+    """
+    if not os.path.exists(CATALOG):
+        raise Skip(f"{CATALOG} není v pracovní kopii")
+    import subprocess
+    r = subprocess.run([sys.executable, "scripts/sources_inventory.py", "--check"],
+                       capture_output=True, text=True, encoding="utf-8")
+    if r.returncode != 0:
+        raise RuntimeError((r.stdout or r.stderr or "").strip().splitlines()[0])
+    print("    (" + (r.stdout or "").strip().splitlines()[-1] + ")")
+
+
 def check_catalog_identity():
     """Identita záznamů v katalogu: bez id se nedá nic sledovat, duplicita mate.
 
@@ -468,6 +485,7 @@ def main():
     check("propad počtu záznamů (brána)", check_no_collapse)
     check("vyschlý zdroj (brána)", check_no_source_collapse)
     check("známé stáří záznamů (brána)", check_freshness_stamp)
+    check("inventář zdrojů sedí na katalog", check_sources_inventory)
     print()
     if errors:
         print(f"FAIL — {len(errors)} chyb")

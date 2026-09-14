@@ -15,7 +15,7 @@ Nic jiného v repu (`data/`, `scripts/`, mezistupně vrstvy 2) není stabilní p
 ```jsonc
 {
   "meta": {
-    "schema_version": "1.1",                      // MAJOR.MINOR
+    "schema_version": "1.2",                      // MAJOR.MINOR
     "generated_at": "2026-07-31T18:07:00+00:00",  // UTC ISO-8601
     "generated_date": "2026-07-31",
     "count": 3397,
@@ -75,6 +75,46 @@ nemá ukazovat člověku — do 2026‑09‑11 ho produkt vypisoval jako poskyto
 - `region` (object): `{kraj: string|null, celostatni: bool}`
 
 Facety jsou pole tam, kde výzva spadá pod víc hodnot; `typ_poskytovatele` a `region` jsou jednoznačné.
+
+### 2b. Kontrakt 1.2 — obsah, který zůstával v `extra`, a odvozeniny (2026‑09‑14)
+
+Produkt do té doby dostával jen pole vrstvy 2 a fasety; na čtyři otázky
+žadatele („je to pro subjekt naší velikosti?", „má to lhůtu, nebo se to
+vyhlašuje každý rok?", „není to jen další ročník toho, co vidím výš?",
+„odkud ten údaj je?") odpovídal sám a každý na jiném místě. Od 1.2 odpovídá
+katalog. Všechno počítá `scripts/enrich.py` a `scripts/dedup.py`
+deterministicky z polí, která záznam už nese; nic z toho není nový sběr.
+
+**Obsah ze zdroje** (vstupuje do `content_hash`):
+
+| pole | typ | význam |
+|---|---|---|
+| `call_number` | string \| null | číslo výzvy, jak ho uvádí poskytovatel („01 (OP Doprava)") |
+| `contact` | `{osoba, email, telefon}` \| null | kontakt uvedený u výzvy; první použitelný |
+| `documents` | `[{popis, role, url?}]` | dokumenty, které zdroj u výzvy jmenuje; `role` ∈ pravidla_podminky · vyzva · formular · vzor_smlouvy · priloha · metodika · ostatni. Prázdné pole = zdroj žádné nejmenuje |
+| `realization_period` | string \| null | období realizace, jak je napsané ve zdroji |
+
+**Odvozeniny** (MIMO `content_hash` — změna pravidla není změna výzvy):
+
+| pole | hodnoty | jak vzniká |
+|---|---|---|
+| `scope` | `local` · `regional` · `national` · `international` · `eu_central` | z `typ_poskytovatele` a `region`: obec → local, kraj → regional, Evropská komise → eu_central, zahraniční fond → international, jinak national (pokud se zdroj sám neomezí na kraj nebo obec) |
+| `deadline_kind` | `fixed` · `rolling` · `recurring` · `unknown` | ISO lhůta → fixed; „průběžně" nebo režim `prubezna` → rolling; kolový režim, „každoročně" v kontextu lhůty, odvozený termín NEBO rodina se dvěma a víc ročníky → recurring; jinak unknown. **Nehádá se:** obecní program bez dokladu je `unknown` |
+| `deadline_note` | string \| null | věta ze zdroje o lhůtě tam, kde ISO datum chybí („každoročně do 15. 11.") |
+| `program_key` | 12 hex | rodina záznamů téhož programu u téhož zdroje: titul bez ročníku, čísla kola a pořadového čísla + `source` |
+| `variant_of` | id \| null | tenhle záznam je UZAVŘENÝ starší ročník kanonického záznamu rodiny. Dva živé záznamy téže rodiny se nikdy neslučují („63. výzva" a „64. výzva" jsou dvě výzvy) |
+| `family` | `{key, rounds, years[], typical_deadline, earlier[]}` \| null | jen na kanonickém záznamu rodiny: kolik ročníků zdroj listuje, které roky, společný den uzávěrky („31. 10."), starší ročníky |
+| `field_provenance` | `{pole: {method, cited}}` | pro deadline · open_from · amount · eligible_applicants · focus_area · typ_zadatele · oblast · region: `method` ∈ parsed (vrstva 1) · model (vrstva 2) · derived (dopočet); `cited` = existuje doslovná citace, která se ve zdroji NAŠLA. Pole bez hodnoty tu není |
+
+Konzument, který kontrakt 1.2 nezná, nová pole ignoruje; nic se nepřejmenovalo
+ani neodebralo (MINOR). Grantio je mapuje v `publish_db.py:to_row` na sloupce
+`scope`, `deadline_kind`, `program_key`, `variant_of`, `call_number`; zbytek
+čte z `raw`. Odvozené sloupce porovnává `derived_changed()` zvlášť, protože
+v otisku nejsou — `variant_of` se změní ve chvíli, kdy přibude NOVÝ ročník,
+aniž by se starý změnil o písmeno.
+
+Kvalita dat, ze kterých se tohle počítá, je změřená v `docs/QUALITY.md`
+(`scripts/quality_report.py`, běží v tailu obnovy).
 
 ---
 

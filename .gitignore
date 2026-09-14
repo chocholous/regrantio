@@ -38,6 +38,10 @@ __pycache__/
 # (přidaný silou), tenhle řádek to říká nahlas.
 !/data/source_names.json
 !/data/consolidation_maps.json
+# Inventář zdrojů (kurátorovaná jména a poznámky, přepočítané počty) a měřená
+# kvalita dat — obojí je kontrakt a doklad, ne stažená data (2026-09-14).
+!/data/sources.json
+!/data/quality.json
 data/*.bak
 data/*.pre-refresh.bak
 *.out.json

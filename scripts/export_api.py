@@ -23,10 +23,17 @@ Spuštění z kořene repa (po fix_dataset, jako součást tailu):
 import argparse, hashlib, json, os, sys
 from datetime import datetime, timezone
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import dedup    # noqa: E402  rodiny ročníků (variant_of, family)
+import enrich   # noqa: E402  odvozená pole kontraktu 1.2
+
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
-SCHEMA_VERSION = "1.1"  # 1.1: + content_hash per grant; meta.generated_date + meta.content_hash_fields
+SCHEMA_VERSION = "1.2"  # 1.1: + content_hash per grant; meta.generated_date + meta.content_hash_fields
+# 1.2 (2026-09-14): + scope, deadline_kind, deadline_note, program_key, variant_of, family,
+#     call_number, contact, documents, realization_period, field_provenance — viz docs/EXPORT.md §2b.
+#     MINOR: nic se nepřejmenovalo ani neodebralo; konzument 1.1 nová pole ignoruje.
 # Veřejná pole (přítomná se převezmou; mission záznamy mají name/mission/support_topics/regions).
 # Jméno poskytovatele podle slugu zdroje (`data/source_names.json`). Katalog nese
 # jen TYP (ministerstvo, kraj…); jméno je vlastnost ZDROJE, ne záznamu, a proto
@@ -39,13 +46,24 @@ PUBLIC = ["id", "kind", "source", "source_url", "provider", "title", "focus_area
           "amount", "eligible_applicants", "required_attachments", "how_to_apply", "source_doc",
           "facets", "citations",
           "name", "mission", "support_topics", "regions",
-          "fetched_at"]
+          "fetched_at",
+          # kontrakt 1.2 — obsah ze zdroje, který dřív zůstával v `extra`:
+          "call_number", "contact", "documents", "realization_period",
+          # kontrakt 1.2 — odvozeniny (mimo otisk, viz HASH_EXCLUDE):
+          "scope", "deadline_kind", "deadline_note", "program_key", "variant_of", "family",
+          "field_provenance"]
+
+# Odvozeniny NEJSOU obsah výzvy. Změna pravidla v `enrich.py` nebo nový ročník
+# v rodině nesmí každému záznamu přepnout otisk a v produktu vyrobit tisíce
+# „změn" — otisk má hlásit jen to, co změnil poskytovatel.
+DERIVED = {"scope", "deadline_kind", "deadline_note", "program_key", "variant_of", "family",
+           "field_provenance"}
 
 # content_hash = otisk VĚCNÝCH polí. Vyloučeno: `status`/`status_confidence` (derivovaný snapshot,
 # mění se sám jak míjejí deadliny → jinak by hash „blikal" každý den), `id` (je to klíč, ne obsah)
 # a `fetched_at` (den kontroly, ne obsah — jinak by po každé obnově vypadalo všech 3450 záznamů
 # jako změněných a inkrementální sync by ztratil smysl, kvůli kterému existuje).
-HASH_EXCLUDE = {"status", "status_confidence", "id", "fetched_at", "provider"}
+HASH_EXCLUDE = {"status", "status_confidence", "id", "fetched_at", "provider"} | DERIVED
 HASH_FIELDS = [k for k in PUBLIC if k not in HASH_EXCLUDE]
 
 
@@ -65,10 +83,10 @@ def main():
     ap.add_argument("--force", action="store_true", help="Obejít pojistku --min-ratio (vědomé velké smazání).")
     a = ap.parse_args()
     grants = []
-    for line in open(a.inp, encoding="utf-8"):
-        if not line.strip():
-            continue
-        r = json.loads(line)
+    raw_records = [json.loads(line) for line in open(a.inp, encoding="utf-8") if line.strip()]
+    today = datetime.now(timezone.utc).date().isoformat()
+    families = dedup.assign_families(raw_records, today)
+    for r in raw_records:
         # `fetched_at` je uvnitř `provenance` (to se ven nepouští celé) — vytáhni ho nahoru.
         # Chybí u záznamů, kterých se od zavedení razítka nedotkla žádná obnova; ven jde
         # rovnou jako null, protože „nevíme" je pravdivější než vymyšlené datum.
@@ -85,6 +103,15 @@ def main():
             g["eligible_applicants"] = ", ".join(str(x).strip() for x in ea if str(x).strip()) or None
         elif isinstance(ea, str) and not ea.strip():
             g["eligible_applicants"] = None
+        if g.get("kind") == "grant":
+            g.update(enrich.enrich(r))
+            fam = families.get(g["id"]) or {"variant_of": None, "family": None}
+            g["variant_of"] = fam["variant_of"]
+            g["family"] = fam["family"]
+            # Rodina je DOKLAD opakování: program bez jedné lhůty, který zdroj
+            # listuje ve dvou a víc ročnících, se vyhlašuje znovu.
+            if g["deadline_kind"] == "unknown" and fam["family"] and len(fam["family"]["years"]) >= 2:
+                g["deadline_kind"] = "recurring"
         g["content_hash"] = content_hash(g)
         grants.append(g)
 

@@ -232,9 +232,31 @@ def to_row(g):
         "obec": _str(region.get("obec")),
         "celostatni": _bool(region.get("celostatni")),
         "search_text": search_haystack(g),
+        # Kontrakt 1.2 — odvozeniny jako sloupce, aby se podle nich dalo řadit
+        # a filtrovat. Jsou MIMO otisk, proto je porovnává `derived_changed`.
+        "scope": _str(g.get("scope")),
+        "deadline_kind": _str(g.get("deadline_kind")),
+        "program_key": _str(g.get("program_key")),
+        "variant_of": _str(g.get("variant_of")),
+        "call_number": _str(g.get("call_number")),
         "raw": g,
         "content_hash": _str(g.get("content_hash")),
     }, None
+
+
+# Sloupce, které nejsou v otisku obsahu a přesto se musí propsat, když se změní.
+DERIVED_COLUMNS = ("scope", "deadline_kind", "program_key", "variant_of", "call_number")
+
+
+def derived_changed(row, prev):
+    """Změnila se některá odvozenina (nebo jméno poskytovatele), i když obsah ne?
+
+    `variant_of` je typický případ: starý ročník se stane variantou ve chvíli,
+    kdy přibude NOVÝ záznam — jeho vlastní obsah se nezměnil ani o písmeno.
+    """
+    if (prev.get("provider") or None) != (row["raw"].get("provider") or None):
+        return True
+    return any((prev.get(c) or None) != (row.get(c) or None) for c in DERIVED_COLUMNS)
 
 
 def has_changed(row, stored_hash):
@@ -463,7 +485,8 @@ def main():
             # jeho doplnění nebo změna musí porovnat zvlášť — jinak by v `raw`
             # zůstal stav z minulé publikace (naměřeno 2026‑09‑11: 3 429 řádků
             # bez jména poskytovatele po běhu, který ho poprvé nesl).
-            "id,content_hash,deadline,amount,withdrawn_at,typ_zadatele,oblast,kraj,obec,celostatni,provider:raw->>provider",
+            "id,content_hash,deadline,amount,withdrawn_at,typ_zadatele,oblast,kraj,obec,celostatni,"
+            "scope,deadline_kind,program_key,variant_of,call_number,provider:raw->>provider",
         ):
             existing[r["id"]] = r
         print(f"· V databázi je {len(existing)} záznamů")
@@ -478,7 +501,7 @@ def main():
         elif (
             has_changed(row, prev.get("content_hash"))
             or prev.get("withdrawn_at")
-            or (prev.get("provider") or None) != (row["raw"].get("provider") or None)
+            or derived_changed(row, prev)
         ):
             to_update.append(row)
         else:

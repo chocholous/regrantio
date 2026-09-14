@@ -310,8 +310,10 @@ TAIL = [
     # ⚠ BRÁNA PŘED PUBLIKACÍ, ne po ní. Export je to, co si stáhne produkt;
     # zveřejnit dataset s inverzním termínem nebo prázdným titulem a teprve
     # potom to zjistit znamená, že si vadu odnesou uživatelé.
+    (["sources_inventory.py"], "inventář zdrojů data/sources.json (třída obnovy, počty, stáří)"),
     (["validate_release.py"], "kontrola kvality dat (brána)"),
     (["export_api.py"], "veřejný export docs/opportunities.json"),
+    (["quality_report.py"], "zpráva o kvalitě docs/QUALITY.md + data/quality.json"),
 ]
 
 # ⚠ PUBLIKACE JE ZVLÁŠŤ A JEN NA VYŽÁDÁNÍ (`--publish`).
