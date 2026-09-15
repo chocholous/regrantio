@@ -140,7 +140,7 @@
 		"refresh": "C",
 		"harvester": "ostrava_harvest.py",
 		"records": 20,
-		"live": 14,
+		"live": 12,
 		"last_fetched": null
 	},
 	"dotace.pardubickykraj.cz": {
@@ -322,10 +322,10 @@
 	"eeagrants": {
 		"name": "EHP a Norské fondy",
 		"homepage": "https://www.eeagrants.cz",
-		"note": null,
+		"note": "období 2014–2021 skončilo, 0 živých výzev; harvester mimo registr obnovy do nového programu (2026-09-15)",
 		"type": "zahranicni_fond",
-		"refresh": "B",
-		"harvester": "eeagrants.py",
+		"refresh": "F",
+		"harvester": null,
 		"records": 26,
 		"live": 0,
 		"last_fetched": null
@@ -338,7 +338,7 @@
 		"refresh": "B",
 		"harvester": "esfcr_harvest.py",
 		"records": 234,
-		"live": 17,
+		"live": 16,
 		"last_fetched": "2026-09-03"
 	},
 	"eu_ft": {
@@ -349,7 +349,7 @@
 		"refresh": "B",
 		"harvester": "eu_ft.py",
 		"records": 684,
-		"live": 639,
+		"live": 637,
 		"last_fetched": "2026-09-04"
 	},
 	"fondbudoucnosti": {
@@ -580,7 +580,7 @@
 		"refresh": "A",
 		"harvester": "karlovarsky_harvest.py",
 		"records": 86,
-		"live": 27,
+		"live": 26,
 		"last_fetched": "2026-09-11"
 	},
 	"kr-ustecky.cz": {

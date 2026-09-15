@@ -12,6 +12,9 @@ Doprovodné nástroje:
   dataset do `.pre-refresh.bak`; selhání jednoho zdroje kolo neshodí, jen se přizná ve shrnutí
   a v návratovém kódu. `--list` vypíše registr, `--tier structured|html` a `--only a,b` zúží
   výběr, `--tail-only` přepočítá a vyexportuje bez sítě, `--dry-run` jen ukáže příkazy.
+  `--budget-min N` zastaví SKLIZEŇ po N minutách (zbytek zůstane z minula, přepočet a export
+  proběhnou), `--step-timeout-min N` (výchozí 30, v CI 12) je strop na jeden krok; zdroje se
+  berou od nejdéle neověřených podle `last_fetched` v `data/sources.json` (2026‑09‑15).
 
 ⚠ **Zdroje přes model (třída C) obnovuje `refresh_run.py --tier model`** (od 2026‑09‑14):
 harvest → `build_extract_input` → `extract_api.py` (Messages API, `ANTHROPIC_API_KEY`) →

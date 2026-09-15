@@ -18,7 +18,7 @@ přes data, ne přes kód, a proto může být regrantio kdykoli neveřejné.
 | Kvalita | [`docs/QUALITY.md`](docs/QUALITY.md) — měřeno při každé obnově, ne tvrzeno |
 | Inventář zdrojů | `data/sources.json` — 135 zdrojů, třída obnovy u každého |
 | Jazyk | Python 3.13, bez frameworku |
-| Testy | **122** v šesti souborech; všechny pouští `validate_release.py` |
+| Testy | **123** v šesti souborech; všechny pouští `validate_release.py` |
 | CI | `.github/workflows/validate.yml` na každý push |
 | Větev | jediná: `main` |
 
@@ -85,7 +85,7 @@ Zdroje se obnovují ve **třech třídách** (`data/sources.json`, sloupec `refr
 | | jak | zdrojů | spustí |
 |---|---|---:|---|
 | A | harvest → strukturní ingest (vlastní skript nebo rodina vismo / dsw2 / kentico / plone) | 55 | `refresh_run.py` |
-| B | harvest → `scripts/extractors/<slug>.py` → `ingest_rich` | 21 | `refresh_run.py --tier extract` |
+| B | harvest → `scripts/extractors/<slug>.py` → `ingest_rich` | 20 | `refresh_run.py --tier extract` |
 | C | harvest → `build_extract_input` → **`extract_api.py` (model)** → `ingest_rich` | 37 (17 v registru) | `refresh_run.py --tier model` — chce `ANTHROPIC_API_KEY` |
 
 ⚠ **Třída C je od 2026‑09‑14 v registru obnovy.** `extract_api.py` volá týž
@@ -97,6 +97,16 @@ nadačních sběrů („?") čeká na zapsání cesty — inventář to ukazuje.
 
 Týdenní obnova (`.github/workflows/refresh.yml`) pouští `--tier all`:
 A + B vždy, C jen s klíčem v secrets.
+
+⚠ **Rozpočet a strop na krok (2026‑09‑15).** Běh v GitHub Actions má strop
+90 minut a 7. i 14. 9. do něj nedoběhl: `--budget-min 60` se kontroloval jen
+MEZI zdroji, takže jeden pomalý harvest (eeagrants 30 minut na 0 živých výzev,
+esfcr 20 minut) přetekl přes rozpočet i přes strop úlohy a s ním padl přepočet,
+brána i export. Od té doby má každý krok strop `--step-timeout-min` (v CI 12,
+zkrácený na zbytek rozpočtu), zdroje se berou od **nejdéle neověřených**
+(`last_fetched` v inventáři), aby se s rozpočtem střídaly, `esfcr` jde bez
+archivu ze sitemapy a `eeagrants` je zmražený (období skončilo, harvester
+mimo registr). Zápis do databáze z CI dál čeká na secrets (viz níž).
 
 ⚠ **Souborů `scripts/extractors/*.py` je 42, ale jen 15 z nich vstup opravdu ČTE.**
 Zbytek má data napsaná natvrdo — je to přepis jedné extrakce z 2026‑06/07, ne

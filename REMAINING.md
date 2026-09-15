@@ -3,6 +3,16 @@
 Živý plánovací dokument. **Aktuální stav, co je hotovo, co zbývá a proč.** JAK pracovat (zlatá pravidla,
 recept na zdroj, pasti) = `docs/SESSION_PLAYBOOK.md` + `CLAUDE.md`. Katalog je v gitu, zbytek dat v gitignored `data/`.
 
+> **Status k 2026-09-15.** Týdenní obnova v GitHub Actions **nedobíhala**
+> (běhy 7. a 14. 9. zrušené po 90 minutách, bez exportu): rozpočet se hlídal
+> jen mezi zdroji a jeden pomalý harvest ho přetekl. Opraveno: strop na krok
+> (`--step-timeout-min`), pořadí od nejdéle neověřených, `esfcr` bez archivu,
+> `eeagrants` zmražený (0 živých, 30 minut, rozbitý řetěz). Bez credentials
+> už není co dodělat; co zbývá, je v README/CLAUDE.md jako „čeká na klíče":
+> `PUBLIC_SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` v secrets repozitáře
+> (zápis do databáze z CI; dnes se publikuje ručně) a `ANTHROPIC_API_KEY`
+> (třída C, 37 zdrojů). Kdo obnovu pustí ručně, publikuje `publish_db.py`.
+>
 > **Status k 2026-09-14 (změřeno, ne odhad).** Dataset **3 822 záznamů / 135 zdrojů**,
 > export schema **1.2** (`docs/opportunities.json`, 14 MB), publikace přímo do
 > databáze produktu (`publish_db.py`, běh #40). **122/122 testů**, brána má

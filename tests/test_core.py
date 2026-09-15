@@ -12,6 +12,7 @@ Spuštění:  python -m pytest tests/ -q      (nebo: python tests/test_core.py)
 Bez pytestu funguje i přímé spuštění — má vlastní mini-runner.
 """
 import datetime
+import json
 import os
 import sys
 
@@ -342,10 +343,14 @@ def test_zadny_extraktor_nezustane_nezarazeny():
     # Parsery, kterým chybí jen sběrač. Drží se jmenovitě, protože je to STAV,
     # ne pravidlo — jakmile harvester vznikne, zdroj se přesune do registru.
     BEZ_SBERACE = {"mzcr"}
+    # Zmražené: parser i sběrač existují, ale zdroj se neobnovuje (viz
+    # `sources_inventory.FROZEN`). eeagrants od 2026-09-15: období skončilo,
+    # 0 živých, sběrač 30 minut na celý web a výstup mimo řetěz.
+    ZMRAZENE = {"eeagrants"}
 
     vsechny = {os.path.basename(p)[:-3]
                for p in glob.glob(os.path.join(root, "scripts", "extractors", "*.py"))}
-    zarazene = set(refresh_run.EXTRACT_SOURCES) | set(refresh_run.TRANSCRIBED) | BEZ_SBERACE
+    zarazene = set(refresh_run.EXTRACT_SOURCES) | set(refresh_run.TRANSCRIBED) | BEZ_SBERACE | ZMRAZENE
 
     chybi = vsechny - zarazene
     assert not chybi, (
@@ -375,6 +380,24 @@ def test_registrovany_harvest_ma_svuj_skript():
     assert not chybi, "registr jmenuje neexistující soubory: " + ", ".join(chybi)
 
 
+def test_obnova_bere_nejstarsi_zdroje_prvni():
+    """`refresh_run._stalest_first` řadí podle `last_fetched` z inventáře (nejstarší
+    a neznámé první). S rozpočtem jinak zdroje na konci abecedy nikdy nepřijdou na řadu."""
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    sys.path.insert(0, os.path.join(root, "scripts"))
+    import refresh_run
+
+    order = refresh_run._stalest_first(["b_new", "a_old", "c_never"])
+    inv = json.load(open(os.path.join(root, "data", "sources.json"), encoding="utf-8"))
+    # Nad skutečným inventářem: každý dřívější prvek má last_fetched <= následující
+    # (neznámé stáří se řadí jako prázdný řetězec, tedy první).
+    slugs = [s for s in refresh_run.EXTRACT_SOURCES]
+    ordered = refresh_run._stalest_first(slugs)
+    stamps = [((inv.get("sources", inv) or {}).get(s) or {}).get("last_fetched") or "" for s in ordered]
+    assert stamps == sorted(stamps), stamps
+    assert set(order) == {"b_new", "a_old", "c_never"}
+
+
 if __name__ == "__main__":
     fails = []
     tests = [(n, f) for n, f in sorted(globals().items())
@@ -391,3 +414,4 @@ if __name__ == "__main__":
             print(f"  ERR  {name}: {type(e).__name__}: {e}")
     print(f"\n{len(tests) - len(fails)}/{len(tests)} prošlo")
     sys.exit(1 if fails else 0)
+

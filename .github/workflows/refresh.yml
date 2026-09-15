@@ -8,7 +8,7 @@ name: Týdenní obnova katalogu
 # termíny míjely, výzvy se zavíraly a produkt to ukazoval jako aktuální stav.
 #
 # CO TENHLE BĚH UDĚLÁ
-#   1. `refresh_run.py --tier all` — 35 zdrojů (14 strukturních + 21 s vlastním
+#   1. `refresh_run.py --tier all` — 34 zdrojů (14 strukturních + 20 s vlastním
 #      deterministickým parserem), harvest → ingest → přepočet → BRÁNA KVALITY
 #      → export
 #   2. zapíše výsledek do databáze produktu (`publish_db.py`) — jen když jsou
@@ -89,7 +89,11 @@ jobs:
           # bufferuje stdout mimo terminál) a bez exportu. Rozpočet zastaví
           # sklizeň v 60. minutě, zbylé zdroje zůstanou z minula, přepočet,
           # brána a zápis proběhnou.
-          PYTHONUNBUFFERED=1 python scripts/refresh_run.py --tier "${{ inputs.tier || 'all' }}" --budget-min 60 || true
+          # ⚠ Strop na krok (2026‑09‑15): rozpočet se do té doby kontroloval jen
+          # mezi zdroji a jeden pomalý harvest (30 minut) ho přetekl i se stropem
+          # úlohy; běhy 7. a 14. 9. skončily zrušením bez exportu. Zdroje se
+          # navíc berou od nejdéle neověřených, aby se s rozpočtem střídaly.
+          PYTHONUNBUFFERED=1 python scripts/refresh_run.py --tier "${{ inputs.tier || 'all' }}" --budget-min 60 --step-timeout-min 12 || true
 
       - name: Brána kvality (rozhoduje o pokračování)
         # Tohle UŽ spadnout smí a má: publikovat dataset, který neprošel branou,

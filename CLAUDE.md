@@ -31,7 +31,7 @@ python scripts/refresh_run.py --list           # registr zdrojů po třídách A
 python scripts/refresh_run.py                  # A: harvest → ingest → přepočet → brána → export
 python scripts/refresh_run.py --tier extract   # B: + vlastní deterministické parsery
 python scripts/refresh_run.py --tier model     # C: vrstva 2 přes model (chce ANTHROPIC_API_KEY)
-python scripts/refresh_run.py --tier all --budget-min 60 --publish-db   # týdenní obnova (A + B, C jen s klíčem)
+python scripts/refresh_run.py --tier all --budget-min 60 --step-timeout-min 12 --publish-db   # týdenní obnova (A + B, C jen s klíčem)
 python scripts/refresh_run.py --tail-only      # jen přepočet, brána, export, kvalita (bez sítě)
 
 python scripts/publish_db.py --dry-run         # co by se zapsalo do databáze Grantia

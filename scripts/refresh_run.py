@@ -49,6 +49,7 @@ nezávisí a je to to nejlevnější, co se dá pro čerstvost udělat.
 """
 import argparse
 import datetime
+import json
 import os
 import re
 import shutil
@@ -229,8 +230,16 @@ EXTRACT_SOURCES = {
     # Soubory se seznamem URL jsou proto od téhož data sledované v gitu
     # (`.gitignore` výjimka 3).
     "czechaid": (["czechaid_harvest.py"], "html"),
-    "esfcr": (["esfcr_harvest.py"], "html"),
-    "eeagrants": (["eeagrants.py"], "html"),
+    # ⚠ Bez archivu ze sitemapy (LZZ‑éra, 95 dávno zavřených výzev): týdenní
+    # běh je o třetinu kratší a živé výzvy jsou v obou listinzích (2026‑09‑15).
+    "esfcr": (["esfcr_harvest.py", "--no-sitemap-extra"], "html"),
+    # ⚠ `eeagrants` TU NENÍ (2026‑09‑15). Období 2014–2021 skončilo, katalog
+    # nese 26 uzavřených výzev a 0 živých; harvester procházel celý web
+    # (1 489 stránek, 30 minut) a ukládal do `data/eeagrants.jsonl`, zatímco
+    # řetěz čekal `data/eeagrants_documents.jsonl` — krok „příprava vstupu"
+    # tedy padal pokaždé. Zdroj je v inventáři zmražený (`sources_inventory.py`
+    # FROZEN); až nový program vypíše výzvy, vrátí se sem i s opraveným
+    # výstupem harvesteru.
     "eu_ft": (["eu_ft.py"], "structured"),
     "hzs": (["hzs_harvest.py"], "html"),
     "interreg": (["interreg.py"], "structured"),
@@ -379,11 +388,31 @@ PUBLISH = (["publish_export.py"], "publikace do úschovny (pro produkt)")
 PUBLISH_DB = (["publish_db.py"], "zápis do databáze produktu")
 
 
-def run(args, label, dry):
+def _stalest_first(slugs):
+    """Seřadí zdroje podle stáří posledního ověření z `data/sources.json` (nejstarší první)."""
+    try:
+        inv = json.load(open(os.path.join(ROOT, "data/sources.json"), encoding="utf-8"))
+    except (OSError, ValueError):
+        return list(slugs)
+    sources = inv.get("sources", inv) if isinstance(inv, dict) else {}
+    def key(slug):
+        e = sources.get(slug) or {}
+        return (e.get("last_fetched") or "", slug)
+    return sorted(slugs, key=key)
+
+
+def run(args, label, dry, timeout_s=1800):
     """Spustí krok. Vrací (ok, poslední řádek výstupu).
 
     `args[0]` je jméno skriptu ve `scripts/`, nebo cesta s lomítkem (pak se
     bere od kořene repa) — deterministické extraktory bydlí v `data/`.
+
+    ⚠ `timeout_s` JE STROP NA JEDEN KROK (2026‑09‑15). Do té doby platilo
+    pevných 30 minut a rozpočet běhu se kontroloval jen MEZI zdroji, takže
+    jeden pomalý harvest (eeagrants 1 777 s, esfcr 1 227 s a víc) přetekl
+    přes rozpočet i přes strop úlohy v GitHub Actions: běhy 7. a 14. 9.
+    skončily po 90 minutách zrušením bez přepočtu, brány a exportu. Krok,
+    který strop překročí, se ukončí a zdroj zůstane v katalogu z minula.
     """
     first = args[0].replace("\\", "/")
     cmd = [PY, first if "/" in first else os.path.join("scripts", first)] + args[1:]
@@ -393,9 +422,9 @@ def run(args, label, dry):
     t = time.time()
     try:
         p = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True,
-                           encoding="utf-8", errors="replace", timeout=1800)
+                           encoding="utf-8", errors="replace", timeout=max(30, int(timeout_s)))
     except subprocess.TimeoutExpired:
-        print(f"    ✖ {label}: překročen čas (30 min)")
+        print(f"    ✖ {label}: překročen čas ({int(timeout_s) // 60} min), zdroj zůstává z minula")
         return False, ""
     tail = [l for l in (p.stdout or "").strip().splitlines() if l.strip()]
     last = tail[-1] if tail else ""
@@ -427,6 +456,10 @@ def main():
     ap.add_argument("--budget-min", type=int, default=0,
                     help="časový rozpočet na HARVEST v minutách; po vyčerpání se zbylé zdroje přeskočí "
                          "(zůstanou v katalogu z minula) a běh pokračuje přepočtem a exportem. 0 = bez rozpočtu")
+    ap.add_argument("--step-timeout-min", type=int, default=30,
+                    help="strop na JEDEN krok (harvest, příprava vstupu, …) v minutách; krok, který ho "
+                         "překročí, se ukončí a zdroj zůstane z minula. S --budget-min se navíc "
+                         "zkracuje na zbytek rozpočtu, aby zdroj nepřetekl přes něj")
     ap.add_argument("--tail-only", action="store_true", help="jen přepočet a export, bez sítě")
     ap.add_argument("--skip-tail", action="store_true", help="jen harvest a ingest")
     ap.add_argument("--publish", action="store_true", help="po exportu nahraj do úschovny (pro produkt)")
@@ -504,6 +537,22 @@ def main():
     def over_budget():
         return a.budget_min > 0 and (time.time() - t_start) > a.budget_min * 60
 
+    def step_timeout():
+        """Strop kroku: pevný strop, s rozpočtem navíc zkrácený na jeho zbytek."""
+        limit = a.step_timeout_min * 60
+        if a.budget_min > 0:
+            limit = min(limit, a.budget_min * 60 - (time.time() - t_start))
+        return max(60, limit)
+
+    # ⚠ NEJSTARŠÍ NAPŘED (2026‑09‑15). S rozpočtem se zdroje na konci
+    # seznamu nikdy nedostaly na řadu: pořadí bylo abecední, takže týden co
+    # týden se obnovily tytéž první a zbytek stárnul. Řadí se proto podle
+    # `last_fetched` z inventáře (`data/sources.json`): co je nejdéle
+    # neověřené, jde první; bez záznamu o stáří úplně první.
+    chosen = _stalest_first(chosen)
+    chosen_extract = _stalest_first(chosen_extract)
+    chosen_model = _stalest_first(chosen_model)
+
     if not a.tail_only:
         print(f"═══ HARVEST + INGEST ({len(chosen)} zdrojů) ═══")
         for host in chosen:
@@ -512,7 +561,7 @@ def main():
                 skipped_budget.append(host)
                 continue
             print(f"\n  {host}")
-            ok, _ = run(harvest, "harvest", a.dry_run)
+            ok, _ = run(harvest, "harvest", a.dry_run, step_timeout())
             if not ok:
                 failed.append(f"{host} (harvest)")
                 continue
@@ -521,7 +570,7 @@ def main():
                 print(f"    ✖ harvest neuložil {out}")
                 failed.append(f"{host} (bez výstupu)")
                 continue
-            ok, _ = run(ingest, "ingest", a.dry_run)
+            ok, _ = run(ingest, "ingest", a.dry_run, step_timeout())
             if not ok:
                 failed.append(f"{host} (ingest)")
 
@@ -538,7 +587,7 @@ def main():
             # nad vstupem, který extrakce nevyrobila, znamená zapsat do katalogu
             # výsledek minulého běhu a tvářit se, že je dnešní.
             for args, label in extract_chain(slug, harvest, today):
-                ok, _ = run(args, label, a.dry_run)
+                ok, _ = run(args, label, a.dry_run, step_timeout())
                 if not ok:
                     failed.append(f"{slug} ({label})")
                     break
@@ -552,7 +601,7 @@ def main():
                 continue
             print(f"\n  {slug}")
             for args, label in model_chain(slug, MODEL_SOURCES[slug], today, a.model_limit):
-                ok, _ = run(args, label, a.dry_run)
+                ok, _ = run(args, label, a.dry_run, step_timeout())
                 if not ok:
                     failed.append(f"{slug} ({label})")
                     break
