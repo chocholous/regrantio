@@ -7,7 +7,9 @@ recept na zdroj, pasti) = `docs/SESSION_PLAYBOOK.md` + `CLAUDE.md`. Katalog je v
 > (běhy 7. a 14. 9. zrušené po 90 minutách, bez exportu): rozpočet se hlídal
 > jen mezi zdroji a jeden pomalý harvest ho přetekl. Opraveno: strop na krok
 > (`--step-timeout-min`), pořadí od nejdéle neověřených, `esfcr` bez archivu,
-> `eeagrants` zmražený (0 živých, 30 minut, rozbitý řetěz). Bez credentials
+> `eeagrants` zmražený (0 živých, 30 minut, rozbitý řetěz). Ověřeno ručním
+> spuštěním téhož dne: 34 zdrojů, 61 minut, brána i export prošly, katalog
+> commitnutý (21db5ae), do databáze publikováno ručně (běh #41). Bez credentials
 > už není co dodělat; co zbývá, je v README/CLAUDE.md jako „čeká na klíče":
 > `PUBLIC_SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` v secrets repozitáře
 > (zápis do databáze z CI; dnes se publikuje ručně) a `ANTHROPIC_API_KEY`
