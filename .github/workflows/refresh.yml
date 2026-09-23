@@ -115,7 +115,16 @@ jobs:
         run: |
           git config user.name  "regrantio-refresh"
           git config user.email "noreply@grantio.cz"
-          git add data/opportunities.jsonl docs/opportunities.json
+          # ⚠ INVENTÁŘ SE COMMITUJE TAKY (2026‑09‑23). `data/sources.json` nese
+          # `last_fetched` u každého zdroje a `refresh_run.py` podle něj řadí
+          # frontu „nejdéle neověřené první". Běh ho v TAIL přepočítal, ale
+          # commitoval se jen katalog — takže další běh si stáhl inventář
+          # z 15. 9. a řadil podle něj. Pořadí tím zamrzlo: tytéž zdroje se
+          # obnovovaly každý týden a `fondvysociny.cz`, `stredoceskykraj.cz`
+          # a spodek fronty extraktorů nepřišly na řadu ani jednou. Rotace
+          # rotuje jen tehdy, když si pamatuje, co už obnovila.
+          git add data/opportunities.jsonl docs/opportunities.json \
+                  data/sources.json data/quality.json docs/QUALITY.md
           if git diff --cached --quiet; then
             echo "::notice::Katalog se nezměnil — není co commitovat."
             exit 0

@@ -33,7 +33,13 @@ import re
 IN_DIR, OUT_DIR = "data/plone_ostrava_in", "data/plone_ostrava_out"
 HARVEST = "data/plone_ostrava_documents.jsonl"
 
-TAKE_RE = re.compile(r"Z[áa]sady pro poskytov|Program (pro|na) poskyt|[ÚU][čc]elov[ée] dotace v oblasti"
+# ⚠ TITULKY OBVODŮ NEJSOU JEDNOTNÉ (2026‑09‑23). Filtr uměl jen „Zásady pro
+# poskytování…"; obvody ale roční rámec pojmenovávají i „ÚČELOVÉ DOTACE NA ROK
+# 2024", „FINANČNÍ DARY NA ROK 2027" nebo prostě „Dotace 2027" — a ty filtr
+# zahodil, takže z dvaceti webů nevznikl ani jeden záznam. Ročník pak ohlídá
+# `--since-year`, takže staré ročníky projít nemůžou.
+TAKE_RE = re.compile(r"Z[áa]sady pro poskytov|Program (pro|na) poskyt|[ÚU][čc]elov[ée] dotace"
+                     r"|Finan[čc]n[íi] dary na rok|Dotace\s+20\d\d"
                      r"|Podm[íi]nky v[ýy]b[ěe]rov[ée]ho [řr][íi]zen[íi]", re.I)
 SKIP_RE = re.compile(r"smlouv|formul[áa][řr]|tiskopis|vy[úu][čc]tov[áa]n[íi]|poskytnut[ée]"
                      r"|v[ýy]sledk|kotl[íi]k|zpracov[áa]n[íi]m osobn[íi]ch", re.I)
@@ -84,18 +90,32 @@ def build(rec, src):
     body = src.get("body") or rec.get("body_text") or ""
     ob = obvod_name(host)
 
+    # ⚠ LHŮTA JE V PŘÍLOZE, NE NA STRÁNCE (2026‑09‑23). Stránka obvodu je
+    # rozcestník („Dotace 2027" a pod tím odkazy); vlastní podmínky včetně
+    # termínu podání jsou v PDF se zásadami. Harvester přílohy stahuje
+    # a převádí na text (`attachments[].txt_path`) a `build_extract_input`
+    # z nich skládá `attachments_md` — jen se do něj nikdo nedíval, takže
+    # 880 kB převedeného textu leželo ladem a zdroj nedal jediný záznam.
+    # Pořadí je ale dané: co je na STRÁNCE, platí před tím, co je v příloze
+    # (příloh bývá víc a jsou mezi nimi i staré ročníky).
+    atts_md = src.get("attachments_md") or ""
+
     open_from = deadline = None
     ev = {}
-    m = RANGE_RE.search(body)
-    if m:
-        open_from = _iso(m.group(1), m.group(2), m.group(3))
-        deadline = _iso(m.group(4), m.group(5), m.group(6))
-        ev["deadline"] = _sentence(body, m.start())
-    else:
-        m = DO_RE.search(body)
+    for text in (body, atts_md):
+        if not text:
+            continue
+        m = RANGE_RE.search(text)
+        if m:
+            open_from = _iso(m.group(1), m.group(2), m.group(3))
+            deadline = _iso(m.group(4), m.group(5), m.group(6))
+            ev["deadline"] = _sentence(text, m.start())
+            break
+        m = DO_RE.search(text)
         if m:
             deadline = _iso(m.group(1), m.group(2), m.group(3))
-            ev["deadline"] = _sentence(body, m.start())
+            ev["deadline"] = _sentence(text, m.start())
+            break
 
     src_doc = None
     for a in rec.get("attachments") or []:

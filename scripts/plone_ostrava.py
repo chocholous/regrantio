@@ -262,8 +262,24 @@ def harvest_attachment(url, name, files_dir, cache, timeout, max_bytes, ext_hint
 
 
 # ---------------------------------------------------------------- crawl
+# ⚠ ROZPOČET NA ČAS (2026‑09‑23). Tenhle harvester obchází DVACET webů
+# ostravských obvodů a u každého stahuje a převádí přílohy — v týdenní obnově
+# to pokaždé přeteklo strop kroku (12 minut), krok se zabil a protože se
+# zapisuje až na konci, NEZŮSTALO NIC. Zdroj proto neměl v katalogu jediné
+# razítko a přitom bral pětinu rozpočtu celého běhu. S rozpočtem se crawl
+# zastaví po vypršení času a zapíše, co stihl: částečná sklizeň je pořád
+# sklizeň, protože ingest je upsert (co se nestihlo, zůstane z minula).
+_DEADLINE = None
+
+
+def _out_of_time():
+    return _DEADLINE is not None and time.time() > _DEADLINE
+
+
 def crawl_host(host, files_dir, timeout, retries, ceiling, max_bytes, delay,
                discover_only=False):
+    if _out_of_time():
+        return {"host_requested": host, "canonical_base": None, "sections": []}, []
     base, sections = discover_sections(host, timeout, retries)
     rec0 = {"host_requested": host, "canonical_base": base,
             "sections": [{"url": u, "label": t} for u, t in sections]}
@@ -280,6 +296,9 @@ def crawl_host(host, files_dir, timeout, retries, ceiling, max_bytes, delay,
     att_cache = {}
     queue = [(u, u, None) for u in roots]                    # (url, section_root, parent_rec_idx)
     while queue:
+        if _out_of_time():
+            log(f"  ⚠ rozpočet vyčerpán na {host}: {len(records)} stránek, zbytek zůstane z minula")
+            break
         url, root, parent = queue.pop(0)
         key = urlsplit(url).netloc.lower() + urlsplit(url).path + (
             "?" + urlsplit(url).query if urlsplit(url).query else "")
@@ -381,11 +400,17 @@ def main():
     ap.add_argument("--out", default=OUT_DOCS)
     ap.add_argument("--files-dir", default=FILES_DIR)
     ap.add_argument("--discover-only", action="store_true", help="jen najdi dotační sekce, necrawluj")
+    ap.add_argument("--budget-min", type=float, default=0,
+                    help="strop na celou sklizeň v minutách; po vypršení se zapíše, co se stihlo "
+                         "(0 = bez stropu). Týdenní obnova ho nastavuje, viz refresh_run.py")
     ap.add_argument("--workers", type=int, default=L("http.download_workers"),
                     help="paralelismus PŘES hosty (uvnitř hostu serial + polite delay)")
     args = ap.parse_args()
 
     hosts = args.hosts.split(",") if args.hosts else default_hosts()
+    if args.budget_min:
+        global _DEADLINE
+        _DEADLINE = time.time() + args.budget_min * 60
     timeout = L("http.default_timeout_s")
     retries = L("http.default_retries")
     ceiling = L("safety.runaway_page_ceiling")
@@ -414,6 +439,7 @@ def main():
                 f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
     print(json.dumps({"MARKER": "PLONE_OSTRAVA", "hosts": len(hosts),
+                      "budget_hit": bool(_out_of_time()),
                       "pages": len(all_records),
                       "attachments": sum(s["attachments"] for s in summary),
                       "att_with_text": sum(s["att_with_text"] for s in summary),

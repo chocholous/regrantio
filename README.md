@@ -108,6 +108,24 @@ zkrácený na zbytek rozpočtu), zdroje se berou od **nejdéle neověřených**
 archivu ze sitemapy a `eeagrants` je zmražený (období skončilo, harvester
 mimo registr). Zápis do databáze z CI dál čeká na secrets (viz níž).
 
+⚠ **Rotace nerotovala a zdroje hladověly (2026‑09‑23).** Pořadí „nejdéle
+neověřené první" čte `data/sources.json` — jenže CI ho po přepočtu
+NECOMMITOVALO, takže každý běh dostal inventář z 15. 9. a řadil podle něj.
+Fronta tím zamrzla: v čele stály pokaždé čtyři zdroje bez razítka (mezi nimi
+zmražený `kr-jihomoravsky.cz` a `plone_ostrava`, který bral 12 minut a kvůli
+zápisu až na konci nezapsal nic), a co bylo na konci fronty, se neobnovilo
+ani jednou. Změřeno na běhu 21. 9.: **13 zdrojů z 34**, `fondvysociny.cz`
+a `stredoceskykraj.cz` naposledy 9. 9.
+
+Opraveno třemi zásahy: commit inventáře (`data/sources.json`, `quality.json`,
+`QUALITY.md`) v CI, zmražené zdroje se neharvestují vůbec
+(`refresh_run._frozen()`) a `plone_ostrava` dostal vlastní rozpočet
+(`--budget-min 8`), takže zapíše i to, co stihl. Ověřeno plným během
+23. 9.: **31 zdrojů z 34 za 35 minut**, katalog 3825 → 3852. Zbývají tři
+a u každého je důvod: `kr-jihomoravsky.cz` je za přihlášením (zmražený),
+`hzs` má na webu jen rozcestník bez výzev a `msmt` odmítl IP po příliš
+rychlé sklizni (403; harvest ověřený, viz níž).
+
 ⚠ **Souborů `scripts/extractors/*.py` je 42, ale jen 15 z nich vstup opravdu ČTE.**
 Zbytek má data napsaná natvrdo — je to přepis jedné extrakce z 2026‑06/07, ne
 parser. Vypadají stejně, spustí se, vytisknou „wrote N grants" a skončí nulou;

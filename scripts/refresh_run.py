@@ -256,7 +256,11 @@ EXTRACT_SOURCES = {
                "--out", "data/optak_documents.jsonl"], "html"),
     "opzp": (["opzp.py"], "html"),
     "osf": (["osf.py"], "html"),
-    "plone_ostrava": (["plone_ostrava.py"], "html"),
+    # ⚠ S ROZPOČTEM (2026‑09‑23): dvacet webů obvodů se do stropu kroku
+    # nevejde a bez rozpočtu se krok zabil bez zápisu — zdroj byl proto
+    # v katalogu bez jediného razítka. Osm minut stačí na část obvodů;
+    # zbytek doplní příští běh, protože ingest je upsert.
+    "plone_ostrava": (["plone_ostrava.py", "--budget-min", "8"], "html"),
     "tacr": (["tacr.py"], "structured"),
     "vlada": (["vlada.py"], "html"),
     # ⚠ BEZ VLASTNÍHO HARVESTERU. Extraktor v `data/` mají, sběrač ne — dostaly
@@ -386,6 +390,23 @@ PUBLISH = (["publish_export.py"], "publikace do úschovny (pro produkt)")
 # Stejně jako `--publish` se bere VÝSLOVNĚ: je to okamžik, kdy se data stanou
 # viditelná pro zákazníky, a to nemá udělat nikdo omylem.
 PUBLISH_DB = (["publish_db.py"], "zápis do databáze produktu")
+
+
+def _frozen():
+    """Zdroje, které inventář vede jako zmražené (`sources_inventory.FROZEN`).
+
+    ⚠ ZMRAŽENÝ ZDROJ SE NEHARVESTUJE (2026‑09‑23). `kr-jihomoravsky.cz` je
+    od 1. 9. za přihlášením (HTTP 401) a v inventáři zmražený — jenže
+    v registru obnovy zůstal, takže se na něj každý týden sáhlo, třikrát se
+    to zopakovalo a teprve pak to vzdalo. Horší než ztracený čas je pořadí:
+    zdroj bez razítka jde v řazení podle stáří PRVNÍ, takže zmražené zdroje
+    stály v čele fronty každý běh a braly místo těm, které se obnovit dají.
+    """
+    try:
+        import sources_inventory
+        return set(sources_inventory.FROZEN)
+    except Exception:  # noqa: BLE001  (inventář je pomocník, ne podmínka běhu)
+        return set()
 
 
 def _stalest_first(slugs):
@@ -549,6 +570,15 @@ def main():
     # týden se obnovily tytéž první a zbytek stárnul. Řadí se proto podle
     # `last_fetched` z inventáře (`data/sources.json`): co je nejdéle
     # neověřené, jde první; bez záznamu o stáří úplně první.
+    frozen = _frozen()
+    if not a.only:  # `--only` je výslovná žádost: zmražený zdroj se na požádání zkusí
+        skipped_frozen = sorted((set(chosen) | set(chosen_extract) | set(chosen_model)) & frozen)
+        if skipped_frozen:
+            print(f"· zmražené zdroje přeskočeny ({len(skipped_frozen)}): {', '.join(skipped_frozen)}")
+        chosen = [s for s in chosen if s not in frozen]
+        chosen_extract = [s for s in chosen_extract if s not in frozen]
+        chosen_model = [s for s in chosen_model if s not in frozen]
+
     chosen = _stalest_first(chosen)
     chosen_extract = _stalest_first(chosen_extract)
     chosen_model = _stalest_first(chosen_model)

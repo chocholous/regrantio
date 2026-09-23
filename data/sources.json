@@ -18,9 +18,9 @@
 		"type": "statni_agentura",
 		"refresh": "B",
 		"harvester": "czechaid_harvest.py",
-		"records": 9,
-		"live": 4,
-		"last_fetched": "2026-09-11"
+		"records": 11,
+		"live": 6,
+		"last_fetched": "2026-09-23"
 	},
 	"dotace.brno.cz": {
 		"name": "Město Brno",
@@ -30,8 +30,8 @@
 		"refresh": "A",
 		"harvester": "brno_harvest.py",
 		"records": 49,
-		"live": 35,
-		"last_fetched": "2026-09-11"
+		"live": 38,
+		"last_fetched": "2026-09-23"
 	},
 	"dotace.chyne.cz": {
 		"name": "Obec Chýně",
@@ -53,7 +53,7 @@
 		"harvester": "dotis_harvest.py",
 		"records": 148,
 		"live": 26,
-		"last_fetched": "2026-09-11"
+		"last_fetched": "2026-09-23"
 	},
 	"dotace.kraj-lbc.cz": {
 		"name": "Liberecký kraj",
@@ -62,9 +62,9 @@
 		"type": "samosprava_kraj",
 		"refresh": "A",
 		"harvester": "liberecky_harvest.py",
-		"records": 135,
+		"records": 137,
 		"live": 49,
-		"last_fetched": "2026-09-11"
+		"last_fetched": "2026-09-23"
 	},
 	"dotace.medlanky.cz": {
 		"name": "Brno‑Medlánky",
@@ -150,9 +150,9 @@
 		"type": "samosprava_kraj",
 		"refresh": "A",
 		"harvester": "pardubicky_harvest.py",
-		"records": 107,
+		"records": 108,
 		"live": 23,
-		"last_fetched": "2026-09-11"
+		"last_fetched": "2026-09-23"
 	},
 	"dotace.plzen.eu": {
 		"name": "Město Plzeň",
@@ -339,7 +339,7 @@
 		"harvester": "esfcr_harvest.py",
 		"records": 234,
 		"live": 16,
-		"last_fetched": "2026-09-03"
+		"last_fetched": "2026-09-23"
 	},
 	"eu_ft": {
 		"name": "Evropská komise (Funding & Tenders)",
@@ -348,9 +348,9 @@
 		"type": "evropska_komise",
 		"refresh": "B",
 		"harvester": "eu_ft.py",
-		"records": 684,
-		"live": 637,
-		"last_fetched": "2026-09-04"
+		"records": 696,
+		"live": 522,
+		"last_fetched": "2026-09-23"
 	},
 	"fondbudoucnosti": {
 		"name": "Česko‑německý fond budoucnosti",
@@ -383,7 +383,7 @@
 		"harvester": "fondvysociny_harvest.py",
 		"records": 314,
 		"live": 235,
-		"last_fetched": "2026-09-09"
+		"last_fetched": "2026-09-23"
 	},
 	"frydekmistek.cz": {
 		"name": "Město Frýdek‑Místek",
@@ -493,7 +493,7 @@
 		"harvester": "interreg.py",
 		"records": 6,
 		"live": 4,
-		"last_fetched": "2026-09-03"
+		"last_fetched": "2026-09-23"
 	},
 	"intl_funds": {
 		"name": "Visegrad Fund / ERSTE Foundation",
@@ -504,7 +504,7 @@
 		"harvester": "intl_funds.py",
 		"records": 6,
 		"live": 6,
-		"last_fetched": "2026-09-03"
+		"last_fetched": "2026-09-23"
 	},
 	"irop.gov.cz": {
 		"name": "IROP (MMR)",
@@ -514,7 +514,7 @@
 		"refresh": "A",
 		"harvester": "kentico_irop.py",
 		"records": 120,
-		"live": 57,
+		"live": 52,
 		"last_fetched": null
 	},
 	"jihlava.cz": {
@@ -536,7 +536,7 @@
 		"refresh": "C",
 		"harvester": "karvina_harvest.py",
 		"records": 15,
-		"live": 4,
+		"live": 3,
 		"last_fetched": null
 	},
 	"kellner": {
@@ -580,8 +580,8 @@
 		"refresh": "A",
 		"harvester": "karlovarsky_harvest.py",
 		"records": 86,
-		"live": 26,
-		"last_fetched": "2026-09-11"
+		"live": 28,
+		"last_fetched": "2026-09-23"
 	},
 	"kr-ustecky.cz": {
 		"name": "Ústecký kraj",
@@ -590,9 +590,9 @@
 		"type": "samosprava_kraj",
 		"refresh": "A",
 		"harvester": "ustecky_harvest.py",
-		"records": 110,
+		"records": 111,
 		"live": 24,
-		"last_fetched": "2026-09-11"
+		"last_fetched": "2026-09-23"
 	},
 	"kraj-jihocesky.cz": {
 		"name": "Jihočeský kraj",
@@ -602,8 +602,8 @@
 		"refresh": "A",
 		"harvester": "jihocesky_harvest.py",
 		"records": 11,
-		"live": 9,
-		"last_fetched": "2026-09-11"
+		"live": 8,
+		"last_fetched": "2026-09-23"
 	},
 	"krasapomoci": {
 		"name": "Nadační fond Krása pomoci",
@@ -735,7 +735,7 @@
 		"harvester": "mk_harvest.py",
 		"records": 53,
 		"live": 2,
-		"last_fetched": "2026-09-03"
+		"last_fetched": "2026-09-23"
 	},
 	"mkcr": {
 		"name": "Ministerstvo kultury",
@@ -810,9 +810,9 @@
 		"type": "samosprava_kraj",
 		"refresh": "A",
 		"harvester": "msk_harvest.py",
-		"records": 104,
-		"live": 27,
-		"last_fetched": "2026-09-11"
+		"records": 105,
+		"live": 28,
+		"last_fetched": "2026-09-23"
 	},
 	"msmt": {
 		"name": "Ministerstvo školství, mládeže a tělovýchovy",
@@ -877,7 +877,7 @@
 		"refresh": "C",
 		"harvester": "mv_cms.py",
 		"records": 83,
-		"live": 42,
+		"live": 41,
 		"last_fetched": null
 	},
 	"mzp": {
@@ -931,9 +931,9 @@
 		"type": "nadace",
 		"refresh": "B",
 		"harvester": "nadace_spa.py",
-		"records": 15,
-		"live": 13,
-		"last_fetched": "2026-09-03"
+		"records": 16,
+		"live": 14,
+		"last_fetched": "2026-09-23"
 	},
 	"nadacecez": {
 		"name": "Nadace ČEZ",
@@ -1010,7 +1010,7 @@
 		"harvester": "nadacevia.py",
 		"records": 26,
 		"live": 7,
-		"last_fetched": "2026-09-03"
+		"last_fetched": "2026-09-23"
 	},
 	"nadacevodafone.cz": {
 		"name": "Nadace Vodafone",
@@ -1065,7 +1065,7 @@
 		"harvester": "nsa.py",
 		"records": 21,
 		"live": 1,
-		"last_fetched": "2026-09-04"
+		"last_fetched": "2026-09-23"
 	},
 	"olkraj.cz": {
 		"name": "Olomoucký kraj",
@@ -1075,8 +1075,8 @@
 		"refresh": "A",
 		"harvester": "olomoucky_harvest.py",
 		"records": 12,
-		"live": 7,
-		"last_fetched": "2026-09-11"
+		"live": 6,
+		"last_fetched": "2026-09-23"
 	},
 	"olomouc.eu": {
 		"name": "Město Olomouc",
@@ -1109,7 +1109,7 @@
 		"harvester": "opd.py",
 		"records": 12,
 		"live": 5,
-		"last_fetched": "2026-09-04"
+		"last_fetched": "2026-09-23"
 	},
 	"opjak": {
 		"name": "OP Jan Amos Komenský (MŠMT)",
@@ -1120,7 +1120,7 @@
 		"harvester": "opjak.py",
 		"records": 8,
 		"live": 7,
-		"last_fetched": "2026-09-04"
+		"last_fetched": "2026-09-23"
 	},
 	"opst": {
 		"name": "OP Spravedlivá transformace (MŽP)",
@@ -1131,7 +1131,7 @@
 		"harvester": "opst.py",
 		"records": 101,
 		"live": 5,
-		"last_fetched": "2026-09-04"
+		"last_fetched": "2026-09-23"
 	},
 	"optak": {
 		"name": "OP TAK (MPO)",
@@ -1141,8 +1141,8 @@
 		"refresh": "B",
 		"harvester": "harvest_site.py",
 		"records": 17,
-		"live": 6,
-		"last_fetched": "2026-09-04"
+		"live": 5,
+		"last_fetched": "2026-09-23"
 	},
 	"opzp": {
 		"name": "OP Životní prostředí (SFŽP)",
@@ -1153,7 +1153,7 @@
 		"harvester": "opzp.py",
 		"records": 107,
 		"live": 12,
-		"last_fetched": "2026-09-04"
+		"last_fetched": "2026-09-23"
 	},
 	"osf": {
 		"name": "Nadace OSF",
@@ -1164,7 +1164,7 @@
 		"harvester": "osf.py",
 		"records": 1,
 		"live": 0,
-		"last_fetched": "2026-09-03"
+		"last_fetched": "2026-09-23"
 	},
 	"ostrava.dsw2.otevrenamesta.cz": {
 		"name": "Město Ostrava",
@@ -1217,9 +1217,9 @@
 		"type": "samosprava_obec",
 		"refresh": "B",
 		"harvester": "plone_ostrava.py",
-		"records": 5,
-		"live": 5,
-		"last_fetched": null
+		"records": 9,
+		"live": 6,
+		"last_fetched": "2026-09-23"
 	},
 	"praha.eu": {
 		"name": "Hlavní město Praha",
@@ -1228,9 +1228,9 @@
 		"type": "samosprava_kraj",
 		"refresh": "A",
 		"harvester": "praha_harvest.py",
-		"records": 37,
-		"live": 36,
-		"last_fetched": "2026-09-11"
+		"records": 38,
+		"live": 37,
+		"last_fetched": "2026-09-23"
 	},
 	"praha6.dsw2.otevrenamesta.cz": {
 		"name": "Praha 6",
@@ -1251,7 +1251,7 @@
 		"refresh": "C",
 		"harvester": "prerov_harvest.py",
 		"records": 9,
-		"live": 8,
+		"live": 4,
 		"last_fetched": null
 	},
 	"prostejov.eu": {
@@ -1360,9 +1360,9 @@
 		"type": "samosprava_kraj",
 		"refresh": "A",
 		"harvester": "stredocesky_harvest.py",
-		"records": 92,
-		"live": 40,
-		"last_fetched": "2026-09-09"
+		"records": 95,
+		"live": 42,
+		"last_fetched": "2026-09-23"
 	},
 	"stredoceskykraj.dsw2.otevrenamesta.cz": {
 		"name": "Středočeský kraj",
@@ -1393,9 +1393,9 @@
 		"type": "statni_agentura",
 		"refresh": "B",
 		"harvester": "tacr.py",
-		"records": 10,
-		"live": 1,
-		"last_fetched": "2026-09-04"
+		"records": 11,
+		"live": 2,
+		"last_fetched": "2026-09-23"
 	},
 	"teplice.cz": {
 		"name": "Město Teplice",
@@ -1461,7 +1461,7 @@
 		"harvester": "vlada.py",
 		"records": 7,
 		"live": 0,
-		"last_fetched": "2026-09-03"
+		"last_fetched": "2026-09-23"
 	},
 	"voracek": {
 		"name": "Nadace Jakuba Voráčka",
@@ -1481,8 +1481,8 @@
 		"type": "samosprava_kraj",
 		"refresh": "A",
 		"harvester": "zlinsky_harvest.py",
-		"records": 13,
-		"live": 7,
-		"last_fetched": "2026-09-11"
+		"records": 14,
+		"live": 8,
+		"last_fetched": "2026-09-23"
 	}
 }

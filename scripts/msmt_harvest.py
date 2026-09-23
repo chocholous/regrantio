@@ -51,7 +51,19 @@ import http_util  # noqa: E402  (jednotna TLS politika + fallback)
 
 HOST = "msmt.gov.cz"
 HOST_ALIASES = {"msmt.gov.cz", "www.msmt.gov.cz", "msmt.cz", "www.msmt.cz"}
-SEEDS = ["https://msmt.gov.cz/dotacni-programy"]
+# ⚠ SITEMAPA, NE CRAWL (2026‑09‑23). msmt.gov.cz přešlo z Marwelu na Next.js
+# (App Router, `/_next/…`) a stará cesta přestala existovat: `/dotacni-programy`
+# vrací 200, ale v HTML je DESET odkazů — zbytek dokresluje JavaScript, takže
+# harvest končil `pages: 0, articles: 0` a zdroj se tvářil jako živý, přestože
+# do katalogu nepřinesl nic. Nový web ale publikuje členěnou sitemapu a v ní
+# je dotační sekce celá (92 URL k 23. 9.), s `lastmod` u každé položky —
+# spolehlivější vstup než procházení odkazů. Obsah stránky se vykresluje i na
+# serveru, takže text i přílohy jdou přečíst bez prohlížeče.
+SITEMAP_INDEX = "https://msmt.gov.cz/sitemap.xml"
+# Podsitemapy, které nesou výzvy. Zbytek webu (aktuality, kariéra, kontakty)
+# do katalogu nepatří.
+SITEMAP_SECTIONS = ("dotace", "eu-vyzvy", "vyzkum-vyzvy")
+SEEDS = ["https://msmt.gov.cz/dotace"]
 # grant-relevance linku (URL slug NEBO text kotvy); diakritika v obou tvarech
 GRANT = re.compile(r"grant|dota[cč]|v[ýy]zv|stipend|sout[ěe]ž|program|podpor|fond", re.I)
 # cesty mimo obsah (infrastruktura Marwelu) — nikdy nenásledovat
@@ -87,7 +99,18 @@ def norm_url(url, base):
 
 
 def article_seg(page_html):
-    """Vyřízne obsahovou část (#article … konec .middle) — bez sidebar navigace."""
+    """Vyřízne obsahovou část stránky — bez hlavičky, patičky a navigace.
+
+    Next.js vykresluje obsah do `<main …>`; uvnitř nejsou žádné stabilní
+    třídy (Tailwind generuje jména za běhu), takže se bere celý `<main>`.
+    Starý Marwel měl `id="article"`; ten tvar se drží jako záloha, aby skript
+    přečetl i archivní HTML uložené z doby před přechodem.
+    """
+    i = page_html.find("<main")
+    if i >= 0:
+        i = page_html.find(">", i) + 1
+        j = page_html.find("</main>", i)
+        return page_html[i:j] if j > 0 else page_html[i:]
     i = page_html.find('id="article"')
     if i < 0:
         return None
@@ -121,8 +144,11 @@ def parse_links(seg, url):
         p = urlsplit(u)
         if p.netloc != HOST or SKIP_PATH.search(p.path):
             continue
+        # `/media/wp-content/uploads/…` je úložiště nového webu (headless
+        # WordPress za Next.js); `/file/<id>` a `/uploads/` drží starý Marwel.
         if (FILE_LANDING.match(p.path) or FILE_DIRECT.search(p.path)
-                or DOC_EXT_RE.search(u) or "/uploads/" in p.path):
+                or DOC_EXT_RE.search(u) or "/uploads/" in p.path
+                or p.path.startswith("/media/")):
             atts.append({"url": u, "name": anchor or os.path.basename(p.path)})
             continue
         is_pager = "index.php" in p.path and "rewrite=" in p.query
@@ -137,13 +163,28 @@ def parse_links(seg, url):
     return queue, list(seen.values())
 
 
+def page_title(page_html, seg):
+    """Titulek: `<h1>` obsahu, jinak `<title>` bez ocásku „ | MŠMT"."""
+    for pat, src in ((r"<h1[^>]*>(.*?)</h1>", seg), (r"<title[^>]*>(.*?)</title>", page_html)):
+        m = re.search(pat, src, re.S)
+        if not m:
+            continue
+        t = H.unescape(re.sub(r"<[^>]+>", " ", m.group(1))).replace("\xa0", " ")
+        t = re.sub(r"\s*\|\s*MŠMT\s*$", "", re.sub(r"\s+", " ", t)).strip()
+        if t:
+            return t
+    return None
+
+
 def parse_page(url, page_html):
     seg = article_seg(page_html)
     if seg is None:
         return None, [], []
-    m = re.search(r"<h2[^>]*>(.*?)</h2>", seg, re.S)
-    title = H.unescape(re.sub(r"<[^>]+>", " ", m.group(1))).replace("\xa0", " ").strip() if m else None
-    kind = "listing" if re.search(r'class="\s*item"|title_perex_img_info', seg) else "article"
+    title = page_title(page_html, seg)
+    # Rozcestník sekce (`/dotace`) vs. jedna výzva (`/dotace/<slug>`): na novém
+    # webu to spolehlivě říká hloubka cesty, ne třída v HTML.
+    depth = len([x for x in urlsplit(url).path.split("/") if x])
+    kind = "listing" if depth <= 1 else "article"
     queue, atts = parse_links(seg, url)
     rec = {"host": HOST, "title": title, "url": url, "date": None,
            "kind": kind, "body_text": html_to_text(seg)}
@@ -208,6 +249,31 @@ def materialize(att, files_dir, timeout, max_bytes):
             "file_path": fpath, "status": "ok" if chars else (cerr or "convert-fail")}
 
 
+def sitemap_urls(timeout):
+    """→ {url: lastmod} ze sitemap indexu, jen z dotačních podsitemap."""
+    out = {}
+    try:
+        idx, _ = fetch(SITEMAP_INDEX, timeout)
+    except Exception as e:  # noqa: BLE001
+        print(f"  [err] sitemap index: {type(e).__name__}: {e}", file=sys.stderr)
+        return out
+    subs = [u for u in re.findall(r"<loc>([^<]+)</loc>", idx)
+            if any(f"/sitemap/{s}/" in u for s in SITEMAP_SECTIONS)]
+    for sub in subs:
+        try:
+            xml, _ = fetch(sub, timeout)
+        except Exception as e:  # noqa: BLE001
+            print(f"  [err] {sub}: {type(e).__name__}", file=sys.stderr)
+            continue
+        for blok in re.findall(r"<url>(.*?)</url>", xml, re.S):
+            loc = re.search(r"<loc>([^<]+)</loc>", blok)
+            mod = re.search(r"<lastmod>([^<]+)</lastmod>", blok)
+            if loc:
+                out[norm_url(loc.group(1), loc.group(1))] = (mod.group(1)[:10] if mod else None)
+        print(f"  [sitemap] {sub.rsplit('/', 2)[-2]}: {len(out)} URL celkem", file=sys.stderr)
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -216,11 +282,15 @@ def main():
     ap.add_argument("--out", default="data/msmt_documents.jsonl")
     ap.add_argument("--files-dir", default="data/msmt_files")
     ap.add_argument("--resume", action="store_true", help="navaž: přeskoč URL už v --out, appenduj")
+    ap.add_argument("--no-sitemap", action="store_true",
+                    help="neber URL ze sitemapy, jen ze --seeds (diagnostika)")
     ap.add_argument("--no-follow", action="store_true",
                     help="gap-fill režim: stáhni JEN dané URL (extra-urls/seeds), nefolow linky z obsahu; přílohy se materializují normálně")
     ap.add_argument("--timeout", type=int, default=L("http.default_timeout_s"))
-    ap.add_argument("--delay", type=float, default=1.0,
-                    help="pauza mezi page-fetchi (robots deklaruje Crawl-Delay 30; jednorázový harvest jede mírněji)")
+    ap.add_argument("--delay", type=float, default=2.5,
+                    help="pauza mezi page-fetchi. ⚠ 2026‑09‑23: sklizeň s 0,3 s si vysloužila HTTP 403 "
+                         "na několik hodin (robots deklaruje Crawl-Delay 30). Sto stránek po 2,5 s "
+                         "jsou čtyři minuty, což se do stropu kroku vejde, a web to unese.")
     ap.add_argument("--max-pages", type=int, default=L("safety.runaway_page_ceiling"),
                     help="runaway-pojistka (limits.json safety.runaway_page_ceiling), NE coverage cap")
     ap.add_argument("--workers", type=int, default=L("http.download_workers"))
@@ -238,7 +308,10 @@ def main():
                 pass
         print(f"  [resume] {len(seen)} URL už v {args.out}", file=sys.stderr)
 
-    queue = [norm_url(s, s) for s in args.seeds]
+    lastmod = {}
+    if not args.no_sitemap:
+        lastmod = sitemap_urls(args.timeout)
+    queue = list(lastmod) or [norm_url(s, s) for s in args.seeds]
     if args.extra_urls:
         queue += [norm_url(u.strip(), u.strip()) for u in open(args.extra_urls, encoding="utf-8") if u.strip()]
 
@@ -273,6 +346,8 @@ def main():
         rec, links, atts = parse_page(url, h)
         if rec is None:
             continue
+        if lastmod.get(url):
+            rec["date"] = lastmod[url]
         recs.append(rec)
         att_by_page[url] = atts
         if not args.no_follow:
@@ -295,7 +370,17 @@ def main():
         rec["attachments"] = [done[a["url"]] for a in att_by_page.get(rec["url"], [])]
         rec["n_attachments"] = len(rec["attachments"])
 
+    # ⚠ PRÁZDNÁ SKLIZEŇ NEPŘEPÍŠE PŘEDCHOZÍ (2026‑09‑23). Zápis v režimu "w"
+    # soubor nejdřív usekne, takže výpadek sítě (nebo HTTP 403 za příliš rychlé
+    # procházení) proměnil hotový `msmt_documents.jsonl` v nulu — a vstup pro
+    # extrakci zmizel dřív, než si toho někdo všiml. Když se nesklidilo nic, zůstane
+    # na disku to z minula a krok skončí chybou, aby to bylo vidět.
     os.makedirs(os.path.dirname(args.out) or ".", exist_ok=True)
+    if not recs and not args.resume:
+        print(json.dumps({"MARKER": "MSMT_HARVEST", "pages": 0, "failed": n_failed,
+                          "note": "nic se nesklidilo — předchozí soubor zůstává beze změny",
+                          "out": args.out}, ensure_ascii=False))
+        return 1
     with open(args.out, "a" if args.resume else "w", encoding="utf-8") as o:
         for r in recs:
             o.write(json.dumps(r, ensure_ascii=False) + "\n")
@@ -310,4 +395,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main() or 0)

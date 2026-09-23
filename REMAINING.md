@@ -3,18 +3,33 @@
 Živý plánovací dokument. **Aktuální stav, co je hotovo, co zbývá a proč.** JAK pracovat (zlatá pravidla,
 recept na zdroj, pasti) = `docs/SESSION_PLAYBOOK.md` + `CLAUDE.md`. Katalog je v gitu, zbytek dat v gitignored `data/`.
 
-> **Status k 2026-09-15.** Týdenní obnova v GitHub Actions **nedobíhala**
-> (běhy 7. a 14. 9. zrušené po 90 minutách, bez exportu): rozpočet se hlídal
-> jen mezi zdroji a jeden pomalý harvest ho přetekl. Opraveno: strop na krok
-> (`--step-timeout-min`), pořadí od nejdéle neověřených, `esfcr` bez archivu,
-> `eeagrants` zmražený (0 živých, 30 minut, rozbitý řetěz). Ověřeno ručním
-> spuštěním téhož dne: 34 zdrojů, 61 minut, brána i export prošly, katalog
-> commitnutý (21db5ae), do databáze publikováno ručně (běh #41). Bez credentials
-> už není co dodělat; co zbývá, je v README/CLAUDE.md jako „čeká na klíče":
-> `PUBLIC_SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` v secrets repozitáře
-> (zápis do databáze z CI; dnes se publikuje ručně) a `ANTHROPIC_API_KEY`
-> (třída C, 37 zdrojů). Kdo obnovu pustí ručně, publikuje `publish_db.py`.
+> **Status k 2026-09-23.** Týdenní obnova sice od 15. 9. dobíhá, ale
+> **obnovovala jen třetinu zdrojů**: pořadí „nejdéle neověřené první" čte
+> `data/sources.json` a ten se v CI po přepočtu NECOMMITOVAL, takže každý běh
+> řadil podle inventáře z 15. 9. Fronta zamrzla — v čele stály pokaždé čtyři
+> zdroje bez razítka (`kr-jihomoravsky.cz` zmražený za přihlášením,
+> `plone_ostrava` 12 minut bez jediného zápisu, `hzs`, `msmt`) a na spodek
+> fronty nedošlo. Změřeno na běhu 21. 9.: **13 zdrojů z 34**;
+> `fondvysociny.cz` a `stredoceskykraj.cz` naposledy 9. 9.
 >
+> Opraveno: CI commituje inventář, zmražené zdroje se neharvestují
+> (`refresh_run._frozen()`), `plone_ostrava` má vlastní rozpočet a zapíše
+> i částečnou sklizeň, prázdná sklizeň nepřepíše předchozí soubor
+> (`scripts/jsonl_out.py`). `msmt` přepsán z mrtvého Marwel-crawlu na sitemapu
+> (web přešel na Next.js, starý harvest vracel `pages: 0`) a `plone_ostrava`
+> čte i text příloh, kde obvody mají skutečné lhůty. Ověřeno plným během
+> 23. 9.: **31 zdrojů z 34 za 35 minut**, katalog 3825 → **3852**, brána
+> prošla. Zbývají tři: `kr-jihomoravsky.cz` (401, zmražený), `hzs` (na webu
+> jen rozcestník) a `msmt` (403 po mé rychlé sklizni; harvest ověřený na
+> 103 stránkách a 225 přílohách, extrakce ověřená na vzorku).
+>
+> **Čeká na klíče:** `PUBLIC_SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`
+> v secrets repozitáře (zápis do databáze z CI; dnes ručně) a
+> `ANTHROPIC_API_KEY` (třída C, 37 zdrojů). Bez druhého klíče nemá **978
+> z 1851 živých záznamů** razítko čerstvosti a web na /pro-poskytovatele
+> slibuje obnovu „každý týden", což platí pro 33 deterministických zdrojů,
+> ne pro třídu C.
+
 > **Status k 2026-09-14 (změřeno, ne odhad).** Dataset **3 822 záznamů / 135 zdrojů**,
 > export schema **1.2** (`docs/opportunities.json`, 14 MB), publikace přímo do
 > databáze produktu (`publish_db.py`, běh #40). **122/122 testů**, brána má
