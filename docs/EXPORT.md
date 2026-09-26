@@ -59,7 +59,7 @@ nemá ukazovat člověku — do 2026‑09‑11 ho produkt vypisoval jako poskyto
 | `deadline` | string \| null | konec příjmu — ISO, `"průběžně"`, nebo null |
 | `status` | enum | `open`/`announced`/`closed`/`unknown` — **snapshot z buildu, viz §3** |
 | `status_confidence` | string | `parsed` / `derived` (odvozeno z opakující se lhůty) |
-| `amount` | number \| null | hlavní částka v CZK; **null = neuvedeno, ne 0** |
+| `amount` | number \| null | nejvyšší podpora na **jednoho žadatele / projekt** v CZK; **null = neuvedeno, ne 0**. Celková alokace výzvy je ve `facets.vyse_alokace_czk`; částka, která se jí rovná nebo ji převyšuje, se nepublikuje (do 2026‑09‑26 tu byla „hlavní částka" a u 549 evropských výzev to byla alokace, až 97 mld. Kč; `fix_dataset.amount_per_applicant`) |
 | `eligible_applicants` | string \| null | kdo může žádat (próza). **Vždy řetězec**, nikdy pole — hlídá `validate_release.py` (do 2026‑09‑11 173 záznamů neslo seznam) |
 | `required_attachments` | array | povinné přílohy (může být prázdné) |
 | `how_to_apply` | string \| null | jak podat |

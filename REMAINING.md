@@ -3,6 +3,24 @@
 Živý plánovací dokument. **Aktuální stav, co je hotovo, co zbývá a proč.** JAK pracovat (zlatá pravidla,
 recept na zdroj, pasti) = `docs/SESSION_PLAYBOOK.md` + `CLAUDE.md`. Katalog je v gitu, zbytek dat v gitignored `data/`.
 
+> **Status k 2026-09-26: čištění textů a částka na žadatele.** Revize dat
+> našla tři vady, které žádná kontrola nehlídala, protože byly formálně platné:
+>
+> 1. **549 ze 779 částek byla alokace celé výzvy**, ne strop na žadatele
+>    (OP Zaměstnanost plus až 97 mld. Kč). Grantio je ukazovalo jako
+>    „Maximálně na žadatele". Příčina v `ingest_rich.py` (hlavní částka měla
+>    přednost před štítkem stropu), pojistka `fix_dataset.amount_per_applicant`,
+>    kontrakt `amount` v `docs/EXPORT.md` zpřesněný.
+> 2. **Parser částek slepoval všechna čísla**: „125 000 Kč / 5 000 EUR" dalo
+>    1 250 005 000 (`ingest_rich._num`, teď bere první číslo, zná „mil"/„mld").
+> 3. **HTML entity a zdvojené mezery v textech** (20 + 4 záznamy,
+>    `fix_dataset.clean_text` v tailu každé obnovy).
+>
+> Testy `tests/test_fix.py` (obě strany pravidel), brána prošla, export
+> přepočtený. **Do databáze Grantia zatím nezapsáno**: `publish_db.py`
+> změní 784 záznamů (zkouška nanečisto 2026-09-26) a to je zásah do dat, která čte běžící produkt; pouští
+> ho zadavatel (`python scripts/publish_db.py`).
+
 > **Status k 2026-09-23.** Týdenní obnova sice od 15. 9. dobíhá, ale
 > **obnovovala jen třetinu zdrojů**: pořadí „nejdéle neověřené první" čte
 > `data/sources.json` a ten se v CI po přepočtu NECOMMITOVAL, takže každý běh
@@ -44,49 +62,17 @@ recept na zdroj, pasti) = `docs/SESSION_PLAYBOOK.md` + `CLAUDE.md`. Katalog je v
 
 ---
 
-## 📊 Aktuální stav datasetu (live `data/opportunities.jsonl`, změřeno 2026-09-03)
+## 📊 Stav datasetu
 
-| metrika | hodnota |
-|---|---|
-| **záznamů celkem** | **3525** (3500 grantů + 25 foundation_mission) |
-| **zdrojů (`source`)** | **134** |
-| **obnovitelných bez modelu** | **28** (14 strukturních + 14 s vlastním parserem) |
-| status grantů | **755 open** · 38 announced · 1794 closed · 913 unknown |
-| termíny | deadline 2587 (74 %) · open_from 2438 (70 %) |
-| částky | amount 778 (22 %) |
-| texty | focus_area 3243 (93 %) · eligible_applicants 2304 (66 %) · source_url 3500 (100 %) |
-| **známé stáří** | **1457 (41 %)** — `provenance.fetched_at`, viz níž |
-| integrita | **0 dup id · 0 bez id · 0 bez title · 0 inverzních termínů** |
-| export | 3525 záznamů, `content_hash` u **100 %** |
+Čísla se tu už neopisují: měří je `scripts/quality_report.py` při každé obnově
+do [`docs/QUALITY.md`](docs/QUALITY.md) (k 2026-09-26: 3 852 záznamů, 1 787
+živých výzev, lhůta u 48,7 %, částka na žadatele u 4,8 %, typ žadatele u
+32,9 %). Tabulka, která tu stála, byla ze 3. 9. a nadpis ji vydával za
+aktuální.
 
-> ⚠ **NOVÁ METRIKA: ZNÁMÉ STÁŘÍ.** Do 2026-09-03 katalog neuměl říct, kdy
-> byl který záznam naposled ověřen u zdroje — `provenance` datum nenesla.
-> Bez modelu obnovit jde **28 zdrojů ze 134** (14 strukturních + 14 s vlastním
-> deterministickým parserem — viz `refresh_run.py --list`); u zbylých čeká
-> obnova na modelovou vrstvu, takže razítko nemají a jejich stáří je neznámé.
->
-> ⚠ Do 2026‑09‑03 tu stálo „14 z 134" a bylo to vedle na obě strany: třída B
-> v žádném registru nebyla, a 28 „extraktorů" má naopak data natvrdo, takže
-> obnovu jen předstírají (`refresh_run.TRANSCRIBED`).
->
-> `null` znamená **„nevíme"**, ne „staré". Štítek „neaktuální" by u čtyř pětin
-> katalogu tvrdil něco, co o něm nevíme. Číslo poroste s každou obnovou; hlídá
-> ho brána `známé stáří záznamů`, aby razítko nikdo tiše nezahodil.
-
-> ⚠ **`typ_zadatele` 37 % je NEJVĚTŠÍ MEZERA V DATECH, ne chyba.** Deterministické
-> harvestery ji nechávají prázdnou schválně (`ingest_kraj.py`: „← LLM vrstva 2,
-> ne keyword") — komu je výzva určená, bývá v próze nebo v PDF pravidel a keyword
-> matching by tam vyrobil nesmysly. Produkt s tím počítá: shoda podle typu
-> žadatele je proto měkký signál, ne tvrdá brána.
-
-> ⚠ **`amount` 23 % a `status` unknown u 912 je taky správně.** Částky bývají jen
-> v PDF a katalogové programy nemají jednu lhůtu — **raději poctivý null než
-> vymyšlené číslo**. Produkt si defaultně filtruje `deadline >= dnes NEBO NULL`,
-> takže archiv nezavazí.
-
-> ⚠ Status v tabulce je SNÍMEK k datu přepočtu. Produkt si stav počítá znovu k dnešku
-> (`build_app.py:computeStatus`, `catalog_status()` v Grantiu), takže se čísla „open/closed"
-> mezi katalogem a aplikací můžou o pár položek lišit — a je to správně.
+> ⚠ **`typ_zadatele` a `amount` jsou nejmenší čísla a je to poctivé.** Komu je
+> výzva určená a kolik dostane jeden žadatel, bývá v próze nebo v PDF pravidel;
+> raději `null` než vymyšlená hodnota. Produkt s tím počítá.
 
 ---
 

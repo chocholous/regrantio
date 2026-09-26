@@ -24,7 +24,7 @@ Spuštění z kořene repa:
    python3 scripts/fix_dataset.py --dry-run  # jen report
 """
 import argparse
-import re, json, os, re, shutil, collections, sys
+import html, re, json, os, shutil, collections, sys
 from datetime import date
 if hasattr(sys.stdout, "reconfigure"):  # Windows cp1250 konzole neumí →·⚠ v diagnostice → vynuť UTF-8 (no-op jinde)
     sys.stdout.reconfigure(encoding="utf-8")
@@ -183,6 +183,60 @@ PROVIDER_TYPE = {
     "albert": "firemni_nadace",       # Nadační fond Albert (Ahold)
     "kontobariery": "nadacni_fond",   # Konto Bariéry (Nadace Charty 77)
 }
+
+
+# Textová pole, která produkt ukazuje člověku. Čistí se všechna stejně.
+# =============================================================================
+# ⚠ NAMĚŘENO 2026-09-26 na exportu 3 852 záznamů: 20 záznamů (Středočeský kraj,
+# Ostrava, Chomutov, Jihočeský kraj) neslo HTML entity doslova, takže Grantio
+# ukazovalo „fond &#8211; školství" a „&hellip;". Opravuje se tady, v tailu
+# každé obnovy, ne v jednotlivých harvesterech: entita se může vrátit z kteréhokoli
+# CMS a pravidlo, které žije ve čtyřech ingestech, se čtyřikrát rozejde.
+TEXT_FIELDS = ("title", "focus_area", "eligible_applicants", "how_to_apply",
+               "deadline_note", "realization_period", "call_number")
+_WS = re.compile(r"[ \t\u00a0]{2,}")
+
+
+def clean_text(value):
+    """HTML entity → znaky; víc mezer za sebou → jedna; okraje oříznuté.
+
+    Nedělitelná mezera uprostřed věty se zachová (je to typografie, ne šum);
+    zdvojená mezera se srazí na obyčejnou. Konce řádků v próze zůstávají.
+    """
+    if not isinstance(value, str):
+        return value
+    t = html.unescape(value)
+    t = _WS.sub(" ", t)
+    return t.strip()
+
+
+# Částka NA ŽADATELE, ne alokace celé výzvy.
+# =============================================================================
+# ⚠ NAMĚŘENO 2026-09-26: 549 ze 779 záznamů s částkou mělo `amount` rovnou
+# `facets.vyse_alokace_czk` — u výzev OP Zaměstnanost plus, OPŽP nebo OPST tedy
+# celou alokaci (až 97 mld. Kč). Grantio ji ukazuje jako „Maximálně na žadatele"
+# a řadí podle ní. Příčina byla v `ingest_rich.py` (vrstva 2 dává „hlavní částku",
+# a tou je u evropských výzev alokace); tohle je pojistka pro záznamy z dřívějších
+# běhů a pro každý budoucí zdroj, který obě čísla splete.
+#
+# Když se částka rovná alokaci, nevíme, kolik dostane jeden žadatel → null.
+# Alokace zůstává ve `facets.vyse_alokace_czk` a produkt ji ukazuje zvlášť.
+def amount_per_applicant(rec):
+    """Vrátí (amount, vyse_max_zadatel_czk) po pravidle „částka není alokace"."""
+    f = rec.get("facets") or {}
+    alok = f.get("vyse_alokace_czk")
+    amount = rec.get("amount")
+    maxz = f.get("vyse_max_zadatel_czk")
+    if alok is not None:
+        # Rovná alokaci = je to alokace. Vyšší než alokace = špatně přečtené
+        # číslo (strop na žadatele nemůže být víc, než výzva rozdělí celkem).
+        if amount is not None and amount >= alok:
+            amount = None
+        if maxz is not None and maxz >= alok:
+            maxz = None
+    if amount is None and maxz is not None:
+        amount = maxz
+    return amount, maxz
 
 
 def load(path):
@@ -344,6 +398,42 @@ def main():
             except Exception:
                 r["deadline"] = None
 
+    # ---- A6) texty bez HTML entit a zdvojených mezer (viz clean_text) ----
+    for r in recs:
+        for field in TEXT_FIELDS:
+            v0 = r.get(field)
+            v1 = clean_text(v0)
+            if v1 != v0:
+                r[field] = v1
+                san["text"] += 1
+        for field in ("required_attachments",):
+            lst = r.get(field)
+            if isinstance(lst, list):
+                cleaned = [clean_text(x) for x in lst]
+                if cleaned != lst:
+                    r[field] = cleaned
+                    san["text"] += 1
+        for d in r.get("documents") or []:
+            if isinstance(d, dict) and isinstance(d.get("popis"), str):
+                p1 = clean_text(d["popis"])
+                if p1 != d["popis"]:
+                    d["popis"] = p1
+                    san["text"] += 1
+
+    # ---- A7) částka na žadatele není alokace výzvy (viz amount_per_applicant) ----
+    for r in recs:
+        if r.get("kind") != "grant":
+            continue
+        a1, m1 = amount_per_applicant(r)
+        f = r.get("facets") or {}
+        if a1 != r.get("amount") or m1 != f.get("vyse_max_zadatel_czk"):
+            r["amount"] = a1
+            if isinstance(r.get("facets"), dict):
+                r["facets"]["vyse_max_zadatel_czk"] = m1
+            if a1 is None:
+                (r.get("field_provenance") or {}).pop("amount", None)
+            san["amount_is_allocation"] += 1
+
     # ---- B) reclasifikace typ_poskytovatele=null ----
     maj = majority_types(recs)
     filled = collections.Counter()
@@ -435,6 +525,8 @@ def main():
     if san:
         print(f"\n=== A4) sanitizace: amount→int|null {san['amount']}× · date→ISO|průběžně|null "
               f"{san['date']}× · deadline<open oprava {san['deadline_fix']}× ===")
+        print(f"=== A6) texty bez entit a zdvojených mezer: {san['text']}× ===")
+        print(f"=== A7) částka rovná alokaci → není částka na žadatele: {san['amount_is_allocation']}× ===")
     print("\n=== B) reclasifikace typ_poskytovatele=null ===")
     for k, c in sorted(filled.items()):
         print(f"  +{c:3}  {k}")

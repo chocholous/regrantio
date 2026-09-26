@@ -338,7 +338,7 @@
 		"refresh": "B",
 		"harvester": "esfcr_harvest.py",
 		"records": 234,
-		"live": 16,
+		"live": 15,
 		"last_fetched": "2026-09-23"
 	},
 	"eu_ft": {
@@ -349,7 +349,7 @@
 		"refresh": "B",
 		"harvester": "eu_ft.py",
 		"records": 696,
-		"live": 522,
+		"live": 464,
 		"last_fetched": "2026-09-23"
 	},
 	"fondbudoucnosti": {
@@ -1152,7 +1152,7 @@
 		"refresh": "B",
 		"harvester": "opzp.py",
 		"records": 107,
-		"live": 12,
+		"live": 7,
 		"last_fetched": "2026-09-23"
 	},
 	"osf": {

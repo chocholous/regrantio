@@ -47,10 +47,10 @@ Třídy obnovy (`data/sources.json`, sloupec `refresh`):
 | třída | cesta | zdrojů |
 |---|---|---:|
 | A | harvest → strukturní ingest (`ingest_kraj`, `ingest_dotis`, rodiny vismo / dsw2 / kentico / plone) | 55 |
-| B | harvest → `scripts/extractors/<slug>.py` → `ingest_rich` | 21 |
+| B | harvest → `scripts/extractors/<slug>.py` → `ingest_rich` | 20 |
 | C | harvest → `build_extract_input` → `extract_api.py` (model) → `ingest_rich` | 37 |
 | T | „extraktor" opisuje červnová data, obnovu jen předstírá; bez harvesteru | 3 |
-| F | zmrazený (zdroj za přihlášením nebo mrtvý) | 2 |
+| F | zmrazený (zdroj za přihlášením nebo mrtvý) | 3 |
 | ? | jednorázový sběr bez zapsané cesty k obnově | 17 |
 
 ## Pevná pravidla
@@ -80,7 +80,7 @@ workflows/          definice pro nástroj Workflow v Claude Code (extract_wf.js 
 prompts/            prompty vrstvy 2 a vytěžené záludnosti (pitfalls.md)
 data/               katalog (v gitu), seeds, jména zdrojů, inventář, kvalita; zbytek gitignored
 docs/               EXPORT (kontrakt) · REFRESH (obnova) · QUALITY (měření) · SESSION_PLAYBOOK · rodiny CMS
-tests/              test_core · test_identity · test_notacall · test_publish · test_publish_db · test_enrich
+tests/              test_core · test_identity · test_notacall · test_fix · test_publish · test_publish_db · test_enrich
 ```
 
 ## Rozcestník

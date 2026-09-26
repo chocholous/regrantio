@@ -32,15 +32,32 @@ CORE_MISSION = {"name", "mission", "support_topics", "cilova_skupina", "regions"
                 "jak_oslovit", "kontakt", "source_doc", "evidence"}
 
 
+_FIRST_NUM = re.compile(r"(\d{1,3}(?:[ \u00a0.]\d{3})+|\d+)(?:,(\d+))?\s*(mld|mil)?", re.I)
+
+
 def _num(x):
-    """číslo z int/float nebo z numerického stringu ('4 700 000', '70 %') → int; jinak None."""
+    """PRVNÍ číslo z int/float nebo ze stringu ('4 700 000', '70 %', '1,5 mil. Kč') → int; jinak None.
+
+    ⚠ Do 2026‑09‑26 se ze stringu braly VŠECHNY číslice: „125 000 Kč / 5 000 EUR"
+    dalo 1 250 005 000 a Česko‑německý fond budoucnosti měl strop na žadatele
+    1,25 mld. Kč. Bere se první číslo; mezera a tečka jsou oddělovače tisíců,
+    čárka desetinná, „mil" a „mld" násobí.
+    """
     if isinstance(x, bool):
         return None
     if isinstance(x, (int, float)):
         return int(x)
     if isinstance(x, str):
-        s = re.sub(r"[^\d]", "", x)
-        return int(s) if s else None
+        m = _FIRST_NUM.search(x)
+        if not m:
+            return None
+        whole = int(re.sub(r"\D", "", m.group(1)))
+        frac = m.group(2) or ""
+        unit = (m.group(3) or "").lower()
+        mult = 1_000_000_000 if unit == "mld" else 1_000_000 if unit == "mil" else 1
+        if mult == 1:
+            return whole
+        return int(round((whole + (int(frac) / 10 ** len(frac) if frac else 0)) * mult))
     return None
 
 
@@ -60,8 +77,15 @@ def _castka_pick(castky, pred):
 def _facets_grant(f, host, ptypes):
     castky = f.get("castky") or []
     alok = _castka_pick(castky, lambda t: "alokace" in t)
-    maxz = _num(f.get("vyse_hlavni_czk")) or _castka_pick(
+    # ⚠ Strop na žadatele se bere ze štítku částky, „hlavní částka" až potom
+    # a jen tehdy, když to není alokace. U evropských výzev vrstva 2 za hlavní
+    # částku dává alokaci (až 97 mld. Kč) a produkt ji ukazoval jako
+    # „Maximálně na žadatele" (2026‑09‑26, `fix_dataset.amount_per_applicant`).
+    maxz = _castka_pick(
         castky, lambda t: ("strop" in t or "max" in t or "maxim" in t) and ("zadatel" in t or "projekt" in t or "zad" in t))
+    if maxz is None:
+        hlavni = _num(f.get("vyse_hlavni_czk"))
+        maxz = hlavni if hlavni != alok else None
     mira = None
     for c in castky:
         t = (c.get("typ") or "").lower()
@@ -102,7 +126,7 @@ def _rec_grant(f, base_id, host, surl, prov, today, page):
         "title": f.get("title"), "focus_area": f.get("focus_area"),
         "open_from": f.get("open_from"), "deadline": f.get("deadline"),
         "status": st, "status_confidence": conf,
-        "amount": _num(f.get("vyse_hlavni_czk")),
+        "amount": None,                               # = facets.vyse_max_zadatel_czk, doplní se níž
         "eligible_applicants": f.get("eligible_applicants"),
         "required_attachments": f.get("required_attachments") or [],
         "how_to_apply": f.get("how_to_apply"), "source_doc": f.get("source_doc"),
@@ -110,6 +134,7 @@ def _rec_grant(f, base_id, host, surl, prov, today, page):
         "facets": _facets_grant(f, host, _rec_grant.ptypes),
         "provenance": prov,
     }
+    rec["amount"] = rec["facets"]["vyse_max_zadatel_czk"]
     # sběrače + role + multi-region + lossless zbytek → extra
     extra = {k: v for k, v in f.items() if k not in CORE_GRANT and v not in (None, "", [], {})}
     extra.update({k: f[k] for k in ("castky", "deadliny", "dokumenty", "prijemci",
