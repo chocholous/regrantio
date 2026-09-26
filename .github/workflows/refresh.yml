@@ -60,13 +60,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         # ⚠ MĚLKÝ KLON. Historie tohohle repozitáře má 2 GB (`data_bundle/`);
         # plný klon by na každém běhu stahoval gigabajty úplně zbytečně.
         with:
           fetch-depth: 1
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.13'
           cache: pip
