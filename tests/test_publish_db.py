@@ -146,6 +146,13 @@ def test_castka_jako_text_z_databaze_se_porovna_cislem():
 
 
 # ---------------------------------------------------------------- otisk
+def test_nova_veta_o_konci_prijmu_se_propise_i_beze_zmeny_obsahu():
+    ec = {"state": "may", "on": None, "note": "nebo do vyčerpání alokace", "planned": None}
+    row = {"raw": {"provider": "Kraj", "early_close": ec}}
+    assert P.derived_changed(row, {"provider": "Kraj", "early_close": None})
+    assert not P.derived_changed(row, {"provider": "Kraj", "early_close": dict(ec)})
+
+
 def test_chybejici_otisk_znamena_zmeneno():
     """Přepsat shodná data je levné, minout skutečnou změnu ne."""
     assert P.has_changed({"content_hash": None}, "abc")

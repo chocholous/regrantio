@@ -256,6 +256,11 @@ def derived_changed(row, prev):
     """
     if (prev.get("provider") or None) != (row["raw"].get("provider") or None):
         return True
+    # `early_close` (kontrakt 1.3) žije jen v `raw`; bez porovnání by se věta
+    # „může skončit dřív" dostala jen k výzvám, kterým se zrovna změnil obsah.
+    stable = lambda v: json.dumps(v or None, ensure_ascii=False, sort_keys=True)  # noqa: E731
+    if stable(prev.get("early_close")) != stable(row["raw"].get("early_close")):
+        return True
     return any((prev.get(c) or None) != (row.get(c) or None) for c in DERIVED_COLUMNS)
 
 
@@ -486,7 +491,8 @@ def main():
             # zůstal stav z minulé publikace (naměřeno 2026‑09‑11: 3 429 řádků
             # bez jména poskytovatele po běhu, který ho poprvé nesl).
             "id,content_hash,deadline,amount,withdrawn_at,typ_zadatele,oblast,kraj,obec,celostatni,"
-            "scope,deadline_kind,program_key,variant_of,call_number,provider:raw->>provider",
+            "scope,deadline_kind,program_key,variant_of,call_number,provider:raw->>provider,"
+            "early_close:raw->early_close",
         ):
             existing[r["id"]] = r
         print(f"· V databázi je {len(existing)} záznamů")

@@ -3,6 +3,19 @@
 Živý plánovací dokument. **Aktuální stav, co je hotovo, co zbývá a proč.** JAK pracovat (zlatá pravidla,
 recept na zdroj, pasti) = `docs/SESSION_PLAYBOOK.md` + `CLAUDE.md`. Katalog je v gitu, zbytek dat v gitignored `data/`.
 
+> **Status k 2026-09-28: konec příjmu před uzávěrkou (kontrakt 1.3).**
+> Podnět z trhu: STEP – Výzkum a vývoj kritických technologií (OP TAK) měl
+> uzávěrku 30. 9. a příjem skončil 11. 8. po převisu 300 % alokace. Nové
+> odvozené pole `early_close` (`enrich.py`, `docs/EXPORT.md` §2c) nese větu
+> ze zdroje; když příjem UŽ skončil, export posune `deadline` na den konce.
+> Extraktor OP TAK čte takové věty z těla stránky.
+>
+> ⚠ **STEP V KATALOGU VŮBEC NENÍ.** Sklizeň `optak.gov.cz` (BFS
+> `harvest_site.py`) přinesla 19 stránek a 14 výzev; výzvy STEP nezachytila.
+> Chybí i Nové úspory energie (NRB, půjčka s dotační složkou). Zbývá: sklízet
+> OP TAK ze seznamu výzev (ne BFS od homepage), ověřit pokrytí proti výpisu
+> na webu a přidat programy NRB.
+
 > **Status k 2026-09-26: čištění textů a částka na žadatele.** Revize dat
 > našla tři vady, které žádná kontrola nehlídala, protože byly formálně platné:
 >

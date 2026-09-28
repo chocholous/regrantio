@@ -36,6 +36,9 @@ import os
 import re
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import enrich  # noqa: E402  věty o konci příjmu (early_close)
+
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
     if sys.stderr:
@@ -164,6 +167,16 @@ def main():
         if m:
             perex = re.sub(r"\s+", " ", m.group(1)).strip()
 
+        # Věty o konci příjmu před uzávěrkou (STEP 2026: uzávěrka 30. 9., konec
+        # 11. 8. po převisu). Hlavička stránky datum nezmění, oznámení v textu
+        # ano; `enrich.early_close` z nich udělá skutečný konec příjmu.
+        konec = []
+        for vzor in (enrich._CLOSED, enrich._MAY):
+            for m in vzor.finditer(text):
+                veta = enrich._sentence(text, m.start(), m.end())
+                if veta not in konec:
+                    konec.append(veta)
+
         evidence = {"title": title[:80]}
         if deadline:
             evidence["deadline"] = re.sub(r"\s+", " ", POLE["deadline"].search(text).group(0))[:60]
@@ -178,6 +191,7 @@ def main():
             "open_from": open_from,
             "deadline": deadline,
             "castky": [{"typ": "alokace", "hodnota": alok}] if alok else [],
+            "dalsi_datumy": [{"datum": None, "popis": v} for v in konec[:3]],
             "vyse_hlavni_czk": None,   # alokace programu ≠ strop na žadatele — NEFABRIKUJEME
             "spoluucast": True,
             "eligible_applicants": ("Malé a střední podniky (u některých aktivit i velké podniky) "

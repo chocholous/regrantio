@@ -25,15 +25,18 @@ from datetime import datetime, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import dedup    # noqa: E402  rodiny ročníků (variant_of, family)
+from opportunities import compute_status  # noqa: E402  kanonické pravidlo stavu
 import enrich   # noqa: E402  odvozená pole kontraktu 1.2
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
-SCHEMA_VERSION = "1.2"  # 1.1: + content_hash per grant; meta.generated_date + meta.content_hash_fields
+SCHEMA_VERSION = "1.3"  # 1.1: + content_hash per grant; meta.generated_date + meta.content_hash_fields
 # 1.2 (2026-09-14): + scope, deadline_kind, deadline_note, program_key, variant_of, family,
 #     call_number, contact, documents, realization_period, field_provenance — viz docs/EXPORT.md §2b.
 #     MINOR: nic se nepřejmenovalo ani neodebralo; konzument 1.1 nová pole ignoruje.
+# 1.3 (2026-09-28): + early_close — co zdroj říká o konci příjmu před uzávěrkou; když
+#     příjem UŽ skončil dřív, `deadline` je den skutečného konce (EXPORT.md §2c).
 # Veřejná pole (přítomná se převezmou; mission záznamy mají name/mission/support_topics/regions).
 # Jméno poskytovatele podle slugu zdroje (`data/source_names.json`). Katalog nese
 # jen TYP (ministerstvo, kraj…); jméno je vlastnost ZDROJE, ne záznamu, a proto
@@ -51,13 +54,13 @@ PUBLIC = ["id", "kind", "source", "source_url", "provider", "title", "focus_area
           "call_number", "contact", "documents", "realization_period",
           # kontrakt 1.2 — odvozeniny (mimo otisk, viz HASH_EXCLUDE):
           "scope", "deadline_kind", "deadline_note", "program_key", "variant_of", "family",
-          "field_provenance"]
+          "field_provenance", "early_close"]
 
 # Odvozeniny NEJSOU obsah výzvy. Změna pravidla v `enrich.py` nebo nový ročník
 # v rodině nesmí každému záznamu přepnout otisk a v produktu vyrobit tisíce
 # „změn" — otisk má hlásit jen to, co změnil poskytovatel.
 DERIVED = {"scope", "deadline_kind", "deadline_note", "program_key", "variant_of", "family",
-           "field_provenance"}
+           "field_provenance", "early_close"}
 
 # content_hash = otisk VĚCNÝCH polí. Vyloučeno: `status`/`status_confidence` (derivovaný snapshot,
 # mění se sám jak míjejí deadliny → jinak by hash „blikal" každý den), `id` (je to klíč, ne obsah)
@@ -72,6 +75,31 @@ def content_hash(rec):
     payload = {k: rec[k] for k in HASH_FIELDS if k in rec}
     blob = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     return hashlib.sha1(blob.encode("utf-8")).hexdigest()[:16]
+
+
+def apply_early_close(g, today=None):
+    """Příjem, který podle zdroje UŽ skončil dřív, má uzávěrku v den konce.
+
+    Stav počítají tři kopie jednoho pravidla (`opportunities.compute_status`,
+    `status.ts` v produktu, SQL `catalog_status()`) a všechny čtou jen data.
+    Kdyby se předčasný konec učil každou zvlášť, rozešly by se. Posunutá
+    `deadline` je pro všechny tři pravda a produkt ze změny otisku vyrobí
+    sledujícím obyčejné „uzávěrka se posunula z 30. 9. na 11. 8.".
+    Původní uzávěrka zůstává v `early_close.planned`.
+    """
+    ec = g.get("early_close")
+    if not ec or ec.get("state") != "closed" or not ec.get("on"):
+        return
+    if g.get("deadline") and ec["on"] >= g["deadline"]:
+        return
+    g["deadline"] = ec["on"]
+    g["deadline_kind"] = "fixed"
+    g["deadline_note"] = None
+    today = today or datetime.now(timezone.utc).date()
+    g["status"], g["status_confidence"] = compute_status(g.get("open_from"), g["deadline"], today)
+    prov = dict(g.get("field_provenance") or {})
+    prov["deadline"] = {"method": "derived", "cited": True}
+    g["field_provenance"] = prov
 
 
 def main():
@@ -112,6 +140,7 @@ def main():
             # listuje ve dvou a víc ročnících, se vyhlašuje znovu.
             if g["deadline_kind"] == "unknown" and fam["family"] and len(fam["family"]["years"]) >= 2:
                 g["deadline_kind"] = "recurring"
+            apply_early_close(g)
         g["content_hash"] = content_hash(g)
         grants.append(g)
 

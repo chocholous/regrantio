@@ -15,7 +15,7 @@ Nic jiného v repu (`data/`, `scripts/`, mezistupně vrstvy 2) není stabilní p
 ```jsonc
 {
   "meta": {
-    "schema_version": "1.2",                      // MAJOR.MINOR
+    "schema_version": "1.3",                      // MAJOR.MINOR
     "generated_at": "2026-07-31T18:07:00+00:00",  // UTC ISO-8601
     "generated_date": "2026-07-31",
     "count": 3397,
@@ -112,6 +112,34 @@ ani neodebralo (MINOR). Grantio je mapuje v `publish_db.py:to_row` na sloupce
 čte z `raw`. Odvozené sloupce porovnává `derived_changed()` zvlášť, protože
 v otisku nejsou — `variant_of` se změní ve chvíli, kdy přibude NOVÝ ročník,
 aniž by se starý změnil o písmeno.
+
+### 2c. Kontrakt 1.3 — konec příjmu před uzávěrkou (2026‑09‑28)
+
+Publikovaná uzávěrka není vždy skutečná. STEP – Výzkum a vývoj kritických
+technologií (OP TAK) měl uzávěrku 30. 9. 2026 a příjem skončil 11. 8. po
+převisu 300 % alokace; stav počítaný z data by ho sedm týdnů ukazoval jako
+otevřený. Opačně výzvy „do vyčerpání alokace": uzávěrka platí, ale čekat na
+ni je chyba.
+
+| pole | tvar | jak vzniká |
+|---|---|---|
+| `early_close` | `{state, on, note, planned}` \| null | `enrich.early_close` hledá větu ve zdroji (titul, zaměření, způsob podání, `extra`). `state: "closed"` = příjem UŽ skončil před uzávěrkou; `on` je den z věty a `planned` původní uzávěrka; věta bez data má obojí null (den čtení zdroje se s každou obnovou posouvá a uzávěrka odvozená z něj by sledujícím každý týden hlásila falešnou změnu). `state: "may"` = příjem může skončit dřív („do vyčerpání alokace", „vyhrazuje si právo ukončit dříve", „při dosažení 150 % alokace"). `note` = ta věta, nejvýš 240 znaků |
+
+⚠ **Když příjem UŽ skončil dřív, `deadline` je den skutečného konce**
+(`export_api.apply_early_close`), `deadline_kind` je `fixed` a `field_provenance.deadline`
+je `derived` s citací. Stav tak počítají všechny tři kopie pravidla stejně
+a bez úprav, a změna otisku se sledujícím v Grantiu ohlásí jako obyčejný
+posun uzávěrky „z 30. 9. na 11. 8.".
+
+⚠ **Není to skóre naléhavosti.** Čerpání alokace a počet podaných žádostí
+zdroje nezveřejňují; pole nese jen to, co zdroj řekl. Nehádá se: „dočasně
+pozastaven pro online podání" konec není, „posuzováno v pořadí podání" je
+pořadí hodnocení, věta o konci u výzvy, jejíž uzávěrka prošla dřív, než ji
+regrantio četlo, je historie. Naměřeno při zavedení: 17 záznamů ze 3 867
+(10 `may`, z toho 3 otevřené; 3 `closed` bez data, žádná posunutá uzávěrka).
+
+Pole je odvozenina, proto je mimo `content_hash`; `publish_db.derived_changed`
+ho porovnává s `raw->early_close` zvlášť.
 
 Kvalita dat, ze kterých se tohle počítá, je změřená v `docs/QUALITY.md`
 (`scripts/quality_report.py`, běží v tailu obnovy).

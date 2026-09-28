@@ -187,9 +187,82 @@ def test_dokumenty_bez_popisu_se_vynechaji():
     assert docs[1]["role"] == "ostatni"
 
 
+# ---------------------------------------------------------------- early_close
+def _step(veta, deadline="2026-09-30"):
+    return _grant(deadline=deadline, open_from="2026-06-01", extra={"dalsi_datumy": [{"datum": None, "popis": veta}]})
+
+
+def test_predcasny_konec_s_datem_je_closed_a_posune_uzaverku():
+    g = _step("Příjem žádostí byl předčasně ukončen dne 11. 8. 2026 z důvodu převisu 300 % alokace.")
+    ec = enrich.early_close(g)
+    assert ec["state"] == "closed" and ec["on"] == "2026-08-11" and ec["planned"] == "2026-09-30"
+    out = {**g, "early_close": ec, "status": "open", "field_provenance": {}}
+    export_api.apply_early_close(out)
+    assert out["deadline"] == "2026-08-11"
+    assert out["status"] == "closed"
+    assert out["field_provenance"]["deadline"] == {"method": "derived", "cited": True}
+
+
+def test_datum_slovem():
+    ec = enrich.early_close(_step("Příjem žádostí byl ukončen dne 11. srpna 2026 z důvodu vyčerpání alokace."))
+    assert ec["on"] == "2026-08-11"
+
+
+def test_budouci_konec_je_obycejna_uzaverka():
+    assert enrich.early_close(_step("Příjem žádostí bude ukončen 30. 9. 2026 ve 14:00.")) is None
+
+
+def test_konec_v_den_uzaverky_neni_predcasny():
+    assert enrich.early_close(_step("Příjem žádostí byl ukončen 30. 9. 2026.")) is None
+
+
+def test_docasne_pozastaveny_online_prijem_neni_konec():
+    assert enrich.early_close(_step("Žádost lze podat poštou (příjem žádostí je dočasně pozastaven pro online podání).")) is None
+
+
+def test_konec_u_davno_prosle_vyzvy_je_historie():
+    g = _step("Příjem žádostí ukončen dne 30. 4. 2017", deadline="2020-02-04")
+    g["provenance"] = {"fetched_at": "2026-09-23T04:00:00+00:00"}
+    assert enrich.early_close(g) is None
+
+
+def test_konec_pred_zacatkem_prijmu_je_jine_kolo():
+    g = _step("Příjem žádostí byl ukončen dne 30. 4. 2025.", deadline="2026-12-31")
+    g["open_from"] = "2026-01-01"
+    assert enrich.early_close(g) is None
+
+
+def test_veta_bez_data_uzaverku_nehybe_ani_s_razitkem():
+    g = _step("Z důvodu vyčerpání alokace byl příjem žádostí ukončen.")
+    g["provenance"] = {"fetched_at": "2026-09-01T04:00:00+00:00"}
+    ec = enrich.early_close(g)
+    assert ec == {"state": "closed", "on": None, "note": ec["note"], "planned": None}
+    out = {**g, "early_close": ec}
+    export_api.apply_early_close(out)
+    assert out["deadline"] == "2026-09-30"
+
+
+def test_bez_data_a_bez_razitka_se_uzaverka_nehybe():
+    ec = enrich.early_close(_step("Příjem žádostí ukončen z důvodu vyčerpání alokace.", deadline=None))
+    assert ec["state"] == "closed" and ec["on"] is None
+    out = {**_step("x", deadline=None), "early_close": ec}
+    export_api.apply_early_close(out)
+    assert out["deadline"] is None
+
+
+def test_do_vycerpani_alokace_je_may():
+    ec = enrich.early_close(_step("Příjem od 1. 6. 2026 do 31. 10. 2026 nebo do vyčerpání alokace."))
+    assert ec["state"] == "may" and ec["on"] is None and "vyčerpání alokace" in ec["note"]
+
+
+def test_bez_zminky_nic():
+    assert enrich.early_close(_grant()) is None
+
+
 # ---------------------------------------------------------------- otisk
 def test_odvozeniny_nejsou_v_otisku():
-    for f in ("scope", "deadline_kind", "program_key", "variant_of", "family", "field_provenance", "deadline_note"):
+    for f in ("scope", "deadline_kind", "program_key", "variant_of", "family", "field_provenance", "deadline_note",
+              "early_close"):
         assert f not in export_api.HASH_FIELDS, f
 
 

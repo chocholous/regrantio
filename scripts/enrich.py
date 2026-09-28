@@ -130,6 +130,141 @@ def deadline_note(rec):
     return None
 
 
+# ---------------------------------------------------------------- early_close
+# PUBLIKOVANÁ UZÁVĚRKA NENÍ VŽDY SKUTEČNÁ (kontrakt 1.3, 2026‑09‑28).
+#
+# STEP – Výzkum a vývoj kritických technologií (OP TAK) měl uzávěrku
+# 30. 9. 2026 a příjem skončil 11. 8. po převisu 300 % alokace. Databáze, která
+# počítá stav jen z data, by ho sedm týdnů ukazovala jako otevřený. Opačný
+# případ jsou výzvy „do vyčerpání alokace" a „podle pořadí podání": uzávěrka
+# platí, ale čekat na ni je chyba.
+#
+# ⚠ NENÍ TO SKÓRE NALÉHAVOSTI. Odhad „vysoké riziko předčasného ukončení"
+# by potřeboval čerpání alokace a počet žádostí, které zdroje nezveřejňují
+# (naměřeno 2026‑09‑28: větu o předčasném konci mělo ve vytěžených datech
+# 16 záznamů z 3 852). Pole nese jen to, co zdroj ŘEKL, a tu větu.
+#
+#   {"state": "closed", "on": "2026-08-11" | None, "note": "…", "planned": "2026-09-30" | None}
+#       zdroj říká, že příjem UŽ skončil, a skončil dřív než uzávěrka;
+#       `on` a `planned` jen tehdy, když věta uvádí den konce
+#   {"state": "may", "on": None, "note": "…", "planned": None}
+#       zdroj říká, že příjem může skončit před uzávěrkou
+#
+# ⚠ „Dočasně pozastaven pro online podání" konec příjmu NENÍ (Nadace AGROFERT
+# bere dál poštou) a „posuzovány v pořadí podání" je pořadí hodnocení, ne
+# konec; obojí by v katalogu tvrdilo víc, než zdroj řekl.
+_CLOSED = re.compile(
+    r"výzva\s+(byla\s+)?(předčasně\s+)?(ukončena|uzavřena)\b"
+    r"|příjem\s+žádost\w*\s+(\S+\s+){0,4}?(předčasně\s+)?(ukončen|uzavřen)\b"
+    r"|(ukončen|uzavřen)\w*\s+(příjm\w+\s+žádost\w*\s+)?z\s+důvodu\s+(vyčerpání|převisu|dosažení)",
+    re.I,
+)
+# „bude ukončen 30. 9." je obyčejná uzávěrka a „může být ukončen dříve" patří
+# do `may`; ani jedno neříká, že příjem UŽ skončil.
+_FUTURE = re.compile(r"\b(bude|budou|může|mohou|lze|by|bylo\s+by|nebude)\b", re.I)
+_MAY = re.compile(
+    r"do\s+vyčerpání\s+(\S+\s+){0,2}(alokace|prostředků|finančních)"
+    r"|first\s+come,?\s+first\s+serve"
+    r"|(ukončit|ukončen\w*|uzavř\w+)\s+(\S+\s+){0,5}(dříve|předčasně)"
+    r"|(při|po)\s+(dosažení|překročení)\s+(\S+\s+){0,4}\d+\s*%\s+(\S+\s+){0,3}alokace",
+    re.I,
+)
+_MONTHS = {"ledna": 1, "února": 2, "března": 3, "dubna": 4, "května": 5, "června": 6, "července": 7,
+           "srpna": 8, "září": 9, "října": 10, "listopadu": 11, "prosince": 12}
+_DATE_NUM = re.compile(r"(\d{1,2})\.\s*(\d{1,2})\.\s*(20\d\d)")
+_DATE_WORD = re.compile(r"(\d{1,2})\.\s*(" + "|".join(_MONTHS) + r")\s+(20\d\d)", re.I)
+
+
+def _texts(rec):
+    """Věty ze zdroje, ve kterých se o konci příjmu mluví: titulek, zaměření,
+    způsob podání a všechny řetězce v `extra` (lhůty, další data, kritéria)."""
+    out = [rec.get(k) for k in ("title", "focus_area", "how_to_apply")]
+
+    def walk(v):
+        if isinstance(v, str):
+            out.append(v)
+        elif isinstance(v, dict):
+            for x in v.values():
+                walk(x)
+        elif isinstance(v, list):
+            for x in v:
+                walk(x)
+
+    walk(rec.get("extra") or {})
+    return [t for t in out if isinstance(t, str) and t.strip()]
+
+
+# Konec věty je tečka před velkým písmenem, ne každá tečka: „dne 11. 8. 2026"
+# by jinak větu uřízlo za dnem a datum by se ztratilo.
+_SENT_END = re.compile(r"[.!?](?=\s+[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ])|\n")
+
+
+def _sentence(text, start, end):
+    """Věta kolem nálezu, nejvýš 240 znaků."""
+    a = 0
+    for m in _SENT_END.finditer(text, 0, start):
+        a = m.end()
+    m = _SENT_END.search(text, end)
+    b = m.end() if m else len(text)
+    s = re.sub(r"\s+", " ", text[a:b]).strip()
+    return s if len(s) <= 240 else s[:239].rstrip() + "…"
+
+
+def _date_in(s):
+    m = _DATE_NUM.search(s)
+    if m:
+        d, mo, y = int(m.group(1)), int(m.group(2)), int(m.group(3))
+    else:
+        m = _DATE_WORD.search(s)
+        if not m:
+            return None
+        d, mo, y = int(m.group(1)), _MONTHS[m.group(2).lower()], int(m.group(3))
+    if not (1 <= mo <= 12 and 1 <= d <= 31):
+        return None
+    return f"{y}-{mo:02d}-{d:02d}"
+
+
+def early_close(rec):
+    """Co zdroj říká o konci příjmu před uzávěrkou. Jinak None. Viz výš."""
+    deadline = rec.get("deadline") if isinstance(rec.get("deadline"), str) and _ISO.match(rec.get("deadline")) else None
+    seen = (rec.get("provenance") or {}).get("fetched_at") or rec.get("fetched_at")
+    seen = seen[:10] if isinstance(seen, str) and _ISO.match(seen[:10]) else None
+    texts = _texts(rec)
+
+    for t in texts:
+        for m in _CLOSED.finditer(t):
+            if _FUTURE.search(t[max(0, m.start() - 30):m.end()]):
+                continue
+            note = _sentence(t, m.start(), m.end())
+            # ⚠ DEN KONCE JEN Z VĚTY, NIKDY ZE DNE ČTENÍ. Den čtení se posouvá
+            # s každou obnovou; uzávěrka odvozená z něj by se každý týden
+            # posunula a sledujícím by chodila falešná „změna lhůty"
+            # (naměřeno při zavedení na Podpoře výsadby zeleně MSK).
+            on = _date_in(note)
+            # Konec v den uzávěrky nebo po ní je obyčejný konec, ne předčasný.
+            if deadline and on and on >= deadline:
+                return None
+            # Uzávěrka prošla dřív, než jsme zdroj četli: věta o konci je
+            # historie (Kotlíkové dotace LK: uzávěrka 2020, „ukončen 30. 4.
+            # 2017"), o předčasném konci nic neříká.
+            if deadline and seen and deadline < seen:
+                return None
+            # Bez data ve větě a bez dne čtení nejde poznat, jestli konec
+            # přišel před uzávěrkou.
+            if deadline and not on and not seen:
+                return None
+            open_from = rec.get("open_from") if isinstance(rec.get("open_from"), str) else None
+            if on and open_from and _ISO.match(open_from) and on < open_from:
+                return None
+            return {"state": "closed", "on": on, "note": note, "planned": deadline if on else None}
+
+    for t in texts:
+        m = _MAY.search(t)
+        if m:
+            return {"state": "may", "on": None, "note": _sentence(t, m.start(), m.end()), "planned": None}
+    return None
+
+
 # ---------------------------------------------------------------- program_key
 _YEAR = re.compile(r"\b(19|20)\d{2}(\s*[/–-]\s*(19|20)?\d{2})?\b")
 _ROUND = re.compile(r"\b(\d+|[ivx]+)\.?\s*(kolo|výzva|vyzva|ročník|rocnik|etapa)\b", re.I)
@@ -288,4 +423,5 @@ def enrich(rec):
         "documents": documents(rec),
         "realization_period": realization_period(rec),
         "field_provenance": field_provenance(rec),
+        "early_close": early_close(rec),
     }
