@@ -10,11 +10,15 @@ recept na zdroj, pasti) = `docs/SESSION_PLAYBOOK.md` + `CLAUDE.md`. Katalog je v
 > ze zdroje; když příjem UŽ skončil, export posune `deadline` na den konce.
 > Extraktor OP TAK čte takové věty z těla stránky.
 >
-> ⚠ **STEP V KATALOGU VŮBEC NENÍ.** Sklizeň `optak.gov.cz` (BFS
-> `harvest_site.py`) přinesla 19 stránek a 14 výzev; výzvy STEP nezachytila.
-> Chybí i Nové úspory energie (NRB, půjčka s dotační složkou). Zbývá: sklízet
-> OP TAK ze seznamu výzev (ne BFS od homepage), ověřit pokrytí proti výpisu
-> na webu a přidat programy NRB.
+> ✅ **STEP je v katalogu (týž den).** Sklizeň OP TAK brala jen adresy se
+> slovem „výzva“; od `eedeb3f` jde i po `/<slug>/a-<číslo>/` z výpisu a program
+> pozná z výčtu programů na webu. OP TAK 17 → 60 výzev, STEP – Výzkum a vývoj
+> uzavřená k 10. 8. podle zdroje, úvěry jako půjčky.
+>
+> **Zbývá:** Nové úspory energie (NRB, půjčka s dotační složkou) a dotační
+> řízení ministerstev pro NNO jako nové zdroje; registr příjemců (CEDR,
+> MONITOR MF) jako vrstva „kdo takové peníze dostal“ (`the-machine-app`
+> `docs/KONCEPCE.md` D4, D6).
 
 > **Status k 2026-09-26: čištění textů a částka na žadatele.** Revize dat
 > našla tři vady, které žádná kontrola nehlídala, protože byly formálně platné:
