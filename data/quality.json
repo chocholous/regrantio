@@ -1,105 +1,105 @@
 {
 	"today": "2026-09-28",
-	"records": 3867,
-	"grants": 3842,
-	"live": 1795,
+	"records": 3910,
+	"grants": 3885,
+	"live": 1799,
 	"sources": 135,
 	"status": {
-		"open": 569,
+		"open": 573,
+		"closed": 2086,
 		"unknown": 931,
-		"closed": 2047,
 		"announced": 295
 	},
 	"scope_live": {
-		"national": 301,
+		"national": 305,
 		"international": 10,
 		"eu_central": 465,
 		"local": 470,
 		"regional": 549
 	},
 	"deadline_kind_live": {
-		"fixed": 860,
+		"fixed": 864,
 		"unknown": 715,
 		"rolling": 72,
 		"recurring": 148
 	},
 	"fields": {
 		"deadline": {
-			"live": 864,
-			"live_pct": 48.1,
-			"all": 2911,
-			"all_pct": 75.8
+			"live": 868,
+			"live_pct": 48.2,
+			"all": 2954,
+			"all_pct": 76.0
 		},
 		"amount": {
 			"live": 85,
 			"live_pct": 4.7,
 			"all": 249,
-			"all_pct": 6.5
+			"all_pct": 6.4
 		},
 		"eligible_applicants": {
-			"live": 1295,
-			"live_pct": 72.1,
-			"all": 2434,
-			"all_pct": 63.4
+			"live": 1299,
+			"live_pct": 72.2,
+			"all": 2477,
+			"all_pct": 63.8
 		},
 		"typ_zadatele": {
-			"live": 588,
-			"live_pct": 32.8,
-			"all": 1295,
-			"all_pct": 33.7
+			"live": 592,
+			"live_pct": 32.9,
+			"all": 1338,
+			"all_pct": 34.4
 		},
 		"oblast": {
-			"live": 1480,
+			"live": 1484,
 			"live_pct": 82.5,
-			"all": 3431,
-			"all_pct": 89.3
+			"all": 3474,
+			"all_pct": 89.4
 		},
 		"kraj_nebo_celostatni": {
-			"live": 1795,
+			"live": 1799,
 			"live_pct": 100.0,
-			"all": 3842,
+			"all": 3885,
 			"all_pct": 100.0
 		},
 		"how_to_apply": {
-			"live": 1432,
+			"live": 1436,
 			"live_pct": 79.8,
-			"all": 3342,
-			"all_pct": 87.0
+			"all": 3385,
+			"all_pct": 87.1
 		},
 		"source_doc": {
-			"live": 1758,
+			"live": 1762,
 			"live_pct": 97.9,
-			"all": 3763,
-			"all_pct": 97.9
+			"all": 3806,
+			"all_pct": 98.0
 		},
 		"contact": {
 			"live": 240,
-			"live_pct": 13.4,
+			"live_pct": 13.3,
 			"all": 561,
-			"all_pct": 14.6
+			"all_pct": 14.4
 		},
 		"documents": {
 			"live": 265,
-			"live_pct": 14.8,
+			"live_pct": 14.7,
 			"all": 665,
-			"all_pct": 17.3
+			"all_pct": 17.1
 		},
 		"call_number": {
 			"live": 700,
-			"live_pct": 39.0,
+			"live_pct": 38.9,
 			"all": 1833,
-			"all_pct": 47.7
+			"all_pct": 47.2
 		}
 	},
 	"freshness_live": {
-		"do_7": 816,
+		"do_7": 820,
 		"nevime": 973,
 		"do_30": 6
 	},
 	"citations": {
-		"total": 17018,
-		"located": 8016,
-		"located_pct": 47.1
+		"total": 17105,
+		"located": 8103,
+		"located_pct": 47.4
 	},
 	"provenance_live": {
 		"amount": {
@@ -111,60 +111,60 @@
 			"cited_pct": 68.2
 		},
 		"deadline": {
-			"present": 864,
+			"present": 868,
 			"parsed": 37,
-			"model": 823,
+			"model": 827,
 			"derived": 4,
-			"cited": 561,
-			"cited_pct": 64.9
+			"cited": 565,
+			"cited_pct": 65.1
 		},
 		"eligible_applicants": {
-			"present": 1295,
+			"present": 1299,
 			"parsed": 379,
-			"model": 916,
+			"model": 920,
 			"derived": 0,
 			"cited": 214,
 			"cited_pct": 16.5
 		},
 		"focus_area": {
-			"present": 1695,
+			"present": 1699,
 			"parsed": 494,
-			"model": 1201,
+			"model": 1205,
 			"derived": 0,
 			"cited": 311,
 			"cited_pct": 18.3
 		},
 		"oblast": {
-			"present": 1480,
+			"present": 1484,
 			"parsed": 220,
-			"model": 1260,
+			"model": 1264,
 			"derived": 0,
 			"cited": 261,
 			"cited_pct": 17.6
 		},
 		"open_from": {
-			"present": 876,
+			"present": 880,
 			"parsed": 49,
-			"model": 827,
+			"model": 831,
 			"derived": 0,
 			"cited": 49,
 			"cited_pct": 5.6
 		},
 		"region": {
-			"present": 1795,
+			"present": 1799,
 			"parsed": 533,
-			"model": 1262,
+			"model": 1266,
 			"derived": 0,
 			"cited": 253,
 			"cited_pct": 14.1
 		},
 		"typ_zadatele": {
-			"present": 588,
+			"present": 592,
 			"parsed": 149,
-			"model": 439,
+			"model": 443,
 			"derived": 0,
 			"cited": 73,
-			"cited_pct": 12.4
+			"cited_pct": 12.3
 		}
 	},
 	"families": {
@@ -180,7 +180,7 @@
 	},
 	"live_by_source_state": {
 		"neovereno": 586,
-		"ok": 1124,
+		"ok": 1128,
 		"zmrazeny": 24,
 		"bez_cesty": 61
 	},
@@ -1323,10 +1323,10 @@
 			"name": "OP TAK (MPO)",
 			"type": "ministerstvo",
 			"refresh": "B",
-			"records": 17,
-			"live": 5,
-			"last_fetched": "2026-09-23",
-			"days": 5,
+			"records": 60,
+			"live": 9,
+			"last_fetched": "2026-09-28",
+			"days": 0,
 			"state": "ok"
 		},
 		{

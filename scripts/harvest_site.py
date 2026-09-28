@@ -97,13 +97,22 @@ def main():
                     help="omez BFS na URL-podstrom (prefix path), např. /cz/agenda/prehled-dotaci. "
                          "Relevanční filtr (jako GRANT regex), NE coverage cap — pro velké víceagendové weby "
                          "(ministerstva), kde 'program/dotace' matchuje celý web mimo dotační sekci.")
+    ap.add_argument("--follow", default=None,
+                    help="regex cesty, která projde i bez slova z GRANT. Pro weby, kde adresa "
+                         "výzvy dotační slovo nemá: OP TAK `/step-investice-…/a-635/` (2026-09-28: "
+                         "STEP kvůli tomu v katalogu vůbec nebyl).")
+    ap.add_argument("--seed", action="append", default=[],
+                    help="stránka navíc na začátek fronty (výpis výzev), opakovatelné")
     args = ap.parse_args()
     out = args.out or f"data/{args.source}.jsonl"
     host = urlparse(args.base).netloc
+    follow = re.compile(args.follow) if args.follow else None
 
     def in_scope(full):
-        return urlparse(full).netloc == host and GRANT.search(full) and (
-            args.scope_path is None or urlparse(full).path.startswith(args.scope_path))
+        path = urlparse(full).path
+        wanted = GRANT.search(full) or (follow is not None and follow.search(path))
+        return urlparse(full).netloc == host and wanted and (
+            args.scope_path is None or path.startswith(args.scope_path))
 
     # 0) homepage + SPA detekce
     try:
@@ -121,7 +130,7 @@ def main():
     else:
         # 2) statický BFS po grant-podstránkách (same host)
         recs = []
-        seen, queue = set(), [args.base]
+        seen, queue = set(), [args.base] + [urljoin(args.base, s) for s in args.seed]
         for u in re.findall(r'href="([^"]+)"', home):
             full = urljoin(args.base, H.unescape(u))
             if in_scope(full):

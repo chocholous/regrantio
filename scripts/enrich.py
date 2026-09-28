@@ -156,6 +156,8 @@ def deadline_note(rec):
 _CLOSED = re.compile(
     r"výzva\s+(byla\s+)?(předčasně\s+)?(ukončena|uzavřena)\b"
     r"|příjem\s+žádost\w*\s+(\S+\s+){0,4}?(předčasně\s+)?(ukončen|uzavřen)\b"
+    # slovosled STEP 2026: „byl dne 11.8.2026 v 0:01 ukončen příjem žádostí“
+    r"|\b(ukončen|uzavřen)\s+příjem\s+žádost"
     r"|(ukončen|uzavřen)\w*\s+(příjm\w+\s+žádost\w*\s+)?z\s+důvodu\s+(vyčerpání|převisu|dosažení)",
     re.I,
 )

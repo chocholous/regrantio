@@ -123,23 +123,64 @@ def main():
     os.makedirs(OUT, exist_ok=True)
     napsano, preskoceno = 0, 0
 
+    # ⚠ STRÁNKA S TERMÍNEM PODÁNÍ JEŠTĚ NENÍ VÝZVA. Do 2026-09-28 platilo „titulek
+    # obsahuje ‚výzva‘ + termín“, a tím vypadly výzvy, které to slovo v názvu nemají:
+    # STEP – Výzkum a vývoj kritických technologií, STEP – Investice, IPCEI,
+    # Expanze úvěry. Od té doby sklizeň bere i výpis výzev a stránky `/<slug>/a-<č>/`,
+    # takže přicházejí tři druhy stránek s hlavičkou termínu:
+    #
+    #   výzva .......... „Marketing – výzva III.“, „STEP – Investice – …“
+    #   program ........ „Marketing“, „Úvěry“: přehled programu, opakuje termíny
+    #                    právě běžící výzvy, žádat se na něj nedá
+    #   homepage ....... „Pro vaše chytré podnikání“: propaguje jednu výzvu
+    #
+    # Co je program, říká web sám: stránka „Priority a aktivity“ (`/a-5/`) je
+    # výčet programů („Aplikace Realizace…“, „Marketing Účast…“, „STEP Platforma…“,
+    # „Úvěry Malým…“). Stránka, jejíž název v tom výčtu stojí, je program.
+    # (Počet hlaviček termínu to neurčí: stránka výzvy má v postranním sloupci
+    # i termíny příbuzných výzev, naměřeno 68 z 84 stránek s víc daty.)
+    # Pojistka, kdyby výčet chyběl: název programu je začátkem názvu výzvy se
+    # stejným termínem („Marketing“ → „Marketing – výzva III.“), nebo je obsažený
+    # v delším názvu stránky se stejným termínem. Aktuality a semináře hlavičku
+    # termínu nemají.
+    stranky = []
     for jmeno in soubory:
         r = json.load(io.open(os.path.join(IN, jmeno), encoding="utf-8"))
         title = re.sub(r"\s+", " ", r.get("title") or "").strip()
         text = r.get("body") or ""
-
-        deadline = None
         m = POLE["deadline"].search(text)
-        if m:
-            deadline = iso(m.group(1))
+        deadline = iso(m.group(1)) if m else None
+        homepage = (r.get("id") or "").rstrip("/") in ("https://optak.gov.cz", "http://optak.gov.cz")
+        stranky.append((jmeno, r, title, text, deadline, homepage))
 
-        # ⚠ MUSÍ PLATIT OBOJÍ: titulek výzvy A termín podání.
-        #
-        # Jen termín nestačí — HOMEPAGE („Pro vaše chytré podnikání") vypisuje
-        # termín výzvy, kterou zrovna propaguje, takže by prošla jako výzva.
-        # Jen titulek nestačí taky — aktuality a semináře mají „výzva" v názvu
-        # a žádat se na ně nedá.
-        if not deadline or not re.search(r"v[ýy]zva", title, re.I):
+    def norm(s):
+        return re.sub(r"[\s\-–—]+", " ", s.lower()).strip()
+
+    def je_program(title, deadline):
+        n = norm(title)
+        for _, _, t2, _, d2, h2 in stranky:
+            if d2 != deadline or h2 or t2 == title:
+                continue
+            n2 = norm(t2)
+            if n2.startswith(n) and len(n2) > len(n):
+                return True
+            if re.search(r"(^| )" + re.escape(n) + r"( |$)", n2) and len(n2) > len(n):
+                return True
+        return False
+
+    programy = next((t for _, r, _, t, _, _ in stranky if re.search(r"/a-5/?$", r.get("id") or "")), "")
+
+    # ⚠ STARÉ VÝSTUPY PRYČ. Jméno výstupu páruje obsah s adresou (`ingest_rich`);
+    # soubor z minulého běhu, jehož číslo teď patří jiné stránce, by dal výzvě
+    # cizí adresu (naměřeno 2026-09-28: po rozšíření sklizně zůstalo 14 starých
+    # souborů vedle jednoho nového).
+    for f in os.listdir(OUT):
+        if re.match(r"grant_\d+\.json$", f):
+            os.remove(os.path.join(OUT, f))
+
+    for jmeno, r, title, text, deadline, homepage in stranky:
+        program = (not re.search(r"v[ýy]zva", title, re.I) and title and f"{title} " in programy) or je_program(title, deadline)
+        if not deadline or homepage or program:
             preskoceno += 1
             continue
 
@@ -199,7 +240,11 @@ def main():
             "typ_zadatele": ["firma", "osvc_podnikatel"],
             "cilova_skupina": ["podniky"],
             "region": CR,
-            "forma_podpory": ["dotace"],
+            # Úvěry a finanční nástroje (Expanze úvěry, Brownfield fond, Bezúročný úvěr
+            # FVE) jsou NÁVRATNÁ podpora; „dotace“ u nich lhala žadateli o tom, jestli
+            # peníze vrací (Grantio je od 28. 9. v řádku píše jako půjčku).
+            "forma_podpory": (["zapujcka_uver"] if re.search(r"úvěr|uver|brownfield fond|finanční nástroj", title, re.I)
+                              else ["dotace"]),
             "zdroj_financovani": ["eu_fondy"],
             "rezim_prijmu": "kolova",
             "delka": None,

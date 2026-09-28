@@ -203,6 +203,12 @@ def test_predcasny_konec_s_datem_je_closed_a_posune_uzaverku():
     assert out["field_provenance"]["deadline"] == {"method": "derived", "cited": True}
 
 
+def test_slovosled_step():
+    veta = "Z důvodu naplnění finančního objemu podaných žádostí ve výši 300 % alokace výzvy byl dne 11.8.2026 v 0:01 ukončen příjem žádostí o podporu."
+    ec = enrich.early_close(_step(veta))
+    assert ec["state"] == "closed" and ec["on"] == "2026-08-11"
+
+
 def test_datum_slovem():
     ec = enrich.early_close(_step("Příjem žádostí byl ukončen dne 11. srpna 2026 z důvodu vyčerpání alokace."))
     assert ec["on"] == "2026-08-11"

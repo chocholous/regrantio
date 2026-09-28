@@ -252,7 +252,10 @@ EXTRACT_SOURCES = {
     "opd": (["opd.py"], "html"),
     "opjak": (["opjak.py"], "html"),
     "opst": (["opst.py"], "html"),
+    # Výpis výzev + adresy `/<slug>/a-<číslo>/`: bez nich BFS znal jen výzvy se slovem
+    # „výzva“ v adrese a STEP ani IPCEI nesebral (2026-09-28).
     "optak": (["harvest_site.py", "--base", "https://optak.gov.cz", "--source", "optak",
+               "--seed", "/priority-a-aktivity/a-5/", "--follow", r"^/[a-z0-9-]+/a-\d+/?$",
                "--out", "data/optak_documents.jsonl"], "html"),
     "opzp": (["opzp.py"], "html"),
     "osf": (["osf.py"], "html"),
