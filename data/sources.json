@@ -20,7 +20,7 @@
 		"harvester": "czechaid_harvest.py",
 		"records": 11,
 		"live": 6,
-		"last_fetched": "2026-09-23"
+		"last_fetched": "2026-09-28"
 	},
 	"dotace.brno.cz": {
 		"name": "Město Brno",
@@ -31,7 +31,7 @@
 		"harvester": "brno_harvest.py",
 		"records": 49,
 		"live": 38,
-		"last_fetched": "2026-09-23"
+		"last_fetched": "2026-09-28"
 	},
 	"dotace.chyne.cz": {
 		"name": "Obec Chýně",
@@ -53,7 +53,7 @@
 		"harvester": "dotis_harvest.py",
 		"records": 148,
 		"live": 26,
-		"last_fetched": "2026-09-23"
+		"last_fetched": "2026-09-28"
 	},
 	"dotace.kraj-lbc.cz": {
 		"name": "Liberecký kraj",
@@ -64,7 +64,7 @@
 		"harvester": "liberecky_harvest.py",
 		"records": 137,
 		"live": 49,
-		"last_fetched": "2026-09-23"
+		"last_fetched": "2026-09-28"
 	},
 	"dotace.medlanky.cz": {
 		"name": "Brno‑Medlánky",
@@ -152,7 +152,7 @@
 		"harvester": "pardubicky_harvest.py",
 		"records": 108,
 		"live": 23,
-		"last_fetched": "2026-09-23"
+		"last_fetched": "2026-09-28"
 	},
 	"dotace.plzen.eu": {
 		"name": "Město Plzeň",
@@ -348,9 +348,9 @@
 		"type": "evropska_komise",
 		"refresh": "B",
 		"harvester": "eu_ft.py",
-		"records": 696,
-		"live": 464,
-		"last_fetched": "2026-09-23"
+		"records": 697,
+		"live": 465,
+		"last_fetched": "2026-09-28"
 	},
 	"fondbudoucnosti": {
 		"name": "Česko‑německý fond budoucnosti",
@@ -493,7 +493,7 @@
 		"harvester": "interreg.py",
 		"records": 6,
 		"live": 4,
-		"last_fetched": "2026-09-23"
+		"last_fetched": "2026-09-28"
 	},
 	"intl_funds": {
 		"name": "Visegrad Fund / ERSTE Foundation",
@@ -504,7 +504,7 @@
 		"harvester": "intl_funds.py",
 		"records": 6,
 		"live": 6,
-		"last_fetched": "2026-09-23"
+		"last_fetched": "2026-09-28"
 	},
 	"irop.gov.cz": {
 		"name": "IROP (MMR)",
@@ -581,7 +581,7 @@
 		"harvester": "karlovarsky_harvest.py",
 		"records": 86,
 		"live": 28,
-		"last_fetched": "2026-09-23"
+		"last_fetched": "2026-09-28"
 	},
 	"kr-ustecky.cz": {
 		"name": "Ústecký kraj",
@@ -592,7 +592,7 @@
 		"harvester": "ustecky_harvest.py",
 		"records": 111,
 		"live": 24,
-		"last_fetched": "2026-09-23"
+		"last_fetched": "2026-09-28"
 	},
 	"kraj-jihocesky.cz": {
 		"name": "Jihočeský kraj",
@@ -603,7 +603,7 @@
 		"harvester": "jihocesky_harvest.py",
 		"records": 11,
 		"live": 8,
-		"last_fetched": "2026-09-23"
+		"last_fetched": "2026-09-28"
 	},
 	"krasapomoci": {
 		"name": "Nadační fond Krása pomoci",
@@ -810,9 +810,9 @@
 		"type": "samosprava_kraj",
 		"refresh": "A",
 		"harvester": "msk_harvest.py",
-		"records": 105,
-		"live": 28,
-		"last_fetched": "2026-09-23"
+		"records": 106,
+		"live": 29,
+		"last_fetched": "2026-09-28"
 	},
 	"msmt": {
 		"name": "Ministerstvo školství, mládeže a tělovýchovy",
@@ -821,9 +821,9 @@
 		"type": "ministerstvo",
 		"refresh": "B",
 		"harvester": "msmt_harvest.py",
-		"records": 14,
-		"live": 8,
-		"last_fetched": null
+		"records": 27,
+		"live": 14,
+		"last_fetched": "2026-09-28"
 	},
 	"mucl.cz": {
 		"name": "Město Česká Lípa",
@@ -1010,7 +1010,7 @@
 		"harvester": "nadacevia.py",
 		"records": 26,
 		"live": 7,
-		"last_fetched": "2026-09-23"
+		"last_fetched": "2026-09-28"
 	},
 	"nadacevodafone.cz": {
 		"name": "Nadace Vodafone",
@@ -1076,7 +1076,7 @@
 		"harvester": "olomoucky_harvest.py",
 		"records": 12,
 		"live": 6,
-		"last_fetched": "2026-09-23"
+		"last_fetched": "2026-09-28"
 	},
 	"olomouc.eu": {
 		"name": "Město Olomouc",
@@ -1230,7 +1230,7 @@
 		"harvester": "praha_harvest.py",
 		"records": 38,
 		"live": 37,
-		"last_fetched": "2026-09-23"
+		"last_fetched": "2026-09-28"
 	},
 	"praha6.dsw2.otevrenamesta.cz": {
 		"name": "Praha 6",
@@ -1483,6 +1483,6 @@
 		"harvester": "zlinsky_harvest.py",
 		"records": 14,
 		"live": 8,
-		"last_fetched": "2026-09-23"
+		"last_fetched": "2026-09-28"
 	}
 }
