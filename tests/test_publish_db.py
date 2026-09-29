@@ -153,6 +153,15 @@ def test_nova_veta_o_konci_prijmu_se_propise_i_beze_zmeny_obsahu():
     assert not P.derived_changed(row, {"provider": "Kraj", "early_close": dict(ec)})
 
 
+def test_stazeni_ma_stejne_klice_jako_zmena():
+    # PostgREST v hromadném zápisu chce u všech řádků stejné klíče (PGRST102);
+    # běh se změnami i staženími 2026-09-29 na tom spadl po zápisu výzev.
+    w = P.withdrawn_change("g1", 7, {"deadline": "2026-10-01", "amount": 5})
+    assert tuple(w) == P.CHANGE_KEYS
+    assert w["kind"] == "withdrawn" and w["deadline_before"] == "2026-10-01" and w["eligibility_before"] is None
+    assert tuple(P.withdrawn_change("g2", 7, None)) == P.CHANGE_KEYS
+
+
 def test_chybejici_otisk_znamena_zmeneno():
     """Přepsat shodná data je levné, minout skutečnou změnu ne."""
     assert P.has_changed({"content_hash": None}, "abc")

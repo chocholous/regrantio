@@ -264,6 +264,28 @@ def derived_changed(row, prev):
     return any((prev.get(c) or None) != (row.get(c) or None) for c in DERIVED_COLUMNS)
 
 
+CHANGE_KEYS = ("grant_id", "import_id", "kind", "deadline_before", "deadline_after",
+               "amount_before", "amount_after", "eligibility_before", "eligibility_after")
+
+
+def withdrawn_change(grant_id, run_id, prev):
+    """Záznam o stažení se VŠEMI klíči změny.
+
+    ⚠ PostgREST v hromadném zápisu chce u všech objektů stejné klíče
+    (PGRST102 „All object keys must match“). Do 2026‑09‑29 měl řádek stažení
+    jen tři, a běh, který měl zároveň změny i stažení, spadl až PO zápisu
+    výzev: katalog se změnil, záznam změn ne, sledující se nic nedozvěděli
+    (běh 2026‑09‑29, 89 zápisů, 5 stažení).
+    """
+    prev = prev or {}
+    return {"grant_id": grant_id, "import_id": run_id, "kind": "withdrawn",
+            "deadline_before": prev.get("deadline"), "deadline_after": None,
+            "amount_before": prev.get("amount"), "amount_after": None,
+            # Oprávněnost prázdná: stažení o ní nic neříká, a `pending_change_notifications`
+            # by z rozdílu „něco → nic“ jinak mohla číst změnu oprávněnosti.
+            "eligibility_before": None, "eligibility_after": None}
+
+
 def has_changed(row, stored_hash):
     """Rozhoduje `content_hash` z regrantia — je to jeho vlastní otisk obsahu.
 
@@ -614,7 +636,7 @@ def main():
                 part = to_withdraw[i:i + CHUNK]
                 lst = ",".join('"' + x.replace('"', '\\"') + '"' for x in part)
                 db.patch("catalog_grant", f"id=in.({lst})", {"withdrawn_at": now})
-                changes.extend({"grant_id": x, "import_id": run_id, "kind": "withdrawn"} for x in part)
+                changes.extend(withdrawn_change(x, run_id, existing.get(x)) for x in part)
             print(f"  staženo {len(to_withdraw)}")
 
         for i in range(0, len(changes), CHUNK):
