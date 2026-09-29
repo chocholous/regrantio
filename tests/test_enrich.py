@@ -209,6 +209,21 @@ def test_slovosled_step():
     assert ec["state"] == "closed" and ec["on"] == "2026-08-11"
 
 
+def test_pozastaveni_kvuli_alokaci_je_konec():
+    veta = "Příjem žádostí byl k 15.9. 2025 z důvodu zarezervování celé programové alokace pozastaven."
+    g = _step(veta, deadline=None)
+    g["open_from"] = None
+    ec = enrich.early_close(g)
+    assert ec["state"] == "closed" and ec["on"] == "2025-09-15"
+
+
+def test_konec_pro_cast_regionu_neni_konec_vyzvy():
+    veta = ("Méně rozvinuté regiony: Z důvodu naplnění finančního objemu podaných žádostí ve výši 300 % "
+            "alokace výzvy byl dne 1.8.2026 v 0:01 ukončen příjem žádostí o podporu.")
+    ec = enrich.early_close(_step(veta, deadline="2026-10-15"))
+    assert ec["state"] == "may" and ec["on"] is None
+
+
 def test_datum_slovem():
     ec = enrich.early_close(_step("Příjem žádostí byl ukončen dne 11. srpna 2026 z důvodu vyčerpání alokace."))
     assert ec["on"] == "2026-08-11"

@@ -1045,6 +1045,17 @@
 		"live": 1,
 		"last_fetched": null
 	},
+	"nrb": {
+		"name": "Národní rozvojová banka",
+		"homepage": "https://www.nrb.cz",
+		"note": null,
+		"type": "statni_fond",
+		"refresh": "B",
+		"harvester": "harvest_site.py",
+		"records": 9,
+		"live": 9,
+		"last_fetched": "2026-09-29"
+	},
 	"nros.cz": {
 		"name": "Nadace rozvoje občanské společnosti",
 		"homepage": "https://www.nros.cz",

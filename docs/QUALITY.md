@@ -1,58 +1,58 @@
 # Kvalita datové základny
 
-Změřeno k **2026-09-28** skriptem `scripts/quality_report.py`. Čísla u živých záznamů (open · announced · unknown) jsou ta, která vidí uživatel; archiv je uvedený vedle.
+Změřeno k **2026-09-29** skriptem `scripts/quality_report.py`. Čísla u živých záznamů (open · announced · unknown) jsou ta, která vidí uživatel; archiv je uvedený vedle.
 
 ## Rozsah
 
 | | |
 |---|---:|
-| záznamů celkem | 3910 |
-| z toho výzev | 3885 |
-| **živých k dnešku** | **1799** |
-| zdrojů | 135 |
-| stav | open 573 · announced 295 · unknown 931 · closed 2086 |
-| dosah živých | místní 470 · krajský 549 · celostátní 305 · mezinárodní 10 · EU centrální 465 |
-| druh lhůty u živých | jedna lhůta 864 · průběžně 72 · opakovaně 148 · neuvedeno 715 |
+| záznamů celkem | 3919 |
+| z toho výzev | 3894 |
+| **živých k dnešku** | **1808** |
+| zdrojů | 136 |
+| stav | open 583 · announced 294 · unknown 931 · closed 2086 |
+| dosah živých | místní 470 · krajský 554 · celostátní 309 · mezinárodní 10 · EU centrální 465 |
+| druh lhůty u živých | jedna lhůta 864 · průběžně 81 · opakovaně 148 · neuvedeno 715 |
 
 ## Vyplněnost polí
 
 | pole | živé | archiv |
 |---|---:|---:|
-| lhůta | 48.2 % (868) | 76.0 % (2954) |
-| částka pro žadatele | 4.7 % (85) | 6.4 % (249) |
-| kdo smí žádat (text) | 72.2 % (1299) | 63.8 % (2477) |
-| typ žadatele (faseta) | 32.9 % (592) | 34.4 % (1338) |
-| oblast | 82.5 % (1484) | 89.4 % (3474) |
-| území | 100.0 % (1799) | 100.0 % (3885) |
-| jak podat | 79.8 % (1436) | 87.1 % (3385) |
-| zdrojový dokument | 97.9 % (1762) | 98.0 % (3806) |
+| lhůta | 48.5 % (877) | 76.1 % (2963) |
+| částka pro žadatele | 5.2 % (94) | 6.6 % (258) |
+| kdo smí žádat (text) | 72.3 % (1308) | 63.8 % (2486) |
+| typ žadatele (faseta) | 33.2 % (601) | 34.6 % (1347) |
+| oblast | 82.6 % (1493) | 89.4 % (3483) |
+| území | 100.0 % (1808) | 100.0 % (3894) |
+| jak podat | 79.9 % (1445) | 87.2 % (3394) |
+| zdrojový dokument | 98.0 % (1771) | 98.0 % (3815) |
 | kontakt | 13.3 % (240) | 14.4 % (561) |
 | dokumenty | 14.7 % (265) | 17.1 % (665) |
-| číslo výzvy | 38.9 % (700) | 47.2 % (1833) |
+| číslo výzvy | 38.7 % (700) | 47.1 % (1833) |
 
 ## Čerstvost živých záznamů
 
 | ověřeno u zdroje | záznamů |
 |---|---:|
-| do 7 dnů | 820 |
+| do 7 dnů | 829 |
 | do 30 dnů | 6 |
 | starší | 0 |
 | nevíme (bez razítka) | 973 |
 
 ## Doložitelnost
 
-Citací celkem 17105, ve zdroji dohledaných **8103 (47.4 %)**. Nedohledaná citace nedokládá nic; produkt u takového pole původ neukazuje jako doložený.
+Citací celkem 17123, ve zdroji dohledaných **8121 (47.4 %)**. Nedohledaná citace nedokládá nic; produkt u takového pole původ neukazuje jako doložený.
 
 | pole (živé) | má hodnotu | parser | model | dopočet | doloženo citací |
 |---|---:|---:|---:|---:|---:|
-| amount | 85 | 16 | 69 | 0 | 68.2 % |
-| deadline | 868 | 37 | 827 | 4 | 65.1 % |
-| eligible_applicants | 1299 | 379 | 920 | 0 | 16.5 % |
-| focus_area | 1699 | 494 | 1205 | 0 | 18.3 % |
-| oblast | 1484 | 220 | 1264 | 0 | 17.6 % |
-| open_from | 880 | 49 | 831 | 0 | 5.6 % |
-| region | 1799 | 533 | 1266 | 0 | 14.1 % |
-| typ_zadatele | 592 | 149 | 443 | 0 | 12.3 % |
+| amount | 94 | 16 | 78 | 0 | 61.7 % |
+| deadline | 877 | 37 | 836 | 4 | 64.4 % |
+| eligible_applicants | 1308 | 379 | 929 | 0 | 16.4 % |
+| focus_area | 1708 | 494 | 1214 | 0 | 18.2 % |
+| oblast | 1493 | 220 | 1273 | 0 | 17.5 % |
+| open_from | 884 | 49 | 835 | 0 | 5.5 % |
+| region | 1808 | 533 | 1275 | 0 | 14.0 % |
+| typ_zadatele | 601 | 149 | 452 | 0 | 12.1 % |
 
 ## Rodiny ročníků
 
@@ -62,7 +62,7 @@ Citací celkem 17105, ve zdroji dohledaných **8103 (47.4 %)**. Nedohledaná cit
 
 | stav | zdrojů | živých záznamů |
 |---|---:|---:|
-| ok (ověřeno do 21 dnů) | 32 | 1128 |
+| ok (ověřeno do 21 dnů) | 33 | 1137 |
 | stárne (nad 21 dnů) | 0 | 0 |
 | má cestu, nikdy neověřeno | 80 | 586 |
 | bez zapsané cesty k obnově | 20 | 61 |
@@ -103,6 +103,7 @@ Citací celkem 17105, ve zdroji dohledaných **8103 (47.4 %)**. Nedohledaná cit
 | Státní fond životního prostředí (`sfzp`) | statni_fond | C | 19 | 11 |  | neovereno |
 | Město Chomutov (`granty.chomutov.cz`) | samosprava_obec | C | 11 | 10 |  | neovereno |
 | Ministerstvo životního prostředí (`mzp`) | ministerstvo | T | 16 | 10 |  | bez_cesty |
+| Národní rozvojová banka (`nrb`) | statni_fond | B | 9 | 9 | 2026-09-29 | ok |
 | OP TAK (MPO) (`optak`) | ministerstvo | B | 60 | 9 | 2026-09-28 | ok |
 | Město Dobříš (`dotace.mestodobris.cz`) | samosprava_obec | A | 9 | 8 |  | neovereno |
 | Jihočeský kraj (`kraj-jihocesky.cz`) | samosprava_kraj | A | 11 | 8 | 2026-09-28 | ok |

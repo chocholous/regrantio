@@ -17,7 +17,7 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "scripts"))
 
-from fix_dataset import amount_per_applicant, clean_text  # noqa: E402
+from fix_dataset import amount_per_applicant, clean_text, is_rolling_word  # noqa: E402
 from ingest_rich import _num  # noqa: E402
 
 
@@ -75,6 +75,14 @@ def test_parser_bere_prvni_cislo():
 
 def test_null_zustava_null():
     assert amount_per_applicant(_rec(None, alok=21_000_000)) == (None, None)
+
+
+
+def test_prubezne_je_prubezne():
+    # „průběžně“ se dřív neshodlo (filtr vyřízl ů, ž, ň) a 78 programů spadlo na null.
+    for s in ("průběžně", "Průběžně.", "prubezne", "rolling"):
+        assert is_rolling_word(s), s
+    assert not is_rolling_word("31. 10. 2026")
 
 
 if __name__ == "__main__":

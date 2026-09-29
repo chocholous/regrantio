@@ -1,75 +1,75 @@
 {
-	"today": "2026-09-28",
-	"records": 3910,
-	"grants": 3885,
-	"live": 1799,
-	"sources": 135,
+	"today": "2026-09-29",
+	"records": 3919,
+	"grants": 3894,
+	"live": 1808,
+	"sources": 136,
 	"status": {
-		"open": 573,
+		"open": 583,
 		"closed": 2086,
 		"unknown": 931,
-		"announced": 295
+		"announced": 294
 	},
 	"scope_live": {
-		"national": 305,
+		"regional": 554,
+		"national": 309,
 		"international": 10,
 		"eu_central": 465,
-		"local": 470,
-		"regional": 549
+		"local": 470
 	},
 	"deadline_kind_live": {
+		"rolling": 81,
 		"fixed": 864,
 		"unknown": 715,
-		"rolling": 72,
 		"recurring": 148
 	},
 	"fields": {
 		"deadline": {
-			"live": 868,
-			"live_pct": 48.2,
-			"all": 2954,
-			"all_pct": 76.0
+			"live": 877,
+			"live_pct": 48.5,
+			"all": 2963,
+			"all_pct": 76.1
 		},
 		"amount": {
-			"live": 85,
-			"live_pct": 4.7,
-			"all": 249,
-			"all_pct": 6.4
+			"live": 94,
+			"live_pct": 5.2,
+			"all": 258,
+			"all_pct": 6.6
 		},
 		"eligible_applicants": {
-			"live": 1299,
-			"live_pct": 72.2,
-			"all": 2477,
+			"live": 1308,
+			"live_pct": 72.3,
+			"all": 2486,
 			"all_pct": 63.8
 		},
 		"typ_zadatele": {
-			"live": 592,
-			"live_pct": 32.9,
-			"all": 1338,
-			"all_pct": 34.4
+			"live": 601,
+			"live_pct": 33.2,
+			"all": 1347,
+			"all_pct": 34.6
 		},
 		"oblast": {
-			"live": 1484,
-			"live_pct": 82.5,
-			"all": 3474,
+			"live": 1493,
+			"live_pct": 82.6,
+			"all": 3483,
 			"all_pct": 89.4
 		},
 		"kraj_nebo_celostatni": {
-			"live": 1799,
+			"live": 1808,
 			"live_pct": 100.0,
-			"all": 3885,
+			"all": 3894,
 			"all_pct": 100.0
 		},
 		"how_to_apply": {
-			"live": 1436,
-			"live_pct": 79.8,
-			"all": 3385,
-			"all_pct": 87.1
+			"live": 1445,
+			"live_pct": 79.9,
+			"all": 3394,
+			"all_pct": 87.2
 		},
 		"source_doc": {
-			"live": 1762,
-			"live_pct": 97.9,
-			"all": 3806,
+			"live": 1771,
+			"live_pct": 98.0,
+			"all": 3815,
 			"all_pct": 98.0
 		},
 		"contact": {
@@ -86,85 +86,85 @@
 		},
 		"call_number": {
 			"live": 700,
-			"live_pct": 38.9,
+			"live_pct": 38.7,
 			"all": 1833,
-			"all_pct": 47.2
+			"all_pct": 47.1
 		}
 	},
 	"freshness_live": {
-		"do_7": 820,
+		"do_7": 829,
 		"nevime": 973,
 		"do_30": 6
 	},
 	"citations": {
-		"total": 17105,
-		"located": 8103,
+		"total": 17123,
+		"located": 8121,
 		"located_pct": 47.4
 	},
 	"provenance_live": {
 		"amount": {
-			"present": 85,
+			"present": 94,
 			"parsed": 16,
-			"model": 69,
+			"model": 78,
 			"derived": 0,
 			"cited": 58,
-			"cited_pct": 68.2
+			"cited_pct": 61.7
 		},
 		"deadline": {
-			"present": 868,
+			"present": 877,
 			"parsed": 37,
-			"model": 827,
+			"model": 836,
 			"derived": 4,
 			"cited": 565,
-			"cited_pct": 65.1
+			"cited_pct": 64.4
 		},
 		"eligible_applicants": {
-			"present": 1299,
+			"present": 1308,
 			"parsed": 379,
-			"model": 920,
+			"model": 929,
 			"derived": 0,
 			"cited": 214,
-			"cited_pct": 16.5
+			"cited_pct": 16.4
 		},
 		"focus_area": {
-			"present": 1699,
+			"present": 1708,
 			"parsed": 494,
-			"model": 1205,
+			"model": 1214,
 			"derived": 0,
 			"cited": 311,
-			"cited_pct": 18.3
+			"cited_pct": 18.2
 		},
 		"oblast": {
-			"present": 1484,
+			"present": 1493,
 			"parsed": 220,
-			"model": 1264,
+			"model": 1273,
 			"derived": 0,
 			"cited": 261,
-			"cited_pct": 17.6
+			"cited_pct": 17.5
 		},
 		"open_from": {
-			"present": 880,
+			"present": 884,
 			"parsed": 49,
-			"model": 831,
+			"model": 835,
 			"derived": 0,
 			"cited": 49,
-			"cited_pct": 5.6
+			"cited_pct": 5.5
 		},
 		"region": {
-			"present": 1799,
+			"present": 1808,
 			"parsed": 533,
-			"model": 1266,
+			"model": 1275,
 			"derived": 0,
 			"cited": 253,
-			"cited_pct": 14.1
+			"cited_pct": 14.0
 		},
 		"typ_zadatele": {
-			"present": 592,
+			"present": 601,
 			"parsed": 149,
-			"model": 443,
+			"model": 452,
 			"derived": 0,
 			"cited": 73,
-			"cited_pct": 12.3
+			"cited_pct": 12.1
 		}
 	},
 	"families": {
@@ -174,13 +174,13 @@
 	},
 	"sources_by_state": {
 		"neovereno": 80,
-		"ok": 32,
+		"ok": 33,
 		"zmrazeny": 3,
 		"bez_cesty": 20
 	},
 	"live_by_source_state": {
 		"neovereno": 586,
-		"ok": 1128,
+		"ok": 1137,
 		"zmrazeny": 24,
 		"bez_cesty": 61
 	},
@@ -204,7 +204,7 @@
 			"records": 11,
 			"live": 6,
 			"last_fetched": "2026-09-28",
-			"days": 0,
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -215,7 +215,7 @@
 			"records": 49,
 			"live": 38,
 			"last_fetched": "2026-09-28",
-			"days": 0,
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -237,7 +237,7 @@
 			"records": 148,
 			"live": 26,
 			"last_fetched": "2026-09-28",
-			"days": 0,
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -248,7 +248,7 @@
 			"records": 137,
 			"live": 49,
 			"last_fetched": "2026-09-28",
-			"days": 0,
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -336,7 +336,7 @@
 			"records": 108,
 			"live": 23,
 			"last_fetched": "2026-09-28",
-			"days": 0,
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -523,7 +523,7 @@
 			"records": 234,
 			"live": 15,
 			"last_fetched": "2026-09-23",
-			"days": 5,
+			"days": 6,
 			"state": "ok"
 		},
 		{
@@ -534,7 +534,7 @@
 			"records": 697,
 			"live": 465,
 			"last_fetched": "2026-09-28",
-			"days": 0,
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -567,7 +567,7 @@
 			"records": 314,
 			"live": 235,
 			"last_fetched": "2026-09-23",
-			"days": 5,
+			"days": 6,
 			"state": "ok"
 		},
 		{
@@ -677,7 +677,7 @@
 			"records": 6,
 			"live": 4,
 			"last_fetched": "2026-09-28",
-			"days": 0,
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -688,7 +688,7 @@
 			"records": 6,
 			"live": 6,
 			"last_fetched": "2026-09-28",
-			"days": 0,
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -765,7 +765,7 @@
 			"records": 86,
 			"live": 28,
 			"last_fetched": "2026-09-28",
-			"days": 0,
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -776,7 +776,7 @@
 			"records": 111,
 			"live": 24,
 			"last_fetched": "2026-09-28",
-			"days": 0,
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -787,7 +787,7 @@
 			"records": 11,
 			"live": 8,
 			"last_fetched": "2026-09-28",
-			"days": 0,
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -919,7 +919,7 @@
 			"records": 53,
 			"live": 2,
 			"last_fetched": "2026-09-23",
-			"days": 5,
+			"days": 6,
 			"state": "ok"
 		},
 		{
@@ -996,7 +996,7 @@
 			"records": 106,
 			"live": 29,
 			"last_fetched": "2026-09-28",
-			"days": 0,
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1007,7 +1007,7 @@
 			"records": 27,
 			"live": 14,
 			"last_fetched": "2026-09-28",
-			"days": 0,
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1117,7 +1117,7 @@
 			"records": 16,
 			"live": 14,
 			"last_fetched": "2026-09-23",
-			"days": 5,
+			"days": 6,
 			"state": "ok"
 		},
 		{
@@ -1194,7 +1194,7 @@
 			"records": 26,
 			"live": 7,
 			"last_fetched": "2026-09-28",
-			"days": 0,
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1231,6 +1231,17 @@
 			"state": "neovereno"
 		},
 		{
+			"slug": "nrb",
+			"name": "Národní rozvojová banka",
+			"type": "statni_fond",
+			"refresh": "B",
+			"records": 9,
+			"live": 9,
+			"last_fetched": "2026-09-29",
+			"days": 0,
+			"state": "ok"
+		},
+		{
 			"slug": "nros.cz",
 			"name": "Nadace rozvoje občanské společnosti",
 			"type": "nadace",
@@ -1249,7 +1260,7 @@
 			"records": 21,
 			"live": 1,
 			"last_fetched": "2026-09-23",
-			"days": 5,
+			"days": 6,
 			"state": "ok"
 		},
 		{
@@ -1260,7 +1271,7 @@
 			"records": 12,
 			"live": 6,
 			"last_fetched": "2026-09-28",
-			"days": 0,
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1293,7 +1304,7 @@
 			"records": 12,
 			"live": 5,
 			"last_fetched": "2026-09-23",
-			"days": 5,
+			"days": 6,
 			"state": "ok"
 		},
 		{
@@ -1304,7 +1315,7 @@
 			"records": 8,
 			"live": 7,
 			"last_fetched": "2026-09-23",
-			"days": 5,
+			"days": 6,
 			"state": "ok"
 		},
 		{
@@ -1315,7 +1326,7 @@
 			"records": 101,
 			"live": 5,
 			"last_fetched": "2026-09-23",
-			"days": 5,
+			"days": 6,
 			"state": "ok"
 		},
 		{
@@ -1326,7 +1337,7 @@
 			"records": 60,
 			"live": 9,
 			"last_fetched": "2026-09-28",
-			"days": 0,
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1337,7 +1348,7 @@
 			"records": 107,
 			"live": 7,
 			"last_fetched": "2026-09-23",
-			"days": 5,
+			"days": 6,
 			"state": "ok"
 		},
 		{
@@ -1348,7 +1359,7 @@
 			"records": 1,
 			"live": 0,
 			"last_fetched": "2026-09-23",
-			"days": 5,
+			"days": 6,
 			"state": "ok"
 		},
 		{
@@ -1403,7 +1414,7 @@
 			"records": 9,
 			"live": 6,
 			"last_fetched": "2026-09-23",
-			"days": 5,
+			"days": 6,
 			"state": "ok"
 		},
 		{
@@ -1414,7 +1425,7 @@
 			"records": 38,
 			"live": 37,
 			"last_fetched": "2026-09-28",
-			"days": 0,
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1546,7 +1557,7 @@
 			"records": 95,
 			"live": 42,
 			"last_fetched": "2026-09-23",
-			"days": 5,
+			"days": 6,
 			"state": "ok"
 		},
 		{
@@ -1579,7 +1590,7 @@
 			"records": 11,
 			"live": 2,
 			"last_fetched": "2026-09-23",
-			"days": 5,
+			"days": 6,
 			"state": "ok"
 		},
 		{
@@ -1645,7 +1656,7 @@
 			"records": 7,
 			"live": 0,
 			"last_fetched": "2026-09-23",
-			"days": 5,
+			"days": 6,
 			"state": "ok"
 		},
 		{
@@ -1667,7 +1678,7 @@
 			"records": 14,
 			"live": 8,
 			"last_fetched": "2026-09-28",
-			"days": 0,
+			"days": 1,
 			"state": "ok"
 		}
 	]

@@ -158,6 +158,11 @@ _CLOSED = re.compile(
     r"|příjem\s+žádost\w*\s+(\S+\s+){0,4}?(předčasně\s+)?(ukončen|uzavřen)\b"
     # slovosled STEP 2026: „byl dne 11.8.2026 v 0:01 ukončen příjem žádostí“
     r"|\b(ukončen|uzavřen)\s+příjem\s+žádost"
+    # NRB 2025: „Příjem žádostí byl k 15.9. 2025 z důvodu zarezervování celé
+    # programové alokace pozastaven.“ Pozastavení KVŮLI ALOKACI je konec příjmu;
+    # „dočasně pozastaven pro online podání“ bez důvodu v alokaci konec není.
+    # (Mezi „žádostí“ a „z důvodu“ bývá datum s tečkami, proto `[^\n]`, ne `[^.]`.)
+    r"|příjem\s+žádost\w*\s+[^\n]{0,60}?z\s+důvodu\s+(zarezervování|vyčerpání|naplnění|převisu)[^\n]{0,80}?(pozastaven|ukončen|uzavřen)"
     r"|(ukončen|uzavřen)\w*\s+(příjm\w+\s+žádost\w*\s+)?z\s+důvodu\s+(vyčerpání|převisu|dosažení)",
     re.I,
 )
@@ -171,6 +176,7 @@ _MAY = re.compile(
     r"|(při|po)\s+(dosažení|překročení)\s+(\S+\s+){0,4}\d+\s*%\s+(\S+\s+){0,3}alokace",
     re.I,
 )
+_PARTIAL = re.compile(r"(méně\s+rozvinut|přechodov|více\s+rozvinut)\w*\s+region|pro\s+část\s+žadatel", re.I)
 _MONTHS = {"ledna": 1, "února": 2, "března": 3, "dubna": 4, "května": 5, "června": 6, "července": 7,
            "srpna": 8, "září": 9, "října": 10, "listopadu": 11, "prosince": 12}
 _DATE_NUM = re.compile(r"(\d{1,2})\.\s*(\d{1,2})\.\s*(20\d\d)")
@@ -238,6 +244,12 @@ def early_close(rec):
             if _FUTURE.search(t[max(0, m.start() - 30):m.end()]):
                 continue
             note = _sentence(t, m.start(), m.end())
+            # ⚠ KONEC PRO ČÁST ŽADATELŮ NENÍ KONEC VÝZVY. STEP – Investice 2026:
+            # „Méně rozvinuté regiony: … byl dne 1.8.2026 ukončen příjem žádostí“,
+            # přechodové regiony podávají dál do 15. 10. Posunout uzávěrku by
+            # výzvu vzalo těm, pro které pořád běží; věta jde do „může skončit dřív“.
+            if _PARTIAL.search(t[max(0, m.start() - 200):m.end()]):
+                return {"state": "may", "on": None, "note": note, "planned": None}
             # ⚠ DEN KONCE JEN Z VĚTY, NIKDY ZE DNE ČTENÍ. Den čtení se posouvá
             # s každou obnovou; uzávěrka odvozená z něj by se každý týden
             # posunula a sledujícím by chodila falešná „změna lhůty"

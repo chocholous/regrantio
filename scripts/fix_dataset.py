@@ -153,6 +153,7 @@ PROVIDER_TYPE = {
     "eu_ft": "evropska_komise",       # EU Funding & Tenders Portal (ec.europa.eu) — centrálně řízené programy EU
     # státní fondy
     "vinarskyfond": "statni_fond",    # Vinařský fond
+    "nrb": "statni_fond",             # Národní rozvojová banka (nrb.cz) — státní banka, úvěry s dotační složkou (2026‑09‑29)
     "sfa": "statni_fond",             # Státní fond audiovize (sfa.gov.cz)
     "sfzp": "statni_fond",            # Státní fond životního prostředí (sfzp.gov.cz)
     "sfpi": "statni_fond",            # Státní fond podpory investic / SFRB (sfpi.cz) — bydlení
@@ -237,6 +238,17 @@ def amount_per_applicant(rec):
     if amount is None and maxz is not None:
         amount = maxz
     return amount, maxz
+
+
+def is_rolling_word(s):
+    """Je hodnota lhůty slovo „průběžně“ (i bez diakritiky nebo s interpunkcí)?
+
+    ⚠ CELÁ ČESKÁ ABECEDA. Do 2026-09-29 se porovnávalo po `[^a-zěšč]`, které
+    z „průběžně“ vyřízlo ů, ž a ň („prběně“), takže se slovo nikdy neshodlo
+    a lhůta spadla na null: všech 78 průběžných programů mělo stav „neuvedeno“
+    místo „otevřeno“ a do čísla otevřených výzev se nepočítaly.
+    """
+    return re.sub(r"[^a-záčďéěíňóřšťúůýž]", "", str(s).lower()) in ("průběžně", "prubezne", "rolling", "průběžne")
 
 
 def load(path):
@@ -361,7 +373,7 @@ def main():
         s = str(v).strip()
         if re.fullmatch(r"\d{4}-\d{2}-\d{2}", s):
             return s
-        if re.sub(r"[^a-zěšč]", "", s.lower()) in ("průběžně", "prubezne", "rolling", "průběžne"):
+        if is_rolling_word(s):
             return "průběžně"
         cur = bool(re.search(r"aktu[áa]ln[íi]ho|b[ěe][žz]n[ée]ho", s, re.I))  # „aktuálního/běžného roku" = letošek
         m = re.match(r"(\d{1,2})\.\s*([A-Za-zÁ-ž]+)", s)

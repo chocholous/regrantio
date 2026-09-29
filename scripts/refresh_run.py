@@ -257,6 +257,12 @@ EXTRACT_SOURCES = {
     "optak": (["harvest_site.py", "--base", "https://optak.gov.cz", "--source", "optak",
                "--seed", "/priority-a-aktivity/a-5/", "--follow", r"^/[a-z0-9-]+/a-\d+/?$",
                "--out", "data/optak_documents.jsonl"], "html"),
+    # Národní rozvojová banka (2026-09-29): úvěry s dotační složkou pro podnikatele
+    # a veřejný sektor; produktové stránky `/produkt/<slug>/` nemají v adrese
+    # dotační slovo, proto `--follow` (záruky a poradenství extraktor vynechá).
+    "nrb": (["harvest_site.py", "--base", "https://www.nrb.cz", "--source", "nrb",
+             "--follow", r"^/produkt/[a-z0-9-]+/?$", "--scope-path", "/produkt/",
+             "--out", "data/nrb_documents.jsonl"], "html"),
     "opzp": (["opzp.py"], "html"),
     "osf": (["osf.py"], "html"),
     # ⚠ S ROZPOČTEM (2026‑09‑23): dvacet webů obvodů se do stropu kroku
