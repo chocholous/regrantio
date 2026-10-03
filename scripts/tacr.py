@@ -63,6 +63,19 @@ def page_text(h):
 
 
 D = r"\d{1,2}\.\s*\d{1,2}\.\s*20\d\d"  # POZOR: české datum obsahuje tečky → ne [^.]
+MESICE = ("ledna", "února", "března", "dubna", "května", "června", "července", "srpna",
+          "září", "října", "listopadu", "prosince")
+DM = r"\d{1,2}\.\s*(?:" + "|".join(MESICE) + r")(?:\s*20\d\d)?"  # „10. listopadu 2025“, „8. září“
+
+
+def numeric(s):
+    """„10. listopadu 2025“ → „10. 11. 2025“; číselné datum projde beze změny.
+    Bez roku (např. „Od 8. září je otevřena“) se datum nepíše: rok by byl odhad."""
+    s = re.sub(r"\s+", " ", s or "").strip()
+    m = re.match(r"(\d{1,2})\.\s*(" + "|".join(MESICE) + r")\s*(20\d\d)?", s)
+    if not m:
+        return s
+    return f"{m.group(1)}. {MESICE.index(m.group(2)) + 1}. {m.group(3)}" if m.group(3) else None
 
 
 def info_block(t):
@@ -74,6 +87,34 @@ def info_block(t):
     sl = re.search(r"Soutěžní lhůta začíná dnem\s*(" + D + r")[\s\S]{0,90}?končí dnem\s*(" + D + ")", t)
     if sl:
         out.append(f"Soutěžní lhůta: od {re.sub(r'\\s+', ' ', sl.group(1))} do {re.sub(r'\\s+', ' ', sl.group(2))}")
+    # Mezinárodní výzvy (Eurostars, Water4All, CET, DUT…; 2026‑10‑03): stránka
+    # nemá „Soutěžní lhůtu“, jen „Termín pro příjem návrhů … trvá do 10. 9. 2026“
+    # (někdy slovem: „10. listopadu 2025“) a „Od 9. 7. 2026 je otevřena…“.
+    # Národní výzvy Seal of Excellence: „Od 20.1.2027 do 19.2.2027 bude otevřena“.
+    # Bez nich harvester přeskočil 13 z 21 soutěží a katalog měl z TA ČR 2 otevřené.
+    # Postranní blok stránky nese lhůtu vždy: „Lhůta pro podání návrhů projektů
+    # ↵ 26. 8. 2026 ↵ - ↵ 21. 10. 2026“. Věty pod ním jsou záloha.
+    blok = re.search(r"Lhůta pro podání návrhů projektů\s*\n\s*(" + D + r")\s*\n\s*-\s*\n\s*(" + D + ")", t)
+    if not sl and blok:
+        out.append(f"Soutěžní lhůta: od {re.sub(r'\\s+', ' ', blok.group(1))} do {re.sub(r'\\s+', ' ', blok.group(2))}")
+    elif not sl:
+        oddo = re.search(r"Od\s*(" + D + r")\s*do\s*(" + D + r")\s*(?:bude|je)\s*otevřen", t)
+        do = re.search(r"Termín pro příjem návrhů[^.\n]{0,60}?trvá do\s*(" + D + "|" + DM + ")", t)
+        od = re.search(r"Od\s*(" + D + "|" + DM + r")\s*(?:je|bude)\s*otevřen", t)
+        if oddo:
+            out.append(f"Soutěžní lhůta: od {re.sub(r'\\s+', ' ', oddo.group(1))} do {re.sub(r'\\s+', ' ', oddo.group(2))}")
+        elif do and numeric(do.group(1)):
+            zacatek = f"od {numeric(od.group(1))} " if od and numeric(od.group(1)) else ""
+            out.append(f"Soutěžní lhůta: {zacatek}do {numeric(do.group(1))}")
+    # Kdo smí žádat: řádek pod štítkem „Uchazeči“ v témže bloku („Podnik,
+    # Výzkumná organizace“, „Malý nebo střední podnik - držitelé SoE…“).
+    uch = re.search(r"\n\s*Uchazeči\s*\n\s*([^\n]{3,200})", t)
+    if uch and not re.match(r"Lhůta|Alokace|Maximální", uch.group(1)):
+        out.append(f"Uchazeči: {re.sub(r'\\s+', ' ', uch.group(1)).strip()}")
+    # Strop na projekt v Kč (eura se nepřepočítávají: kurz by byl odhad).
+    strop = re.search(r"Maximální výše podpory na projekt\s*\n\s*([^\n]{2,160})", t)
+    if strop and "Kč" in strop.group(1):
+        out.append(f"Strop na projekt: {re.sub(r'\\s+', ' ', strop.group(1)).strip()}")
     al = re.search(r"Alokace[\s:]*([^.\n]{0,130}?(?:mil\.?|mld\.?)\s*Kč[^.\n]{0,15}|[^.\n]{0,90}?\d[\d  ]{4,}\s*Kč)", t)
     if al:
         out.append(f"Alokace: {re.sub(r'\\s+', ' ', al.group(1)).strip()}")

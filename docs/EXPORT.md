@@ -73,6 +73,11 @@ nemá ukazovat člověku — do 2026‑09‑11 ho produkt vypisoval jako poskyto
 - `zdroj_financovani` (array): `narodni_rozpocet`, `eu_fondy`, `eu_primy`, `npo`, `ehp_norsko`, …
 - `oblast`, `typ_zadatele`, `cilova_skupina` (arrays)
 - `region` (object): `{kraj: string|null, celostatni: bool}`
+- `velikost_podniku` (array, NEPOVINNÁ, 2026‑10‑03): velikosti podniku, které výzva připouští,
+  `mikro` (< 10 zaměstnanců), `maly` (< 50), `stredni` (< 250), `velky`. Jen u výzev pro
+  podnikatele a jen tam, kde to věta žadatele, název nebo zaměření výslovně říká („malé
+  a střední podniky“, „mikropodniky“); „MSP (u některých aktivit i velké)“ omezení není.
+  Chybí = výzva o velikosti mlčí, NE „pro všechny“. Počítá `consolidate.py` (`velikost_podniku`).
 
 Facety jsou pole tam, kde výzva spadá pod víc hodnot; `typ_poskytovatele` a `region` jsou jednoznačné.
 

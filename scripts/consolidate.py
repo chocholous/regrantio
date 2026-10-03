@@ -50,6 +50,40 @@ def dedup(xs):
     return out
 
 
+# ---------------------------------------------------------------- velikost podniku
+# Velikost podniku podle definice EU (2026‑10‑03): mikro < 10 zaměstnanců,
+# malý < 50, střední < 250, velký od 250. Produkt ji o organizaci zná z ARES
+# (kategorie počtu pracovníků) a výzva ji říká, když je jen pro MSP.
+#
+# ⚠ NEHÁDAT. Faseta je seznam velikostí, které výzva PŘIPOUŠTÍ, a stojí jen
+# tam, kde to věta žadatele, název nebo zaměření výslovně říká. „Malé a
+# střední podniky (u některých aktivit i velké)“ omezení není, takže fasetu
+# nedostane; mlčící výzva taky ne. Prázdná faseta = „nevíme“, ne „pro všechny“.
+import re  # noqa: E402
+
+_MSP = re.compile(r"mal\w+ (?:a|nebo) střední\w* podnik|malého a středního podnikání|\bMSP\b|\bSMEs?\b", re.I)
+_MIKRO = re.compile(r"mikropodnik|mikro podnik", re.I)
+_MIKRO_MALY = re.compile(r"mikro\w* a mal\w+ podnik", re.I)
+_I_VELKE = re.compile(r"(?:i|včetně|a)\s+velk\w+ podnik|velk\w+ podnik\w* (?:mohou|může|jsou oprávněn)", re.I)
+
+
+def velikost_podniku(r, tz):
+    if not set(tz) & {"firma", "osvc_podnikatel"}:
+        return []
+    ea = r.get("eligible_applicants")
+    ea = " ".join(map(str, ea)) if isinstance(ea, list) else (ea or "")
+    text = " ".join(x for x in (r.get("title"), r.get("focus_area"), ea) if isinstance(x, str))
+    if _I_VELKE.search(text):
+        return []
+    if _MIKRO_MALY.search(text):
+        return ["mikro", "maly"]
+    if _MSP.search(text):
+        return ["mikro", "maly", "stredni"]
+    if _MIKRO.search(text):
+        return ["mikro"]
+    return []
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--in", dest="inp", default="data/opportunities.jsonl")
@@ -83,6 +117,11 @@ def main():
         for v in tz: after["typ_zadatele"][v] += 1
         f["typ_zadatele"] = tz
         f["sektor_zadatele"] = dedup([sektor[v] for v in tz if v in sektor])
+        vp = velikost_podniku(r, tz)
+        if vp:
+            f["velikost_podniku"] = vp
+        else:
+            f.pop("velikost_podniku", None)
         # cilova_skupina (+ patterns)
         cs = f.get("cilova_skupina") or []
         for v in cs: before["cilova_skupina"][v] += 1

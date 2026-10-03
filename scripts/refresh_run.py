@@ -263,6 +263,10 @@ EXTRACT_SOURCES = {
     "nrb": (["harvest_site.py", "--base", "https://www.nrb.cz", "--source", "nrb",
              "--follow", r"^/produkt/[a-z0-9-]+/?$", "--scope-path", "/produkt/",
              "--out", "data/nrb_documents.jsonl"], "html"),
+    # Národní program Životní prostředí (2026-10-03): výpis aktuální nabídky
+    # a detaily výzev se štítky na řádcích; konkurence z něj výzvy má, katalog
+    # neměl žádnou. Parser je deterministický (`extractors/npzp.py`).
+    "npzp": (["npzp.py"], "html"),
     "opzp": (["opzp.py"], "html"),
     "osf": (["osf.py"], "html"),
     # ⚠ S ROZPOČTEM (2026‑09‑23): dvacet webů obvodů se do stropu kroku

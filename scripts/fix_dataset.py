@@ -155,6 +155,7 @@ PROVIDER_TYPE = {
     "vinarskyfond": "statni_fond",    # Vinařský fond
     "nrb": "statni_fond",             # Národní rozvojová banka (nrb.cz) — státní banka, úvěry s dotační složkou (2026‑09‑29)
     "sfa": "statni_fond",             # Státní fond audiovize (sfa.gov.cz)
+    "npzp": "statni_fond",            # Národní program Životní prostředí (narodniprogramzp.cz) — MŽP, administruje SFŽP (2026‑10‑03)
     "sfzp": "statni_fond",            # Státní fond životního prostředí (sfzp.gov.cz)
     "sfpi": "statni_fond",            # Státní fond podpory investic / SFRB (sfpi.cz) — bydlení
     "sfdi": "statni_fond",            # Státní fond dopravní infrastruktury (sfdi.gov.cz) — doprava
