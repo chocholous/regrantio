@@ -8,36 +8,36 @@ Změřeno k **2026-10-03** skriptem `scripts/quality_report.py`. Čísla u živ�
 |---|---:|
 | záznamů celkem | 3988 |
 | z toho výzev | 3963 |
-| **živých k dnešku** | **1783** |
+| **živých k dnešku** | **1789** |
 | zdrojů | 137 |
-| stav | open 512 · announced 340 · unknown 931 · closed 2180 |
-| dosah živých | místní 451 · krajský 543 · celostátní 318 · mezinárodní 10 · EU centrální 461 |
-| druh lhůty u živých | jedna lhůta 840 · průběžně 81 · opakovaně 146 · neuvedeno 716 |
+| stav | open 518 · announced 340 · unknown 931 · closed 2174 |
+| dosah živých | místní 451 · krajský 543 · celostátní 324 · mezinárodní 10 · EU centrální 461 |
+| druh lhůty u živých | jedna lhůta 846 · průběžně 81 · opakovaně 146 · neuvedeno 716 |
 
 ## Vyplněnost polí
 
 | pole | živé | archiv |
 |---|---:|---:|
-| lhůta | 47.8 % (852) | 76.5 % (3032) |
-| částka pro žadatele | 5.2 % (92) | 6.7 % (265) |
-| kdo smí žádat (text) | 73.0 % (1302) | 64.5 % (2555) |
-| typ žadatele (faseta) | 33.5 % (597) | 34.5 % (1369) |
-| oblast | 82.4 % (1470) | 89.6 % (3552) |
-| území | 100.0 % (1783) | 100.0 % (3963) |
-| jak podat | 79.9 % (1424) | 87.4 % (3463) |
-| zdrojový dokument | 97.9 % (1746) | 98.0 % (3884) |
+| lhůta | 48.0 % (858) | 76.5 % (3032) |
+| částka pro žadatele | 5.1 % (92) | 6.7 % (265) |
+| kdo smí žádat (text) | 73.1 % (1308) | 64.5 % (2555) |
+| typ žadatele (faseta) | 33.7 % (603) | 34.5 % (1369) |
+| oblast | 82.5 % (1476) | 89.6 % (3552) |
+| území | 100.0 % (1789) | 100.0 % (3963) |
+| jak podat | 79.6 % (1424) | 87.4 % (3463) |
+| zdrojový dokument | 97.9 % (1752) | 98.0 % (3884) |
 | kontakt | 12.8 % (229) | 14.2 % (561) |
-| dokumenty | 14.1 % (252) | 16.8 % (665) |
-| číslo výzvy | 39.5 % (704) | 48.0 % (1902) |
+| dokumenty | 14.2 % (254) | 16.8 % (665) |
+| číslo výzvy | 39.7 % (710) | 48.0 % (1902) |
 
 ## Čerstvost živých záznamů
 
 | ověřeno u zdroje | záznamů |
 |---|---:|
-| do 7 dnů | 717 |
+| do 7 dnů | 772 |
 | do 30 dnů | 110 |
 | starší | 0 |
-| nevíme (bez razítka) | 956 |
+| nevíme (bez razítka) | 907 |
 
 ## Doložitelnost
 
@@ -46,13 +46,13 @@ Citací celkem 17268, ve zdroji dohledaných **8241 (47.7 %)**. Nedohledaná cit
 | pole (živé) | má hodnotu | parser | model | dopočet | doloženo citací |
 |---|---:|---:|---:|---:|---:|
 | amount | 92 | 16 | 76 | 0 | 59.8 % |
-| deadline | 852 | 35 | 815 | 2 | 67.1 % |
-| eligible_applicants | 1302 | 379 | 923 | 0 | 16.0 % |
-| focus_area | 1688 | 494 | 1194 | 0 | 18.1 % |
-| oblast | 1470 | 220 | 1250 | 0 | 17.6 % |
-| open_from | 863 | 47 | 816 | 0 | 5.0 % |
-| region | 1783 | 531 | 1252 | 0 | 14.0 % |
-| typ_zadatele | 597 | 149 | 448 | 0 | 11.9 % |
+| deadline | 858 | 35 | 821 | 2 | 66.7 % |
+| eligible_applicants | 1308 | 379 | 929 | 0 | 15.9 % |
+| focus_area | 1693 | 494 | 1199 | 0 | 18.0 % |
+| oblast | 1476 | 220 | 1256 | 0 | 17.5 % |
+| open_from | 869 | 47 | 822 | 0 | 4.9 % |
+| region | 1789 | 531 | 1258 | 0 | 13.9 % |
+| typ_zadatele | 603 | 149 | 454 | 0 | 11.8 % |
 
 ## Rodiny ročníků
 
@@ -62,9 +62,9 @@ Citací celkem 17268, ve zdroji dohledaných **8241 (47.7 %)**. Nedohledaná cit
 
 | stav | zdrojů | živých záznamů |
 |---|---:|---:|
-| ok (ověřeno do 21 dnů) | 34 | 1129 |
+| ok (ověřeno do 21 dnů) | 35 | 1184 |
 | stárne (nad 21 dnů) | 0 | 0 |
-| má cestu, nikdy neověřeno | 80 | 571 |
+| má cestu, nikdy neověřeno | 79 | 522 |
 | bez zapsané cesty k obnově | 20 | 60 |
 | zmrazený | 3 | 23 |
 
@@ -73,7 +73,7 @@ Citací celkem 17268, ve zdroji dohledaných **8241 (47.7 %)**. Nedohledaná cit
 | Evropská komise (Funding & Tenders) (`eu_ft`) | evropska_komise | B | 742 | 461 | 2026-10-03 | ok |
 | Kraj Vysočina (Fond Vysočiny) (`fondvysociny.cz`) | samosprava_kraj | A | 314 | 235 | 2026-09-23 | ok |
 | Město Ústí nad Labem (`dotace.usti-nad-labem.cz`) | samosprava_obec | A | 72 | 71 |  | neovereno |
-| IROP (MMR) (`irop.gov.cz`) | ministerstvo | A | 120 | 49 |  | neovereno |
+| IROP (MMR) (`irop.gov.cz`) | ministerstvo | A | 120 | 55 | 2026-10-03 | ok |
 | Liberecký kraj (`dotace.kraj-lbc.cz`) | samosprava_kraj | A | 137 | 47 | 2026-09-28 | ok |
 | Středočeský kraj (`stredoceskykraj.cz`) | samosprava_kraj | A | 95 | 42 | 2026-09-23 | ok |
 | Ministerstvo zdravotnictví (`mzcr`) | ministerstvo | C | 83 | 41 |  | neovereno |

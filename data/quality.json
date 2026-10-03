@@ -2,72 +2,72 @@
 	"today": "2026-10-03",
 	"records": 3988,
 	"grants": 3963,
-	"live": 1783,
+	"live": 1789,
 	"sources": 137,
 	"status": {
-		"open": 512,
-		"closed": 2180,
+		"open": 518,
+		"closed": 2174,
 		"unknown": 931,
 		"announced": 340
 	},
 	"scope_live": {
-		"national": 318,
+		"national": 324,
 		"regional": 543,
 		"international": 10,
 		"eu_central": 461,
 		"local": 451
 	},
 	"deadline_kind_live": {
-		"fixed": 840,
+		"fixed": 846,
 		"rolling": 81,
 		"unknown": 716,
 		"recurring": 146
 	},
 	"fields": {
 		"deadline": {
-			"live": 852,
-			"live_pct": 47.8,
+			"live": 858,
+			"live_pct": 48.0,
 			"all": 3032,
 			"all_pct": 76.5
 		},
 		"amount": {
 			"live": 92,
-			"live_pct": 5.2,
+			"live_pct": 5.1,
 			"all": 265,
 			"all_pct": 6.7
 		},
 		"eligible_applicants": {
-			"live": 1302,
-			"live_pct": 73.0,
+			"live": 1308,
+			"live_pct": 73.1,
 			"all": 2555,
 			"all_pct": 64.5
 		},
 		"typ_zadatele": {
-			"live": 597,
-			"live_pct": 33.5,
+			"live": 603,
+			"live_pct": 33.7,
 			"all": 1369,
 			"all_pct": 34.5
 		},
 		"oblast": {
-			"live": 1470,
-			"live_pct": 82.4,
+			"live": 1476,
+			"live_pct": 82.5,
 			"all": 3552,
 			"all_pct": 89.6
 		},
 		"kraj_nebo_celostatni": {
-			"live": 1783,
+			"live": 1789,
 			"live_pct": 100.0,
 			"all": 3963,
 			"all_pct": 100.0
 		},
 		"how_to_apply": {
 			"live": 1424,
-			"live_pct": 79.9,
+			"live_pct": 79.6,
 			"all": 3463,
 			"all_pct": 87.4
 		},
 		"source_doc": {
-			"live": 1746,
+			"live": 1752,
 			"live_pct": 97.9,
 			"all": 3884,
 			"all_pct": 98.0
@@ -79,22 +79,22 @@
 			"all_pct": 14.2
 		},
 		"documents": {
-			"live": 252,
-			"live_pct": 14.1,
+			"live": 254,
+			"live_pct": 14.2,
 			"all": 665,
 			"all_pct": 16.8
 		},
 		"call_number": {
-			"live": 704,
-			"live_pct": 39.5,
+			"live": 710,
+			"live_pct": 39.7,
 			"all": 1902,
 			"all_pct": 48.0
 		}
 	},
 	"freshness_live": {
-		"do_7": 717,
+		"do_7": 772,
 		"do_30": 110,
-		"nevime": 956
+		"nevime": 907
 	},
 	"citations": {
 		"total": 17268,
@@ -111,60 +111,60 @@
 			"cited_pct": 59.8
 		},
 		"deadline": {
-			"present": 852,
+			"present": 858,
 			"parsed": 35,
-			"model": 815,
+			"model": 821,
 			"derived": 2,
 			"cited": 572,
-			"cited_pct": 67.1
+			"cited_pct": 66.7
 		},
 		"eligible_applicants": {
-			"present": 1302,
+			"present": 1308,
 			"parsed": 379,
-			"model": 923,
+			"model": 929,
 			"derived": 0,
 			"cited": 208,
-			"cited_pct": 16.0
+			"cited_pct": 15.9
 		},
 		"focus_area": {
-			"present": 1688,
+			"present": 1693,
 			"parsed": 494,
-			"model": 1194,
+			"model": 1199,
 			"derived": 0,
 			"cited": 305,
-			"cited_pct": 18.1
+			"cited_pct": 18.0
 		},
 		"oblast": {
-			"present": 1470,
+			"present": 1476,
 			"parsed": 220,
-			"model": 1250,
+			"model": 1256,
 			"derived": 0,
 			"cited": 258,
-			"cited_pct": 17.6
+			"cited_pct": 17.5
 		},
 		"open_from": {
-			"present": 863,
+			"present": 869,
 			"parsed": 47,
-			"model": 816,
+			"model": 822,
 			"derived": 0,
 			"cited": 43,
-			"cited_pct": 5.0
+			"cited_pct": 4.9
 		},
 		"region": {
-			"present": 1783,
+			"present": 1789,
 			"parsed": 531,
-			"model": 1252,
+			"model": 1258,
 			"derived": 0,
 			"cited": 249,
-			"cited_pct": 14.0
+			"cited_pct": 13.9
 		},
 		"typ_zadatele": {
-			"present": 597,
+			"present": 603,
 			"parsed": 149,
-			"model": 448,
+			"model": 454,
 			"derived": 0,
 			"cited": 71,
-			"cited_pct": 11.9
+			"cited_pct": 11.8
 		}
 	},
 	"families": {
@@ -173,14 +173,14 @@
 		"recurring": 259
 	},
 	"sources_by_state": {
-		"neovereno": 80,
-		"ok": 34,
+		"neovereno": 79,
+		"ok": 35,
 		"zmrazeny": 3,
 		"bez_cesty": 20
 	},
 	"live_by_source_state": {
-		"neovereno": 571,
-		"ok": 1129,
+		"neovereno": 522,
+		"ok": 1184,
 		"zmrazeny": 23,
 		"bez_cesty": 60
 	},
@@ -697,10 +697,10 @@
 			"type": "ministerstvo",
 			"refresh": "A",
 			"records": 120,
-			"live": 49,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"live": 55,
+			"last_fetched": "2026-10-03",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "jihlava.cz",

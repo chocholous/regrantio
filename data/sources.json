@@ -514,8 +514,8 @@
 		"refresh": "A",
 		"harvester": "kentico_irop.py",
 		"records": 120,
-		"live": 49,
-		"last_fetched": null
+		"live": 55,
+		"last_fetched": "2026-10-03"
 	},
 	"jihlava.cz": {
 		"name": "Město Jihlava",
