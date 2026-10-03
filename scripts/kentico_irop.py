@@ -64,6 +64,12 @@ def discover(base, listing_path, enumerate_n):
             if re.search(r"vyzvaIROP|/Vyzvy/", hr):
                 urls.add(base + hr.split("?")[0] if hr.startswith("/") else hr)
     # doplň enumerací N..1 (IROP detail = /Vyzvy-2021-2027/Vyzvy/{N}vyzvaIROP)
+    # ⚠ Výpis ukazuje jen posledních ~10 výzev (2026‑10‑03), katalog jich nese
+    # 120. `--enumerate -1` = AUTOMATICKY: nejvyšší číslo z výpisu + 15, takže
+    # pravidelná obnova najde nové výzvy bez ručně nastaveného stropu.
+    if enumerate_n < 0:
+        nums = [int(x) for u in urls for x in re.findall(r"/(\d+)vyzvaIROP", u)]
+        enumerate_n = (max(nums) + 15) if nums else 0
     for n in range(enumerate_n, 0, -1):
         urls.add(f"{base}/Vyzvy-2021-2027/Vyzvy/{n}vyzvaIROP")
     return sorted(urls)

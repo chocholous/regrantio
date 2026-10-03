@@ -143,6 +143,17 @@ SOURCES = {
         ["ingest_kraj.py", "data/h_kraj_praha.json"],
         "html",
     ),
+    # IROP (2026‑10‑03): 49 otevřených výzev, které od června nikdo neobnovil,
+    # protože zdroj v registru chyběl. Výpis má jen posledních ~10 výzev, zbytek
+    # se najde enumerací čísel (`--enumerate -1` = nejvyšší z výpisu + 15).
+    # Bez příloh: ingest je nečte a stahování by krok protáhlo na desítky minut.
+    # Upsert u obohacených záznamů přepíše jen data a stav, fasety zůstanou.
+    "irop.gov.cz": (
+        ["kentico_irop.py", "--enumerate", "-1", "--no-attachments", "--out", "data/h_kentico_irop.jsonl"],
+        "data/h_kentico_irop.jsonl",
+        ["ingest_kentico.py", "data/h_kentico_irop.jsonl", "--source", "irop.gov.cz"],
+        "html",
+    ),
     # ⚠ Brno je „mesto", ne „kraj" — jméno souboru se od ostatních liší.
     "dotace.brno.cz": (
         ["brno_harvest.py"], "data/h_mesto_brno.json",
