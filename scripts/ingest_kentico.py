@@ -54,7 +54,7 @@ def main():
             "title": title, "focus_area": None, "open_from": of, "deadline": dl,
             "status": st, "status_confidence": conf, "amount": None,
             "eligible_applicants": r.get("eligible"), "required_attachments": [],
-            "how_to_apply": None, "source_doc": url, "id": gid,
+            "how_to_apply": r.get("how_to_apply"), "source_doc": url, "id": gid,
             "facets": {
                 "oblast": [], "typ_zadatele": [], "sektor_zadatele": [],     # ← LLM vrstva 2
                 "typ_poskytovatele": a.poskytovatel, "forma_podpory": ["dotace"],
@@ -70,7 +70,7 @@ def main():
                                          for x in (r.get("attachments") or []) if isinstance(x, dict)]},
             "extra": {k: v for k, v in r.items()
                       if k not in ("url", "title", "open_from", "deadline", "eligible", "status",
-                                   "status_conf", "attachments", "allocation", "support_rate")
+                                   "status_conf", "attachments", "allocation", "support_rate", "how_to_apply")
                       and v not in (None, "", [], {})},
             "citations": [],
         }

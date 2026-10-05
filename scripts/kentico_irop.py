@@ -86,6 +86,13 @@ def process(url, files_dir, do_att, timeout, max_bytes):
     for k, pat in FIELDS.items():
         m = re.search(pat, txt, re.I)
         rec[k] = m.group(1).strip()[: (2000 if k == "eligible" else 180)] if m else None
+    # Způsob podání (2026‑10‑05): stránka výzvy odkazuje dokument „Postup pro
+    # podání žádosti o podporu v MS2021+“. Je to doklad ze zdroje, že se podává
+    # v MS2021+ (ISKP21+); produkt z něj ukáže, co zařídit předem (účet, podpis).
+    # Bez té zmínky se nic netvrdí.
+    if re.search(r"podání\s+žádosti\s+o\s+podporu\s+v\s+MS2021\+?", txt, re.I):
+        rec["how_to_apply"] = ("Žádost o podporu se podává elektronicky v MS2021+ (ISKP21+); postup popisuje dokument "
+                               "„Postup pro podání žádosti o podporu v MS2021+“ u výzvy.")
     # status z dat
     of, dl = pdate(rec.get("open_from")), pdate(rec.get("deadline"))
     if dl:

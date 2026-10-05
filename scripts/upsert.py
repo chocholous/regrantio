@@ -24,6 +24,8 @@ import os
 # Fakta z listingu, která smí refresh přepsat i u záznamu obohaceného vrstvou 2.
 REFRESHABLE = ("open_from", "deadline", "status", "status_confidence", "amount", "source_url")
 REFRESHABLE_FACETS = ("vyse_alokace_czk", "vyse_max_zadatel_czk")
+# Pole, která refresh u obohaceného záznamu jen DOPLNÍ, když chybí (viz `merge`).
+FILL_IF_EMPTY = ("how_to_apply",)
 
 
 def _today():
@@ -74,6 +76,12 @@ def merge(old, new):
     out = dict(old)
     for k in REFRESHABLE:
         if new.get(k) is not None:
+            out[k] = new[k]
+    # Doplnit, nepřepsat (2026‑10‑05): pole, které obohacený záznam nemá
+    # a strukturní sběr ho nově přinesl (způsob podání u IROP). Co tam už je,
+    # zůstává; tohle jen zaplní mezeru ze zdroje.
+    for k in FILL_IF_EMPTY:
+        if not out.get(k) and new.get(k):
             out[k] = new[k]
     of, nf = dict(out.get("facets") or {}), new.get("facets") or {}
     for k in REFRESHABLE_FACETS:
