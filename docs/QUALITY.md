@@ -24,7 +24,7 @@ Změřeno k **2026-10-05** skriptem `scripts/quality_report.py`. Čísla u živ�
 | typ žadatele (faseta) | 33.7 % (603) | 34.5 % (1369) |
 | oblast | 82.4 % (1476) | 89.5 % (3552) |
 | území | 100.0 % (1791) | 100.0 % (3967) |
-| jak podat | 79.6 % (1426) | 87.4 % (3467) |
+| jak podat | 82.7 % (1481) | 90.4 % (3587) |
 | zdrojový dokument | 97.9 % (1754) | 98.0 % (3888) |
 | kontakt | 12.8 % (229) | 14.1 % (561) |
 | dokumenty | 14.2 % (254) | 16.8 % (665) |
