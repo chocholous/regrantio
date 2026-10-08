@@ -38,7 +38,7 @@ def main():
     for p in H["programs"]:
         nazev, popis = p.get("nazev") or p["id"], p.get("popis") or ""
         of, dl = p.get("open_from"), p.get("deadline")
-        st, conf = compute_status(of, dl, today)
+        st, conf = compute_status(of, dl, today, nazev)
         eligible = p.get("typ_zadatele")
         gid = canon_key("grant", nazev, p.get("url") or source + "/" + p["id"])
         rec = {

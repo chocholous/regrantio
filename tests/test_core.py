@@ -38,6 +38,27 @@ def test_status_bez_deadlinu_je_unknown():
     assert st == "unknown"
 
 
+def test_status_prosly_rocnik_bez_lhuty_je_closed():
+    """2026-10-08: „CYKLODOPRAVA A CYKLOTURISTIKA 2019“ bez lhůty se tvářila jako běžící."""
+    from opportunities import round_year
+    cases = [
+        ("CYKLODOPRAVA A CYKLOTURISTIKA 2019", 2019),
+        ("Grantové řízení 2022/2023 – podpora paliativní péče v hospici", 2023),
+        ("Žádosti pro školní rok 2025/2026", 2026),
+        ("Téma roku 2011/12 – Podpora jazyka", 2012),
+        ("Dotační program na roky 2025–2027", 2027),
+        ("Podpora rozvoje cykloturistiky v Moravskoslezském kraji 2024+", None),
+        ("Podpora sociálních služeb podle zákona č. 108/2006 Sb.", None),
+        ("Výzva 2/2016 PU", None),
+        ("ERA Fellowships (HORIZON-WIDERA-2026-05-WIDENING-01)", 2026),
+    ]
+    for title, want in cases:
+        assert round_year(title) == want, title
+    assert compute_status(None, None, TODAY, "NAŠE ŠKOLA 2019")[0] == "closed"
+    assert compute_status(None, None, TODAY, f"PROGRAM {TODAY.year}")[0] == "unknown"
+    assert compute_status(None, "průběžně", TODAY, "DOBROVOLNICTVÍ 2020")[0] == "open"
+
+
 def test_status_minuly_deadline_je_closed():
     st, _ = compute_status("2026-01-01", "2026-07-30", TODAY)
     assert st == "closed"

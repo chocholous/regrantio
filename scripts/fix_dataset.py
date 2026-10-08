@@ -472,7 +472,7 @@ def main():
         if r.get("kind") != "grant":
             continue
         old = r.get("status")
-        new, conf = compute_status(r.get("open_from"), r.get("deadline"), today)
+        new, conf = compute_status(r.get("open_from"), r.get("deadline"), today, r.get("title"))
         if new != old:
             transitions[f"{old}→{new}"] += 1
         r["status"], r["status_confidence"] = new, conf

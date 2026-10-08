@@ -23,12 +23,36 @@ def _pd(s):
     m = re.match(r"(\d{4})-(\d{2})-(\d{2})", s or "")
     return date(int(m[1]), int(m[2]), int(m[3])) if m else None
 
-def compute_status(open_from, deadline, today):
-    """status v KÓDU (ne LLM): announced/open/closed/unknown + confidence."""
+_ROUND_PLUS = re.compile(r"(?<![\d/])20\d{2}\s*\+")
+_ROUND_YEAR = re.compile(r"(?<![\d/])(20\d{2})(?:\s*[-–/]\s*(20\d{2}|\d{2}))?(?!\d)")
+
+def round_year(title):
+    """Ročník výzvy z názvu (2026-10-08): nejvyšší rok 20xx; konec rozsahu se počítá
+    („2022/2023“, „2025–27“), rok za lomítkem bez rozsahu ne (zákon č. 108/2006),
+    „2024+“ = běží dál (None). Tytéž případy ověřuje aplikace
+    (the-machine-app: tests/unit/round-year.cases.json, status.ts, SQL catalog_round_year)."""
+    if not title or _ROUND_PLUS.search(title):
+        return None
+    best = None
+    for m in _ROUND_YEAR.finditer(title):
+        a = int(m[1])
+        b = (2000 + int(m[2]) if len(m[2]) == 2 else int(m[2])) if m[2] else a
+        best = max(best or 0, a, b)
+    return best
+
+def compute_status(open_from, deadline, today, title=None):
+    """status v KÓDU (ne LLM): announced/open/closed/unknown + confidence.
+
+    Výzva BEZ LHŮTY, jejíž název jmenuje jen prošlé roky („CYKLODOPRAVA
+    A CYKLOTURISTIKA 2019“), je closed (2026-10-08; 356 z 969 výzev bez lhůty).
+    Třetí kopie pravidla jsou status.ts a SQL catalog_grant_status v aplikaci."""
     if (deadline or "") in ("průběžně", "rolling"):
         return "open", "high"   # rolling = otevřeno dokud běží
     do, of = _pd(deadline), _pd(open_from)
     if not do:
+        y = round_year(title)
+        if y is not None and y < today.year:
+            return "closed", "medium"
         return "unknown", "low"
     if of and today < of:
         return "announced", "high"
