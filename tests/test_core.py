@@ -102,6 +102,74 @@ def test_merge_syrovy_zaznam_se_prepise_cely():
     assert out["title"] == "nové" and out["deadline"] == "2026-09-09"
 
 
+def test_sber_bez_data_neprepise_stav_obohaceneho():
+    # 9. 10.: Teplice „closed/high“ → „unknown/low“ jen proto, že výpis datum neuvedl.
+    old = _rich(status="closed", status_confidence="high")
+    out = merge(old, _raw(deadline=None, status="unknown", status_confidence="low"))
+    assert (out["status"], out["status_confidence"]) == ("closed", "high")
+    assert out["deadline"] == "2026-01-01"
+    # Datum ze zdroje stav přepsat smí.
+    out = merge(old, _raw(deadline="2027-03-31", status="open", status_confidence="high"))
+    assert (out["status"], out["deadline"]) == ("open", "2027-03-31")
+
+
+def test_dvoukolovy_fond_po_konci_dotazniku_je_zavreny():
+    # 9. 10., Nadace Via „Milion pro Lovosice“: dotazník do 30. 9., přihláška
+    # (jen pro prošlé dotazníkem) do 11. 10., na stránce „příjem ukončen“.
+    # Dřív z toho bylo „unknown“, protože nejpozdější datum bylo budoucí.
+    sys.path.insert(0, os.path.join(ROOT, "scripts", "extractors"))
+    import nadacevia
+    y = datetime.date.today().year
+    past, future = f"30. 1. {y - 1}", f"11. 12. {y + 1}"
+    body = (f"vyplňte jednoduchý vstupní dotazník nejpozději do {past}\n"
+            f"přihlášku je potřeba vyplnit a zaslat do {future}\n"
+            "PŘÍJEM VSTUPNÍCH DOTAZNÍKŮ BYL UKONČEN")
+    assert nadacevia.build("Milion pro X", body)["deadline"] == f"{y - 1}-01-30"
+    # Bez signálu ukončení platí budoucí krok (fond je otevřený).
+    open_body = body.replace("PŘÍJEM VSTUPNÍCH DOTAZNÍKŮ BYL UKONČEN", "")
+    assert nadacevia.build("Milion pro X", open_body)["deadline"] == f"{y + 1}-12-11"
+
+
+def test_lhuta_z_programu_obce():
+    # Skutečné texty z 9. 10. (PDF přílohy a stránky Visma).
+    import vismo_refresh as vr
+    today = datetime.date(2026, 10, 9)
+    # Hodonín: datum začátku bez roku, další článek je rozhodnutí.
+    t = ("Čl. 6 Lhůta pro podání žádosti A) Kolektivní sport dospělých Žádosti je možné "
+         "odevzdávat od 19.10. do 02.11.2026 aktuálního roku. Čl. 8 Lhůta pro rozhodnutí do 31.03.2027.")
+    assert vr.submission_window(t, today)[:2] == (None, "2026-11-02")
+    # Hodonín, víceletý program: od–do s rokem.
+    t = "Lhůta pro podání žádosti Žádosti o dotace je možné odevzdávat kdykoliv od 01.11.2026 do 30.09.2030 a to osobně."
+    assert vr.submission_window(t, today)[:2] == ("2026-11-01", "2030-09-30")
+    # Hradec Králové: dvě kola, období akcí v závorce. Platí nejbližší nadcházející kolo.
+    t = ("termíny pro podání žádosti: I. kola (akce konané od 1. 1. 2027 do 31. 12. 2027) od 1.10. 2026 "
+         "od 00:00 hodin do 1. 11. 2026 do 23:59 hodin. II. kola (akce konané od podání žádosti do "
+         "31.12.2027) od 1. 3. 2027 od 00:00 hodin do 1. 4. 2027 do 23:59 hodin Finanční")
+    assert vr.submission_window(t, today)[:2] == ("2026-10-01", "2026-11-01")
+    # Most: harmonogram v tabulce. Sloupce se pravidlem přiřadit nedají → nic.
+    t = ("Lhůta pro podání žádostí Rozhodnutí o poskytnutí dotace Realizace projektů Vyúčtování "
+         "Datum od do od do 1.1.2026 1.4.2026 1.2.2026 1.4.2026 do 1.6.2026 do 31.1.2027")
+    assert vr.submission_window(t, today)[1] is None
+    # Kolín: věta bez data, za ní výpis příloh s daty.
+    t = ("Žádost lze podat kdykoliv v průběhu roku 2026, vždy však nejpozději před datem konání akce. "
+         "Odkazy Portál občana Žádost [DOCX, 35 kB] (1.12.2025)")
+    assert vr.submission_window(t, today)[1] is None
+    # Slovní měsíc; vyúčtování ani rozhodnutí lhůtou nejsou.
+    t = "Termín pro podání žádostí: od 1. listopadu 2026 do 30. 11. 2026."
+    assert vr.submission_window(t, today)[:2] == ("2026-11-01", "2026-11-30")
+    assert vr.submission_window("Vyúčtování do 31.03.2027. Lhůta pro rozhodnutí do 30.4.2027.", today)[1] is None
+
+
+def test_vismo_vyber_vyzev_z_vypisu():
+    import vismo_refresh as vr
+    calls = ["Program přidělování dotací na podporu sportu v dospělých kategoriích",
+             "Dotační program na podporu sociálních služeb 2027"]
+    noise = ["Dotace poskytnuté v roce 2026", "Podpořené žádosti 2025", "Obecné zásady poskytování dotací",
+             "Logo města pro příjemce dotací", "Evidence poskytnutých finančních příspěvků"]
+    assert all(vr.CALL_TITLE.search(t) and not vr.NOT_A_CALL.search(t) for t in calls)
+    assert all(not vr.CALL_TITLE.search(t) or vr.NOT_A_CALL.search(t) for t in noise)
+
+
 def test_razitko_neudela_ze_vsech_zaznamu_zmenene(tmpdir=None):
     """⚠ TOHLE JE CELÝ DŮVOD, PROČ `_without_stamp` EXISTUJE.
 

@@ -170,6 +170,32 @@ SOURCES = {
         ["ingest_kraj.py", "data/h_mesto_brno.json"],
         "html",
     ),
+    # Klasické obecní weby Vismo (2026‑10‑09): 10 webů, 153 záznamů z 30. 5.
+    # Výpis úřední desky → lhůta PRAVIDLEM z oddílu „lhůta pro podání žádosti“
+    # (§ 10c zák. 250/2000) v těle a PDF přílohách → upsert. Nový záznam jen
+    # s doloženou lhůtou; každá nová či změněná lhůta se vypíše i s větou.
+    # Běh ~15 minut (stahuje přílohy).
+    "vismo": (
+        ["vismo_refresh.py", "harvest"], "data/vismo_listing.jsonl",
+        ["vismo_refresh.py", "ingest"],
+        "html",
+    ),
+    # Statutární a větší města na Vismu s vlastním harvesterem (2026‑10‑09).
+    # Harvestery i kontrakt pro `ingest_kraj` existovaly, jen v registru chyběly,
+    # takže 63 záznamů neslo stav z léta a Hradec Králové neměl 9 programů na
+    # rok 2027. Ověřeno na kopii katalogu: shodná `id`, nic se nezhoršilo
+    # (upsert drží stav obohaceného záznamu, když výpis datum neuvede).
+    **{host: ([f"{h}_harvest.py"], f"data/h_mesto_{out}.json",
+              ["ingest_kraj.py", f"data/h_mesto_{out}.json"], "html")
+       for host, h, out in (
+           ("dotace.mmhk.cz", "hk_mesto", "hk"),
+           ("jihlava.cz", "jihlava", "jihlava"),
+           ("mb-net.cz", "mb", "mb"),
+           ("mestokladno.cz", "kladno", "kladno"),
+           ("mucl.cz", "ceskalipa", "ceskalipa"),
+           ("teplice.cz", "teplice", "teplice"),
+           ("trinecko.cz", "trinec", "trinec"),
+       )},
 }
 
 # -----------------------------------------------------------------------------

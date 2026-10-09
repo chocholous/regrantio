@@ -42,8 +42,8 @@ def parse_date(s):
     return iso(m.group(1), mm, m.group(3)) if mm else None
 
 
-def app_deadline(body):
-    """Nejpozdější APP-deadline z řádků s app-cue (ne report/realizace cue)."""
+def app_deadlines(body):
+    """Všechna APP-data z řádků s app-cue (ne report/realizace cue): [(iso, řádek)]."""
     cands = []
     for ln in body.split("\n"):
         if APP_CUE.search(ln) and not REPORT_CUE.search(ln):
@@ -51,6 +51,12 @@ def app_deadline(body):
             if d:
                 cands.append((d, re.sub(r"\s+", " ", ln).strip()))
         # cue a datum na sousedním řádku (uzávěrka: \n DD. měsíc YYYY) řeší spojení níže
+    return cands
+
+
+def app_deadline(body):
+    """Nejpozdější APP-deadline z řádků s app-cue (ne report/realizace cue)."""
+    cands = app_deadlines(body)
     return max(cands, key=lambda x: x[0]) if cands else (None, None)
 
 
@@ -146,8 +152,16 @@ def build(title, body):
     # closed override: pokud UKONČEN a deadline je budoucí/None → srovnej na closed přes app-datum,
     # ale NIKDY nevyrob open; když není past datum, nech null (unknown) a zaznamenej signál
     if closed and (deadline == "průběžně" or deadline is None or deadline >= datetime.date.today().isoformat()):
-        if dl and dl < datetime.date.today().isoformat():
-            deadline = dl
+        # Dvoukolové fondy (2026‑10‑09, Milion pro Lovosice): „PŘÍJEM VSTUPNÍCH DOTAZNÍKŮ
+        # BYL UKONČEN“, dotazník do 30. 9. (minulost), přihláška do 11. 10. jen pro ty,
+        # kdo dotazníkem prošli. Rozhoduje nejpozdější MINULÉ app-datum; pozdější krok
+        # je pro nového žadatele zavřený. Do té doby: unknown, protože max bylo budoucí.
+        today = datetime.date.today().isoformat()
+        past = [c for c in app_deadlines(body) + [(d2, q2)] if c[0] and c[0] < today]
+        if past:
+            deadline, q = max(past, key=lambda x: x[0])
+            if q:
+                ev["deadline"] = q
         else:
             deadline = None  # neumíme bezpečně → unknown (radši než špatně open)
     amt, amtq = amount(body)

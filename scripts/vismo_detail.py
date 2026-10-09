@@ -18,7 +18,9 @@ from datetime import date
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import dsw2_fetch as df  # reuse: sniff_ext, download, convert, host_of, MIME_EXT
 
-TODAY = date(2026, 5, 30)
+# ⚠ DO 2026‑10‑09 TU STÁLO `date(2026, 5, 30)`: stav se počítal proti dni sběru
+# i o měsíce později. Dnes je to den běhu; `--today` jen pro zopakování starého běhu.
+TODAY = date.today()
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
 import http_util   # jednotná TLS politika (audit #7/#32)
 ATT_RE = re.compile(r'class="(t\w+)\s+typsouboru"[^>]*>\s*<strong>\s*<a[^>]*?href="([^"]+)"[^>]*>(.*?)</a>(.*?)</li>', re.S)
@@ -137,7 +139,11 @@ def main():
     ap.add_argument("--no-attachments", action="store_true")
     ap.add_argument("--timeout", type=int, default=30)
     ap.add_argument("--max-mb", type=int, default=40)
+    ap.add_argument("--today", help="den, ke kterému se počítá stav (YYYY-MM-DD; výchozí dnešek)")
     args = ap.parse_args()
+    if args.today:
+        global TODAY
+        TODAY = date.fromisoformat(args.today)
     calls = json.load(open(args.calls, encoding="utf-8"))
     if args.only_status:
         calls = [c for c in calls if c.get("status_guess") == args.only_status]

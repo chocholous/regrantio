@@ -77,6 +77,13 @@ def merge(old, new):
     for k in REFRESHABLE:
         if new.get(k) is not None:
             out[k] = new[k]
+    # ⚠ STAV JE ODVOZENÝ Z DAT (2026‑10‑09). Sběr bez data o stavu nic neví,
+    # a přesto ho vždy vyplní („unknown“/„low“ z compute_status). Bez téhle
+    # výjimky refresh přepsal stav, který vrstva 2 přečetla z textu: Teplice
+    # „closed/high“ → „unknown/low“, přestože lhůta v záznamu zůstala.
+    if new.get("status") in (None, "unknown") and old.get("status") not in (None, "unknown"):
+        out["status"] = old["status"]
+        out["status_confidence"] = old.get("status_confidence")
     # Doplnit, nepřepsat (2026‑10‑05): pole, které obohacený záznam nemá
     # a strukturní sběr ho nově přinesl (způsob podání u IROP). Co tam už je,
     # zůstává; tohle jen zaplní mezeru ze zdroje.
