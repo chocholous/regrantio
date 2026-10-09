@@ -117,9 +117,13 @@ per-zdroj (re-harvest celý zdroj → nahraď jeho podmnožinu), ne plošně.
     jedním během (~3 min), zápis `ingest_dsw2.py` UPSERTEM. Do té doby šel ingest přes
     `opportunities.py --from-dsw2`, který existující `id` přeskakuje, takže změněná lhůta se
     nepropsala a katalog nesl data z 31. 7. První běh: +50 výzev a programů, 62 aktualizací.
-  - **Vismo (17 obecních webů) v obnově ještě NENÍ:** `vismo.py` chce `--base` po webech a
-    detail se dotahuje zvlášť (`vismo_detail.py`); data jsou z 30. 5. Postup: smyčka přes
-    hosty z `platform_map.json`, pak ingest upsertem jako u DSW2.
+  - **Vismo (17 obecních webů) v obnově ještě NENÍ a dnes ani nejde zopakovat** (ověřeno
+    2026‑10‑09): data jsou z 30. 5. `vismo.py` sbírá výpis úřední desky po webech (`--base`),
+    ale krok, který z výpisu vybral VÝZVY (`vismo_calls.json`, vstup `vismo_detail.py`), byl
+    jednorázový a jeho výstup ani postup v repozitáři nejsou; `vismo_detail.py` má navíc
+    `TODAY = date(2026, 5, 30)` natvrdo. Obnova = postavit výběr výzev z výpisu (pravidla, ne
+    odhad: dokument z dotační složky s „výzva“/„program“ v názvu a lhůtou), datum z běhu,
+    a ingest upsertem jako u DSW2. Do té doby záznamy zůstávají v posledním známém stavu.
 - **ORPHAN** (cca 20 „zdrojů") — dvě skupiny:
   1. **slug↔host mismatch** (mv, msmt, mzcr, mzp, mkcr, nadacevia…): zdroj JE registrovaný, jen
      dataset `source` je slug a routing klíč je host (`mv.gov.cz`). Reálně refreshovatelné svým
