@@ -123,6 +123,7 @@ NOT_A_CALL = re.compile(
 # KÓD PROGRAMU V TITULKU DOTIS ZÁZNAMU — „Program obnovy venkova (26POVU1)".
 # Je to klíč hlubokého odkazu `/grantProgram/:memo`; viz sekce A5 v `main()`.
 DOTIS_MEMO = re.compile(r"\(([0-9A-Za-z]{4,12})\)\s*$")
+HTTP_URL = re.compile(r"^https?://[^\s/]+\.[^\s]+$", re.I)
 
 # Konkrétní stray/mis-filed záznamy (nesprávný zdroj nebo ne-grant) → drop pro čistotu.
 DROP_STRAY = [
@@ -316,6 +317,20 @@ def main():
             if (r.get(field) or "").rstrip("/") == f"https://{src}":
                 r[field] = deep
                 dotis_fixed += 1
+
+    # ---- A8) source_doc je adresa, nebo nic ----
+    #
+    # ⚠ NAMĚŘENO 2026-10-09: 436 záznamů (11 % katalogu, DSW2 obcí, nadace
+    # čtené modelem, MK ČR) mělo v `source_doc` id záznamu, jeho část
+    # („hodonin.eu:d1124126“) nebo jméno poskytovatele. Aplikace dává
+    # `source_doc` přednost před `source_url`, takže „Otevřít u zdroje“ vedlo
+    # na neexistující stránku uvnitř aplikace. Bez adresy platí `source_url`.
+    doc_cleared = 0
+    for r in recs:
+        d = r.get("source_doc")
+        if d is not None and not (isinstance(d, str) and HTTP_URL.match(d.strip())):
+            r["source_doc"] = None
+            doc_cleared += 1
 
     # ---- A2) variant dedup (agrofert: .cz apify kopie překrývající bohatší bare-slug) ----
     def ntitle(r):
@@ -525,6 +540,8 @@ def main():
         print(f"\n=== A1) oznámení výsledků (ne výzvy): −{len(notcall_dropped)} ===")
         for r in notcall_dropped:
             print(f"  −  {(r.get('source') or '?')[:24]:24}  {(r.get('title') or '')[:64]}")
+    if doc_cleared:
+        print(f"\n=== A8) source_doc, který není adresa: {doc_cleared}× → null (platí source_url) ===")
     if dotis_fixed:
         print(f"\n=== A5) DOTIS hluboký odkaz: {dotis_fixed} polí opraveno z rozcestníku na /grantProgram/<kód> ===")
     if variant_dropped:

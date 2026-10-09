@@ -45,6 +45,7 @@ import argparse
 import datetime
 import json
 import os
+import re
 import ssl
 import sys
 import unicodedata
@@ -79,6 +80,12 @@ def _str(v):
         return None
     t = v.strip()
     return t or None
+
+
+def _url(v):
+    """Adresa http(s), nebo None. Cokoli jiného v poli pro odkaz je vada zdroje."""
+    t = _str(v)
+    return t if t and re.match(r"^https?://[^\s/]+\.\S+$", t, re.I) else None
 
 
 def _list(v):
@@ -210,7 +217,9 @@ def to_row(g):
         "focus_area": _str(g.get("focus_area")),
         "eligible_applicants": _str(g.get("eligible_applicants")),
         "how_to_apply": _str(g.get("how_to_apply")),
-        "source_doc": _str(g.get("source_doc")),
+        # Jen adresa: id záznamu nebo jméno poskytovatele (436 záznamů 9. 10.)
+        # by v aplikaci udělalo z „Otevřít u zdroje“ mrtvý odkaz.
+        "source_doc": _url(g.get("source_doc")),
         # Datum se ukládá DVAKRÁT: jednou jako `date` pro řazení a filtry,
         # jednou syrově, protože feed umí i slovní termín a uživatel ho má vidět.
         "open_from": iso_date(open_from_raw),

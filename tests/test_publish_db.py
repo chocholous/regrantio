@@ -189,6 +189,17 @@ def test_chybejici_fasety_nejsou_chyba():
     assert row["oblast"] == [] and row["kraj"] is None and row["celostatni"] is None
 
 
+def test_source_doc_je_adresa_nebo_nic():
+    # 9. 10.: id záznamu, jeho část nebo jméno poskytovatele v source_doc
+    # dělaly z „Otevřít u zdroje“ mrtvý odkaz uvnitř aplikace.
+    for bad in ("grant:dotace.praha12.cz:pid1471", "hodonin.eu:d1124126",
+                "Ministerstvo kultury ČR", "dotace.praha2.cz", "   "):
+        row, _ = P.to_row(_g(source_doc=bad))
+        assert row["source_doc"] is None, bad
+    row, _ = P.to_row(_g(source_doc="https://mk.gov.cz/vyzva.pdf"))
+    assert row["source_doc"] == "https://mk.gov.cz/vyzva.pdf"
+
+
 if __name__ == "__main__":
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
@@ -205,3 +216,4 @@ if __name__ == "__main__":
             fails.append(name); print(f"  ERR  {name}: {type(e).__name__}: {e}")
     print(f"\n{len(tests) - len(fails)}/{len(tests)} prošlo")
     sys.exit(1 if fails else 0)
+
