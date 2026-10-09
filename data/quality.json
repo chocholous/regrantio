@@ -1,187 +1,187 @@
 {
 	"today": "2026-10-09",
-	"records": 4068,
-	"grants": 4043,
-	"live": 1824,
+	"records": 4081,
+	"grants": 4056,
+	"live": 1838,
 	"sources": 137,
 	"status": {
-		"open": 519,
-		"unknown": 952,
-		"closed": 2219,
-		"announced": 353
+		"open": 523,
+		"unknown": 953,
+		"closed": 2218,
+		"announced": 362
 	},
 	"scope_live": {
+		"national": 322,
 		"international": 10,
 		"eu_central": 448,
-		"national": 323,
-		"local": 490,
+		"local": 505,
 		"regional": 553
 	},
 	"deadline_kind_live": {
-		"fixed": 860,
-		"unknown": 736,
+		"fixed": 873,
+		"unknown": 737,
 		"rolling": 81,
 		"recurring": 147
 	},
 	"fields": {
 		"deadline": {
-			"live": 872,
-			"live_pct": 47.8,
-			"all": 3091,
+			"live": 885,
+			"live_pct": 48.2,
+			"all": 3103,
 			"all_pct": 76.5
 		},
 		"amount": {
 			"live": 92,
 			"live_pct": 5.0,
-			"all": 265,
+			"all": 266,
 			"all_pct": 6.6
 		},
 		"eligible_applicants": {
-			"live": 1291,
-			"live_pct": 70.8,
-			"all": 2564,
-			"all_pct": 63.4
+			"live": 1293,
+			"live_pct": 70.3,
+			"all": 2565,
+			"all_pct": 63.2
 		},
 		"typ_zadatele": {
-			"live": 582,
-			"live_pct": 31.9,
+			"live": 584,
+			"live_pct": 31.8,
 			"all": 1356,
-			"all_pct": 33.5
+			"all_pct": 33.4
 		},
 		"oblast": {
-			"live": 1409,
-			"live_pct": 77.2,
+			"live": 1410,
+			"live_pct": 76.7,
 			"all": 3517,
-			"all_pct": 87.0
+			"all_pct": 86.7
 		},
 		"kraj_nebo_celostatni": {
-			"live": 1823,
+			"live": 1837,
 			"live_pct": 99.9,
-			"all": 4042,
+			"all": 4055,
 			"all_pct": 100.0
 		},
 		"how_to_apply": {
-			"live": 1478,
+			"live": 1489,
 			"live_pct": 81.0,
-			"all": 3613,
-			"all_pct": 89.4
+			"all": 3623,
+			"all_pct": 89.3
 		},
 		"source_doc": {
-			"live": 1786,
-			"live_pct": 97.9,
-			"all": 3956,
-			"all_pct": 97.8
+			"live": 1493,
+			"live_pct": 81.2,
+			"all": 3536,
+			"all_pct": 87.2
 		},
 		"contact": {
-			"live": 229,
-			"live_pct": 12.6,
+			"live": 230,
+			"live_pct": 12.5,
 			"all": 561,
-			"all_pct": 13.9
+			"all_pct": 13.8
 		},
 		"documents": {
-			"live": 253,
+			"live": 255,
 			"live_pct": 13.9,
 			"all": 665,
 			"all_pct": 16.4
 		},
 		"call_number": {
-			"live": 695,
-			"live_pct": 38.1,
+			"live": 696,
+			"live_pct": 37.9,
 			"all": 1909,
-			"all_pct": 47.2
+			"all_pct": 47.1
 		}
 	},
 	"freshness_live": {
-		"do_7": 1098,
+		"do_7": 1204,
 		"do_30": 5,
-		"nevime": 717,
+		"nevime": 625,
 		"starsi": 4
 	},
 	"citations": {
-		"total": 17285,
+		"total": 17288,
 		"located": 8253,
 		"located_pct": 47.7
 	},
 	"provenance_live": {
 		"amount": {
 			"present": 92,
-			"parsed": 16,
-			"model": 76,
+			"parsed": 17,
+			"model": 75,
 			"derived": 0,
-			"cited": 55,
-			"cited_pct": 59.8
+			"cited": 54,
+			"cited_pct": 58.7
 		},
 		"deadline": {
-			"present": 872,
-			"parsed": 67,
-			"model": 803,
+			"present": 885,
+			"parsed": 78,
+			"model": 805,
 			"derived": 2,
-			"cited": 557,
-			"cited_pct": 63.9
+			"cited": 559,
+			"cited_pct": 63.2
 		},
 		"eligible_applicants": {
-			"present": 1291,
-			"parsed": 380,
-			"model": 911,
+			"present": 1293,
+			"parsed": 381,
+			"model": 912,
 			"derived": 0,
 			"cited": 207,
 			"cited_pct": 16.0
 		},
 		"focus_area": {
-			"present": 1708,
-			"parsed": 529,
-			"model": 1179,
+			"present": 1718,
+			"parsed": 538,
+			"model": 1180,
 			"derived": 0,
-			"cited": 301,
+			"cited": 302,
 			"cited_pct": 17.6
 		},
 		"oblast": {
-			"present": 1409,
+			"present": 1410,
 			"parsed": 174,
-			"model": 1235,
+			"model": 1236,
 			"derived": 0,
-			"cited": 254,
-			"cited_pct": 18.0
+			"cited": 256,
+			"cited_pct": 18.2
 		},
 		"open_from": {
-			"present": 883,
-			"parsed": 77,
-			"model": 806,
+			"present": 894,
+			"parsed": 87,
+			"model": 807,
 			"derived": 0,
-			"cited": 44,
+			"cited": 45,
 			"cited_pct": 5.0
 		},
 		"region": {
-			"present": 1823,
-			"parsed": 586,
-			"model": 1237,
+			"present": 1837,
+			"parsed": 599,
+			"model": 1238,
 			"derived": 0,
-			"cited": 247,
-			"cited_pct": 13.5
+			"cited": 249,
+			"cited_pct": 13.6
 		},
 		"typ_zadatele": {
-			"present": 582,
+			"present": 584,
 			"parsed": 135,
-			"model": 447,
+			"model": 449,
 			"derived": 0,
-			"cited": 70,
-			"cited_pct": 12.0
+			"cited": 71,
+			"cited_pct": 12.2
 		}
 	},
 	"families": {
-		"families": 332,
-		"variants": 368,
-		"recurring": 273
+		"families": 336,
+		"variants": 376,
+		"recurring": 278
 	},
 	"sources_by_state": {
-		"neovereno": 55,
-		"ok": 59,
+		"neovereno": 40,
+		"ok": 74,
 		"zmrazeny": 3,
 		"bez_cesty": 20
 	},
 	"live_by_source_state": {
-		"neovereno": 288,
-		"ok": 1453,
+		"neovereno": 186,
+		"ok": 1569,
 		"zmrazeny": 23,
 		"bez_cesty": 60
 	},
@@ -301,11 +301,11 @@
 			"name": "Město Hradec Králové",
 			"type": "samosprava_obec",
 			"refresh": "A",
-			"records": 23,
-			"live": 7,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"records": 32,
+			"live": 16,
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "dotace.nmnm.cz",
@@ -642,11 +642,11 @@
 			"name": "Město Hodonín",
 			"type": "samosprava_obec",
 			"refresh": "A",
-			"records": 94,
-			"live": 40,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"records": 97,
+			"live": 43,
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "hradeckralove.org",
@@ -654,10 +654,10 @@
 			"type": "samosprava_obec",
 			"refresh": "A",
 			"records": 4,
-			"live": 3,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"live": 4,
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "hzs",
@@ -710,9 +710,9 @@
 			"refresh": "A",
 			"records": 11,
 			"live": 3,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "karvina.cz",
@@ -809,9 +809,9 @@
 			"refresh": "A",
 			"records": 3,
 			"live": 2,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "kromeriz.dsw2.otevrenamesta.cz",
@@ -873,11 +873,11 @@
 			"name": "Město Mladá Boleslav",
 			"type": "samosprava_obec",
 			"refresh": "A",
-			"records": 3,
-			"live": 0,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"records": 4,
+			"live": 1,
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "mesto-most.cz",
@@ -886,9 +886,9 @@
 			"refresh": "A",
 			"records": 10,
 			"live": 0,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "mestojablonec.cz",
@@ -908,9 +908,9 @@
 			"refresh": "A",
 			"records": 7,
 			"live": 7,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "mk",
@@ -1018,9 +1018,9 @@
 			"refresh": "A",
 			"records": 14,
 			"live": 6,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "mukolin.cz",
@@ -1028,10 +1028,10 @@
 			"type": "samosprava_obec",
 			"refresh": "A",
 			"records": 10,
-			"live": 5,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"live": 6,
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "mulitvinov.cz",
@@ -1040,9 +1040,9 @@
 			"refresh": "A",
 			"records": 1,
 			"live": 0,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "mv",
@@ -1193,7 +1193,7 @@
 			"type": "nadace",
 			"refresh": "B",
 			"records": 26,
-			"live": 7,
+			"live": 6,
 			"last_fetched": "2026-10-09",
 			"days": 0,
 			"state": "ok"
@@ -1557,9 +1557,9 @@
 			"refresh": "A",
 			"records": 3,
 			"live": 1,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "stredoceskykraj.cz",
@@ -1590,9 +1590,9 @@
 			"refresh": "A",
 			"records": 21,
 			"live": 21,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "tacr",
@@ -1612,9 +1612,9 @@
 			"refresh": "A",
 			"records": 6,
 			"live": 2,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "trinecko.cz",
@@ -1623,9 +1623,9 @@
 			"refresh": "A",
 			"records": 6,
 			"live": 5,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "vdv",

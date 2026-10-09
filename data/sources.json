@@ -116,10 +116,10 @@
 		"note": null,
 		"type": "samosprava_obec",
 		"refresh": "A",
-		"harvester": "vismo.py",
-		"records": 23,
-		"live": 7,
-		"last_fetched": null
+		"harvester": "hk_mesto_harvest.py",
+		"records": 32,
+		"live": 16,
+		"last_fetched": "2026-10-09"
 	},
 	"dotace.nmnm.cz": {
 		"name": "Město Nové Město na Moravě",
@@ -458,9 +458,9 @@
 		"type": "samosprava_obec",
 		"refresh": "A",
 		"harvester": "vismo.py",
-		"records": 94,
-		"live": 40,
-		"last_fetched": null
+		"records": 97,
+		"live": 43,
+		"last_fetched": "2026-10-09"
 	},
 	"hradeckralove.org": {
 		"name": "Město Hradec Králové",
@@ -470,8 +470,8 @@
 		"refresh": "A",
 		"harvester": "vismo.py",
 		"records": 4,
-		"live": 3,
-		"last_fetched": null
+		"live": 4,
+		"last_fetched": "2026-10-09"
 	},
 	"hzs": {
 		"name": "Hasičský záchranný sbor ČR (MV)",
@@ -523,10 +523,10 @@
 		"note": null,
 		"type": "samosprava_obec",
 		"refresh": "A",
-		"harvester": "vismo.py",
+		"harvester": "jihlava_harvest.py",
 		"records": 11,
 		"live": 3,
-		"last_fetched": null
+		"last_fetched": "2026-10-09"
 	},
 	"karvina.cz": {
 		"name": "Město Karviná",
@@ -625,7 +625,7 @@
 		"harvester": "vismo.py",
 		"records": 3,
 		"live": 2,
-		"last_fetched": null
+		"last_fetched": "2026-10-09"
 	},
 	"kromeriz.dsw2.otevrenamesta.cz": {
 		"name": "Město Kroměříž",
@@ -688,10 +688,10 @@
 		"note": null,
 		"type": "samosprava_obec",
 		"refresh": "A",
-		"harvester": "vismo.py",
-		"records": 3,
-		"live": 0,
-		"last_fetched": null
+		"harvester": "mb_harvest.py",
+		"records": 4,
+		"live": 1,
+		"last_fetched": "2026-10-09"
 	},
 	"mesto-most.cz": {
 		"name": "Město Most",
@@ -702,7 +702,7 @@
 		"harvester": "vismo.py",
 		"records": 10,
 		"live": 0,
-		"last_fetched": null
+		"last_fetched": "2026-10-09"
 	},
 	"mestojablonec.cz": {
 		"name": "Město Jablonec nad Nisou",
@@ -721,10 +721,10 @@
 		"note": null,
 		"type": "samosprava_obec",
 		"refresh": "A",
-		"harvester": "vismo.py",
+		"harvester": "kladno_harvest.py",
 		"records": 7,
 		"live": 7,
-		"last_fetched": null
+		"last_fetched": "2026-10-09"
 	},
 	"mk": {
 		"name": "Ministerstvo kultury",
@@ -831,10 +831,10 @@
 		"note": null,
 		"type": "samosprava_obec",
 		"refresh": "A",
-		"harvester": "vismo.py",
+		"harvester": "ceskalipa_harvest.py",
 		"records": 14,
 		"live": 6,
-		"last_fetched": null
+		"last_fetched": "2026-10-09"
 	},
 	"mukolin.cz": {
 		"name": "Město Kolín",
@@ -844,8 +844,8 @@
 		"refresh": "A",
 		"harvester": "vismo.py",
 		"records": 10,
-		"live": 5,
-		"last_fetched": null
+		"live": 6,
+		"last_fetched": "2026-10-09"
 	},
 	"mulitvinov.cz": {
 		"name": "Město Litvínov",
@@ -856,7 +856,7 @@
 		"harvester": "vismo.py",
 		"records": 1,
 		"live": 0,
-		"last_fetched": null
+		"last_fetched": "2026-10-09"
 	},
 	"mv": {
 		"name": "Ministerstvo vnitra",
@@ -1009,7 +1009,7 @@
 		"refresh": "B",
 		"harvester": "nadacevia.py",
 		"records": 26,
-		"live": 7,
+		"live": 6,
 		"last_fetched": "2026-10-09"
 	},
 	"nadacevodafone.cz": {
@@ -1373,7 +1373,7 @@
 		"harvester": "vismo.py",
 		"records": 3,
 		"live": 1,
-		"last_fetched": null
+		"last_fetched": "2026-10-09"
 	},
 	"stredoceskykraj.cz": {
 		"name": "Středočeský kraj",
@@ -1406,7 +1406,7 @@
 		"harvester": "vismo.py",
 		"records": 21,
 		"live": 21,
-		"last_fetched": null
+		"last_fetched": "2026-10-09"
 	},
 	"tacr": {
 		"name": "Technologická agentura ČR",
@@ -1425,10 +1425,10 @@
 		"note": null,
 		"type": "samosprava_obec",
 		"refresh": "A",
-		"harvester": "vismo.py",
+		"harvester": "teplice_harvest.py",
 		"records": 6,
 		"live": 2,
-		"last_fetched": null
+		"last_fetched": "2026-10-09"
 	},
 	"trinecko.cz": {
 		"name": "Město Třinec",
@@ -1436,10 +1436,10 @@
 		"note": null,
 		"type": "samosprava_obec",
 		"refresh": "A",
-		"harvester": "vismo.py",
+		"harvester": "trinec_harvest.py",
 		"records": 6,
 		"live": 5,
-		"last_fetched": null
+		"last_fetched": "2026-10-09"
 	},
 	"vdv": {
 		"name": "Výbor dobré vůle – Nadace Olgy Havlové",
