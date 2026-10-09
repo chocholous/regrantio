@@ -1,105 +1,105 @@
 {
-	"today": "2026-10-05",
-	"records": 3992,
-	"grants": 3967,
-	"live": 1791,
+	"today": "2026-10-09",
+	"records": 4018,
+	"grants": 3993,
+	"live": 1788,
 	"sources": 137,
 	"status": {
-		"open": 520,
-		"unknown": 931,
-		"closed": 2176,
-		"announced": 340
+		"open": 512,
+		"unknown": 929,
+		"closed": 2205,
+		"announced": 347
 	},
 	"scope_live": {
 		"international": 10,
-		"eu_central": 461,
-		"national": 324,
-		"regional": 545,
-		"local": 451
+		"eu_central": 448,
+		"national": 322,
+		"local": 454,
+		"regional": 554
 	},
 	"deadline_kind_live": {
-		"fixed": 848,
-		"unknown": 716,
+		"fixed": 847,
+		"unknown": 717,
 		"rolling": 81,
-		"recurring": 146
+		"recurring": 143
 	},
 	"fields": {
 		"deadline": {
-			"live": 860,
+			"live": 859,
 			"live_pct": 48.0,
-			"all": 3036,
-			"all_pct": 76.5
+			"all": 3064,
+			"all_pct": 76.7
 		},
 		"amount": {
 			"live": 92,
 			"live_pct": 5.1,
 			"all": 265,
-			"all_pct": 6.7
+			"all_pct": 6.6
 		},
 		"eligible_applicants": {
-			"live": 1308,
-			"live_pct": 73.0,
-			"all": 2555,
-			"all_pct": 64.4
+			"live": 1294,
+			"live_pct": 72.4,
+			"all": 2564,
+			"all_pct": 64.2
 		},
 		"typ_zadatele": {
-			"live": 603,
-			"live_pct": 33.7,
-			"all": 1369,
-			"all_pct": 34.5
+			"live": 599,
+			"live_pct": 33.5,
+			"all": 1370,
+			"all_pct": 34.3
 		},
 		"oblast": {
-			"live": 1476,
-			"live_pct": 82.4,
-			"all": 3552,
-			"all_pct": 89.5
+			"live": 1459,
+			"live_pct": 81.6,
+			"all": 3563,
+			"all_pct": 89.2
 		},
 		"kraj_nebo_celostatni": {
-			"live": 1791,
+			"live": 1788,
 			"live_pct": 100.0,
-			"all": 3967,
+			"all": 3993,
 			"all_pct": 100.0
 		},
 		"how_to_apply": {
-			"live": 1481,
+			"live": 1478,
 			"live_pct": 82.7,
-			"all": 3587,
-			"all_pct": 90.4
+			"all": 3613,
+			"all_pct": 90.5
 		},
 		"source_doc": {
-			"live": 1754,
-			"live_pct": 97.9,
-			"all": 3888,
+			"live": 1752,
+			"live_pct": 98.0,
+			"all": 3914,
 			"all_pct": 98.0
 		},
 		"contact": {
 			"live": 229,
 			"live_pct": 12.8,
 			"all": 561,
-			"all_pct": 14.1
+			"all_pct": 14.0
 		},
 		"documents": {
 			"live": 254,
 			"live_pct": 14.2,
 			"all": 665,
-			"all_pct": 16.8
+			"all_pct": 16.7
 		},
 		"call_number": {
-			"live": 710,
-			"live_pct": 39.6,
-			"all": 1902,
-			"all_pct": 47.9
+			"live": 695,
+			"live_pct": 38.9,
+			"all": 1909,
+			"all_pct": 47.8
 		}
 	},
 	"freshness_live": {
-		"do_7": 775,
-		"do_30": 105,
-		"nevime": 907,
+		"do_7": 874,
+		"do_30": 5,
+		"nevime": 905,
 		"starsi": 4
 	},
 	"citations": {
-		"total": 17268,
-		"located": 8241,
+		"total": 17285,
+		"located": 8253,
 		"located_pct": 47.7
 	},
 	"provenance_live": {
@@ -112,66 +112,66 @@
 			"cited_pct": 59.8
 		},
 		"deadline": {
-			"present": 860,
-			"parsed": 37,
-			"model": 821,
+			"present": 859,
+			"parsed": 54,
+			"model": 803,
 			"derived": 2,
-			"cited": 572,
-			"cited_pct": 66.5
+			"cited": 557,
+			"cited_pct": 64.8
 		},
 		"eligible_applicants": {
-			"present": 1308,
-			"parsed": 379,
-			"model": 929,
+			"present": 1294,
+			"parsed": 380,
+			"model": 914,
 			"derived": 0,
 			"cited": 208,
-			"cited_pct": 15.9
+			"cited_pct": 16.1
 		},
 		"focus_area": {
-			"present": 1693,
-			"parsed": 494,
-			"model": 1199,
+			"present": 1685,
+			"parsed": 502,
+			"model": 1183,
 			"derived": 0,
 			"cited": 305,
-			"cited_pct": 18.0
+			"cited_pct": 18.1
 		},
 		"oblast": {
-			"present": 1476,
+			"present": 1459,
 			"parsed": 220,
-			"model": 1256,
+			"model": 1239,
 			"derived": 0,
 			"cited": 258,
-			"cited_pct": 17.5
+			"cited_pct": 17.7
 		},
 		"open_from": {
-			"present": 871,
-			"parsed": 49,
-			"model": 822,
+			"present": 870,
+			"parsed": 64,
+			"model": 806,
 			"derived": 0,
-			"cited": 43,
-			"cited_pct": 4.9
+			"cited": 44,
+			"cited_pct": 5.1
 		},
 		"region": {
-			"present": 1791,
-			"parsed": 533,
-			"model": 1258,
+			"present": 1788,
+			"parsed": 547,
+			"model": 1241,
 			"derived": 0,
 			"cited": 249,
 			"cited_pct": 13.9
 		},
 		"typ_zadatele": {
-			"present": 603,
+			"present": 599,
 			"parsed": 149,
-			"model": 454,
+			"model": 450,
 			"derived": 0,
 			"cited": 71,
-			"cited_pct": 11.8
+			"cited_pct": 11.9
 		}
 	},
 	"families": {
-		"families": 318,
-		"variants": 357,
-		"recurring": 259
+		"families": 321,
+		"variants": 361,
+		"recurring": 261
 	},
 	"sources_by_state": {
 		"neovereno": 79,
@@ -180,8 +180,8 @@
 		"bez_cesty": 20
 	},
 	"live_by_source_state": {
-		"neovereno": 522,
-		"ok": 1186,
+		"neovereno": 521,
+		"ok": 1184,
 		"zmrazeny": 23,
 		"bez_cesty": 60
 	},
@@ -202,9 +202,9 @@
 			"name": "Česká rozvojová agentura",
 			"type": "statni_agentura",
 			"refresh": "B",
-			"records": 11,
-			"live": 6,
-			"last_fetched": "2026-10-05",
+			"records": 12,
+			"live": 7,
+			"last_fetched": "2026-10-09",
 			"days": 0,
 			"state": "ok"
 		},
@@ -213,9 +213,9 @@
 			"name": "Město Brno",
 			"type": "samosprava_obec",
 			"refresh": "A",
-			"records": 49,
-			"live": 29,
-			"last_fetched": "2026-10-05",
+			"records": 51,
+			"live": 31,
+			"last_fetched": "2026-10-09",
 			"days": 0,
 			"state": "ok"
 		},
@@ -237,7 +237,7 @@
 			"refresh": "A",
 			"records": 148,
 			"live": 26,
-			"last_fetched": "2026-10-05",
+			"last_fetched": "2026-10-09",
 			"days": 0,
 			"state": "ok"
 		},
@@ -246,9 +246,9 @@
 			"name": "Liberecký kraj",
 			"type": "samosprava_kraj",
 			"refresh": "A",
-			"records": 137,
-			"live": 47,
-			"last_fetched": "2026-10-05",
+			"records": 138,
+			"live": 48,
+			"last_fetched": "2026-10-09",
 			"days": 0,
 			"state": "ok"
 		},
@@ -334,9 +334,9 @@
 			"name": "Pardubický kraj",
 			"type": "samosprava_kraj",
 			"refresh": "A",
-			"records": 112,
-			"live": 19,
-			"last_fetched": "2026-10-05",
+			"records": 113,
+			"live": 20,
+			"last_fetched": "2026-10-09",
 			"days": 0,
 			"state": "ok"
 		},
@@ -523,8 +523,8 @@
 			"refresh": "B",
 			"records": 234,
 			"live": 14,
-			"last_fetched": "2026-10-03",
-			"days": 2,
+			"last_fetched": "2026-10-09",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -532,9 +532,9 @@
 			"name": "Evropská komise (Funding & Tenders)",
 			"type": "evropska_komise",
 			"refresh": "B",
-			"records": 742,
-			"live": 461,
-			"last_fetched": "2026-10-05",
+			"records": 749,
+			"live": 448,
+			"last_fetched": "2026-10-09",
 			"days": 0,
 			"state": "ok"
 		},
@@ -565,10 +565,10 @@
 			"name": "Kraj Vysočina (Fond Vysočiny)",
 			"type": "samosprava_kraj",
 			"refresh": "A",
-			"records": 314,
-			"live": 235,
-			"last_fetched": "2026-09-23",
-			"days": 12,
+			"records": 315,
+			"live": 236,
+			"last_fetched": "2026-10-09",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -588,7 +588,7 @@
 			"type": "statni_agentura",
 			"refresh": "C",
 			"records": 14,
-			"live": 2,
+			"live": 1,
 			"last_fetched": null,
 			"days": null,
 			"state": "neovereno"
@@ -677,7 +677,7 @@
 			"refresh": "B",
 			"records": 6,
 			"live": 4,
-			"last_fetched": "2026-10-05",
+			"last_fetched": "2026-10-09",
 			"days": 0,
 			"state": "ok"
 		},
@@ -688,7 +688,7 @@
 			"refresh": "B",
 			"records": 6,
 			"live": 6,
-			"last_fetched": "2026-10-05",
+			"last_fetched": "2026-10-09",
 			"days": 0,
 			"state": "ok"
 		},
@@ -699,7 +699,7 @@
 			"refresh": "A",
 			"records": 120,
 			"live": 55,
-			"last_fetched": "2026-10-05",
+			"last_fetched": "2026-10-09",
 			"days": 0,
 			"state": "ok"
 		},
@@ -764,8 +764,8 @@
 			"type": "samosprava_kraj",
 			"refresh": "A",
 			"records": 86,
-			"live": 28,
-			"last_fetched": "2026-10-05",
+			"live": 27,
+			"last_fetched": "2026-10-09",
 			"days": 0,
 			"state": "ok"
 		},
@@ -775,9 +775,9 @@
 			"type": "samosprava_kraj",
 			"refresh": "A",
 			"records": 111,
-			"live": 23,
-			"last_fetched": "2026-09-28",
-			"days": 7,
+			"live": 21,
+			"last_fetched": "2026-10-09",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -787,7 +787,7 @@
 			"refresh": "A",
 			"records": 11,
 			"live": 8,
-			"last_fetched": "2026-10-05",
+			"last_fetched": "2026-10-09",
 			"days": 0,
 			"state": "ok"
 		},
@@ -919,8 +919,8 @@
 			"refresh": "B",
 			"records": 53,
 			"live": 2,
-			"last_fetched": "2026-10-03",
-			"days": 2,
+			"last_fetched": "2026-10-09",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -994,9 +994,9 @@
 			"name": "Moravskoslezský kraj",
 			"type": "samosprava_kraj",
 			"refresh": "A",
-			"records": 106,
-			"live": 27,
-			"last_fetched": "2026-10-05",
+			"records": 108,
+			"live": 28,
+			"last_fetched": "2026-10-09",
 			"days": 0,
 			"state": "ok"
 		},
@@ -1007,8 +1007,8 @@
 			"refresh": "B",
 			"records": 27,
 			"live": 14,
-			"last_fetched": "2026-10-03",
-			"days": 2,
+			"last_fetched": "2026-10-09",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1116,9 +1116,9 @@
 			"type": "nadace",
 			"refresh": "B",
 			"records": 16,
-			"live": 14,
-			"last_fetched": "2026-10-03",
-			"days": 2,
+			"live": 13,
+			"last_fetched": "2026-10-09",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1194,8 +1194,8 @@
 			"refresh": "B",
 			"records": 26,
 			"live": 7,
-			"last_fetched": "2026-10-03",
-			"days": 2,
+			"last_fetched": "2026-10-09",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1238,8 +1238,8 @@
 			"refresh": "B",
 			"records": 10,
 			"live": 10,
-			"last_fetched": "2026-10-03",
-			"days": 2,
+			"last_fetched": "2026-10-09",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1249,8 +1249,8 @@
 			"refresh": "B",
 			"records": 9,
 			"live": 9,
-			"last_fetched": "2026-10-03",
-			"days": 2,
+			"last_fetched": "2026-10-09",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1271,8 +1271,8 @@
 			"refresh": "B",
 			"records": 21,
 			"live": 1,
-			"last_fetched": "2026-10-03",
-			"days": 2,
+			"last_fetched": "2026-10-09",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1282,7 +1282,7 @@
 			"refresh": "A",
 			"records": 12,
 			"live": 5,
-			"last_fetched": "2026-10-05",
+			"last_fetched": "2026-10-09",
 			"days": 0,
 			"state": "ok"
 		},
@@ -1315,8 +1315,8 @@
 			"refresh": "B",
 			"records": 12,
 			"live": 5,
-			"last_fetched": "2026-10-03",
-			"days": 2,
+			"last_fetched": "2026-10-09",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1326,8 +1326,8 @@
 			"refresh": "B",
 			"records": 8,
 			"live": 7,
-			"last_fetched": "2026-10-03",
-			"days": 2,
+			"last_fetched": "2026-10-09",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1337,8 +1337,8 @@
 			"refresh": "B",
 			"records": 103,
 			"live": 7,
-			"last_fetched": "2026-10-03",
-			"days": 2,
+			"last_fetched": "2026-10-09",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1348,8 +1348,8 @@
 			"refresh": "B",
 			"records": 60,
 			"live": 9,
-			"last_fetched": "2026-10-03",
-			"days": 2,
+			"last_fetched": "2026-10-09",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1359,8 +1359,8 @@
 			"refresh": "B",
 			"records": 107,
 			"live": 7,
-			"last_fetched": "2026-10-03",
-			"days": 2,
+			"last_fetched": "2026-10-09",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1370,8 +1370,8 @@
 			"refresh": "B",
 			"records": 1,
 			"live": 0,
-			"last_fetched": "2026-10-03",
-			"days": 2,
+			"last_fetched": "2026-10-09",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1423,10 +1423,10 @@
 			"name": "Městské obvody Ostravy",
 			"type": "samosprava_obec",
 			"refresh": "B",
-			"records": 9,
-			"live": 6,
-			"last_fetched": "2026-10-03",
-			"days": 2,
+			"records": 12,
+			"live": 7,
+			"last_fetched": "2026-10-09",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1436,7 +1436,7 @@
 			"refresh": "A",
 			"records": 38,
 			"live": 37,
-			"last_fetched": "2026-10-05",
+			"last_fetched": "2026-10-09",
 			"days": 0,
 			"state": "ok"
 		},
@@ -1566,10 +1566,10 @@
 			"name": "Středočeský kraj",
 			"type": "samosprava_kraj",
 			"refresh": "A",
-			"records": 95,
-			"live": 42,
-			"last_fetched": "2026-09-23",
-			"days": 12,
+			"records": 99,
+			"live": 46,
+			"last_fetched": "2026-10-09",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1600,9 +1600,9 @@
 			"type": "statni_agentura",
 			"refresh": "B",
 			"records": 23,
-			"live": 8,
-			"last_fetched": "2026-10-03",
-			"days": 2,
+			"live": 7,
+			"last_fetched": "2026-10-09",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1667,8 +1667,8 @@
 			"refresh": "B",
 			"records": 7,
 			"live": 0,
-			"last_fetched": "2026-10-03",
-			"days": 2,
+			"last_fetched": "2026-10-09",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1687,9 +1687,9 @@
 			"name": "Zlínský kraj",
 			"type": "samosprava_kraj",
 			"refresh": "A",
-			"records": 14,
-			"live": 8,
-			"last_fetched": "2026-10-05",
+			"records": 18,
+			"live": 12,
+			"last_fetched": "2026-10-09",
 			"days": 0,
 			"state": "ok"
 		}
