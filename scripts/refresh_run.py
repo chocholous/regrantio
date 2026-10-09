@@ -154,6 +154,16 @@ SOURCES = {
         ["ingest_kentico.py", "data/h_kentico_irop.jsonl", "--source", "irop.gov.cz"],
         "html",
     ),
+    # DSW2 / Otevřená města (2026‑10‑09): 28 obecních portálů (Praha 3, 11,
+    # 12, Ústí n. L., Mělník, Chýně…) jedním harvesterem. V registru chyběly
+    # a jejich ingest appendoval, takže katalog nesl data z 31. 7. a inventář
+    # je hlásil bez data sběru. `ingest_dsw2.py` zapisuje upsertem (nic
+    # nemaže; prázdnou sklizeň odmítne). Běh ~3 minuty.
+    "dsw2": (
+        ["dsw2.py", "--no-opendata", "--no-csu"], "data/dsw2_appeals.jsonl",
+        ["ingest_dsw2.py"],
+        "structured",
+    ),
     # ⚠ Brno je „mesto", ne „kraj" — jméno souboru se od ostatních liší.
     "dotace.brno.cz": (
         ["brno_harvest.py"], "data/h_mesto_brno.json",

@@ -1,100 +1,100 @@
 {
 	"today": "2026-10-09",
-	"records": 4018,
-	"grants": 3993,
-	"live": 1788,
+	"records": 4068,
+	"grants": 4043,
+	"live": 1824,
 	"sources": 137,
 	"status": {
-		"open": 512,
-		"unknown": 929,
-		"closed": 2205,
-		"announced": 347
+		"open": 519,
+		"unknown": 952,
+		"closed": 2219,
+		"announced": 353
 	},
 	"scope_live": {
 		"international": 10,
 		"eu_central": 448,
-		"national": 322,
-		"local": 454,
-		"regional": 554
+		"national": 323,
+		"local": 490,
+		"regional": 553
 	},
 	"deadline_kind_live": {
-		"fixed": 847,
-		"unknown": 717,
+		"fixed": 860,
+		"unknown": 736,
 		"rolling": 81,
-		"recurring": 143
+		"recurring": 147
 	},
 	"fields": {
 		"deadline": {
-			"live": 859,
-			"live_pct": 48.0,
-			"all": 3064,
-			"all_pct": 76.7
+			"live": 872,
+			"live_pct": 47.8,
+			"all": 3091,
+			"all_pct": 76.5
 		},
 		"amount": {
 			"live": 92,
-			"live_pct": 5.1,
+			"live_pct": 5.0,
 			"all": 265,
 			"all_pct": 6.6
 		},
 		"eligible_applicants": {
-			"live": 1294,
-			"live_pct": 72.4,
+			"live": 1291,
+			"live_pct": 70.8,
 			"all": 2564,
-			"all_pct": 64.2
+			"all_pct": 63.4
 		},
 		"typ_zadatele": {
-			"live": 599,
-			"live_pct": 33.5,
-			"all": 1370,
-			"all_pct": 34.3
+			"live": 582,
+			"live_pct": 31.9,
+			"all": 1356,
+			"all_pct": 33.5
 		},
 		"oblast": {
-			"live": 1459,
-			"live_pct": 81.6,
-			"all": 3563,
-			"all_pct": 89.2
+			"live": 1409,
+			"live_pct": 77.2,
+			"all": 3517,
+			"all_pct": 87.0
 		},
 		"kraj_nebo_celostatni": {
-			"live": 1788,
-			"live_pct": 100.0,
-			"all": 3993,
+			"live": 1823,
+			"live_pct": 99.9,
+			"all": 4042,
 			"all_pct": 100.0
 		},
 		"how_to_apply": {
 			"live": 1478,
-			"live_pct": 82.7,
+			"live_pct": 81.0,
 			"all": 3613,
-			"all_pct": 90.5
+			"all_pct": 89.4
 		},
 		"source_doc": {
-			"live": 1752,
-			"live_pct": 98.0,
-			"all": 3914,
-			"all_pct": 98.0
+			"live": 1786,
+			"live_pct": 97.9,
+			"all": 3956,
+			"all_pct": 97.8
 		},
 		"contact": {
 			"live": 229,
-			"live_pct": 12.8,
+			"live_pct": 12.6,
 			"all": 561,
-			"all_pct": 14.0
+			"all_pct": 13.9
 		},
 		"documents": {
-			"live": 254,
-			"live_pct": 14.2,
+			"live": 253,
+			"live_pct": 13.9,
 			"all": 665,
-			"all_pct": 16.7
+			"all_pct": 16.4
 		},
 		"call_number": {
 			"live": 695,
-			"live_pct": 38.9,
+			"live_pct": 38.1,
 			"all": 1909,
-			"all_pct": 47.8
+			"all_pct": 47.2
 		}
 	},
 	"freshness_live": {
-		"do_7": 874,
+		"do_7": 1098,
 		"do_30": 5,
-		"nevime": 905,
+		"nevime": 717,
 		"starsi": 4
 	},
 	"citations": {
@@ -112,76 +112,76 @@
 			"cited_pct": 59.8
 		},
 		"deadline": {
-			"present": 859,
-			"parsed": 54,
+			"present": 872,
+			"parsed": 67,
 			"model": 803,
 			"derived": 2,
 			"cited": 557,
-			"cited_pct": 64.8
+			"cited_pct": 63.9
 		},
 		"eligible_applicants": {
-			"present": 1294,
+			"present": 1291,
 			"parsed": 380,
-			"model": 914,
+			"model": 911,
 			"derived": 0,
-			"cited": 208,
-			"cited_pct": 16.1
+			"cited": 207,
+			"cited_pct": 16.0
 		},
 		"focus_area": {
-			"present": 1685,
-			"parsed": 502,
-			"model": 1183,
+			"present": 1708,
+			"parsed": 529,
+			"model": 1179,
 			"derived": 0,
-			"cited": 305,
-			"cited_pct": 18.1
+			"cited": 301,
+			"cited_pct": 17.6
 		},
 		"oblast": {
-			"present": 1459,
-			"parsed": 220,
-			"model": 1239,
+			"present": 1409,
+			"parsed": 174,
+			"model": 1235,
 			"derived": 0,
-			"cited": 258,
-			"cited_pct": 17.7
+			"cited": 254,
+			"cited_pct": 18.0
 		},
 		"open_from": {
-			"present": 870,
-			"parsed": 64,
+			"present": 883,
+			"parsed": 77,
 			"model": 806,
 			"derived": 0,
 			"cited": 44,
-			"cited_pct": 5.1
+			"cited_pct": 5.0
 		},
 		"region": {
-			"present": 1788,
-			"parsed": 547,
-			"model": 1241,
+			"present": 1823,
+			"parsed": 586,
+			"model": 1237,
 			"derived": 0,
-			"cited": 249,
-			"cited_pct": 13.9
+			"cited": 247,
+			"cited_pct": 13.5
 		},
 		"typ_zadatele": {
-			"present": 599,
-			"parsed": 149,
-			"model": 450,
+			"present": 582,
+			"parsed": 135,
+			"model": 447,
 			"derived": 0,
-			"cited": 71,
-			"cited_pct": 11.9
+			"cited": 70,
+			"cited_pct": 12.0
 		}
 	},
 	"families": {
-		"families": 321,
-		"variants": 361,
-		"recurring": 261
+		"families": 332,
+		"variants": 368,
+		"recurring": 273
 	},
 	"sources_by_state": {
-		"neovereno": 79,
-		"ok": 35,
+		"neovereno": 55,
+		"ok": 59,
 		"zmrazeny": 3,
 		"bez_cesty": 20
 	},
 	"live_by_source_state": {
-		"neovereno": 521,
-		"ok": 1184,
+		"neovereno": 288,
+		"ok": 1453,
 		"zmrazeny": 23,
 		"bez_cesty": 60
 	},
@@ -224,11 +224,11 @@
 			"name": "Obec Chýně",
 			"type": "samosprava_obec",
 			"refresh": "A",
-			"records": 21,
-			"live": 20,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"records": 27,
+			"live": 26,
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "dotace.khk.cz",
@@ -257,33 +257,33 @@
 			"name": "Brno‑Medlánky",
 			"type": "samosprava_obec",
 			"refresh": "A",
-			"records": 12,
-			"live": 11,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"records": 15,
+			"live": 14,
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "dotace.melnik.cz",
 			"name": "Město Mělník",
 			"type": "samosprava_obec",
 			"refresh": "A",
-			"records": 26,
-			"live": 15,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"records": 29,
+			"live": 16,
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "dotace.mestobystrice.cz",
 			"name": "Město Bystřice",
 			"type": "samosprava_obec",
 			"refresh": "A",
-			"records": 5,
+			"records": 7,
 			"live": 5,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "dotace.mestodobris.cz",
@@ -292,9 +292,9 @@
 			"refresh": "A",
 			"records": 9,
 			"live": 8,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "dotace.mmhk.cz",
@@ -312,11 +312,11 @@
 			"name": "Město Nové Město na Moravě",
 			"type": "samosprava_obec",
 			"refresh": "A",
-			"records": 20,
-			"live": 13,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"records": 21,
+			"live": 14,
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "dotace.ostrava.cz",
@@ -368,65 +368,65 @@
 			"type": "samosprava_obec",
 			"refresh": "A",
 			"records": 9,
-			"live": 7,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"live": 6,
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "dotace.praha11.cz",
 			"name": "Praha 11",
 			"type": "samosprava_obec",
 			"refresh": "A",
-			"records": 9,
+			"records": 11,
 			"live": 7,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "dotace.praha12.cz",
 			"name": "Praha 12",
 			"type": "samosprava_obec",
 			"refresh": "A",
-			"records": 9,
-			"live": 6,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"records": 16,
+			"live": 13,
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "dotace.praha14.cz",
 			"name": "Praha 14",
 			"type": "samosprava_obec",
 			"refresh": "A",
-			"records": 9,
+			"records": 10,
 			"live": 7,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "dotace.praha2.cz",
 			"name": "Praha 2",
 			"type": "samosprava_obec",
 			"refresh": "A",
-			"records": 8,
-			"live": 7,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"records": 9,
+			"live": 8,
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "dotace.praha3.cz",
 			"name": "Praha 3",
 			"type": "samosprava_obec",
 			"refresh": "A",
-			"records": 26,
-			"live": 25,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"records": 35,
+			"live": 33,
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "dotace.praha4.cz",
@@ -435,9 +435,9 @@
 			"refresh": "A",
 			"records": 1,
 			"live": 0,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "dotace.praha8.cz",
@@ -446,9 +446,9 @@
 			"refresh": "A",
 			"records": 3,
 			"live": 0,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "dotace.stepanov.cz",
@@ -457,9 +457,9 @@
 			"refresh": "A",
 			"records": 4,
 			"live": 3,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "dotace.tisnov.cz",
@@ -467,21 +467,21 @@
 			"type": "samosprava_obec",
 			"refresh": "A",
 			"records": 13,
-			"live": 12,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"live": 11,
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "dotace.usti-nad-labem.cz",
 			"name": "Město Ústí nad Labem",
 			"type": "samosprava_obec",
 			"refresh": "A",
-			"records": 72,
-			"live": 71,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"records": 87,
+			"live": 83,
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "dotaceeu.cz",
@@ -820,9 +820,9 @@
 			"refresh": "A",
 			"records": 10,
 			"live": 6,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "leontinka",
@@ -853,9 +853,9 @@
 			"refresh": "A",
 			"records": 4,
 			"live": 0,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "loket.dsw2.otevrenamesta.cz",
@@ -864,9 +864,9 @@
 			"refresh": "A",
 			"records": 6,
 			"live": 3,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "mb-net.cz",
@@ -1223,13 +1223,13 @@
 		{
 			"slug": "novemestonm.dsw2.otevrenamesta.cz",
 			"name": "Město Nové Město nad Metují",
-			"type": "samosprava_obec",
+			"type": null,
 			"refresh": "A",
 			"records": 1,
 			"live": 1,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "npzp",
@@ -1381,9 +1381,9 @@
 			"refresh": "A",
 			"records": 4,
 			"live": 2,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "pardubice.eu",
@@ -1447,9 +1447,9 @@
 			"refresh": "A",
 			"records": 2,
 			"live": 1,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "prerov.eu",
@@ -1578,10 +1578,10 @@
 			"type": "samosprava_kraj",
 			"refresh": "A",
 			"records": 3,
-			"live": 3,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"live": 2,
+			"last_fetched": "2026-10-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "taborcz.eu",

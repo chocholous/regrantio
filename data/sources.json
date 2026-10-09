@@ -40,9 +40,9 @@
 		"type": "samosprava_obec",
 		"refresh": "A",
 		"harvester": "dsw2.py",
-		"records": 21,
-		"live": 20,
-		"last_fetched": null
+		"records": 27,
+		"live": 26,
+		"last_fetched": "2026-10-09"
 	},
 	"dotace.khk.cz": {
 		"name": "Královéhradecký kraj",
@@ -73,9 +73,9 @@
 		"type": "samosprava_obec",
 		"refresh": "A",
 		"harvester": "dsw2.py",
-		"records": 12,
-		"live": 11,
-		"last_fetched": null
+		"records": 15,
+		"live": 14,
+		"last_fetched": "2026-10-09"
 	},
 	"dotace.melnik.cz": {
 		"name": "Město Mělník",
@@ -84,9 +84,9 @@
 		"type": "samosprava_obec",
 		"refresh": "A",
 		"harvester": "vismo.py",
-		"records": 26,
-		"live": 15,
-		"last_fetched": null
+		"records": 29,
+		"live": 16,
+		"last_fetched": "2026-10-09"
 	},
 	"dotace.mestobystrice.cz": {
 		"name": "Město Bystřice",
@@ -95,9 +95,9 @@
 		"type": "samosprava_obec",
 		"refresh": "A",
 		"harvester": "dsw2.py",
-		"records": 5,
+		"records": 7,
 		"live": 5,
-		"last_fetched": null
+		"last_fetched": "2026-10-09"
 	},
 	"dotace.mestodobris.cz": {
 		"name": "Město Dobříš",
@@ -108,7 +108,7 @@
 		"harvester": "dsw2.py",
 		"records": 9,
 		"live": 8,
-		"last_fetched": null
+		"last_fetched": "2026-10-09"
 	},
 	"dotace.mmhk.cz": {
 		"name": "Město Hradec Králové",
@@ -128,9 +128,9 @@
 		"type": "samosprava_obec",
 		"refresh": "A",
 		"harvester": "dsw2.py",
-		"records": 20,
-		"live": 13,
-		"last_fetched": null
+		"records": 21,
+		"live": 14,
+		"last_fetched": "2026-10-09"
 	},
 	"dotace.ostrava.cz": {
 		"name": "Město Ostrava",
@@ -184,8 +184,8 @@
 		"refresh": "A",
 		"harvester": "dsw2.py",
 		"records": 9,
-		"live": 7,
-		"last_fetched": null
+		"live": 6,
+		"last_fetched": "2026-10-09"
 	},
 	"dotace.praha11.cz": {
 		"name": "Praha 11",
@@ -194,9 +194,9 @@
 		"type": "samosprava_obec",
 		"refresh": "A",
 		"harvester": "dsw2.py",
-		"records": 9,
+		"records": 11,
 		"live": 7,
-		"last_fetched": null
+		"last_fetched": "2026-10-09"
 	},
 	"dotace.praha12.cz": {
 		"name": "Praha 12",
@@ -205,9 +205,9 @@
 		"type": "samosprava_obec",
 		"refresh": "A",
 		"harvester": "dsw2.py",
-		"records": 9,
-		"live": 6,
-		"last_fetched": null
+		"records": 16,
+		"live": 13,
+		"last_fetched": "2026-10-09"
 	},
 	"dotace.praha14.cz": {
 		"name": "Praha 14",
@@ -216,9 +216,9 @@
 		"type": "samosprava_obec",
 		"refresh": "A",
 		"harvester": "dsw2.py",
-		"records": 9,
+		"records": 10,
 		"live": 7,
-		"last_fetched": null
+		"last_fetched": "2026-10-09"
 	},
 	"dotace.praha2.cz": {
 		"name": "Praha 2",
@@ -227,9 +227,9 @@
 		"type": "samosprava_obec",
 		"refresh": "A",
 		"harvester": "dsw2.py",
-		"records": 8,
-		"live": 7,
-		"last_fetched": null
+		"records": 9,
+		"live": 8,
+		"last_fetched": "2026-10-09"
 	},
 	"dotace.praha3.cz": {
 		"name": "Praha 3",
@@ -238,9 +238,9 @@
 		"type": "samosprava_obec",
 		"refresh": "A",
 		"harvester": "dsw2.py",
-		"records": 26,
-		"live": 25,
-		"last_fetched": null
+		"records": 35,
+		"live": 33,
+		"last_fetched": "2026-10-09"
 	},
 	"dotace.praha4.cz": {
 		"name": "Praha 4",
@@ -251,7 +251,7 @@
 		"harvester": "dsw2.py",
 		"records": 1,
 		"live": 0,
-		"last_fetched": null
+		"last_fetched": "2026-10-09"
 	},
 	"dotace.praha8.cz": {
 		"name": "Praha 8",
@@ -262,7 +262,7 @@
 		"harvester": "dsw2.py",
 		"records": 3,
 		"live": 0,
-		"last_fetched": null
+		"last_fetched": "2026-10-09"
 	},
 	"dotace.stepanov.cz": {
 		"name": "Obec Štěpánov",
@@ -273,7 +273,7 @@
 		"harvester": "dsw2.py",
 		"records": 4,
 		"live": 3,
-		"last_fetched": null
+		"last_fetched": "2026-10-09"
 	},
 	"dotace.tisnov.cz": {
 		"name": "Město Tišnov",
@@ -283,8 +283,8 @@
 		"refresh": "A",
 		"harvester": "dsw2.py",
 		"records": 13,
-		"live": 12,
-		"last_fetched": null
+		"live": 11,
+		"last_fetched": "2026-10-09"
 	},
 	"dotace.usti-nad-labem.cz": {
 		"name": "Město Ústí nad Labem",
@@ -293,9 +293,9 @@
 		"type": "samosprava_obec",
 		"refresh": "A",
 		"harvester": "dsw2.py",
-		"records": 72,
-		"live": 71,
-		"last_fetched": null
+		"records": 87,
+		"live": 83,
+		"last_fetched": "2026-10-09"
 	},
 	"dotaceeu.cz": {
 		"name": "Dotace EU (MMR)",
@@ -636,7 +636,7 @@
 		"harvester": "dsw2.py",
 		"records": 10,
 		"live": 6,
-		"last_fetched": null
+		"last_fetched": "2026-10-09"
 	},
 	"leontinka": {
 		"name": "Nadace Leontinka",
@@ -669,7 +669,7 @@
 		"harvester": "dsw2.py",
 		"records": 4,
 		"live": 0,
-		"last_fetched": null
+		"last_fetched": "2026-10-09"
 	},
 	"loket.dsw2.otevrenamesta.cz": {
 		"name": "Město Loket",
@@ -680,7 +680,7 @@
 		"harvester": "dsw2.py",
 		"records": 6,
 		"live": 3,
-		"last_fetched": null
+		"last_fetched": "2026-10-09"
 	},
 	"mb-net.cz": {
 		"name": "Město Mladá Boleslav",
@@ -1038,12 +1038,12 @@
 		"name": "Město Nové Město nad Metují",
 		"homepage": "https://novemestonm.dsw2.otevrenamesta.cz",
 		"note": null,
-		"type": "samosprava_obec",
+		"type": null,
 		"refresh": "A",
 		"harvester": "dsw2.py",
 		"records": 1,
 		"live": 1,
-		"last_fetched": null
+		"last_fetched": "2026-10-09"
 	},
 	"npzp": {
 		"name": "Národní program Životní prostředí",
@@ -1197,7 +1197,7 @@
 		"harvester": "dsw2.py",
 		"records": 4,
 		"live": 2,
-		"last_fetched": null
+		"last_fetched": "2026-10-09"
 	},
 	"pardubice.eu": {
 		"name": "Město Pardubice",
@@ -1263,7 +1263,7 @@
 		"harvester": "dsw2.py",
 		"records": 2,
 		"live": 1,
-		"last_fetched": null
+		"last_fetched": "2026-10-09"
 	},
 	"prerov.eu": {
 		"name": "Město Přerov",
@@ -1394,8 +1394,8 @@
 		"refresh": "A",
 		"harvester": "dsw2.py",
 		"records": 3,
-		"live": 3,
-		"last_fetched": null
+		"live": 2,
+		"last_fetched": "2026-10-09"
 	},
 	"taborcz.eu": {
 		"name": "Město Tábor",

@@ -113,6 +113,13 @@ per-zdroj (re-harvest celý zdroj → nahraď jeho podmnožinu), ne plošně.
 - **family-covered** (43 zdrojů) — host je v `platform_map.json`, kryje ho FAMILY harvester
   (vismo/dsw2/kentico). Re-harvestovatelné; jen nejsou per-host v `routing.yaml sources:`. Refresh:
   spusť family harvester (`vismo.py`/`dsw2.py`/`kentico_irop.py`) na daný host. **OK.**
+  - **DSW2 je od 2026‑10‑09 v týdenní obnově** (`refresh_run.py`, klíč `dsw2`): 28 portálů
+    jedním během (~3 min), zápis `ingest_dsw2.py` UPSERTEM. Do té doby šel ingest přes
+    `opportunities.py --from-dsw2`, který existující `id` přeskakuje, takže změněná lhůta se
+    nepropsala a katalog nesl data z 31. 7. První běh: +50 výzev a programů, 62 aktualizací.
+  - **Vismo (17 obecních webů) v obnově ještě NENÍ:** `vismo.py` chce `--base` po webech a
+    detail se dotahuje zvlášť (`vismo_detail.py`); data jsou z 30. 5. Postup: smyčka přes
+    hosty z `platform_map.json`, pak ingest upsertem jako u DSW2.
 - **ORPHAN** (cca 20 „zdrojů") — dvě skupiny:
   1. **slug↔host mismatch** (mv, msmt, mzcr, mzp, mkcr, nadacevia…): zdroj JE registrovaný, jen
      dataset `source` je slug a routing klíč je host (`mv.gov.cz`). Reálně refreshovatelné svým
