@@ -156,19 +156,47 @@ def harvest(args):
     return 0 if n else 1
 
 
-def texts_of(detail, max_pdf):
-    """Tělo stránky + text PDF příloh (nejvýš `max_pdf`)."""
-    out = [detail.get("body_text") or ""]
-    pdfs = 0
+def fetch_pdfs(detail, max_pdf, timeout, max_bytes):
+    """Stáhne a převede na text PDF přílohy (nejvýš `max_pdf`); doplní `txt_path`.
+
+    ⚠ JEN PDF A JEN JEDNOU. Do 2026‑10‑09 se stahovaly všechny přílohy (DOC,
+    XLS formulářů) při každém běhu a krok se blížil limitu týdenní obnovy
+    (12 min). Typ je v markupu Visma (`tpdf`); `File.ashx?id_dokumenty=…`
+    označuje verzi souboru, takže převedený text z minula platí.
+    """
+    import hashlib
+    import dsw2_fetch as df
+    n = 0
     for a in detail.get("attachments") or []:
-        if a.get("ext") == "pdf" and a.get("txt_path") and pdfs < max_pdf:
-            pdfs += 1
+        if a.get("type") != "tpdf" or n >= max_pdf:
+            continue
+        n += 1
+        d = os.path.join(FILES, df.host_of(a["url"]))
+        os.makedirs(d, exist_ok=True)
+        sha = hashlib.sha1(a["url"].encode()).hexdigest()[:16]
+        pdf, txt = os.path.join(d, f"{sha}.pdf"), os.path.join(d, f"{sha}.txt")
+        if not (os.path.exists(txt) and os.path.getsize(txt) > 0):
+            size, err = df.download(a["url"], pdf, timeout, max_bytes)
+            if err or not size:
+                a["download_err"] = err
+                continue
+            chars, _ = df.convert(pdf, "pdf", txt, timeout)
+            if not chars:
+                continue
+        a["txt_path"] = txt
+
+
+def texts_of(detail):
+    """Tělo stránky + text převedených PDF příloh."""
+    out = [detail.get("body_text") or ""]
+    for a in detail.get("attachments") or []:
+        if a.get("txt_path"):
             out.append(open(a["txt_path"], encoding="utf-8", errors="replace").read())
     return out
 
 
 def ingest(args):
-    import vismo_detail as vd   # stahuje a převádí přílohy (dsw2_fetch)
+    import vismo_detail as vd   # detail stránky a seznam příloh
     today = datetime.date.fromisoformat(args.today) if args.today else datetime.date.today()
     vd.TODAY = today
     known = catalog_vismo()
@@ -188,12 +216,13 @@ def ingest(args):
         else:
             stats["known"] += 1
         call = dict(doc, web=host)
-        detail = vd.process(call, FILES, True, args.fetch_timeout, args.max_mb * 1024 * 1024)
+        detail = vd.process(call, FILES, False, args.fetch_timeout, 0)
         if detail.get("error"):
             stats["fetch_fail"] += 1
             continue
+        fetch_pdfs(detail, args.max_pdf, args.fetch_timeout, args.max_mb * 1024 * 1024)
         of = dl = quote = None
-        for t in texts_of(detail, args.max_pdf):
+        for t in texts_of(detail):
             o, d, q = submission_window(t, today)
             if d and closer(d, dl, today.isoformat()):
                 of, dl, quote = o, d, q

@@ -128,7 +128,8 @@ per-zdroj (re-harvest celý zdroj → nahraď jeho podmnožinu), ne plošně.
       nadcházející „do …“. **Harmonogram v tabulce se nečte** (Most: sloupce se pravidlem
       přiřadit nedají), takový záznam drží poslední známou lhůtu. Nový záznam jen s
       doloženou lhůtou; každá nová či změněná lhůta se vypíše i s větou ze zdroje.
-      `vismo_detail.py` už nemá `TODAY` natvrdo (30. 5.).
+      Stahují se jen PDF a převedený text se drží (~2,5 min místo 10). `vismo_detail.py`
+      už nemá `TODAY` natvrdo (30. 5.).
     - Letňany: hledání dotační sekce selže (web přešel na jiné adresy); dva záznamy
       zůstávají v posledním známém stavu.
 - **ORPHAN** (cca 20 „zdrojů") — dvě skupiny:
