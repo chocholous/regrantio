@@ -34,6 +34,9 @@ import urllib.error
 import http_util   # jednotná TLS politika (audit #7/#32)
 import urllib.request
 
+# Okno lhůty víc let dopředu je zástupné datum portálu, ne termín (viz parse).
+PLACEHOLDER_YEARS = 5
+
 # Standardní dsw2 cesty (konvence platformy, ne projektové hodnoty).
 DEFAULT_FONDS_PATH = "/explore/fonds"
 DEFAULT_APPEALS_PATH = "/explore/appeals"
@@ -185,6 +188,7 @@ def extract_appeals(text: str, fid: str, url: str, today) -> list:
         hm = HEADER_RE.search(card)
         header = hm.group(1) if hm else card
         start_iso = end_iso = None
+        placeholder = False
         w = WINDOW_RE.search(html_to_text(header))
         if w:
             d1, m1, y1, d2, m2, y2 = w.groups()
@@ -198,6 +202,15 @@ def extract_appeals(text: str, fid: str, url: str, today) -> list:
                 year_start = year_end
             start_iso = _iso(d1, m1, year_start)
             end_iso = _iso(d2, m2, year_end)
+            # ⚠ ZÁSTUPNÉ OKNO NENÍ LHŮTA (2026-10-22). Portál vyžaduje datum
+            # i u výzvy „kdykoli“ a obec pak zadá rok daleko dopředu: Police
+            # nad Metují má individuální dotace „31. 7. – 31. 12. 2040“. Brát
+            # to jako fakt by výzvu ukázalo jako vyhlášenou za čtrnáct let;
+            # brána kvality ji právem zastavila. Okno víc než PLACEHOLDER_YEARS
+            # let dopředu se proto nepřebírá: lhůta zůstane neuvedená.
+            placeholder = year_start > today.year + PLACEHOLDER_YEARS
+            if placeholder:
+                start_iso = end_iso = None
         # popis výzvy + související programy (card-body bez nadpisu a odkazu)
         bm = BODY_RE.search(card)
         body_html = bm.group(1) if bm else ""
@@ -222,6 +235,7 @@ def extract_appeals(text: str, fid: str, url: str, today) -> list:
             "source_url": src,
             "published_note": html_to_text(footer.group(1)) if footer else None,
             "links": links,
+            **({"placeholder_window": True} if placeholder else {}),
         })
     return out
 

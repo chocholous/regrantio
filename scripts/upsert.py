@@ -71,6 +71,12 @@ def _enriched(rec):
 
 def merge(old, new):
     """Refresh existujícího záznamu: u syrového layer-1 přepiš celý, u obohaceného jen fakta."""
+    # ⚠ VÝSLOVNĚ PRÁZDNÉ POLE (2026-10-22). Sběr běžně nepřepisuje fakt
+    # prázdnem (výpadek nesmí smazat lhůtu). Když ale sběr VÍ, že údaj ve
+    # zdroji není (zástupné okno portálu DSW2, rok 2040), pošle `_clear`
+    # a pole se vyprázdní i se stavem, který z nich plynul.
+    clear = [k for k in (new.get("_clear") or []) if k in REFRESHABLE]
+    new = {k: v for k, v in new.items() if k != "_clear"}
     if not _enriched(old):
         return new
     out = dict(old)
@@ -90,6 +96,11 @@ def merge(old, new):
     for k in FILL_IF_EMPTY:
         if not out.get(k) and new.get(k):
             out[k] = new[k]
+    for k in clear:
+        out[k] = None
+    if clear:
+        out["status"] = new.get("status")
+        out["status_confidence"] = new.get("status_confidence")
     of, nf = dict(out.get("facets") or {}), new.get("facets") or {}
     for k in REFRESHABLE_FACETS:
         if nf.get(k) is not None:
@@ -148,7 +159,7 @@ def upsert(out_path, recs, when=None):
             byid[rid] = stamp(merged, when)
         else:
             order.append(rid)
-            byid[rid] = stamp(r, when)
+            byid[rid] = stamp({k: v for k, v in r.items() if k != "_clear"}, when)
             new += 1
     write(out_path, order, byid)
     return {"new": new, "updated": upd, "unchanged": keep, "total": len(order),

@@ -113,6 +113,19 @@ def test_sber_bez_data_neprepise_stav_obohaceneho():
     assert (out["status"], out["deadline"]) == ("open", "2027-03-31")
 
 
+def test_zastupne_okno_vyprazdni_lhutu():
+    # 22. 10.: Police nad Metují „31. 7. – 31. 12. 2040“ (zástupné okno portálu
+    # DSW2). Prázdné pole bez `_clear` lhůtu nechá, s `_clear` ji vyprázdní.
+    old = _rich(open_from="2040-07-31", deadline="2040-12-31", status="announced", status_confidence="high")
+    kept = merge(old, _raw(open_from=None, deadline=None, status="unknown", status_confidence="low"))
+    assert kept["deadline"] == "2040-12-31"
+    new = _raw(open_from=None, deadline=None, status="unknown", status_confidence="low")
+    new["_clear"] = ["open_from", "deadline"]
+    out = merge(old, new)
+    assert (out["open_from"], out["deadline"], out["status"]) == (None, None, "unknown")
+    assert "_clear" not in out
+
+
 def test_dvoukolovy_fond_po_konci_dotazniku_je_zavreny():
     # 9. 10., Nadace Via „Milion pro Lovosice“: dotazník do 30. 9., přihláška
     # (jen pro prošlé dotazníkem) do 11. 10., na stránce „příjem ukončen“.

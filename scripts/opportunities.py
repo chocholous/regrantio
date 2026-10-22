@@ -323,7 +323,7 @@ def ingest_enriched(result_path, src_dir, structured_path, mode, today):
 # ---------- vstup: dsw2 appeals (STRUKTUROVANÉ, bez LLM) ----------
 def ingest_dsw2(path, today):
     consumed = {"title", "focus_area", "open_from", "deadline", "amount", "eligible_applicants",
-                "url", "source_url", "foundation_id", "status"}
+                "url", "source_url", "foundation_id", "status", "placeholder_window"}
     for line in open(path, encoding="utf-8"):
         a = json.loads(line)
         f = {"title": a.get("title"), "focus_area": a.get("focus_area"),
@@ -335,7 +335,12 @@ def ingest_dsw2(path, today):
         prov = {"source": _host(a.get("url")), "source_url": a.get("url"),
                 "foundation_id": a.get("foundation_id"), "_layer": 1, "_harvester": "dsw2.py (appeals)",
                 "_platform": "dsw2", "harvest_file": path, "documents": docs}  # source = POSKYTOVATEL (portál obce)
-        yield opp_from_fields("grant", f, prov, today, extra=extra)
+        rec = opp_from_fields("grant", f, prov, today, extra=extra)
+        # Zástupné okno portálu (dsw2.py): lhůta ve zdroji není, starou ze
+        # záznamu je potřeba vyprázdnit, ne nechat (upsert.merge, `_clear`).
+        if a.get("placeholder_window"):
+            rec["_clear"] = ["open_from", "deadline"]
+        yield rec
 
 # ---------- vstup: dsw2 PROGRAMY (katalog fondů — strukturované, bez LLM) ----------
 def ingest_dsw2_programs(path, today):
