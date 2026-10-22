@@ -568,7 +568,7 @@ def main():
     # do které třídy zdroj patří — od toho je tenhle skript.
     # ⚠ VÝCHOZÍ BĚH JE JEN TŘÍDA A, a je to schválně. Třída B je dalších 21 webů,
     # tedy podstatně delší běh po síti — kdo chce obojí, řekne si `--tier all`.
-    # Právě to dělá plánovaná obnova (`.github/workflows/refresh.yml`).
+    # Tak se pouští ruční obnova (plánovaný `refresh.yml` odešel 2026-10-22).
     chosen, chosen_extract, chosen_model = sorted(SOURCES), [], []
     has_key = bool(os.environ.get("ANTHROPIC_API_KEY"))
     if a.tier == "extract":

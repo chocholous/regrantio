@@ -95,8 +95,15 @@ z kopie) přes Messages API. Bez klíče se třída C přeskočí s větou, ne p
 položky v registru (města s vlastním harvesterem) a sedmnáct jednorázových
 nadačních sběrů („?") čeká na zapsání cesty — inventář to ukazuje.
 
-Týdenní obnova (`.github/workflows/refresh.yml`) pouští `--tier all`:
-A + B vždy, C jen s klíčem v secrets.
+⚠ **OBNOVA JE RUČNÍ (zadavatel 2026‑10‑22: „kvalitnější bude to dělat ručně,
+kdy budu chtít“).** Workflow `.github/workflows/refresh.yml` odešel: bez
+tajemství sklízel a commitoval data, ale do databáze nezapsal, takže produkt
+11 dní stárnul nad čerstvým gitem. Postup: `refresh_run.py --tier all` (A + B,
+C jen s klíčem v `.env`), porovnat počty po zdrojích s databází, pak
+`publish_db.py --dry-run` a `publish_db.py` (`the-machine-app/docs/PROVOZ.md`
+§3). Odstavce níž popisují, jak se obnova ladila, dokud běžela v CI; jejich
+poučení (rozpočet, strop na krok, rotace podle `last_fetched`) platí i pro
+ruční běh.
 
 ⚠ **Rozpočet a strop na krok (2026‑09‑15).** Běh v GitHub Actions má strop
 90 minut a 7. i 14. 9. do něj nedoběhl: `--budget-min 60` se kontroloval jen
@@ -106,7 +113,7 @@ brána i export. Od té doby má každý krok strop `--step-timeout-min` (v CI 1
 zkrácený na zbytek rozpočtu), zdroje se berou od **nejdéle neověřených**
 (`last_fetched` v inventáři), aby se s rozpočtem střídaly, `esfcr` jde bez
 archivu ze sitemapy a `eeagrants` je zmražený (období skončilo, harvester
-mimo registr). Zápis do databáze z CI dál čeká na secrets (viz níž).
+mimo registr).
 
 ⚠ **Rotace nerotovala a zdroje hladověly (2026‑09‑23).** Pořadí „nejdéle
 neověřené první" čte `data/sources.json` — jenže CI ho po přepočtu

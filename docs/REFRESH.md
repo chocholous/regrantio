@@ -15,8 +15,9 @@ Doprovodné nástroje:
   `--budget-min N` zastaví SKLIZEŇ po N minutách (zbytek zůstane z minula, přepočet a export
   proběhnou), `--step-timeout-min N` (výchozí 30, v CI 12) je strop na jeden krok; zdroje se
   berou od nejdéle neověřených podle `last_fetched` v `data/sources.json` (2026‑09‑15).
-  ⚠ Ten inventář MUSÍ CI commitovat, jinak fronta zamrzne na posledním commitnutém
+  ⚠ Ten inventář se MUSÍ commitovat, jinak fronta zamrzne na posledním commitnutém
   stavu a spodek fronty se neobnoví nikdy (2026‑09‑23; běh 21. 9. stihl 13 zdrojů z 34).
+  Obnova je od 2026‑10‑22 ruční (workflow `refresh.yml` odešel), commit dělá člověk.
   Zdroje vedené jako zmražené (`sources_inventory.FROZEN`) se neharvestují —
   bez razítka by stály v čele fronty a braly čas těm, které obnovit jdou.
 
@@ -154,9 +155,9 @@ per-zdroj (re-harvest celý zdroj → nahraď jeho podmnožinu), ne plošně.
 Jeden „zmáčkni tlačítko" job pro VŠECHNY zdroje záměrně nestavíme: harvestery jsou různě drahé
 (Playwright, WAF/proxy, seed-driven ruční ročníky) a vrstva 2 části jede přes LLM workflow uvnitř
 Claude Code. Realistický provoz = **refresh po tierech** (`refresh.py` jako checklist), structured
-týdně, zbytek řidčeji. Pokud bude potřeba scheduler, kandidát je GitHub Actions cron na samotné
-**structured** harvestery (bez Playwrightu/LLM) → PR s diffem datasetu k revizi. Není to ale nutné
-pro produkční provoz: export je idempotentní a produkt sync zvládá inkrementálně (content_hash).
+týdně, zbytek řidčeji. Plánovač v GitHub Actions tu do 2026‑10‑22 byl (`refresh.yml`) a odešel:
+obnovu pouští člověk, když chce, a zapisuje ji až po porovnání po zdrojích. Export je
+idempotentní a zápis inkrementální (content_hash), takže na rytmu nic nestojí.
 
 ---
 
@@ -195,7 +196,7 @@ je pak úprava jednoho řádku v manifestu, ne obnova ze zálohy.
 
 1. **Kbelík v Supabase.** Dashboard → Storage → New bucket, jméno
    `regrantio-exports`, **PRIVATE** (veřejný by vystavil celý katalog komukoli).
-2. **Do prostředí regrantia** (`.env` nebo secrets plánovače):
+2. **Do prostředí regrantia** (`.env`):
 
    ```
    SUPABASE_URL=https://<projekt>.supabase.co
