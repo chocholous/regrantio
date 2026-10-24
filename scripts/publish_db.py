@@ -50,6 +50,7 @@ import ssl
 import sys
 import unicodedata
 import urllib.error
+import urllib.parse
 import urllib.request
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -424,6 +425,19 @@ class Db:
         return self._req("PATCH", f"{table}?{filt}", body, prefer="return=minimal")
 
 
+def in_filter(ids):
+    """Filtr PostgREST `in.(…)` pro adresu, s každou hodnotou zakódovanou.
+
+    ⚠ BEZ KÓDOVÁNÍ SE STAŽENÍ TIŠE NEPOVEDLO (2026‑10‑24, běh #56). Identita
+    výzvy je její adresa a ta smí obsahovat `%` (TA ČR: `…%e2%81%a0…`, kódovaný
+    neviditelný znak). Server adresu dotazu nejdřív dekóduje, takže hledal
+    jiný text, nezměnil nic a skript hlásil „staženo 1“. Výzva tak v databázi
+    zůstávala živá, i když ve feedu dávno nebyla.
+    """
+    vals = ('"' + x.replace("\\", "\\\\").replace('"', '\\"') + '"' for x in ids)
+    return "in.(" + ",".join(urllib.parse.quote(v, safe='"') for v in vals) + ")"
+
+
 def load_env():
     """`.env` v kořeni regrantia. Bez závislosti na python-dotenv."""
     p = os.path.join(ROOT, ".env")
@@ -643,8 +657,13 @@ def main():
         if to_withdraw:
             for i in range(0, len(to_withdraw), CHUNK):
                 part = to_withdraw[i:i + CHUNK]
-                lst = ",".join('"' + x.replace('"', '\\"') + '"' for x in part)
-                db.patch("catalog_grant", f"id=in.({lst})", {"withdrawn_at": now})
+                done = db._req("PATCH", f"catalog_grant?id={in_filter(part)}&select=id",
+                               {"withdrawn_at": now}, prefer="return=representation") or []
+                # Kolik řádků se opravdu změnilo, ne kolik se poslalo: jinak
+                # nesoulad (viz `in_filter`) projde jako úspěch.
+                if len(done) != len(part):
+                    missing = sorted(set(part) - {r["id"] for r in done})
+                    raise RuntimeError(f"stažení: změněno {len(done)} z {len(part)}; nesedí {missing[:3]}")
                 changes.extend(withdrawn_change(x, run_id, existing.get(x)) for x in part)
             print(f"  staženo {len(to_withdraw)}")
 

@@ -42,7 +42,8 @@ from collections import defaultdict
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RED = os.path.join(ROOT, "data", "red")
 OUT = os.path.join(ROOT, "data", "red_history.jsonl")
-API = "https://red.financnisprava.cz/opendata/api/3/action/package_show?id="
+# Registr se 2026 přestěhoval z red.financnisprava.cz (dnes jen 301 sem).
+API = "https://red.fs.gov.cz/opendata/api/3/action/package_show?id="
 DATASETS = {"prijemce-pomoci": "prijemce.csv.gz", "poskytovatel-dotace": None,
             "dotace": "dotace.csv.gz", "rozhodnuti": "rozhodnuti.csv.gz"}
 FROM_YEAR = 2016

@@ -14,7 +14,7 @@
 - **EVIDENCE per pole (povinné):** ke každému vyplněnému poli doslovná verbatim citace do `evidence{pole: citace}`; `resolve_citations` ji lokalizuje v souboru (`char_start/end`, `match=exact/fragment/none`).
 
 ## Serializace (proč ne StructuredOutput)
-Na bohatém vnořeném schématu se harness `StructuredOutput` (XML tool-arg) láme → prázdné `{}` → re-prompt smyčka. **Směr B:** agent JSON **zapíše Write toolem do souboru** (`/tmp/out/<id>.json`), návrat nese jen `hotovo`; po doběhu **batch `json_repair`** + měření velikosti/vyplněnosti přes `scripts/repair_out.py`.
+Na bohatém vnořeném schématu se harness `StructuredOutput` (XML tool-arg) láme → prázdné `{}` → re-prompt smyčka. **Směr B:** agent JSON **zapíše Write toolem do souboru** (`/tmp/out/<id>.json`), návrat nese jen `hotovo`; po doběhu **batch `json_repair`** + měření velikosti/vyplněnosti (dřív `scripts/repair_out.py`, odešel s úklidem `b17cdfa`; `extract_api.py` dnes nechá neplatnou odpověď vedle jako `.raw.txt`).
 
 ## Negativní pravidla (pitfaly)
 Granulární „NEPLEŤ SI" pravidla žijí v **`prompts/pitfalls.md`** (kurátorský log, plněný coverage-loopem) — ta nejdůležitější jsou vtělená do inline `SYS`. Když přidáš nový pitfall, patří do `pitfalls.md` a (je-li zásadní) do `SYS` v `extract_wf.js`.

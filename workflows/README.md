@@ -28,12 +28,11 @@ sáhne se po nich, když se mění `prompts/`.
 
 ## Proč to ještě není program
 
-`extract_wf.js` je jediná věc, která stojí mezi regrantiem a plně automatickou
-obnovou. Deterministicky dnes jde obnovit 35 zdrojů; zbytek čeká na tenhle krok,
-protože ho dnes musí odklikat člověk v Claude Code.
-
-Až bude k dispozici klíč k API, nahradí ho `scripts/extract.py` a
-`refresh_run.py` dostane třetí třídu zdrojů. Rozpočet i model jsou spočítané
+`extract_wf.js` je ruční cesta vrstvy 2: odklikává ji člověk v Claude Code.
+Automatická náhrada už existuje: `scripts/extract_api.py`, kterou volá
+`refresh_run.py --tier model` (třída C, 37 zdrojů v `data/sources.json`).
+Chybí jen klíč `ANTHROPIC_API_KEY`; bez něj se třída C při obnově přeskočí
+a deterministicky se obnovují třídy A a B. Rozpočet i model jsou spočítané
 v `REMAINING.md`.
 
 ## Prompty

@@ -143,8 +143,9 @@ def extract_one(client, model: str, path: str, out_dir: str, system: dict, keys:
     try:
         data = parse_json(text)
     except (ValueError, json.JSONDecodeError) as e:
-        # Syrová odpověď zůstane vedle pro `repair_out.py`; do výstupu se nepíše nic,
-        # co není JSON, aby `ingest_rich` nedostal půlku záznamu.
+        # Syrová odpověď zůstane vedle (`.raw.txt`) k ručnímu rozboru; do výstupu se
+        # nepíše nic, co není JSON, aby `ingest_rich` nedostal půlku záznamu.
+        # (Dávková oprava `repair_out.py` odešla s úklidem `b17cdfa`.)
         open(out_path + ".raw.txt", "w", encoding="utf-8").write(text)
         return {"path": path, "ok": False, "error": f"neplatný JSON: {e}", "seconds": round(time.time() - started, 1)}
     missing = [k for k in keys[t] if k not in data]

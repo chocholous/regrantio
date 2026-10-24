@@ -40,6 +40,11 @@ python scripts/publish_db.py                   # zápis (PUBLIC_SUPABASE_URL + S
 python scripts/validate_release.py             # brána: testy, kontrakt, kvalita, propad, vyschlý zdroj, stáří, inventář
 python scripts/quality_report.py               # docs/QUALITY.md + data/quality.json
 python scripts/sources_inventory.py            # přepočítá data/sources.json (kurátorovaná pole zachová)
+
+# Historie příjemců z Registru dotací (IS ReD, red.fs.gov.cz), jednou za čtvrtletí po jeho aktualizaci:
+python scripts/red_history.py --download       # ~610 MB do data/red/; ověřit `gzip -t data/red/*.gz`
+python scripts/red_history.py                  # agregace → data/red_history.jsonl (~75 s)
+python scripts/red_history.py --publish        # tabulka recipient_history v databázi Grantia (~1,5 min)
 ```
 
 Třídy obnovy (`data/sources.json`, sloupec `refresh`):

@@ -200,6 +200,25 @@ def test_source_doc_je_adresa_nebo_nic():
     assert row["source_doc"] == "https://mk.gov.cz/vyzva.pdf"
 
 
+# ---------------------------------------------------------------- stažení
+def test_filtr_stazeni_koduje_procenta():
+    """Identita s `%` musí do adresy jako `%25`, jinak ji server dekóduje
+    na jiný text a stažení nezmění nic (běh #56, TA ČR)."""
+    f = P.in_filter(["https://tacr.gov.cz/soutez/x-%e2%81%a0-y/", "a,b"])
+    assert "%25e2%2581%25a0" in f, f
+    assert f.startswith('in.("') and f.endswith('")'), f
+    # čárka uvnitř hodnoty nesmí rozdělit seznam
+    assert '"a%2Cb"' in f, f
+
+
+def test_filtr_stazeni_vrati_puvodni_hodnotu():
+    """Po dekódování na serveru zbude přesně původní identita."""
+    import urllib.parse
+    ids = ["https://x.cz/a%20b?c=1&d=2#e", 'uvozovka"x']
+    dec = urllib.parse.unquote(P.in_filter(ids))
+    assert dec == 'in.("https://x.cz/a%20b?c=1&d=2#e","uvozovka\\"x")', dec
+
+
 if __name__ == "__main__":
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")

@@ -114,11 +114,11 @@ per-zdroj (re-harvest celý zdroj → nahraď jeho podmnožinu), ne plošně.
 - **family-covered** (43 zdrojů) — host je v `platform_map.json`, kryje ho FAMILY harvester
   (vismo/dsw2/kentico). Re-harvestovatelné; jen nejsou per-host v `routing.yaml sources:`. Refresh:
   spusť family harvester (`vismo.py`/`dsw2.py`/`kentico_irop.py`) na daný host. **OK.**
-  - **DSW2 je od 2026‑10‑09 v týdenní obnově** (`refresh_run.py`, klíč `dsw2`): 28 portálů
+  - **DSW2 je od 2026‑10‑09 v obnově** (`refresh_run.py`, klíč `dsw2`): 28 portálů
     jedním během (~3 min), zápis `ingest_dsw2.py` UPSERTEM. Do té doby šel ingest přes
     `opportunities.py --from-dsw2`, který existující `id` přeskakuje, takže změněná lhůta se
     nepropsala a katalog nesl data z 31. 7. První běh: +50 výzev a programů, 62 aktualizací.
-  - **Vismo (17 obecních webů) je od 2026‑10‑09 v týdenní obnově**, dvěma cestami:
+  - **Vismo (17 obecních webů) je od 2026‑10‑09 v obnově**, dvěma cestami:
     - **7 měst s vlastním harvesterem** (Hradec Králové, Jihlava, Mladá Boleslav, Kladno,
       Česká Lípa, Teplice, Třinec): harvestery i kontrakt `ingest_kraj` existovaly, jen
       chyběly v registru. První běh: Hradec Králové +9 programů na rok 2027.
