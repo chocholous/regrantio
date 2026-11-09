@@ -330,6 +330,8 @@ def field_provenance(rec):
       parsed   — vrstva 1, deterministický parser nad strukturou zdroje
       model    — vrstva 2, jazykový model nad prózou / PDF
       derived  — dopočítáno z jiného údaje (odvozená lhůta z opakujícího se termínu)
+    Typ žadatele převedený z pevného číselníku formuláře (`typ_zadatele_rule`)
+    je `parsed`: je to struktura zdroje, ne próza.
     cited
       True, když k poli existuje doslovná citace, která se ve zdroji NAŠLA
       (`match` exact nebo fragment). Citace, kterou se nepodařilo dohledat,
@@ -361,6 +363,8 @@ def field_provenance(rec):
         method = base_method
         if field == "deadline" and (extra.get("deadline_derived_rule") or rec.get("status_confidence") == "derived"):
             method = "derived"
+        if field == "typ_zadatele" and extra.get("typ_zadatele_rule"):
+            method = "parsed"
         if method is None:
             continue
         aliases = _CITATION_ALIASES.get(field, (field,))

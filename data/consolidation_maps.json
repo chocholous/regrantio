@@ -140,7 +140,15 @@
   "zdravotní postižení": "socialni_sluzby",
   "technická pomoc": "ostatni",
   "Řádná správa": "ostatni",
-  "rovnost žen a mužů": "ostatni"
+  "rovnost žen a mužů": "ostatni",
+  "propagace v zahraničí": "marketing",
+  "obnova po živelních pohromách": "bydleni_infrastruktura",
+  "veřejná správa": "komunitni_rozvoj",
+  "občanská vybavenost": "bydleni_infrastruktura",
+  "rozvoj venkova": "komunitni_rozvoj",
+  "přístupnost staveb": "bydleni_infrastruktura",
+  "rozvoj_obci": "komunitni_rozvoj",
+  "trh práce": "socialni_sluzby"
  },
  "typ_zadatele": {
   "neziskovka (spolek/o.p.s./církev)": "neziskovka",
@@ -179,7 +187,14 @@
   "nno": "neziskovka",
   "nestátní nezisková organizace": "neziskovka",
   "poskytovatel_soc_sluzeb": "neziskovka",
-  "vlastnik_nemovitosti": "fyzicka_osoba"
+  "vlastnik_nemovitosti": "fyzicka_osoba",
+  "statni_fond": "obec_verejny_subjekt",
+  "ministerstvo": "obec_verejny_subjekt",
+  "regionalni_rada_regionu_soudrznosti": "obec_verejny_subjekt",
+  "euroregion": "obec_verejny_subjekt",
+  "spolecenstvi_obci": "obec_verejny_subjekt",
+  "svazek_obci": "obec_verejny_subjekt",
+  "banka": "firma"
  },
  "forma_podpory": {
   "dotace": "dotace",

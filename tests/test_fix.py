@@ -17,7 +17,7 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "scripts"))
 
-from fix_dataset import amount_per_applicant, clean_text, is_rolling_word  # noqa: E402
+from fix_dataset import amount_per_applicant, clean_text, fondvysociny_types, is_rolling_word  # noqa: E402
 from ingest_rich import _num  # noqa: E402
 
 
@@ -83,6 +83,41 @@ def test_prubezne_je_prubezne():
     for s in ("průběžně", "Průběžně.", "prubezne", "rolling"):
         assert is_rolling_word(s), s
     assert not is_rolling_word("31. 10. 2026")
+
+
+
+# ---- Fond Vysočiny: typ žadatele z číselníku formuláře ----
+NNO = "Právnická osoba - nestátní nezisková organizace (nadace a nadační fond, o.p.s.,zapsaný spolek, ústav, ...)"
+
+
+def test_fv_ciselnik_se_prevede_cely():
+    t = (NNO + " Příspěvková organizace obce nebo státu Právnická osoba – obec "
+         "Právnická osoba - obchodní společnost (a.s., s.r.o., v.o.s., státní podnik) Fyzická osoba - podnikající")
+    assert fondvysociny_types(t) == ["neziskovka", "obec_verejny_subjekt", "prispevkova_organizace", "firma", "osvc_podnikatel"]
+
+
+def test_fv_fyzicka_osoba_neni_podnikatel():
+    assert fondvysociny_types("Fyzická osoba") == ["fyzicka_osoba"]
+    assert fondvysociny_types("Fyzická osoba - podnikající") == ["osvc_podnikatel"]
+    assert fondvysociny_types("Fyzická osoba - podnikající Fyzická osoba") == ["osvc_podnikatel", "fyzicka_osoba"]
+
+
+def test_fv_svazek_obci_je_verejny_subjekt_jednou():
+    assert fondvysociny_types("Právnická osoba - svazek obcí Právnická osoba – obec") == ["obec_verejny_subjekt"]
+
+
+def test_sfav_kod_v_adrese_a_nazvu_musi_sedet():
+    """Záznam s kódem výzvy v adrese a JINÝM v názvu nese data sousední výzvy."""
+    from fix_dataset import _sfa_code_mismatch
+    assert _sfa_code_mismatch({"id": "https://sfa.gov.cz/vyzvy/4#2026-D-6-4-44", "title": "2026-D-3-5-41 Distribuční projekty"})
+    assert not _sfa_code_mismatch({"id": "https://sfa.gov.cz/vyzvy/4#2026-D-3-5-41", "title": "2026-D-3-5-41 Distribuční projekty"})
+    assert not _sfa_code_mismatch({"id": "https://sfa.gov.cz/podpora-audiovize", "title": "Státní fond audiovize"})
+
+
+def test_fv_ostatni_a_prazdno_nic_netvrdi():
+    assert fondvysociny_types("Právnická osoba - ostatní") == []
+    assert fondvysociny_types("") == []
+    assert fondvysociny_types(None) == []
 
 
 if __name__ == "__main__":

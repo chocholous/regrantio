@@ -230,7 +230,8 @@ def main():
                 out.append({"url": u, "txt_path": man.get(u)})
         return out
 
-    rich_ids, out_recs, miss_src, miss_id = set(), [], 0, 0
+    rich_ids, out_recs, miss_src, miss_id, foreign = set(), [], 0, 0, 0
+    skip_ids, mission_clash = set(), 0
     for fp in sorted(glob.glob(a.out_dir + "/grant_*.json")) + sorted(glob.glob(a.out_dir + "/mission_*.json")):
         base = os.path.basename(fp)
         if base not in src_idx:
@@ -241,14 +242,40 @@ def main():
             f = json.load(open(fp, encoding="utf-8"))
         except Exception:
             continue
+        # ⚠ VÝSTUP PATŘÍ K ADRESE, NE K POŘADÍ (2026-11-08). Vstupy se při každé
+        # obnově číslují znovu podle pořadí na webu (`build_extract_input`),
+        # výstupy modelu zůstávaly pod starým číslem a spojily se s cizí výzvou:
+        # 12 záznamů SFAV a SFŽP neslo název, lhůtu i podmínky jiné výzvy.
+        # Výstup s `_source_id` se spojí jen se svým vstupem.
+        sid = f.pop("_source_id", None) if isinstance(f, dict) else None
+        if sid and sid != gid:
+            foreign += 1
+            continue
+        # Rozcestník (`extract_manual.py`): adresa není výzva. Záznam, který na ní
+        # leží, nese cizí data z dob párování podle pořadí → z katalogu ven.
+        if isinstance(f, dict) and f.get("_skip"):
+            skip_ids.add(gid)
+            continue
+        is_mission = base.startswith("mission_")
+        # ⚠ GRANT PŘED POPISEM NADACE (2026-11-09). Popis nadace (`mission_*`)
+        # a jeden grantový vstup bývají z TÉŽE stránky, tedy se stejným `id`.
+        # Popis se zpracoval až po grantu a přepsal ho: Nadace Leontinka
+        # přišla o grantové řízení 2026. Grant je to, o co se žádá → vyhrává,
+        # LEDAŽE na té adrese v katalogu už je popis nadace (Partnerství,
+        # Veronica): existující záznam nemění druh, aplikace podle něj vede
+        # stránku nadace.
+        if is_mission and gid in rich_ids:
+            mission_clash += 1
+            if existing.get(gid, {}).get("kind") != "foundation_mission":
+                continue
+            out_recs = [r for r in out_recs if r.get("id") != gid]
         old = existing.get(gid, {})
         prov = old.get("provenance") or {"layer": 2, "harvester": "extract_wf", "documents": []}
         docs = _docs_for(gid)
         if docs:                       # audit #11: přepiš dokumenty čerstvými (s txt_path) → resolve_citations je prohledá
             prov = {**prov, "documents": docs}
         surl = old.get("source_url") or gid
-        is_mission = base.startswith("mission_")
-        rec = (_rec_mission(f, gid, host, surl, prov, body) if is_mission
+        rec =(_rec_mission(f, gid, host, surl, prov, body) if is_mission
                else _rec_grant(f, gid, host, surl, prov, today, body))
         resolve_citations(rec)
         upsert.stamp(rec, today.isoformat())   # den, kdy jsme záznam viděli u zdroje
@@ -259,7 +286,13 @@ def main():
     # ⚠ ZÁMĚRNĚ BEZ RAZÍTKA. Tyhle záznamy jsme dnes u zdroje NEVIDĚLI — jen je
     # opisujeme dál. Orazítkovat je by znamenalo tvrdit, že jsou ověřené, a
     # celý údaj o stáří by přestal něco znamenat.
-    passth = [r for rid, r in existing.items() if rid not in rich_ids]
+    # Rozcestník vyřadí jen GRANT na své adrese. Popis nadace z téže stránky
+    # zůstává: Leontinka, Albert i Sirius mají popis právě na stránce „o nás“.
+    def _dropped(rid):
+        return rid in skip_ids and existing[rid].get("kind") != "foundation_mission"
+
+    passth = [r for rid, r in existing.items() if rid not in rich_ids and not _dropped(rid)]
+    dropped = sum(1 for rid in existing if _dropped(rid))
 
     os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
     with open(a.out, "w", encoding="utf-8") as o:
@@ -268,7 +301,8 @@ def main():
 
     from collections import Counter
     print(json.dumps({"MARKER": "INGEST_RICH", "rich": len(out_recs), "passthrough": len(passth),
-                      "total": len(out_recs) + len(passth), "miss_src": miss_src,
+                      "total": len(out_recs) + len(passth), "miss_src": miss_src, "foreign": foreign,
+                      "skipped": len(skip_ids), "dropped": dropped, "mission_clash": mission_clash,
                       "by_status": dict(Counter(r.get("status") for r in out_recs if "status" in r)),
                       "out": a.out}, ensure_ascii=False))
 

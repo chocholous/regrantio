@@ -25,8 +25,8 @@ Usage: python3 scripts/decin_harvest.py [--out data/h_mesto_decin.json]
 """
 import argparse, json, re, sys, urllib.request
 import http_util   # jednotná TLS politika (audit #7/#32)
-from datetime import datetime
-from zoneinfo import ZoneInfo
+from datetime import datetime, timedelta, timezone
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 PORTAL = "https://portal.mmdecin.cz/wab/dotace/Dotace.action"
 # veřejné (bez loginu) oblastní stránky na joomla webu — stabilní URL pro člověka
@@ -36,7 +36,28 @@ OBLAST_SLUG = {
     "Sociální oblast": "socialni-oblast", "Čistírny odpadních vod": "cistirny-odpadnich-vod",
     "Inženýrské sítě": "inzenyrske-site", "Ostatní": "ostatni",
 }
-TZ = ZoneInfo("Europe/Prague")
+
+# ⚠ Windows nemá databázi časových pásem (Python ji bere z balíku `tzdata`,
+# který v závislostech není), takže harvester na stroji správce padal hned
+# při importu (2026-11-08). Náhrada: středoevropský čas s pravidlem EU pro
+# letní čas (poslední neděle března a října v 1:00 UTC). Na den z časové
+# značky stačí; jinde se pásmo nepoužívá.
+try:
+    TZ = ZoneInfo("Europe/Prague")
+except ZoneInfoNotFoundError:
+    TZ = None
+
+
+def _last_sunday(year, month):
+    d = datetime(year, month + 1, 1, tzinfo=timezone.utc) - timedelta(days=1)
+    return d - timedelta(days=(d.weekday() + 1) % 7)
+
+
+def _prague(ts):
+    u = datetime.fromtimestamp(ts, timezone.utc)
+    start = _last_sunday(u.year, 3).replace(hour=1)
+    end = _last_sunday(u.year, 10).replace(hour=1)
+    return u + timedelta(hours=2 if start <= u < end else 1)
 
 
 def fetch(url):
@@ -48,6 +69,8 @@ def iso(ms):
     """ms epoch (lokální Europe/Prague) → ISO datum, jinak None."""
     if not ms:
         return None
+    if TZ is None:
+        return _prague(ms / 1000).strftime("%Y-%m-%d")
     return datetime.fromtimestamp(ms / 1000, TZ).strftime("%Y-%m-%d")
 
 
@@ -63,6 +86,9 @@ def main():
 
     html = fetch(PORTAL)
     m = re.search(r"const oblastiJson = `(\[.*?\])`;", html, re.S)
+    # Od podzimu 2026 portál drží data v samostatném prvku a skript je čte
+    # přes `document.getElementById('oblastiJsonData').textContent`.
+    m = m or re.search(r'id="oblastiJsonData"[^>]*>\s*(\[.*?\])\s*</', html, re.S)
     if not m:
         print(json.dumps({"MARKER": "DECIN_HARVEST_ERR",
                           "err": "oblastiJson nenalezen v portálu (změna struktury?)"},

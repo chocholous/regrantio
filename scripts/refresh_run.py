@@ -196,6 +196,32 @@ SOURCES = {
            ("teplice.cz", "teplice", "teplice"),
            ("trinecko.cz", "trinec", "trinec"),
        )},
+    # Dalších 14 měst se stejným kontraktem (2026-11-08). Inventář je vedl jako
+    # třídu C, ačkoli harvester i `ingest_kraj` měly; katalog nesl stav z léta
+    # a chyběly mu programy na rok 2027, o které se žádá právě teď. Ověřeno na
+    # kopii katalogu: 0 ztracených údajů, 0 zmizelých id, 0 duplicit podle
+    # názvu, +73 programů (Ostrava 26, Frýdek-Místek 11, Plzeň 10…), živých
+    # výzev z 68 na 129. Děčín k tomu potřeboval opravu (pásmo, nový portál).
+    # Mimo: Karviná (nový web, adresy `/stranka/…`, sběrač k přepsání) a
+    # Pardubický kraj (už výš jako `dotace.pardubickykraj.cz`).
+    **{host: ([f"{h}_harvest.py"], f"data/h_mesto_{out}.json",
+              ["ingest_kraj.py", f"data/h_mesto_{out}.json"], "html")
+       for host, h, out in (
+           ("havirov-city.cz", "havirov", "havirov"),
+           ("granty.chomutov.cz", "chomutov", "chomutov"),
+           ("mmkv.cz", "kv_mesto", "kv"),
+           ("mestojablonec.cz", "jablonec", "jablonec"),
+           ("mmdecin.cz", "decin", "decin"),
+           ("olomouc.eu", "olomouc_mesto", "olomouc"),
+           ("pardubice.eu", "pardubice_mesto", "pardubice"),
+           ("dotace.plzen.eu", "plzen_mesto", "plzen"),
+           ("granty.liberec.cz", "liberec_mesto", "liberec"),
+           ("frydekmistek.cz", "fm", "fm"),
+           ("opava-city.cz", "opava", "opava"),
+           ("dotace.ostrava.cz", "ostrava", "ostrava"),
+           ("prerov.eu", "prerov", "prerov"),
+           ("prostejov.eu", "prostejov", "prostejov"),
+       )},
 }
 
 # -----------------------------------------------------------------------------
@@ -533,6 +559,9 @@ def main():
                          "(třída C, chce ANTHROPIC_API_KEY); all = A + B (C jen s klíčem)")
     ap.add_argument("--model-limit", type=int, default=0,
                     help="třída C: jen prvních N dokumentů na zdroj (sonda); 0 = všechny")
+    ap.add_argument("--prepare", action="store_true",
+                    help="třída C bez klíče: jen harvest a příprava vstupu; čtení pak dělají agenti "
+                         "(scripts/extract_manual.py) a ingest se pouští po nich")
     ap.add_argument("--list", action="store_true", help="vypiš registr a skonči")
     ap.add_argument("--budget-min", type=int, default=0,
                     help="časový rozpočet na HARVEST v minutách; po vyčerpání se zbylé zdroje přeskočí "
@@ -591,7 +620,7 @@ def main():
         chosen = [w for w in want if w in SOURCES]
         chosen_extract = [w for w in want if w in EXTRACT_SOURCES]
         chosen_model = [w for w in want if w in MODEL_SOURCES]
-    if chosen_model and not has_key and not a.dry_run:
+    if chosen_model and not has_key and not a.dry_run and not a.prepare:
         print(f"· třída C ({len(chosen_model)} zdrojů) přeskočena: chybí ANTHROPIC_API_KEY")
         chosen_model = []
 
@@ -690,11 +719,20 @@ def main():
                 skipped_budget.append(slug)
                 continue
             print(f"\n  {slug}")
-            for args, label in model_chain(slug, MODEL_SOURCES[slug], today, a.model_limit):
+            chain = model_chain(slug, MODEL_SOURCES[slug], today, a.model_limit)
+            # ⚠ `--prepare` (2026-11-08): bez klíče čtou výzvy agenti, takže tady
+            # končí po přípravě vstupu. Ingest bez nových výstupů by do katalogu
+            # zapsal minulé čtení s dnešním razítkem.
+            if a.prepare:
+                chain = chain[:2]
+            for args, label in chain:
                 ok, _ = run(args, label, a.dry_run, step_timeout())
                 if not ok:
                     failed.append(f"{slug} ({label})")
                     break
+        if a.prepare:
+            print("\n  → čtení: python scripts/extract_manual.py --in-dir data/<slug>_in "
+                  "--out-dir data/<slug>_out --tasks data/<slug>_tasks  (docs/REFRESH.md)")
 
     if not a.skip_tail:
         print(f"\n═══ PŘEPOČET A EXPORT ═══")

@@ -31,6 +31,9 @@ python scripts/refresh_run.py --list           # registr zdrojů po třídách A
 python scripts/refresh_run.py                  # A: harvest → ingest → přepočet → brána → export
 python scripts/refresh_run.py --tier extract   # B: + vlastní deterministické parsery
 python scripts/refresh_run.py --tier model     # C: vrstva 2 přes model (chce ANTHROPIC_API_KEY)
+python scripts/refresh_run.py --tier model --prepare --skip-tail   # C bez klíče: jen harvest a vstupy
+python scripts/extract_manual.py --in-dir data/<slug>_in --out-dir data/<slug>_out --tasks <složka>  # zadání pro agenty
+python scripts/extract_manual.py --in-dir data/<slug>_in --out-dir data/<slug>_out --check           # ověření výstupů
 python scripts/refresh_run.py --tier all       # ruční obnova A + B (C jen s klíčem), BEZ zápisu; zápis až po porovnání po zdrojích (PROVOZ.md §3 v aplikaci)
 python scripts/refresh_run.py --tail-only      # jen přepočet, brána, export, kvalita (bez sítě)
 
@@ -51,9 +54,9 @@ Třídy obnovy (`data/sources.json`, sloupec `refresh`):
 
 | třída | cesta | zdrojů |
 |---|---|---:|
-| A | harvest → strukturní ingest (`ingest_kraj`, `ingest_dotis`, rodiny vismo / dsw2 / kentico / plone) | 55 |
-| B | harvest → `scripts/extractors/<slug>.py` → `ingest_rich` | 20 |
-| C | harvest → `build_extract_input` → `extract_api.py` (model) → `ingest_rich` | 37 |
+| A | harvest → strukturní ingest (`ingest_kraj`, `ingest_dotis`, rodiny vismo / dsw2 / kentico / plone) | 69 |
+| B | harvest → `scripts/extractors/<slug>.py` → `ingest_rich` | 22 |
+| C | harvest → `build_extract_input` → `extract_api.py` (model) nebo agenti (`extract_manual.py`) → `ingest_rich` | 23 |
 | T | „extraktor" opisuje červnová data, obnovu jen předstírá; bez harvesteru | 3 |
 | F | zmrazený (zdroj za přihlášením nebo mrtvý) | 3 |
 | ? | jednorázový sběr bez zapsané cesty k obnově | 17 |

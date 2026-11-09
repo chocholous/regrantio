@@ -129,7 +129,26 @@ HTTP_URL = re.compile(r"^https?://[^\s/]+\.[^\s]+$", re.I)
 DROP_STRAY = [
     # ČMZRB / Národní rozvojová banka = úvěry/záruky (ne dotace), navíc omylem jako mise pod mkcr.
     lambda r: r.get("source") == "mkcr" and "MZRB" in (r.get("name") or "").upper(),
+    # Rozcestníky dotačních portálů, ne výzvy (2026-11-08): uživatel je dostal
+    # v seznamu výzev a otevřel stránku s odkazy jinam. Model u obou sám napsal,
+    # že jde o přehled; konkrétní programy z nich katalog má zvlášť.
+    lambda r: r.get("source") == "mkcr" and (r.get("title") or "").startswith("Žádosti o dotace — Ministerstvo kultury"),
+    lambda r: r.get("source") == "olkraj.cz" and (r.get("title") or "").startswith("Informace k dotačním programům"),
+    # Výzva SFAV s kódem v adrese (`…/vyzvy/4#2026-D-6-4-44`), jejíž název nese
+    # JINÝ kód, má data sousední výzvy (2026-11-08): pozůstatek párování výstupů
+    # modelu podle pořadí (viz `ingest_rich`, `_source_id`). Sedm takových
+    # záznamů; kód je v adrese i v názvu, takže nesoulad je jednoznačný.
+    lambda r: r.get("source") == "sfa" and _sfa_code_mismatch(r),
 ]
+
+
+_SFA_CODE = re.compile(r"\d{4}-[A-Z]-[\d-]*\d")
+
+
+def _sfa_code_mismatch(r):
+    frag = (r.get("id") or "").partition("#")[2]
+    a, b = _SFA_CODE.match(frag), _SFA_CODE.match((r.get("title") or "").strip())
+    return bool(a and b and a.group(0) != b.group(0))
 
 # Ruční mapa zdroj→typ poskytovatele pro all-null zdroje (ověřeno z titulků/URL záznamů).
 # slovník hodnot = canon facet vocab (ministerstvo / statni_fond / nadace / firemni_nadace / nadacni_fond).
@@ -242,6 +261,39 @@ def amount_per_applicant(rec):
     return amount, maxz
 
 
+# ---- Fond Vysočiny: typ žadatele z pevného číselníku formuláře (2026-11-08) ----
+#
+# ⚠ NAMĚŘENO 2026-11-08: typ žadatele mělo 14 z 316 výzev Fondu Vysočiny,
+# ačkoli zdroj ho uvádí u každé. Doplňoval ho až model (vrstva 2), který bez
+# klíče neběží, a i když běžel, přehlédl „obec“ a „příspěvkovou organizaci“.
+# Fond ale typy nepíše prózou: vybírají se z devíti pevných položek formuláře,
+# takže převod je tabulka, ne heuristika nad textem. „Právnická osoba –
+# ostatní“ se nepřevádí, nikam jednoznačně nepatří.
+FV_TYPES = (
+    ("nestátní nezisková organizace", "neziskovka"),
+    ("právnická osoba – obec", "obec_verejny_subjekt"),
+    ("právnická osoba - obec", "obec_verejny_subjekt"),
+    ("svazek obcí", "obec_verejny_subjekt"),
+    ("příspěvková organizace obce nebo státu", "prispevkova_organizace"),
+    ("příspěvková organizace kraje", "prispevkova_organizace"),
+    ("obchodní společnost", "firma"),
+    ("fyzická osoba - podnikající", "osvc_podnikatel"),
+)
+_FV_PERSON = re.compile(r"fyzická osoba(?!\s*[-–]\s*podnikající)", re.I)
+
+
+def fondvysociny_types(text):
+    """Typy žadatele z textu oprávněnosti Fondu Vysočiny, v pořadí kanonu; [] když nic."""
+    t = (text or "").lower()
+    out = []
+    for label, typ in FV_TYPES:
+        if label in t and typ not in out:
+            out.append(typ)
+    if _FV_PERSON.search(t) and "fyzicka_osoba" not in out:
+        out.append("fyzicka_osoba")
+    return out
+
+
 def is_rolling_word(s):
     """Je hodnota lhůty slovo „průběžně“ (i bez diakritiky nebo s interpunkcí)?
 
@@ -325,6 +377,20 @@ def main():
     # („hodonin.eu:d1124126“) nebo jméno poskytovatele. Aplikace dává
     # `source_doc` přednost před `source_url`, takže „Otevřít u zdroje“ vedlo
     # na neexistující stránku uvnitř aplikace. Bez adresy platí `source_url`.
+    # ---- A9) Fond Vysočiny: typ žadatele z číselníku formuláře (viz FV_TYPES) ----
+    fv_typed = 0
+    for r in recs:
+        if r.get("source") != "fondvysociny.cz":
+            continue
+        types = fondvysociny_types(r.get("eligible_applicants"))
+        if not types:
+            continue
+        f = r.setdefault("facets", {})
+        if f.get("typ_zadatele") != types:
+            f["typ_zadatele"] = types
+            fv_typed += 1
+        (r.setdefault("extra", {}))["typ_zadatele_rule"] = "fondvysociny_form"
+
     doc_cleared = 0
     for r in recs:
         d = r.get("source_doc")
@@ -540,6 +606,8 @@ def main():
         print(f"\n=== A1) oznámení výsledků (ne výzvy): −{len(notcall_dropped)} ===")
         for r in notcall_dropped:
             print(f"  −  {(r.get('source') or '?')[:24]:24}  {(r.get('title') or '')[:64]}")
+    if fv_typed:
+        print(f"\n=== A9) Fond Vysočiny: typ žadatele z číselníku formuláře u {fv_typed} výzev ===")
     if doc_cleared:
         print(f"\n=== A8) source_doc, který není adresa: {doc_cleared}× → null (platí source_url) ===")
     if dotis_fixed:

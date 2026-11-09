@@ -151,6 +151,7 @@ def extract_one(client, model: str, path: str, out_dir: str, system: dict, keys:
     missing = [k for k in keys[t] if k not in data]
     for k in missing:
         data[k] = None
+    data["_source_id"] = doc.get("id")
     json.dump(data, open(out_path, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     return {
         "path": path,
@@ -160,6 +161,21 @@ def extract_one(client, model: str, path: str, out_dir: str, system: dict, keys:
         "input_tokens": getattr(usage, "input_tokens", None),
         "output_tokens": getattr(usage, "output_tokens", None),
     }
+
+
+def is_done(in_path: str, out_dir: str) -> bool:
+    """Výstup existuje A patří k témuž dokumentu (`_source_id` = id vstupu).
+
+    Vstupy se při obnově číslují znovu podle pořadí, takže samotná existence
+    souboru `grant_07.json` neříká nic o tom, ke které výzvě patří (2026-11-08)."""
+    out = os.path.join(out_dir, os.path.basename(in_path))
+    if not os.path.exists(out):
+        return False
+    try:
+        sid = json.load(open(out, encoding="utf-8")).get("_source_id")
+        return bool(sid) and sid == json.load(open(in_path, encoding="utf-8")).get("id")
+    except (ValueError, json.JSONDecodeError, AttributeError):
+        return False
 
 
 def main() -> int:
@@ -181,7 +197,7 @@ def main() -> int:
 
     paths = sorted(p for p in glob.glob(os.path.join(a.in_dir, "*.json")) if os.path.basename(p) != "paths.json")
     if not a.redo:
-        paths = [p for p in paths if not os.path.exists(os.path.join(a.out_dir, os.path.basename(p)))]
+        paths = [p for p in paths if not is_done(p, a.out_dir)]
     if a.limit:
         paths = paths[: a.limit]
     chars = 0

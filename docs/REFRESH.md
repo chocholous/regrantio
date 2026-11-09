@@ -26,6 +26,35 @@ harvest → `build_extract_input` → `extract_api.py` (Messages API, `ANTHROPIC
 `ingest_rich`. Bez klíče se třída přeskočí s větou. Registr tříd je v `refresh_run.py`
 (`SOURCES`, `EXTRACT_SOURCES`, `MODEL_SOURCES`), stav každého zdroje v `data/sources.json`.
 
+**Bez klíče čtou výzvy agenti v sezení Claude Code** (`scripts/extract_manual.py`, 2026‑11‑08):
+týž prompt (`workflows/extract_wf.js` přes `extract_api.load_prompts`), týž seznam klíčů.
+
+```
+python scripts/refresh_run.py --tier model             # harvest + vstupy; extrakce se bez klíče přeskočí
+python scripts/extract_manual.py --in-dir data/<src>_in --out-dir data/<src>_out --tasks data/<src>_tasks
+#   → agent přečte data/<src>_tasks/grant_NN.md a zapíše data/<src>_out/grant_NN.json
+python scripts/extract_manual.py --in-dir data/<src>_in --out-dir data/<src>_out --check
+python scripts/ingest_rich.py --out-dir data/<src>_out --src data/<src>_in --existing data/opportunities.jsonl \
+    --out data/opportunities.jsonl --harvest-file data/<src>_documents.jsonl --today <YYYY-MM-DD>
+```
+
+⚠ **Výstup patří k adrese, ne k číslu souboru.** `build_extract_input` čísluje vstupy při
+každé sklizni znovu podle pořadí na webu. Do 2026‑11‑08 se výstup modelu spojoval se vstupem
+podle čísla, takže po přidání výzvy na web dostala každá další výzva data své sousedky
+(SFŽP 12 záznamů, MPSV 10, SFAV 3). Každý výstup proto nese `_source_id` (= `id` vstupu):
+`ingest_rich` cizí výstup odmítne (`"foreign"` v hlášení), `is_done` ho nepočítá za hotový.
+Rozcestník, který výzvou není, agent označí `{"_source_id": …, "_skip": "…"}` a ingest záznam
+s touto adresou vyřadí (`"dropped"`; v databázi `withdrawn_at`), popis nadace na téže adrese
+nechá. Popis nadace (`mission_*`) a grant z téže stránky mají stejné `id`: vyhraje grant,
+ledaže na adrese v katalogu už popis nadace je (`"mission_clash"`; existující záznam nemění
+druh). Staré výstupy bez adresy převedl jednorázově `scripts/pair_model_outputs.py`.
+
+Agent nesmí vymýšlet hodnoty mimo číselník. Co přesto přinese (`ministerstvo`, `banka`,
+`trh práce`…), se mapuje v `data/consolidation_maps.json`; zbylé singletony hlásí `consolidate`.
+
+**Dluhy obnovy k 2026‑11‑09:** `gacr` (GA ČR zavřel WordPress REST API, sběrač přepsat na HTML),
+`karvina.cz` (nový web s adresami `/stranka/…`, sběrač přepsat; pozor na změnu `id`).
+
 ---
 
 ## 1. Dvě věci, které „stárnou" jinak
