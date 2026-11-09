@@ -2,16 +2,16 @@
 	"today": "2026-11-09",
 	"records": 4257,
 	"grants": 4232,
-	"live": 1866,
+	"live": 1863,
 	"sources": 136,
 	"status": {
-		"closed": 2366,
+		"closed": 2369,
 		"open": 550,
-		"unknown": 939,
+		"unknown": 936,
 		"announced": 377
 	},
 	"scope_live": {
-		"national": 313,
+		"national": 310,
 		"regional": 582,
 		"local": 527,
 		"international": 10,
@@ -20,96 +20,96 @@
 	"deadline_kind_live": {
 		"fixed": 909,
 		"unknown": 736,
-		"rolling": 64,
+		"rolling": 61,
 		"recurring": 157
 	},
 	"fields": {
 		"deadline": {
 			"live": 927,
-			"live_pct": 49.7,
-			"all": 3293,
-			"all_pct": 77.8
+			"live_pct": 49.8,
+			"all": 3296,
+			"all_pct": 77.9
 		},
 		"amount": {
-			"live": 96,
-			"live_pct": 5.1,
-			"all": 273,
+			"live": 93,
+			"live_pct": 5.0,
+			"all": 274,
 			"all_pct": 6.5
 		},
 		"eligible_applicants": {
-			"live": 1254,
-			"live_pct": 67.2,
+			"live": 1251,
+			"live_pct": 67.1,
 			"all": 2589,
 			"all_pct": 61.2
 		},
 		"typ_zadatele": {
-			"live": 785,
-			"live_pct": 42.1,
+			"live": 782,
+			"live_pct": 42.0,
 			"all": 1645,
 			"all_pct": 38.9
 		},
 		"oblast": {
-			"live": 1328,
-			"live_pct": 71.2,
+			"live": 1325,
+			"live_pct": 71.1,
 			"all": 3532,
 			"all_pct": 83.5
 		},
 		"kraj_nebo_celostatni": {
-			"live": 1864,
+			"live": 1861,
 			"live_pct": 99.9,
 			"all": 4230,
 			"all_pct": 100.0
 		},
 		"how_to_apply": {
-			"live": 1533,
-			"live_pct": 82.2,
+			"live": 1530,
+			"live_pct": 82.1,
 			"all": 3803,
 			"all_pct": 89.9
 		},
 		"source_doc": {
 			"live": 1552,
-			"live_pct": 83.2,
+			"live_pct": 83.3,
 			"all": 3731,
 			"all_pct": 88.2
 		},
 		"contact": {
 			"live": 221,
-			"live_pct": 11.8,
-			"all": 574,
-			"all_pct": 13.6
+			"live_pct": 11.9,
+			"all": 579,
+			"all_pct": 13.7
 		},
 		"documents": {
 			"live": 247,
-			"live_pct": 13.2,
-			"all": 683,
-			"all_pct": 16.1
+			"live_pct": 13.3,
+			"all": 688,
+			"all_pct": 16.3
 		},
 		"call_number": {
-			"live": 680,
-			"live_pct": 36.4,
+			"live": 677,
+			"live_pct": 36.3,
 			"all": 1945,
 			"all_pct": 46.0
 		}
 	},
 	"freshness_live": {
-		"do_7": 1362,
+		"do_7": 1359,
 		"do_30": 35,
 		"starsi": 20,
 		"nevime": 449
 	},
 	"citations": {
-		"total": 17725,
-		"located": 8845,
-		"located_pct": 49.9
+		"total": 17816,
+		"located": 8937,
+		"located_pct": 50.2
 	},
 	"provenance_live": {
 		"amount": {
-			"present": 96,
+			"present": 93,
 			"parsed": 19,
-			"model": 77,
+			"model": 74,
 			"derived": 0,
 			"cited": 59,
-			"cited_pct": 61.5
+			"cited_pct": 63.4
 		},
 		"deadline": {
 			"present": 927,
@@ -120,25 +120,25 @@
 			"cited_pct": 61.3
 		},
 		"eligible_applicants": {
-			"present": 1254,
+			"present": 1251,
 			"parsed": 385,
-			"model": 869,
+			"model": 866,
 			"derived": 0,
 			"cited": 216,
-			"cited_pct": 17.2
+			"cited_pct": 17.3
 		},
 		"focus_area": {
-			"present": 1754,
+			"present": 1751,
 			"parsed": 646,
-			"model": 1108,
+			"model": 1105,
 			"derived": 0,
 			"cited": 302,
 			"cited_pct": 17.2
 		},
 		"oblast": {
-			"present": 1328,
+			"present": 1325,
 			"parsed": 174,
-			"model": 1154,
+			"model": 1151,
 			"derived": 0,
 			"cited": 244,
 			"cited_pct": 18.4
@@ -152,17 +152,17 @@
 			"cited_pct": 6.3
 		},
 		"region": {
-			"present": 1864,
+			"present": 1861,
 			"parsed": 709,
-			"model": 1155,
+			"model": 1152,
 			"derived": 0,
 			"cited": 250,
 			"cited_pct": 13.4
 		},
 		"typ_zadatele": {
-			"present": 785,
+			"present": 782,
 			"parsed": 369,
-			"model": 416,
+			"model": 413,
 			"derived": 0,
 			"cited": 75,
 			"cited_pct": 9.6
@@ -181,7 +181,7 @@
 		"starne": 1
 	},
 	"live_by_source_state": {
-		"ok": 1768,
+		"ok": 1765,
 		"neovereno": 74,
 		"zmrazeny": 22,
 		"bez_cesty": 0,
@@ -986,7 +986,7 @@
 			"type": "ministerstvo",
 			"refresh": "C",
 			"records": 11,
-			"live": 3,
+			"live": 0,
 			"last_fetched": "2026-11-09",
 			"days": 0,
 			"state": "ok"

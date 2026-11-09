@@ -163,7 +163,9 @@ _CLOSED = re.compile(
     # „dočasně pozastaven pro online podání“ bez důvodu v alokaci konec není.
     # (Mezi „žádostí“ a „z důvodu“ bývá datum s tečkami, proto `[^\n]`, ne `[^.]`.)
     r"|příjem\s+žádost\w*\s+[^\n]{0,60}?z\s+důvodu\s+(zarezervování|vyčerpání|naplnění|převisu)[^\n]{0,80}?(pozastaven|ukončen|uzavřen)"
-    r"|(ukončen|uzavřen)\w*\s+(příjm\w+\s+žádost\w*\s+)?z\s+důvodu\s+(vyčerpání|převisu|dosažení)",
+    r"|(ukončen|uzavřen)\w*\s+(příjm\w+\s+žádost\w*\s+)?z\s+důvodu\s+(vyčerpání|převisu|dosažení)"
+    # Nadace AGROFERT 2026-11: „Přihlašování do grantu bylo ukončeno.“
+    r"|přihlašování\s+(do\s+\S+\s+)?(bylo\s+|je\s+)?(ukončeno|uzavřeno)\b",
     re.I,
 )
 # „bude ukončen 30. 9." je obyčejná uzávěrka a „může být ukončen dříve" patří

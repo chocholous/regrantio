@@ -208,6 +208,20 @@ def test_vystup_ze_starsi_stranky_se_cte_znovu():
         assert is_done(inp, f"{tmp}/out")                      # bez klíčové citace nic nehlídáme
 
 
+def test_veta_o_ukoncenem_prijmu_ze_stranky_dojde_do_early_close():
+    """Agrofert: stránka píše, že přihlašování skončilo; schéma čtení na to pole nemá."""
+    import enrich
+    with tempfile.TemporaryDirectory() as tmp:
+        _write(f"{tmp}/in/grant_00.json", {"id": "https://n.cz/senior", "web": "n.cz", "title": "Senioři",
+                                           "body": "Pro koho Organizace v ČR. Přihlašování do grantu bylo ukončeno. Kontakt"})
+        _write(f"{tmp}/out/grant_00.json", _grant("Podpora péče o seniory", sid="https://n.cz/senior", deadline=None))
+        _, recs = _ingest(tmp, [])
+        rec = recs["https://n.cz/senior"]
+        assert "ukončeno" in rec["extra"]["prijem_ukoncen"]
+        ec = enrich.early_close(rec)
+        assert ec and ec["state"] == "closed" and ec["on"] is None
+
+
 def test_kod_vyzvy_v_nazvu():
     assert code("Výzva č. 31_22_019 – Nákup vozidel") == "31_22_019"
     assert code("2026-D-5-5-47 Účast českých děl") == "2026-D-5-5-47"

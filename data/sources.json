@@ -800,7 +800,7 @@
 		"refresh": "C",
 		"harvester": "mpsv.py",
 		"records": 11,
-		"live": 3,
+		"live": 0,
 		"last_fetched": "2026-11-09"
 	},
 	"msk.cz": {

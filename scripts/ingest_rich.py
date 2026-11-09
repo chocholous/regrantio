@@ -23,6 +23,36 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from opportunities import compute_status, resolve_citations, _pd, _host  # reuse
 import upsert                                                    # sdílené razítko fetched_at
 
+
+def intake_closed_note(body):
+    """Věta z TĚLA stránky, že příjem už skončil (pravidlo `enrich._CLOSED`).
+
+    ⚠ PROČ TADY (2026-11-09). Výstupní schéma čtení nemá pole „příjem ukončen“,
+    takže věta jako „Přihlašování do grantu bylo ukončeno“ (Nadace AGROFERT)
+    nebo „Z důvodu vyčerpání alokace byl příjem žádostí ukončen“ (SFŽP) se do
+    záznamu nedostala, výzva bez lhůty zůstala „bez lhůty“ a produkt ji
+    doporučoval. Uloží se do `extra.prijem_ukoncen`, odkud ji `early_close`
+    přečte jako každou jinou větu. Jen tělo stránky: přílohy bývají starší
+    dokumenty a jejich „ukončen“ může patřit minulému kolu. Naměřeno na
+    vstupech tříd C a P: 3 zásahy, všechny správné."""
+    import enrich
+    text = re.sub(r"\s+", " ", body or "")
+    for m in enrich._CLOSED.finditer(text):
+        if enrich._FUTURE.search(text[max(0, m.start() - 30):m.end()]):
+            continue
+        # Výřez KOLEM nálezu, ne celá „věta“: stránky bez teček mezi bloky
+        # (AGROFERT) dají větu o stovkách znaků, `_sentence` ji ořízne na 240
+        # a slova o konci příjmu z ní vypadnou — `early_close` je pak nenajde.
+        # Bez konce věty v posledních 120 znacích začíná citace nálezem samým
+        # (jinak by začala uprostřed slova jiného bloku stránky).
+        a = m.start()
+        for e in enrich._SENT_END.finditer(text, max(0, m.start() - 120), m.start()):
+            a = e.end()
+        e = enrich._SENT_END.search(text, m.end())
+        b = e.end() if e and e.end() - m.end() <= 80 else min(len(text), m.end() + 1)
+        return text[a:b].strip()
+    return None
+
 # rich pole, která se NEvkládají do extra (jsou už v core/facets/citations) — zbytek = lossless extra
 CORE_GRANT = {"title", "focus_area", "open_from", "deadline", "oblast", "typ_zadatele", "cilova_skupina",
               "forma_podpory", "zdroj_financovani", "rezim_prijmu", "delka", "spoluucast",
@@ -193,7 +223,7 @@ def main():
                 # přílohy. Do 2026-11-09 jen tělo, takže citace názvu a citace
                 # z příloh vycházely „nenalezené“, i když ve zdroji stály.
                 page = "\n".join(x for x in (r.get("title"), r.get("body"), r.get("attachments_md")) if x)
-                src_idx[os.path.basename(fp)] = (r.get("id"), r.get("web"), page)
+                src_idx[os.path.basename(fp)] = (r.get("id"), r.get("web"), page, r.get("body") or "")
             except Exception:
                 pass
 
@@ -240,7 +270,7 @@ def main():
         base = os.path.basename(fp)
         if base not in src_idx:
             miss_src += 1; continue
-        gid, web, body = src_idx[base]
+        gid, web, body, page_body = src_idx[base]
         host = web or _host(gid or "")
         try:
             f = json.load(open(fp, encoding="utf-8"))
@@ -282,6 +312,10 @@ def main():
         rec =(_rec_mission(f, gid, host, surl, prov, body) if is_mission
                else _rec_grant(f, gid, host, surl, prov, today, body))
         resolve_citations(rec)
+        if not is_mission:
+            note = intake_closed_note(page_body)
+            if note:
+                rec.setdefault("extra", {})["prijem_ukoncen"] = note
         upsert.stamp(rec, today.isoformat())   # den, kdy jsme záznam viděli u zdroje
         out_recs.append(rec)
         rich_ids.add(gid)

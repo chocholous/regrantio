@@ -8,51 +8,51 @@ Změřeno k **2026-11-09** skriptem `scripts/quality_report.py`. Čísla u živ�
 |---|---:|
 | záznamů celkem | 4257 |
 | z toho výzev | 4232 |
-| **živých k dnešku** | **1866** |
+| **živých k dnešku** | **1863** |
 | zdrojů | 136 |
-| stav | open 550 · announced 377 · unknown 939 · closed 2366 |
-| dosah živých | místní 527 · krajský 582 · celostátní 313 · mezinárodní 10 · EU centrální 434 |
-| druh lhůty u živých | jedna lhůta 909 · průběžně 64 · opakovaně 157 · neuvedeno 736 |
+| stav | open 550 · announced 377 · unknown 936 · closed 2369 |
+| dosah živých | místní 527 · krajský 582 · celostátní 310 · mezinárodní 10 · EU centrální 434 |
+| druh lhůty u živých | jedna lhůta 909 · průběžně 61 · opakovaně 157 · neuvedeno 736 |
 
 ## Vyplněnost polí
 
 | pole | živé | archiv |
 |---|---:|---:|
-| lhůta | 49.7 % (927) | 77.8 % (3293) |
-| částka pro žadatele | 5.1 % (96) | 6.5 % (273) |
-| kdo smí žádat (text) | 67.2 % (1254) | 61.2 % (2589) |
-| typ žadatele (faseta) | 42.1 % (785) | 38.9 % (1645) |
-| oblast | 71.2 % (1328) | 83.5 % (3532) |
-| území | 99.9 % (1864) | 100.0 % (4230) |
-| jak podat | 82.2 % (1533) | 89.9 % (3803) |
-| zdrojový dokument | 83.2 % (1552) | 88.2 % (3731) |
-| kontakt | 11.8 % (221) | 13.6 % (574) |
-| dokumenty | 13.2 % (247) | 16.1 % (683) |
-| číslo výzvy | 36.4 % (680) | 46.0 % (1945) |
+| lhůta | 49.8 % (927) | 77.9 % (3296) |
+| částka pro žadatele | 5.0 % (93) | 6.5 % (274) |
+| kdo smí žádat (text) | 67.1 % (1251) | 61.2 % (2589) |
+| typ žadatele (faseta) | 42.0 % (782) | 38.9 % (1645) |
+| oblast | 71.1 % (1325) | 83.5 % (3532) |
+| území | 99.9 % (1861) | 100.0 % (4230) |
+| jak podat | 82.1 % (1530) | 89.9 % (3803) |
+| zdrojový dokument | 83.3 % (1552) | 88.2 % (3731) |
+| kontakt | 11.9 % (221) | 13.7 % (579) |
+| dokumenty | 13.3 % (247) | 16.3 % (688) |
+| číslo výzvy | 36.3 % (677) | 46.0 % (1945) |
 
 ## Čerstvost živých záznamů
 
 | ověřeno u zdroje | záznamů |
 |---|---:|
-| do 7 dnů | 1362 |
+| do 7 dnů | 1359 |
 | do 30 dnů | 35 |
 | starší | 20 |
 | nevíme (bez razítka) | 449 |
 
 ## Doložitelnost
 
-Citací celkem 17725, ve zdroji dohledaných **8845 (49.9 %)**. Nedohledaná citace nedokládá nic; produkt u takového pole původ neukazuje jako doložený.
+Citací celkem 17816, ve zdroji dohledaných **8937 (50.2 %)**. Nedohledaná citace nedokládá nic; produkt u takového pole původ neukazuje jako doložený.
 
 | pole (živé) | má hodnotu | parser | model | dopočet | doloženo citací |
 |---|---:|---:|---:|---:|---:|
-| amount | 96 | 19 | 77 | 0 | 61.5 % |
+| amount | 93 | 19 | 74 | 0 | 63.4 % |
 | deadline | 927 | 164 | 761 | 2 | 61.3 % |
-| eligible_applicants | 1254 | 385 | 869 | 0 | 17.2 % |
-| focus_area | 1754 | 646 | 1108 | 0 | 17.2 % |
-| oblast | 1328 | 174 | 1154 | 0 | 18.4 % |
+| eligible_applicants | 1251 | 385 | 866 | 0 | 17.3 % |
+| focus_area | 1751 | 646 | 1105 | 0 | 17.2 % |
+| oblast | 1325 | 174 | 1151 | 0 | 18.4 % |
 | open_from | 935 | 174 | 761 | 0 | 6.3 % |
-| region | 1864 | 709 | 1155 | 0 | 13.4 % |
-| typ_zadatele | 785 | 369 | 416 | 0 | 9.6 % |
+| region | 1861 | 709 | 1152 | 0 | 13.4 % |
+| typ_zadatele | 782 | 369 | 413 | 0 | 9.6 % |
 
 ## Rodiny ročníků
 
@@ -62,7 +62,7 @@ Citací celkem 17725, ve zdroji dohledaných **8845 (49.9 %)**. Nedohledaná cit
 
 | stav | zdrojů | živých záznamů |
 |---|---:|---:|
-| ok (ověřeno do 21 dnů) | 120 | 1768 |
+| ok (ověřeno do 21 dnů) | 120 | 1765 |
 | stárne (nad 21 dnů) | 1 | 2 |
 | má cestu, nikdy neověřeno | 9 | 74 |
 | bez zapsané cesty k obnově | 3 | 0 |
@@ -153,7 +153,6 @@ Citací celkem 17725, ve zdroji dohledaných **8845 (49.9 %)**. Nedohledaná cit
 | Město Karviná (`karvina.cz`) | samosprava_obec | A | 15 | 3 | 2026-11-09 | ok |
 | Nadace The Kellner Family Foundation (`kellner`) | firemni_nadace | P | 4 | 3 | 2026-11-09 | ok |
 | Město Loket (`loket.dsw2.otevrenamesta.cz`) | samosprava_obec | A | 6 | 3 | 2026-11-08 | ok |
-| Ministerstvo práce a sociálních věcí (`mpsv`) | ministerstvo | C | 11 | 3 | 2026-11-09 | ok |
 | Město Opava (`opava-city.cz`) | samosprava_obec | A | 14 | 3 | 2026-11-08 | ok |
 | Pardubický kraj (`pardubickykraj.cz`) | samosprava_kraj | C | 4 | 3 |  | neovereno |
 | Město Přerov (`prerov.eu`) | samosprava_obec | A | 10 | 3 | 2026-11-08 | ok |
@@ -192,6 +191,7 @@ Citací celkem 17725, ve zdroji dohledaných **8845 (49.9 %)**. Nedohledaná cit
 | Praha 18 (Letňany) (`letnany.cz`) | samosprava_obec | A | 2 | 0 |  | neovereno |
 | Praha‑Libuš (`libus.dsw2.otevrenamesta.cz`) | samosprava_obec | A | 4 | 0 | 2026-11-08 | ok |
 | Město Most (`mesto-most.cz`) | samosprava_obec | A | 10 | 0 | 2026-11-08 | ok |
+| Ministerstvo práce a sociálních věcí (`mpsv`) | ministerstvo | C | 11 | 0 | 2026-11-09 | ok |
 | Město Litvínov (`mulitvinov.cz`) | samosprava_obec | A | 1 | 0 | 2026-11-08 | ok |
 | Nadace ČEZ (`nadacecez.cz`) | nadace | P | 1 | 0 | 2026-11-09 | ok |
 | Nadace O2 (`nadaceo2.cz`) | nadace | P | 1 | 0 | 2026-11-09 | ok |
