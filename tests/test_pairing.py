@@ -145,6 +145,26 @@ def test_is_done_jen_pro_svuj_vystup():
         assert is_done(inp, f"{tmp}/out")                           # rozcestník se znovu nečte
 
 
+def test_realign_presune_vystup_za_svym_vstupem():
+    """GA ČR po přestavbě webu: výzva LA z grant_11 je teď grant_00, EXPRO z webu zmizela."""
+    from extract_api import realign
+    with tempfile.TemporaryDirectory() as tmp:
+        _write(f"{tmp}/in/grant_00.json", {"id": "https://g.cz/la/"})
+        _write(f"{tmp}/in/grant_01.json", {"id": "https://g.cz/pl/"})
+        _write(f"{tmp}/out/grant_00.json", _grant("EXPRO 2027", sid="https://g.cz/expro/"))
+        _write(f"{tmp}/out/grant_11.json", _grant("LA kontinuální", sid="https://g.cz/la/"))
+        _write(f"{tmp}/out_stale/grant_00.json", _grant("dřívější odložený", sid="https://g.cz/x/"))
+        r = realign(f"{tmp}/in", f"{tmp}/out")
+        assert r == {"moved": 1, "stale": 1}
+        la = json.load(open(f"{tmp}/out/grant_00.json", encoding="utf-8"))
+        assert la["_source_id"] == "https://g.cz/la/"
+        assert not os.path.exists(f"{tmp}/out/grant_11.json")
+        assert is_done(f"{tmp}/in/grant_00.json", f"{tmp}/out")
+        assert not is_done(f"{tmp}/in/grant_01.json", f"{tmp}/out")
+        parked = sorted(os.listdir(f"{tmp}/out_stale"))
+        assert parked == ["grant_00.1.json", "grant_00.json"]       # nic se nepřepsalo
+
+
 def test_kod_vyzvy_v_nazvu():
     assert code("Výzva č. 31_22_019 – Nákup vozidel") == "31_22_019"
     assert code("2026-D-5-5-47 Účast českých děl") == "2026-D-5-5-47"

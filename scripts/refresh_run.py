@@ -202,8 +202,9 @@ SOURCES = {
     # kopii katalogu: 0 ztracených údajů, 0 zmizelých id, 0 duplicit podle
     # názvu, +73 programů (Ostrava 26, Frýdek-Místek 11, Plzeň 10…), živých
     # výzev z 68 na 129. Děčín k tomu potřeboval opravu (pásmo, nový portál).
-    # Mimo: Karviná (nový web, adresy `/stranka/…`, sběrač k přepsání) a
-    # Pardubický kraj (už výš jako `dotace.pardubickykraj.cz`).
+    # Karviná od 2026-11-09 po úpravě sběrače na nový web (`/stranka/…`;
+    # `id` z názvu programu, ověřeno: 0 nových, 0 zmizelých). Mimo: Pardubický
+    # kraj (už výš jako `dotace.pardubickykraj.cz`).
     **{host: ([f"{h}_harvest.py"], f"data/h_mesto_{out}.json",
               ["ingest_kraj.py", f"data/h_mesto_{out}.json"], "html")
        for host, h, out in (
@@ -221,6 +222,7 @@ SOURCES = {
            ("dotace.ostrava.cz", "ostrava", "ostrava"),
            ("prerov.eu", "prerov", "prerov"),
            ("prostejov.eu", "prostejov", "prostejov"),
+           ("karvina.cz", "karvina", "karvina"),
        )},
 }
 

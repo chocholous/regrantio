@@ -43,6 +43,18 @@ CHYTIT = [
     "Nabídka programů - Nadace Via",
     "Přehled dotačních programů",
     "Seznam výzev | Ministerstvo",
+    # Výsledkové listiny, časté dotazy a zprávy o počtu podpořených projektů
+    # (2026-11-09; v hledání vypadaly jako výzvy bez lhůty).
+    "Seznam nově schválených projektů – Grantové kolo č. 77",
+    "Liste neu bewilligter Projekte (Grantové kolo č.74)",
+    "Podpořené projekty — Nadace OKD",
+    "Často kladené dotazy ke stipendiím",
+    "Häufig gestellte Fragen zu Stipendien (Zukunftsfonds)",
+    "Program Senior 2026 – Výsledky rozdělení příspěvků",
+    "Rozhodnutí o udělení stipendia v programu Univerzity pro nové uchazeče",
+    "Nadace OKD — Udělení podpory 135 projektů (2026)",
+    "Fond budoucnosti poskytne přes 13,7 milionu Kč na 105 nových česko-německých projektů",
+    "Fond budoucnosti umožní uskutečnit 195 dalších společných projektů",
 ]
 
 PROPUSTIT = [
@@ -68,6 +80,11 @@ PROPUSTIT = [
     "Nadace OKD obcím",
     "Nadační fond Karlovarského kraje",
     "Nadační fond Hyundai (Nadace OSF)",
+    # Program, který projekty PODPORUJE, není zpráva o tom, kolik jich podpořil.
+    "Podpora projektů (Česko-německý fond budoucnosti)",
+    "Program podpory projektů NNO na rok 2027",
+    "Partnerství obcí a spolků",
+    "Výzva k předkládání projektů – výsledky hodnocení budou zveřejněny do 30 dnů",
 ]
 
 
@@ -105,6 +122,10 @@ def test_brana_ma_stejne_pravidlo():
         r"^\s*výzva\s+pro\s+[^\n]{0,30}hodnotitel",
         r"^\s*(nábor|hledáme)\s+[^\n]{0,20}hodnotitel",
         r"(programů|dotací|výzev)\s*($|[-–—|(])",
+        r"^\s*(seznam|přehled)\s+(nově\s+)?(schválených|podpořených)\s+projekt",
+        r"^\s*(často\s+kladené\s+dotazy|häufig\s+gestellte\s+fragen)",
+        r"[-–—:]\s*výsledky\s+(rozdělení|výběru|dotačního|grantového)",
+        r"udělení\s+podpory\s+\d+\s+projekt",
     ):
         assert fragment in gate, f"brána nezná část pravidla: {fragment!r}"
         assert NOT_A_CALL.pattern.find(fragment) >= 0, f"čistička nezná část pravidla: {fragment!r}"

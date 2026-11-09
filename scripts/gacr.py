@@ -4,8 +4,8 @@
 GA ČR = hlavní český poskytovatel účelové podpory základního výzkumu. Grantové výzvy jsou
 WP **posty** typu „Vyhlášení veřejné soutěže <PROGRAM> <ROK>" (Standardní projekty, JUNIOR STAR,
 EXPRO, POSTDOC INDIVIDUAL FELLOWSHIP IN/OUT, Mezinárodní-bilaterální, Návratové granty) +
-bilaterální LA výzvy „Výzva pro podávání <X>-českých projektů" (iniciativa Weave). Vlastní parser,
-protože výzvy jsou posty rozeseté v kategorii Oznámení (ne CPT) — discovery přes fulltext title.
+bilaterální LA výzvy „Výzva pro podávání <X>-českých projektů" (iniciativa Weave). Od 2026-11
+je web statický export bez REST API; výzvy se berou ze stránky „Aktuální výzvy“ (viz `CURRENT`).
 
 Bohatý a strukturovaný body: „Soutěžní lhůta začíná D" (open_from) · „Návrhy projektů je možné
 podávat do D" (deadline) · „Vyhlášení výsledků … D" · IS (GRIS/GRITA). Přílohy = /download-attachment/N
@@ -74,40 +74,61 @@ def attachments_of(content):
     return out
 
 
-def discover_calls(since):
-    """Fulltext discovery postů jejichž title = skutečná výzva, jen AKTUÁLNÍ cyklus (date >= since).
-    Bez date-filtru WP fulltext vrátí všechny ročníky 2022+ (6× tytéž programy) → šum; `since`
-    (~10 měsíců) izoluje poslední roční kolo + aktuální bilaterální LA výzvy. Year-agnostic."""
-    ids = {}
-    for q in ("vyhlášení veřejné soutěže", "výzva pro podávání"):
-        for r in getj(f"{B}/wp-json/wp/v2/posts?search={quote(q)}&per_page=50&after={since}T00:00:00"
-                      "&_fields=id,slug,link,title,date"):
-            title = html.unescape(re.sub(r"<[^>]+>", "", (r.get("title") or {}).get("rendered", ""))).strip()
-            if TITLE_RE.match(title):
-                ids[r["id"]] = (r, title)
-    return list(ids.values())
+# ⚠ BEZ REST API (2026-11-09). GA ČR web převedl na statický export
+# (`…/<slug>/index.html`): `/wp-json/` vrací 403/404, sitemapa ani feed nejsou.
+# Výzvy se proto berou ze stránky „Aktuální výzvy“, kterou agentura sama
+# udržuje: LA výzvy průběžně, roční soutěže (EXPRO, JUNIOR STAR, Standardní…)
+# zpravidla od února. Adresa se normalizuje bez `index.html`, aby `id` v katalogu
+# zůstala stejná jako v době REST API (`https://gacr.cz/expro-2027/`).
+CURRENT = f"{B}/aktualni-vyzvy/index.html"
+SKIP_SLUGS = {"prehled-vyzev-la", "aktualni-vyzvy"}
+
+
+def canon(url):
+    """Absolutní adresa bez `index.html` → shodná s `link` z dob REST API."""
+    from urllib.parse import urljoin
+    u = urljoin(CURRENT, html.unescape(url)).split("#")[0]
+    return re.sub(r"index\.html$", "", u)
+
+
+def article(page):
+    m = re.search(r"(?is)<article.*?</article>", page)
+    return m.group(0) if m else ""
+
+
+def discover_calls():
+    """Odkazy z obsahu stránky Aktuální výzvy (ne z menu) na stránky výzev na gacr.cz."""
+    out = {}
+    for href, label in re.findall(r'(?is)<a[^>]*href="([^"]+)"[^>]*>(.*?)</a>', article(fetch(CURRENT))):
+        u = canon(href)
+        slug = u.rstrip("/").rsplit("/", 1)[-1]
+        if not u.startswith(B + "/") or slug in SKIP_SLUGS or u.endswith(".pdf"):
+            continue
+        out.setdefault(u, html.unescape(re.sub(r"<[^>]+>", "", label)).strip())
+    return out
 
 
 def main():
-    from datetime import date, timedelta
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="data/gacr_documents.jsonl")
-    ap.add_argument("--since", default=(date.today() - timedelta(days=300)).isoformat(),
-                    help="jen výzvy publikované od tohoto data (default ~10 měsíců = aktuální roční kolo)")
     args = ap.parse_args()
     recs = []
-    for stub, title in discover_calls(args.since):
-        d = getj(f"{B}/wp-json/wp/v2/posts/{stub['id']}?_fields=id,slug,link,title,content")
-        content = (d.get("content") or {}).get("rendered", "")
+    for url, label in discover_calls().items():
+        page = fetch(url + "index.html")
+        m = re.search(r'(?is)<h1[^>]*class="entry-title"[^>]*>(.*?)</h1>', page)
+        title = html.unescape(re.sub(r"<[^>]+>", "", m.group(1))).strip() if m else label
+        content = article(page)
         body = to_text(content)
         if len(body) < 120:
-            print(f"  ⚠ {stub['slug']}: prázdné tělo ({len(body)}) → přeskakuji", flush=True)
+            print(f"  ⚠ {url}: prázdné tělo ({len(body)}) → přeskakuji", flush=True)
             continue
-        atts = attachments_of(content)
-        recs.append({"url": d.get("link") or f"{B}/{stub['slug']}/", "host": HOST,
-                     "title": title, "body_text": body,
+        atts = [{"url": canon(a["url"]), "label": a["label"]} for a in attachments_of(content)]
+        recs.append({"url": url, "host": HOST, "title": title, "body_text": body,
                      "attachments": atts, "n_attachments": len(atts)})
         time.sleep(0.2)
+    if not recs:
+        print("✖ GACR: stránka Aktuální výzvy nedala žádnou výzvu (změna webu?)", file=sys.stderr)
+        sys.exit(1)
     os.makedirs(os.path.dirname(args.out) or ".", exist_ok=True)
     with open(args.out, "w", encoding="utf-8") as o:
         for r in recs:

@@ -178,6 +178,63 @@ def is_done(in_path: str, out_dir: str) -> bool:
         return False
 
 
+def realign(in_dir: str, out_dir: str) -> dict:
+    """Výstupy pod čísla jejich vstupů podle `_source_id` (2026-11-09).
+
+    `build_extract_input` při každé sklizni čísluje vstupy znovu; výstup výzvy,
+    která se posunula z `grant_11` na `grant_00`, by jinak ležel pod starým
+    číslem, četl by se znovu a přepsal cizí výstup. Výstup, jehož adresu žádný
+    vstup nemá (výzva zmizela z webu), jde do `<out>_stale/`; nic se nemaže."""
+    import shutil
+    by_id = {}
+    for p in glob.glob(os.path.join(in_dir, "*.json")):
+        if os.path.basename(p) == "paths.json":
+            continue
+        try:
+            by_id.setdefault(json.load(open(p, encoding="utf-8")).get("id"), []).append(os.path.basename(p))
+        except (ValueError, json.JSONDecodeError):
+            pass
+    staged, stale = {}, []
+    for p in glob.glob(os.path.join(out_dir, "*.json")):
+        base = os.path.basename(p)
+        try:
+            sid = json.load(open(p, encoding="utf-8")).get("_source_id")
+        except (ValueError, json.JSONDecodeError, AttributeError):
+            continue
+        if not sid:
+            continue  # starý tvar bez adresy: nechat, kde je (is_done ho stejně nepočítá)
+        kind = base.split("_", 1)[0]
+        targets = [b for b in by_id.get(sid, []) if b.split("_", 1)[0] == kind]
+        if targets:
+            staged[p] = targets[0]
+        else:
+            stale.append(p)
+    stale_dir = out_dir.rstrip("/\\") + "_stale"
+
+    def park(path):
+        """Odložit stranou; existující soubor ve `_stale` se nepřepíše."""
+        os.makedirs(stale_dir, exist_ok=True)
+        stem, ext = os.path.splitext(os.path.basename(path))
+        dest, n = os.path.join(stale_dir, stem + ext), 1
+        while os.path.exists(dest):
+            dest, n = os.path.join(stale_dir, f"{stem}.{n}{ext}"), n + 1
+        shutil.move(path, dest)
+
+    for p in stale:  # nejdřív stranou, ať neblokují místa a nepletou se s přesunutými
+        park(p)
+    tmp = {}
+    for p, target in staged.items():
+        if os.path.basename(p) != target:
+            t = p + ".realign"
+            os.replace(p, t)
+            tmp[t] = os.path.join(out_dir, target)
+    for t, dest in tmp.items():
+        if os.path.exists(dest):  # na cílovém místě starý výstup bez adresy → stranou
+            park(dest)
+        os.replace(t, dest)
+    return {"moved": len(tmp), "stale": len(stale)}
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--in-dir", required=True, help="výstup build_extract_input.py (grant_NNNN.json, mission_NNNN.json)")
@@ -195,6 +252,10 @@ def main() -> int:
         print(f"✗ workflows/extract_wf.js má jiný tvar, prompt se nedá přečíst: {e}", file=sys.stderr)
         return 1
 
+    if os.path.isdir(a.out_dir) and not a.dry_run:
+        r = realign(a.in_dir, a.out_dir)
+        if r["moved"] or r["stale"]:
+            print(f"· výstupy srovnány podle adresy: přesunuto {r['moved']}, odloženo {r['stale']}")
     paths = sorted(p for p in glob.glob(os.path.join(a.in_dir, "*.json")) if os.path.basename(p) != "paths.json")
     if not a.redo:
         paths = [p for p in paths if not is_done(p, a.out_dir)]

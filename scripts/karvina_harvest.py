@@ -24,7 +24,12 @@ import argparse, json, re, sys, urllib.request, html as H
 import http_util   # jednotná TLS politika (audit #7/#32)
 
 BASE = "https://www.karvina.cz"
-LISTING = BASE + "/magistrat/poskytovane-mestem"
+# ⚠ NOVÝ WEB (2026-11-09): adresy `/stranka/<slug>-<číslo>`, výpis programů
+# na `/stranka/poskytovane-dotace`; stará `/magistrat/poskytovane-mestem` vrací 404.
+# `id` záznamů je z názvu programu, ne z adresy, takže se přechodem nemění.
+# Stránka nese obří menu se stejnými názvy programů: výpis i text detailu
+# se proto berou jen z hlavního obsahu (`main_content`).
+LISTING = BASE + "/stranka/poskytovane-dotace"
 
 # Jen skutečné dotační programy/výzvy poskytované městem. Listing míchá i navigaci a
 # jeden cizí odkaz (vyřízené žádosti OP/CD/ŘP) → filtr na anchor text.
@@ -74,14 +79,21 @@ def _num(s):
     return int(d) if d else None
 
 
+def main_content(html):
+    m = re.search(r'(?is)<main class="col-lg-9[^"]*"[^>]*>(.*?)</main>', html)
+    return m.group(1) if m else html
+
+
 def listing_programs(html):
     """Vrať [(url, anchor_text)] unikátní dotační programy z listingu."""
     out, seen = [], set()
-    h = re.sub(r"<(script|style)[^>]*>.*?</\1>", " ", html, flags=re.S)
+    h = re.sub(r"<(script|style)[^>]*>.*?</\1>", " ", main_content(html), flags=re.S)
     for m in re.finditer(r'<a[^>]+href="([^"]+)"[^>]*>(.*?)</a>', h, re.S):
         href = m.group(1)
         txt = re.sub(r"\s+", " ", H.unescape(re.sub(r"<[^>]+>", " ", m.group(2)))).strip()
-        if not href.startswith(BASE + "/magistrat/"):
+        if href.startswith("/"):
+            href = BASE + href
+        if not href.startswith(BASE + "/stranka/"):
             continue
         if len(txt) < 6 or txt.lower() == "celý článek":
             continue
@@ -154,7 +166,7 @@ def main():
         except Exception as e:
             print(f"  warn {url}: {str(e)[:60]}", file=sys.stderr)
             continue
-        text = detext(html)
+        text = detext(main_content(html))
         rec = parse_detail(text, title, url)
         # full text detailu (od těla článku), bounded jen safety na velikost
         i = text.find(title)

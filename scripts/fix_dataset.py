@@ -116,7 +116,19 @@ NOT_A_CALL = re.compile(
     r"|^\s*výzva\s+pro\s+[^\n]{0,30}hodnotitel"   # „Výzva PRO hodnotitele…"
     r"|^\s*(nábor|hledáme)\s+[^\n]{0,20}hodnotitel"       # „Nábor hodnotitelů…"
     r"|^\s*(nabídka|přehled|seznam)\s+(dotačních\s+|grantových\s+)?"
-    r"(programů|dotací|výzev)\s*($|[-–—|(])",     # rozcestník, ne výzva
+    r"(programů|dotací|výzev)\s*($|[-–—|(])"      # rozcestník, ne výzva
+    # 2026-11-09, naměřeno na celém katalogu (15 zásahů, 0 výzev): výsledkové
+    # listiny, časté dotazy a zprávy o počtu podpořených projektů se stavem
+    # „bez lhůty“ v hledání vypadaly jako otevřené výzvy (Fond budoucnosti
+    # jich měl 13 z 18 „živých“).
+    r"|^\s*(seznam|přehled)\s+(nově\s+)?(schválených|podpořených)\s+projekt"
+    r"|^\s*liste\s+neu\s+bewilligter|^\s*podpořené\s+projekty\b"
+    r"|^\s*(často\s+kladené\s+dotazy|häufig\s+gestellte\s+fragen)"
+    r"|[-–—:]\s*výsledky\s+(rozdělení|výběru|dotačního|grantového)"
+    r"|^\s*rozhodnutí\s+o\s+(udělení|přidělení)"
+    r"|udělení\s+podpory\s+\d+\s+projekt"
+    r"|\b(poskytne|umožní|podpoří|rozdělí|start\s+pro)\b[^\n]{0,40}?\b\d+\s+(nových\s+|dalších\s+)?"
+    r"([\w-]+\s+)?(společných\s+)?projekt",
     re.IGNORECASE,
 )
 

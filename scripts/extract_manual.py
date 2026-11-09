@@ -34,7 +34,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from extract_api import is_done, load_prompts, type_of, user_message  # noqa: E402
+from extract_api import is_done, load_prompts, realign, type_of, user_message  # noqa: E402
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
@@ -120,6 +120,10 @@ def main():
     a = ap.parse_args()
 
     system, keys, shape = load_prompts()
+    if os.path.isdir(a.out_dir):
+        r = realign(a.in_dir, a.out_dir)
+        if r["moved"] or r["stale"]:
+            print(f"· výstupy srovnány podle adresy: přesunuto {r['moved']}, odloženo {r['stale']}")
     if a.tasks:
         paths = pending(a.in_dir, a.out_dir, a.redo)
         os.makedirs(a.out_dir, exist_ok=True)

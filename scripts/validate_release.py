@@ -238,7 +238,15 @@ def check_only_calls():
         r"|^\s*výzva\s+pro\s+[^\n]{0,30}hodnotitel"
         r"|^\s*(nábor|hledáme)\s+[^\n]{0,20}hodnotitel"
         r"|^\s*(nabídka|přehled|seznam)\s+(dotačních\s+|grantových\s+)?"
-        r"(programů|dotací|výzev)\s*($|[-–—|(])",
+        r"(programů|dotací|výzev)\s*($|[-–—|(])"
+        r"|^\s*(seznam|přehled)\s+(nově\s+)?(schválených|podpořených)\s+projekt"
+        r"|^\s*liste\s+neu\s+bewilligter|^\s*podpořené\s+projekty\b"
+        r"|^\s*(často\s+kladené\s+dotazy|häufig\s+gestellte\s+fragen)"
+        r"|[-–—:]\s*výsledky\s+(rozdělení|výběru|dotačního|grantového)"
+        r"|^\s*rozhodnutí\s+o\s+(udělení|přidělení)"
+        r"|udělení\s+podpory\s+\d+\s+projekt"
+        r"|\b(poskytne|umožní|podpoří|rozdělí|start\s+pro)\b[^\n]{0,40}?\b\d+\s+(nových\s+|dalších\s+)?"
+        r"([\w-]+\s+)?(společných\s+)?projekt",
         _re.IGNORECASE,
     )
     grants = _ke_zverejneni()
