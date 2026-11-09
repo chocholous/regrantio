@@ -190,6 +190,24 @@ def test_catalog_id_zachova_zaznam_s_id_z_nazvu():
         assert json.load(open(f"{tmp}/in/grant_00.json", encoding="utf-8"))["id"] == "grant:n.cz:program2026"
 
 
+def test_vystup_ze_starsi_stranky_se_cte_znovu():
+    """SFŽP prodloužil lhůtu: citace „do 30. října 2026“ už na stránce není → is_done False."""
+    with tempfile.TemporaryDirectory() as tmp:
+        inp = f"{tmp}/in/grant_05.json"
+        out = _grant("Brownfieldy", sid="https://s.cz/b", deadline="2026-10-30",
+                     evidence={"deadline": "Příjem žádostí probíhá do 30. října 2026"})
+        _write(f"{tmp}/out/grant_05.json", out)
+        _write(inp, {"id": "https://s.cz/b", "title": "Brownfieldy",
+                     "body": "Příjem žádostí probíhá do 30. října 2026 do 14:00.", "attachments_md": ""})
+        assert is_done(inp, f"{tmp}/out")                      # stránka beze změny
+        _write(inp, {"id": "https://s.cz/b", "title": "Brownfieldy",
+                     "body": "Příjem žádostí prodloužen do 29. ledna 2027.", "attachments_md": ""})
+        assert not is_done(inp, f"{tmp}/out")                  # lhůta se změnila → číst znovu
+        out["deadline"], out["evidence"] = None, {}
+        _write(f"{tmp}/out/grant_05.json", out)
+        assert is_done(inp, f"{tmp}/out")                      # bez klíčové citace nic nehlídáme
+
+
 def test_kod_vyzvy_v_nazvu():
     assert code("Výzva č. 31_22_019 – Nákup vozidel") == "31_22_019"
     assert code("2026-D-5-5-47 Účast českých děl") == "2026-D-5-5-47"

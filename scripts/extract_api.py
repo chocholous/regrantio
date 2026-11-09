@@ -172,10 +172,47 @@ def is_done(in_path: str, out_dir: str) -> bool:
     if not os.path.exists(out):
         return False
     try:
-        sid = json.load(open(out, encoding="utf-8")).get("_source_id")
-        return bool(sid) and sid == json.load(open(in_path, encoding="utf-8")).get("id")
-    except (ValueError, json.JSONDecodeError, AttributeError):
+        data = json.load(open(out, encoding="utf-8"))
+        doc = json.load(open(in_path, encoding="utf-8"))
+    except (ValueError, json.JSONDecodeError):
         return False
+    if not isinstance(data, dict) or not data.get("_source_id") or data["_source_id"] != doc.get("id"):
+        return False
+    return still_valid(data, doc)
+
+
+# Pole, na kterých stojí rozhodnutí uživatele: kdy žádat a kolik.
+KEY_FIELDS = ("deadline", "open_from", "vyse_hlavni_czk")
+
+
+def _squash(s: str) -> str:
+    return "".join((s or "").lower().split())
+
+
+def still_valid(data: dict, doc: dict) -> bool:
+    """Výstup platí, dokud citace jeho klíčových polí stojí v DNEŠNÍM dokumentu.
+
+    ⚠ NAMĚŘENO 2026-11-09: 12 ze 110 výstupů ze září neslo lhůtu nebo částku,
+    kterou dnešní stránka už neuváděla — SFŽP prodloužil brownfieldy do
+    29. 1. 2027, RES+ naopak zkrátil na 30. 11. 2026, KOMUNERG o rok. Výstup
+    byl správně spárovaný, jen ze starší verze stránky. Kde citace zmizela,
+    dokument se čte znovu; obnova tak stojí úměrně změnám, ne velikosti zdroje.
+    Rozcestník (`_skip`) citace nemá a platí."""
+    if data.get("_skip"):
+        return True
+    text = _squash("\n".join(x for x in (doc.get("title"), doc.get("body"), doc.get("attachments_md")) if x))
+    ev = data.get("evidence") or {}
+    for k in KEY_FIELDS:
+        q = ev.get(k) if isinstance(ev, dict) else None
+        if data.get(k) in (None, "", []) or not isinstance(q, str):
+            continue
+        nq = _squash(q)
+        if len(nq) < 8 or nq in text:
+            continue
+        if len(nq) >= 30 and nq[len(nq) // 2 - 14: len(nq) // 2 + 14] in text:
+            continue
+        return False
+    return True
 
 
 def realign(in_dir: str, out_dir: str) -> dict:

@@ -189,7 +189,11 @@ def main():
         for fp in glob.glob(d + "/*.json"):
             try:
                 r = json.load(open(fp, encoding="utf-8"))
-                src_idx[os.path.basename(fp)] = (r.get("id"), r.get("web"), r.get("body") or "")
+                # Text, ve kterém se hledají citace: titulek + tělo + převedené
+                # přílohy. Do 2026-11-09 jen tělo, takže citace názvu a citace
+                # z příloh vycházely „nenalezené“, i když ve zdroji stály.
+                page = "\n".join(x for x in (r.get("title"), r.get("body"), r.get("attachments_md")) if x)
+                src_idx[os.path.basename(fp)] = (r.get("id"), r.get("web"), page)
             except Exception:
                 pass
 

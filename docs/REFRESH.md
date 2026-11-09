@@ -58,6 +58,13 @@ pořád stojí, dostane záznam razítko „ověřeno dnes“ (`--stamp`); změn
 záznamy bez citace jdou ke čtení (`catalog_id` → výstup na týž záznam, i s `id` z názvu).
 Nedostupné stránky se jen vypíšou. Nové výzvy tahle cesta nenajde, to umí jen sběrač.
 
+**Výstup platí, dokud jeho citace stojí v dnešním dokumentu** (`extract_api.still_valid`,
+2026‑11‑09): když citace lhůty, začátku příjmu nebo částky z textu zmizí, `is_done` vrátí
+False a dokument se přečte znovu. Obnova třídy C tak čte jen to, co se změnilo. Naměřeno:
+12 ze 110 zářijových výstupů neslo lhůtu, kterou stránka už neuváděla (SFŽP brownfieldy
+prodloužené do 29. 1. 2027, RES+ zkrácené na 30. 11. 2026). Citace se v `ingest_rich`
+hledají v titulku, těle i převedených přílohách.
+
 **Výstupy se srovnávají podle adresy** (`extract_api.realign`, volá ho `extract_api`
 i `extract_manual`): po přečíslování vstupů se výstup přesune pod číslo svého vstupu,
 výstup výzvy, která z webu zmizela, jde do `data/<zdroj>_out_stale/`.
