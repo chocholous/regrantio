@@ -1,171 +1,171 @@
 {
 	"today": "2026-11-09",
-	"records": 4284,
-	"grants": 4259,
-	"live": 1883,
-	"sources": 137,
+	"records": 4263,
+	"grants": 4238,
+	"live": 1868,
+	"sources": 136,
 	"status": {
-		"open": 545,
-		"closed": 2376,
-		"unknown": 961,
+		"open": 551,
+		"closed": 2370,
+		"unknown": 940,
 		"announced": 377
 	},
 	"scope_live": {
-		"national": 327,
-		"local": 531,
+		"national": 316,
+		"local": 527,
 		"regional": 581,
 		"international": 10,
 		"eu_central": 434
 	},
 	"deadline_kind_live": {
-		"rolling": 81,
-		"fixed": 905,
-		"unknown": 733,
-		"recurring": 164
+		"fixed": 909,
+		"rolling": 65,
+		"unknown": 737,
+		"recurring": 157
 	},
 	"fields": {
 		"deadline": {
-			"live": 922,
-			"live_pct": 49.0,
+			"live": 928,
+			"live_pct": 49.7,
 			"all": 3298,
-			"all_pct": 77.4
+			"all_pct": 77.8
 		},
 		"amount": {
-			"live": 98,
-			"live_pct": 5.2,
-			"all": 281,
-			"all_pct": 6.6
+			"live": 96,
+			"live_pct": 5.1,
+			"all": 276,
+			"all_pct": 6.5
 		},
 		"eligible_applicants": {
-			"live": 1266,
-			"live_pct": 67.2,
-			"all": 2612,
-			"all_pct": 61.3
+			"live": 1254,
+			"live_pct": 67.1,
+			"all": 2593,
+			"all_pct": 61.2
 		},
 		"typ_zadatele": {
-			"live": 800,
-			"live_pct": 42.5,
-			"all": 1671,
-			"all_pct": 39.2
+			"live": 785,
+			"live_pct": 42.0,
+			"all": 1649,
+			"all_pct": 38.9
 		},
 		"oblast": {
-			"live": 1345,
-			"live_pct": 71.4,
-			"all": 3559,
-			"all_pct": 83.6
+			"live": 1330,
+			"live_pct": 71.2,
+			"all": 3538,
+			"all_pct": 83.5
 		},
 		"kraj_nebo_celostatni": {
-			"live": 1882,
+			"live": 1866,
 			"live_pct": 99.9,
-			"all": 4258,
+			"all": 4236,
 			"all_pct": 100.0
 		},
 		"how_to_apply": {
-			"live": 1547,
+			"live": 1536,
 			"live_pct": 82.2,
-			"all": 3826,
-			"all_pct": 89.8
+			"all": 3810,
+			"all_pct": 89.9
 		},
 		"source_doc": {
-			"live": 1560,
-			"live_pct": 82.8,
-			"all": 3739,
-			"all_pct": 87.8
+			"live": 1548,
+			"live_pct": 82.9,
+			"all": 3727,
+			"all_pct": 87.9
 		},
 		"contact": {
-			"live": 218,
+			"live": 217,
 			"live_pct": 11.6,
-			"all": 574,
-			"all_pct": 13.5
+			"all": 569,
+			"all_pct": 13.4
 		},
 		"documents": {
-			"live": 251,
-			"live_pct": 13.3,
-			"all": 688,
-			"all_pct": 16.2
+			"live": 242,
+			"live_pct": 13.0,
+			"all": 677,
+			"all_pct": 16.0
 		},
 		"call_number": {
-			"live": 682,
-			"live_pct": 36.2,
-			"all": 1951,
-			"all_pct": 45.8
+			"live": 681,
+			"live_pct": 36.5,
+			"all": 1950,
+			"all_pct": 46.0
 		}
 	},
 	"freshness_live": {
-		"do_7": 1338,
+		"do_7": 1364,
 		"do_30": 35,
 		"starsi": 20,
-		"nevime": 490
+		"nevime": 449
 	},
 	"citations": {
-		"total": 17892,
-		"located": 8905,
-		"located_pct": 49.8
+		"total": 17664,
+		"located": 8736,
+		"located_pct": 49.5
 	},
 	"provenance_live": {
 		"amount": {
-			"present": 98,
+			"present": 96,
 			"parsed": 19,
-			"model": 79,
+			"model": 77,
 			"derived": 0,
-			"cited": 59,
-			"cited_pct": 60.2
+			"cited": 58,
+			"cited_pct": 60.4
 		},
 		"deadline": {
-			"present": 922,
+			"present": 928,
 			"parsed": 164,
-			"model": 756,
+			"model": 762,
 			"derived": 2,
-			"cited": 559,
-			"cited_pct": 60.6
+			"cited": 564,
+			"cited_pct": 60.8
 		},
 		"eligible_applicants": {
-			"present": 1266,
+			"present": 1254,
 			"parsed": 385,
-			"model": 881,
+			"model": 869,
 			"derived": 0,
-			"cited": 213,
-			"cited_pct": 16.8
+			"cited": 210,
+			"cited_pct": 16.7
 		},
 		"focus_area": {
-			"present": 1771,
+			"present": 1756,
 			"parsed": 646,
-			"model": 1125,
+			"model": 1110,
 			"derived": 0,
-			"cited": 310,
-			"cited_pct": 17.5
+			"cited": 296,
+			"cited_pct": 16.9
 		},
 		"oblast": {
-			"present": 1345,
+			"present": 1330,
 			"parsed": 174,
-			"model": 1171,
+			"model": 1156,
 			"derived": 0,
-			"cited": 256,
-			"cited_pct": 19.0
+			"cited": 244,
+			"cited_pct": 18.3
 		},
 		"open_from": {
-			"present": 934,
+			"present": 935,
 			"parsed": 174,
-			"model": 760,
+			"model": 761,
 			"derived": 0,
 			"cited": 55,
 			"cited_pct": 5.9
 		},
 		"region": {
-			"present": 1882,
+			"present": 1866,
 			"parsed": 709,
-			"model": 1173,
+			"model": 1157,
 			"derived": 0,
-			"cited": 250,
-			"cited_pct": 13.3
+			"cited": 247,
+			"cited_pct": 13.2
 		},
 		"typ_zadatele": {
-			"present": 800,
+			"present": 785,
 			"parsed": 369,
-			"model": 431,
+			"model": 416,
 			"derived": 0,
-			"cited": 80,
-			"cited_pct": 10.0
+			"cited": 75,
+			"cited_pct": 9.6
 		}
 	},
 	"families": {
@@ -174,17 +174,17 @@
 		"recurring": 324
 	},
 	"sources_by_state": {
-		"ok": 105,
-		"neovereno": 8,
+		"ok": 120,
+		"neovereno": 9,
 		"zmrazeny": 3,
-		"bez_cesty": 20,
+		"bez_cesty": 3,
 		"starne": 1
 	},
 	"live_by_source_state": {
-		"ok": 1741,
+		"ok": 1770,
 		"neovereno": 74,
 		"zmrazeny": 22,
-		"bez_cesty": 44,
+		"bez_cesty": 0,
 		"starne": 2
 	},
 	"sources_table": [
@@ -544,23 +544,23 @@
 			"slug": "fondbudoucnosti",
 			"name": "Česko‑německý fond budoucnosti",
 			"type": "nadacni_fond",
-			"refresh": "?",
-			"records": 24,
-			"live": 6,
-			"last_fetched": null,
-			"days": null,
-			"state": "bez_cesty"
+			"refresh": "P",
+			"records": 23,
+			"live": 7,
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "fondpaliativnipece",
 			"name": "Nadační fond pro rozvoj paliativní péče",
 			"type": "nadacni_fond",
-			"refresh": "?",
-			"records": 10,
-			"live": 1,
-			"last_fetched": null,
-			"days": null,
-			"state": "bez_cesty"
+			"refresh": "P",
+			"records": 9,
+			"live": 0,
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "fondvysociny.cz",
@@ -731,12 +731,12 @@
 			"slug": "kellner",
 			"name": "Nadace The Kellner Family Foundation",
 			"type": "firemni_nadace",
-			"refresh": "?",
+			"refresh": "P",
 			"records": 4,
-			"live": 1,
-			"last_fetched": null,
-			"days": null,
-			"state": "bez_cesty"
+			"live": 3,
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "kontobariery",
@@ -797,12 +797,12 @@
 			"slug": "krasapomoci",
 			"name": "Nadační fond Krása pomoci",
 			"type": "nadacni_fond",
-			"refresh": "?",
+			"refresh": "P",
 			"records": 2,
-			"live": 0,
-			"last_fetched": null,
-			"days": null,
-			"state": "bez_cesty"
+			"live": 1,
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "krnov.cz",
@@ -1050,12 +1050,12 @@
 			"slug": "mv",
 			"name": "Ministerstvo vnitra",
 			"type": "ministerstvo",
-			"refresh": "T",
+			"refresh": "P",
 			"records": 7,
 			"live": 2,
-			"last_fetched": null,
-			"days": null,
-			"state": "bez_cesty"
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "mzcr",
@@ -1072,34 +1072,23 @@
 			"slug": "mzp",
 			"name": "Ministerstvo životního prostředí",
 			"type": "ministerstvo",
-			"refresh": "T",
-			"records": 16,
-			"live": 10,
-			"last_fetched": null,
-			"days": null,
-			"state": "bez_cesty"
+			"refresh": "P",
+			"records": 8,
+			"live": 2,
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "nadace-agrofert",
 			"name": "Nadace Agrofert",
 			"type": "firemni_nadace",
-			"refresh": "?",
-			"records": 7,
-			"live": 4,
-			"last_fetched": null,
-			"days": null,
-			"state": "bez_cesty"
-		},
-		{
-			"slug": "nadace-agrofert.cz",
-			"name": "Nadace Agrofert",
-			"type": "nadace",
-			"refresh": "?",
-			"records": 1,
-			"live": 1,
-			"last_fetched": null,
-			"days": null,
-			"state": "bez_cesty"
+			"refresh": "P",
+			"records": 5,
+			"live": 2,
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "nadace_adra",
@@ -1138,45 +1127,45 @@
 			"slug": "nadacecez.cz",
 			"name": "Nadace ČEZ",
 			"type": "nadace",
-			"refresh": "?",
+			"refresh": "P",
 			"records": 1,
 			"live": 0,
-			"last_fetched": null,
-			"days": null,
-			"state": "bez_cesty"
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "nadacecs",
 			"name": "Nadace České spořitelny",
 			"type": "firemni_nadace",
-			"refresh": "T",
+			"refresh": "P",
 			"records": 2,
 			"live": 1,
-			"last_fetched": null,
-			"days": null,
-			"state": "bez_cesty"
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "nadaceo2.cz",
 			"name": "Nadace O2",
 			"type": "nadace",
-			"refresh": "?",
+			"refresh": "P",
 			"records": 1,
 			"live": 0,
-			"last_fetched": null,
-			"days": null,
-			"state": "bez_cesty"
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "nadaceokd",
 			"name": "Nadace OKD",
 			"type": "firemni_nadace",
-			"refresh": "?",
-			"records": 5,
-			"live": 4,
-			"last_fetched": null,
-			"days": null,
-			"state": "bez_cesty"
+			"refresh": "P",
+			"records": 3,
+			"live": 2,
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "nadacetm",
@@ -1203,24 +1192,24 @@
 		{
 			"slug": "nadacevodafone.cz",
 			"name": "Nadace Vodafone",
-			"type": "nadace",
-			"refresh": "?",
+			"type": null,
+			"refresh": "P",
 			"records": 1,
 			"live": 1,
-			"last_fetched": null,
-			"days": null,
-			"state": "bez_cesty"
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "nasedite",
 			"name": "Nadace Naše dítě",
 			"type": "nadace",
-			"refresh": "?",
-			"records": 4,
-			"live": 3,
-			"last_fetched": null,
-			"days": null,
-			"state": "bez_cesty"
+			"refresh": "P",
+			"records": 3,
+			"live": 2,
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "novemestonm.dsw2.otevrenamesta.cz",
@@ -1259,12 +1248,12 @@
 			"slug": "nros.cz",
 			"name": "Nadace rozvoje občanské společnosti",
 			"type": "nadace",
-			"refresh": "?",
+			"refresh": "P",
 			"records": 1,
 			"live": 0,
-			"last_fetched": null,
-			"days": null,
-			"state": "bez_cesty"
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "nsa",
@@ -1545,12 +1534,12 @@
 			"slug": "socialninadacnifond",
 			"name": "Sociální nadační fond Praha",
 			"type": "nadacni_fond",
-			"refresh": "?",
-			"records": 12,
-			"live": 7,
-			"last_fetched": null,
-			"days": null,
-			"state": "bez_cesty"
+			"refresh": "P",
+			"records": 10,
+			"live": 6,
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "sokolov.cz",
@@ -1632,13 +1621,13 @@
 		{
 			"slug": "vdv",
 			"name": "Výbor dobré vůle – Nadace Olgy Havlové",
-			"type": "nadace",
-			"refresh": "?",
-			"records": 4,
-			"live": 3,
+			"type": null,
+			"refresh": "P",
+			"records": 1,
+			"live": 0,
 			"last_fetched": null,
 			"days": null,
-			"state": "bez_cesty"
+			"state": "neovereno"
 		},
 		{
 			"slug": "veronica",

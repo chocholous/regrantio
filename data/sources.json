@@ -357,22 +357,22 @@
 		"homepage": "https://www.fondbudoucnosti.cz",
 		"note": null,
 		"type": "nadacni_fond",
-		"refresh": "?",
-		"harvester": null,
-		"records": 24,
-		"live": 6,
-		"last_fetched": null
+		"refresh": "P",
+		"harvester": "refresh_pages.py",
+		"records": 23,
+		"live": 7,
+		"last_fetched": "2026-11-09"
 	},
 	"fondpaliativnipece": {
 		"name": "Nadační fond pro rozvoj paliativní péče",
 		"homepage": "https://www.fondpaliativnipece.cz",
 		"note": null,
 		"type": "nadacni_fond",
-		"refresh": "?",
-		"harvester": null,
-		"records": 10,
-		"live": 1,
-		"last_fetched": null
+		"refresh": "P",
+		"harvester": "refresh_pages.py",
+		"records": 9,
+		"live": 0,
+		"last_fetched": "2026-11-09"
 	},
 	"fondvysociny.cz": {
 		"name": "Kraj Vysočina (Fond Vysočiny)",
@@ -544,11 +544,11 @@
 		"homepage": "https://www.kellnerfoundation.cz",
 		"note": null,
 		"type": "firemni_nadace",
-		"refresh": "?",
-		"harvester": null,
+		"refresh": "P",
+		"harvester": "refresh_pages.py",
 		"records": 4,
-		"live": 1,
-		"last_fetched": null
+		"live": 3,
+		"last_fetched": "2026-11-09"
 	},
 	"kontobariery": {
 		"name": "Konto Bariéry",
@@ -610,11 +610,11 @@
 		"homepage": "https://www.krasapomoci.cz",
 		"note": null,
 		"type": "nadacni_fond",
-		"refresh": "?",
-		"harvester": null,
+		"refresh": "P",
+		"harvester": "refresh_pages.py",
 		"records": 2,
-		"live": 0,
-		"last_fetched": null
+		"live": 1,
+		"last_fetched": "2026-11-09"
 	},
 	"krnov.cz": {
 		"name": "Město Krnov",
@@ -863,11 +863,11 @@
 		"homepage": "https://mv.gov.cz",
 		"note": null,
 		"type": "ministerstvo",
-		"refresh": "T",
-		"harvester": null,
+		"refresh": "P",
+		"harvester": "refresh_pages.py",
 		"records": 7,
 		"live": 2,
-		"last_fetched": null
+		"last_fetched": "2026-11-09"
 	},
 	"mzcr": {
 		"name": "Ministerstvo zdravotnictví",
@@ -885,33 +885,22 @@
 		"homepage": "https://www.mzp.gov.cz",
 		"note": null,
 		"type": "ministerstvo",
-		"refresh": "T",
-		"harvester": null,
-		"records": 16,
-		"live": 10,
-		"last_fetched": null
+		"refresh": "P",
+		"harvester": "refresh_pages.py",
+		"records": 8,
+		"live": 2,
+		"last_fetched": "2026-11-09"
 	},
 	"nadace-agrofert": {
 		"name": "Nadace Agrofert",
 		"homepage": "https://www.nadace-agrofert.cz",
 		"note": null,
 		"type": "firemni_nadace",
-		"refresh": "?",
-		"harvester": null,
-		"records": 7,
-		"live": 4,
-		"last_fetched": null
-	},
-	"nadace-agrofert.cz": {
-		"name": "Nadace Agrofert",
-		"homepage": "https://www.nadace-agrofert.cz",
-		"note": null,
-		"type": "nadace",
-		"refresh": "?",
-		"harvester": null,
-		"records": 1,
-		"live": 1,
-		"last_fetched": null
+		"refresh": "P",
+		"harvester": "refresh_pages.py",
+		"records": 5,
+		"live": 2,
+		"last_fetched": "2026-11-09"
 	},
 	"nadace_adra": {
 		"name": "Nadace ADRA",
@@ -951,44 +940,44 @@
 		"homepage": "https://www.nadacecez.cz",
 		"note": null,
 		"type": "nadace",
-		"refresh": "?",
-		"harvester": null,
+		"refresh": "P",
+		"harvester": "refresh_pages.py",
 		"records": 1,
 		"live": 0,
-		"last_fetched": null
+		"last_fetched": "2026-11-09"
 	},
 	"nadacecs": {
 		"name": "Nadace České spořitelny",
 		"homepage": "https://www.nadacecs.cz",
 		"note": null,
 		"type": "firemni_nadace",
-		"refresh": "T",
-		"harvester": null,
+		"refresh": "P",
+		"harvester": "refresh_pages.py",
 		"records": 2,
 		"live": 1,
-		"last_fetched": null
+		"last_fetched": "2026-11-09"
 	},
 	"nadaceo2.cz": {
 		"name": "Nadace O2",
 		"homepage": "https://nadaceo2.cz",
 		"note": null,
 		"type": "nadace",
-		"refresh": "?",
-		"harvester": null,
+		"refresh": "P",
+		"harvester": "refresh_pages.py",
 		"records": 1,
 		"live": 0,
-		"last_fetched": null
+		"last_fetched": "2026-11-09"
 	},
 	"nadaceokd": {
 		"name": "Nadace OKD",
 		"homepage": "https://www.nadaceokd.cz",
 		"note": null,
 		"type": "firemni_nadace",
-		"refresh": "?",
-		"harvester": null,
-		"records": 5,
-		"live": 4,
-		"last_fetched": null
+		"refresh": "P",
+		"harvester": "refresh_pages.py",
+		"records": 3,
+		"live": 2,
+		"last_fetched": "2026-11-09"
 	},
 	"nadacetm": {
 		"name": "Nadace táta a máma",
@@ -1016,23 +1005,23 @@
 		"name": "Nadace Vodafone",
 		"homepage": "https://www.nadacevodafone.cz",
 		"note": null,
-		"type": "nadace",
-		"refresh": "?",
-		"harvester": null,
+		"type": null,
+		"refresh": "P",
+		"harvester": "refresh_pages.py",
 		"records": 1,
 		"live": 1,
-		"last_fetched": null
+		"last_fetched": "2026-11-09"
 	},
 	"nasedite": {
 		"name": "Nadace Naše dítě",
 		"homepage": "https://www.nasedite.cz",
 		"note": null,
 		"type": "nadace",
-		"refresh": "?",
-		"harvester": null,
-		"records": 4,
-		"live": 3,
-		"last_fetched": null
+		"refresh": "P",
+		"harvester": "refresh_pages.py",
+		"records": 3,
+		"live": 2,
+		"last_fetched": "2026-11-09"
 	},
 	"novemestonm.dsw2.otevrenamesta.cz": {
 		"name": "Město Nové Město nad Metují",
@@ -1072,11 +1061,11 @@
 		"homepage": "https://www.nros.cz",
 		"note": null,
 		"type": "nadace",
-		"refresh": "?",
-		"harvester": null,
+		"refresh": "P",
+		"harvester": "refresh_pages.py",
 		"records": 1,
 		"live": 0,
-		"last_fetched": null
+		"last_fetched": "2026-11-09"
 	},
 	"nsa": {
 		"name": "Národní sportovní agentura",
@@ -1358,11 +1347,11 @@
 		"homepage": "https://www.socialninadacnifond.praha.eu",
 		"note": null,
 		"type": "nadacni_fond",
-		"refresh": "?",
-		"harvester": null,
-		"records": 12,
-		"live": 7,
-		"last_fetched": null
+		"refresh": "P",
+		"harvester": "refresh_pages.py",
+		"records": 10,
+		"live": 6,
+		"last_fetched": "2026-11-09"
 	},
 	"sokolov.cz": {
 		"name": "Město Sokolov",
@@ -1445,11 +1434,11 @@
 		"name": "Výbor dobré vůle – Nadace Olgy Havlové",
 		"homepage": "https://www.vdv.cz",
 		"note": null,
-		"type": "nadace",
-		"refresh": "?",
-		"harvester": null,
-		"records": 4,
-		"live": 3,
+		"type": null,
+		"refresh": "P",
+		"harvester": "refresh_pages.py",
+		"records": 1,
+		"live": 0,
 		"last_fetched": null
 	},
 	"veronica": {
