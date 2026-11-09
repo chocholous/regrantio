@@ -310,6 +310,47 @@ def test_zdravi_cte_katalog_i_export():
         assert source_health.counts_from_export(exp) == {"a.cz": 1, "c.cz": 1}
 
 
+def _stamp_gate(catalog_recs, export_recs):
+    """Brána razítek nad dočasnými soubory; zdroj „trinecko.cz“ je v registru obnovy."""
+    import validate_release as vr
+
+    with tempfile.TemporaryDirectory() as tmp:
+        catalog = os.path.join(tmp, "catalog.jsonl")
+        export = os.path.join(tmp, "export.json")
+        with open(catalog, "w", encoding="utf-8") as fh:
+            for r in catalog_recs:
+                fh.write(json.dumps(r) + "\n")
+        with open(export, "w", encoding="utf-8") as fh:
+            json.dump({"grants": export_recs}, fh)
+        old_catalog, old_export = vr.CATALOG, vr.EXPORT
+        vr.CATALOG, vr.EXPORT = catalog, export
+        try:
+            vr.check_freshness_stamp()
+            return True, ""
+        except RuntimeError as e:
+            return False, str(e)
+        finally:
+            vr.CATALOG, vr.EXPORT = old_catalog, old_export
+
+
+def test_razitka_vyrazeny_zaznam_branu_nezastavi():
+    """Čistička vyřadila záznam i s razítkem → v pořádku (2026-11-09, „Vyúčtování výzvy…“)."""
+    src, day = "trinecko.cz", "2026-11-01"
+    cat = [{"id": "a", "source": src, "provenance": {"fetched_at": day}}]
+    exp = [{"id": "a", "source": src, "fetched_at": day}, {"id": "b", "source": src, "fetched_at": day}]
+    assert _stamp_gate(cat, exp)[0]
+
+
+def test_razitka_ztracene_u_zachovaneho_zaznamu_zastavi():
+    src, day = "trinecko.cz", "2026-11-01"
+    cat = [{"id": "a", "source": src, "provenance": {"fetched_at": day}},
+           {"id": "b", "source": src, "provenance": {}},
+           {"id": "c", "source": src, "provenance": {"fetched_at": day}}]   # součet se vyrovnal
+    exp = [{"id": "a", "source": src, "fetched_at": day}, {"id": "b", "source": src, "fetched_at": day}]
+    passed, msg = _stamp_gate(cat, exp)
+    assert not passed and "zmizelo razítko" in msg
+
+
 
 # ---------------------------------------------------------------- mini-runner
 if __name__ == "__main__":

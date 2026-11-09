@@ -1,17 +1,17 @@
 {
 	"today": "2026-11-09",
-	"records": 4259,
-	"grants": 4234,
-	"live": 1868,
+	"records": 4257,
+	"grants": 4232,
+	"live": 1866,
 	"sources": 136,
 	"status": {
 		"closed": 2366,
 		"open": 550,
-		"unknown": 941,
+		"unknown": 939,
 		"announced": 377
 	},
 	"scope_live": {
-		"national": 315,
+		"national": 313,
 		"regional": 582,
 		"local": 527,
 		"international": 10,
@@ -19,14 +19,14 @@
 	},
 	"deadline_kind_live": {
 		"fixed": 909,
-		"unknown": 738,
+		"unknown": 736,
 		"rolling": 64,
 		"recurring": 157
 	},
 	"fields": {
 		"deadline": {
 			"live": 927,
-			"live_pct": 49.6,
+			"live_pct": 49.7,
 			"all": 3293,
 			"all_pct": 77.8
 		},
@@ -34,42 +34,42 @@
 			"live": 96,
 			"live_pct": 5.1,
 			"all": 273,
-			"all_pct": 6.4
+			"all_pct": 6.5
 		},
 		"eligible_applicants": {
 			"live": 1254,
-			"live_pct": 67.1,
+			"live_pct": 67.2,
 			"all": 2589,
-			"all_pct": 61.1
+			"all_pct": 61.2
 		},
 		"typ_zadatele": {
 			"live": 785,
-			"live_pct": 42.0,
+			"live_pct": 42.1,
 			"all": 1645,
 			"all_pct": 38.9
 		},
 		"oblast": {
-			"live": 1330,
+			"live": 1328,
 			"live_pct": 71.2,
-			"all": 3534,
+			"all": 3532,
 			"all_pct": 83.5
 		},
 		"kraj_nebo_celostatni": {
-			"live": 1866,
+			"live": 1864,
 			"live_pct": 99.9,
-			"all": 4232,
+			"all": 4230,
 			"all_pct": 100.0
 		},
 		"how_to_apply": {
-			"live": 1535,
+			"live": 1533,
 			"live_pct": 82.2,
-			"all": 3805,
+			"all": 3803,
 			"all_pct": 89.9
 		},
 		"source_doc": {
-			"live": 1554,
+			"live": 1552,
 			"live_pct": 83.2,
-			"all": 3733,
+			"all": 3731,
 			"all_pct": 88.2
 		},
 		"contact": {
@@ -88,11 +88,11 @@
 			"live": 680,
 			"live_pct": 36.4,
 			"all": 1945,
-			"all_pct": 45.9
+			"all_pct": 46.0
 		}
 	},
 	"freshness_live": {
-		"do_7": 1364,
+		"do_7": 1362,
 		"do_30": 35,
 		"starsi": 20,
 		"nevime": 449
@@ -128,20 +128,20 @@
 			"cited_pct": 17.2
 		},
 		"focus_area": {
-			"present": 1756,
+			"present": 1754,
 			"parsed": 646,
-			"model": 1110,
+			"model": 1108,
 			"derived": 0,
 			"cited": 302,
 			"cited_pct": 17.2
 		},
 		"oblast": {
-			"present": 1330,
+			"present": 1328,
 			"parsed": 174,
-			"model": 1156,
+			"model": 1154,
 			"derived": 0,
 			"cited": 244,
-			"cited_pct": 18.3
+			"cited_pct": 18.4
 		},
 		"open_from": {
 			"present": 935,
@@ -152,9 +152,9 @@
 			"cited_pct": 6.3
 		},
 		"region": {
-			"present": 1866,
+			"present": 1864,
 			"parsed": 709,
-			"model": 1157,
+			"model": 1155,
 			"derived": 0,
 			"cited": 250,
 			"cited_pct": 13.4
@@ -181,7 +181,7 @@
 		"starne": 1
 	},
 	"live_by_source_state": {
-		"ok": 1770,
+		"ok": 1768,
 		"neovereno": 74,
 		"zmrazeny": 22,
 		"bez_cesty": 0,
@@ -1007,8 +1007,8 @@
 			"name": "Ministerstvo školství, mládeže a tělovýchovy",
 			"type": "ministerstvo",
 			"refresh": "B",
-			"records": 32,
-			"live": 19,
+			"records": 30,
+			"live": 17,
 			"last_fetched": "2026-11-08",
 			"days": 1,
 			"state": "ok"

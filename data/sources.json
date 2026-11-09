@@ -821,8 +821,8 @@
 		"type": "ministerstvo",
 		"refresh": "B",
 		"harvester": "msmt_harvest.py",
-		"records": 32,
-		"live": 19,
+		"records": 30,
+		"live": 17,
 		"last_fetched": "2026-11-08"
 	},
 	"mucl.cz": {

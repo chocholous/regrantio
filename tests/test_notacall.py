@@ -55,6 +55,9 @@ CHYTIT = [
     "Nadace OKD — Udělení podpory 135 projektů (2026)",
     "Fond budoucnosti poskytne přes 13,7 milionu Kč na 105 nových česko-německých projektů",
     "Fond budoucnosti umožní uskutečnit 195 dalších společných projektů",
+    # Pokyny k vyúčtování proběhlé výzvy (MŠMT, 2026-11-09; v doporučení škole).
+    "Vyúčtování Výzvy Podpora přípravy sportovních talentů ve školách",
+    "Finanční vypořádání dotací za rok 2025",
 ]
 
 PROPUSTIT = [
@@ -85,6 +88,7 @@ PROPUSTIT = [
     "Program podpory projektů NNO na rok 2027",
     "Partnerství obcí a spolků",
     "Výzva k předkládání projektů – výsledky hodnocení budou zveřejněny do 30 dnů",
+    "Dotace na energie včetně vyúčtování záloh",
 ]
 
 
@@ -126,6 +130,7 @@ def test_brana_ma_stejne_pravidlo():
         r"^\s*(často\s+kladené\s+dotazy|häufig\s+gestellte\s+fragen)",
         r"[-–—:]\s*výsledky\s+(rozdělení|výběru|dotačního|grantového)",
         r"udělení\s+podpory\s+\d+\s+projekt",
+        r"^\s*(vyúčtování|finanční\s+vypořádání)\s+(výzv|dotac|program|projekt)",
     ):
         assert fragment in gate, f"brána nezná část pravidla: {fragment!r}"
         assert NOT_A_CALL.pattern.find(fragment) >= 0, f"čistička nezná část pravidla: {fragment!r}"

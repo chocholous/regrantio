@@ -126,6 +126,7 @@ NOT_A_CALL = re.compile(
     r"|^\s*(často\s+kladené\s+dotazy|häufig\s+gestellte\s+fragen)"
     r"|[-–—:]\s*výsledky\s+(rozdělení|výběru|dotačního|grantového)"
     r"|^\s*rozhodnutí\s+o\s+(udělení|přidělení)"
+    r"|^\s*(vyúčtování|finanční\s+vypořádání)\s+(výzv|dotac|program|projekt)"
     r"|udělení\s+podpory\s+\d+\s+projekt"
     r"|\b(poskytne|umožní|podpoří|rozdělí|start\s+pro)\b[^\n]{0,40}?\b\d+\s+(nových\s+|dalších\s+)?"
     r"([\w-]+\s+)?(společných\s+)?projekt",

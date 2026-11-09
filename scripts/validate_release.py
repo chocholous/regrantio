@@ -244,6 +244,7 @@ def check_only_calls():
         r"|^\s*(často\s+kladené\s+dotazy|häufig\s+gestellte\s+fragen)"
         r"|[-–—:]\s*výsledky\s+(rozdělení|výběru|dotačního|grantového)"
         r"|^\s*rozhodnutí\s+o\s+(udělení|přidělení)"
+        r"|^\s*(vyúčtování|finanční\s+vypořádání)\s+(výzv|dotac|program|projekt)"
         r"|udělení\s+podpory\s+\d+\s+projekt"
         r"|\b(poskytne|umožní|podpoří|rozdělí|start\s+pro)\b[^\n]{0,40}?\b\d+\s+(nových\s+|dalších\s+)?"
         r"([\w-]+\s+)?(společných\s+)?projekt",
@@ -386,16 +387,19 @@ def check_freshness_stamp():
 
     today = datetime.date.today().isoformat()
     now, vsechna, budouci = 0, 0, []
+    ids_ted, s_razitkem = set(), set()
     for line in open(CATALOG, encoding="utf-8"):
         if not line.strip():
             continue
         r = json.loads(line)
+        ids_ted.add(r.get("id"))
         f = (r.get("provenance") or {}).get("fetched_at")
         if not f:
             continue
         vsechna += 1
         if r.get("source") in obnovitelne:
             now += 1
+            s_razitkem.add(r.get("id"))
         # Razítko z budoucnosti = špatně předaný --today nebo posunuté hodiny;
         # kontroluje se u VŠECH, ne jen u registrovaných.
         if f > today:
@@ -407,20 +411,28 @@ def check_freshness_stamp():
         ukazka = ", ".join(f"{i} → {d}" for i, d in budouci[:5])
         raise RuntimeError(f"{len(budouci)} záznamů má fetched_at v budoucnosti ({ukazka})")
 
-    before = 0
+    # ⚠ POROVNÁVAJÍ SE ZÁZNAMY, NE SOUČTY (2026-11-09). Součet spadl, když
+    # čistička vyřadila dva záznamy „Vyúčtování výzvy…“ i s jejich razítky:
+    # záznam, který z katalogu odešel, razítko neztratil, je pryč celý. Chyba
+    # zápisové cesty je záznam, který v katalogu DÁL JE a razítko už nemá —
+    # a ten se teď najde, i kdyby ho součet jinde vyrovnal.
+    before, ztracena = 0, []
     if os.path.exists(EXPORT):
         try:
             for g in json.load(open(EXPORT, encoding="utf-8")).get("grants", []):
                 if g.get("fetched_at") and g.get("source") in obnovitelne:
                     before += 1
+                    if g.get("id") in ids_ted and g.get("id") not in s_razitkem:
+                        ztracena.append(g.get("id"))
         except Exception:  # noqa: BLE001
-            before = 0
+            before, ztracena = 0, []
 
-    if now < before:
+    if ztracena:
         raise RuntimeError(
-            f"u obnovitelných zdrojů ubylo razítek: {now} ← {before}. Razítko někdo "
+            f"u {len(ztracena)} záznamů obnovitelných zdrojů zmizelo razítko, záznam přitom "
+            f"v katalogu zůstal (např. {', '.join(map(str, ztracena[:3]))}). Razítko někdo "
             f"zahodil po cestě (upsert → fix_dataset → consolidate → export). "
-            f"Vyřazení zdroje z registru tohle číslo snížit NEMÁ."
+            f"Vyřazení zdroje z registru ani záznamu čističkou tohle NEZPŮSOBÍ."
         )
 
     celkem = sum(1 for line in open(CATALOG, encoding="utf-8") if line.strip())

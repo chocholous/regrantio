@@ -6,35 +6,35 @@ Změřeno k **2026-11-09** skriptem `scripts/quality_report.py`. Čísla u živ�
 
 | | |
 |---|---:|
-| záznamů celkem | 4259 |
-| z toho výzev | 4234 |
-| **živých k dnešku** | **1868** |
+| záznamů celkem | 4257 |
+| z toho výzev | 4232 |
+| **živých k dnešku** | **1866** |
 | zdrojů | 136 |
-| stav | open 550 · announced 377 · unknown 941 · closed 2366 |
-| dosah živých | místní 527 · krajský 582 · celostátní 315 · mezinárodní 10 · EU centrální 434 |
-| druh lhůty u živých | jedna lhůta 909 · průběžně 64 · opakovaně 157 · neuvedeno 738 |
+| stav | open 550 · announced 377 · unknown 939 · closed 2366 |
+| dosah živých | místní 527 · krajský 582 · celostátní 313 · mezinárodní 10 · EU centrální 434 |
+| druh lhůty u živých | jedna lhůta 909 · průběžně 64 · opakovaně 157 · neuvedeno 736 |
 
 ## Vyplněnost polí
 
 | pole | živé | archiv |
 |---|---:|---:|
-| lhůta | 49.6 % (927) | 77.8 % (3293) |
-| částka pro žadatele | 5.1 % (96) | 6.4 % (273) |
-| kdo smí žádat (text) | 67.1 % (1254) | 61.1 % (2589) |
-| typ žadatele (faseta) | 42.0 % (785) | 38.9 % (1645) |
-| oblast | 71.2 % (1330) | 83.5 % (3534) |
-| území | 99.9 % (1866) | 100.0 % (4232) |
-| jak podat | 82.2 % (1535) | 89.9 % (3805) |
-| zdrojový dokument | 83.2 % (1554) | 88.2 % (3733) |
+| lhůta | 49.7 % (927) | 77.8 % (3293) |
+| částka pro žadatele | 5.1 % (96) | 6.5 % (273) |
+| kdo smí žádat (text) | 67.2 % (1254) | 61.2 % (2589) |
+| typ žadatele (faseta) | 42.1 % (785) | 38.9 % (1645) |
+| oblast | 71.2 % (1328) | 83.5 % (3532) |
+| území | 99.9 % (1864) | 100.0 % (4230) |
+| jak podat | 82.2 % (1533) | 89.9 % (3803) |
+| zdrojový dokument | 83.2 % (1552) | 88.2 % (3731) |
 | kontakt | 11.8 % (221) | 13.6 % (574) |
 | dokumenty | 13.2 % (247) | 16.1 % (683) |
-| číslo výzvy | 36.4 % (680) | 45.9 % (1945) |
+| číslo výzvy | 36.4 % (680) | 46.0 % (1945) |
 
 ## Čerstvost živých záznamů
 
 | ověřeno u zdroje | záznamů |
 |---|---:|
-| do 7 dnů | 1364 |
+| do 7 dnů | 1362 |
 | do 30 dnů | 35 |
 | starší | 20 |
 | nevíme (bez razítka) | 449 |
@@ -48,10 +48,10 @@ Citací celkem 17725, ve zdroji dohledaných **8845 (49.9 %)**. Nedohledaná cit
 | amount | 96 | 19 | 77 | 0 | 61.5 % |
 | deadline | 927 | 164 | 761 | 2 | 61.3 % |
 | eligible_applicants | 1254 | 385 | 869 | 0 | 17.2 % |
-| focus_area | 1756 | 646 | 1110 | 0 | 17.2 % |
-| oblast | 1330 | 174 | 1156 | 0 | 18.3 % |
+| focus_area | 1754 | 646 | 1108 | 0 | 17.2 % |
+| oblast | 1328 | 174 | 1154 | 0 | 18.4 % |
 | open_from | 935 | 174 | 761 | 0 | 6.3 % |
-| region | 1866 | 709 | 1157 | 0 | 13.4 % |
+| region | 1864 | 709 | 1155 | 0 | 13.4 % |
 | typ_zadatele | 785 | 369 | 416 | 0 | 9.6 % |
 
 ## Rodiny ročníků
@@ -62,7 +62,7 @@ Citací celkem 17725, ve zdroji dohledaných **8845 (49.9 %)**. Nedohledaná cit
 
 | stav | zdrojů | živých záznamů |
 |---|---:|---:|
-| ok (ověřeno do 21 dnů) | 120 | 1770 |
+| ok (ověřeno do 21 dnů) | 120 | 1768 |
 | stárne (nad 21 dnů) | 1 | 2 |
 | má cestu, nikdy neověřeno | 9 | 74 |
 | bez zapsané cesty k obnově | 3 | 0 |
@@ -87,8 +87,8 @@ Citací celkem 17725, ve zdroji dohledaných **8845 (49.9 %)**. Nedohledaná cit
 | Karlovarský kraj (`kr-karlovarsky.cz`) | samosprava_kraj | A | 86 | 24 | 2026-11-08 | ok |
 | Město Tábor (`taborcz.eu`) | samosprava_obec | A | 21 | 21 | 2026-11-08 | ok |
 | Jihomoravský kraj (`kr-jihomoravsky.cz`) | samosprava_kraj | F | 34 | 19 |  | zmrazeny |
-| Ministerstvo školství, mládeže a tělovýchovy (`msmt`) | ministerstvo | B | 32 | 19 | 2026-11-08 | ok |
 | Ústecký kraj (`kr-ustecky.cz`) | samosprava_kraj | A | 113 | 18 | 2026-11-08 | ok |
+| Ministerstvo školství, mládeže a tělovýchovy (`msmt`) | ministerstvo | B | 30 | 17 | 2026-11-08 | ok |
 | Město Mělník (`dotace.melnik.cz`) | samosprava_obec | A | 29 | 16 | 2026-11-08 | ok |
 | Město Hradec Králové (`dotace.mmhk.cz`) | samosprava_obec | A | 32 | 16 | 2026-11-08 | ok |
 | Město Nové Město na Moravě (`dotace.nmnm.cz`) | samosprava_obec | A | 29 | 15 | 2026-11-08 | ok |
