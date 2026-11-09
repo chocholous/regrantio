@@ -52,8 +52,13 @@ druh). Staré výstupy bez adresy převedl jednorázově `scripts/pair_model_out
 Agent nesmí vymýšlet hodnoty mimo číselník. Co přesto přinese (`ministerstvo`, `banka`,
 `trh práce`…), se mapuje v `data/consolidation_maps.json`; zbylé singletony hlásí `consolidate`.
 
-**Dluhy obnovy k 2026‑11‑09:** `gacr` (GA ČR zavřel WordPress REST API, sběrač přepsat na HTML),
-`karvina.cz` (nový web s adresami `/stranka/…`, sběrač přepsat; pozor na změnu `id`).
+**Výstupy se srovnávají podle adresy** (`extract_api.realign`, volá ho `extract_api`
+i `extract_manual`): po přečíslování vstupů se výstup přesune pod číslo svého vstupu,
+výstup výzvy, která z webu zmizela, jde do `data/<zdroj>_out_stale/`.
+
+Přestavby webů 2026‑11: GA ČR bez REST API (výzvy ze stránky „Aktuální výzvy“),
+Karviná na adresách `/stranka/…` (výpis `/stranka/poskytovane-dotace`). Obojí opraveno
+9. 11.; `id` zůstala stejná.
 
 ---
 
