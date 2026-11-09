@@ -359,8 +359,8 @@
 		"type": "nadacni_fond",
 		"refresh": "?",
 		"harvester": null,
-		"records": 36,
-		"live": 18,
+		"records": 24,
+		"live": 6,
 		"last_fetched": null
 	},
 	"fondpaliativnipece": {
@@ -403,8 +403,8 @@
 		"type": "statni_agentura",
 		"refresh": "C",
 		"harvester": "gacr.py",
-		"records": 14,
-		"live": 1,
+		"records": 16,
+		"live": 3,
 		"last_fetched": "2026-11-09"
 	},
 	"granty.chomutov.cz": {
@@ -533,11 +533,11 @@
 		"homepage": "https://www.karvina.cz",
 		"note": null,
 		"type": "samosprava_obec",
-		"refresh": "C",
+		"refresh": "A",
 		"harvester": "karvina_harvest.py",
 		"records": 15,
 		"live": 3,
-		"last_fetched": null
+		"last_fetched": "2026-11-09"
 	},
 	"kellner": {
 		"name": "Nadace The Kellner Family Foundation",
@@ -546,8 +546,8 @@
 		"type": "firemni_nadace",
 		"refresh": "?",
 		"harvester": null,
-		"records": 5,
-		"live": 2,
+		"records": 4,
+		"live": 1,
 		"last_fetched": null
 	},
 	"kontobariery": {
@@ -986,8 +986,8 @@
 		"type": "firemni_nadace",
 		"refresh": "?",
 		"harvester": null,
-		"records": 7,
-		"live": 6,
+		"records": 5,
+		"live": 4,
 		"last_fetched": null
 	},
 	"nadacetm": {
@@ -1448,8 +1448,8 @@
 		"type": "nadace",
 		"refresh": "?",
 		"harvester": null,
-		"records": 5,
-		"live": 4,
+		"records": 4,
+		"live": 3,
 		"last_fetched": null
 	},
 	"veronica": {
