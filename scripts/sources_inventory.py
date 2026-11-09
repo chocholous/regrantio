@@ -16,6 +16,7 @@ Tenhle skript to SPOJÍ do jednoho souboru a drží v něm dvě vrstvy:
   • POČÍTANÉ pole (přepisují se při každém běhu):
       type           převažující `typ_poskytovatele` v datech
       refresh        A = strukturní ingest · B = vlastní parser · C = model ·
+                     P = ověření známých stránek (refresh_pages.py) ·
                      T = přepsaný extraktor (obnovu jen předstírá) · F = zmrazený
                      (zdroj za přihlášením / mrtvý) · ? = nikde v registru
       harvester      skript, kterým se sbírá (je-li v registru)
@@ -85,6 +86,9 @@ def _registry():
     # (`refresh_run.py --tier model`): třída C, ne T.
     for slug, spec in getattr(rr, "MODEL_SOURCES", {}).items():
         out[slug] = ("C", spec[0])
+    # Bez sběrače, ale s ověřením známých stránek (`refresh_pages.py`, 2026‑11‑09).
+    for slug in getattr(rr, "PAGE_SOURCES", ()):
+        out[slug] = ("P", "refresh_pages.py")
     return out
 
 

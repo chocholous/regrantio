@@ -416,6 +416,36 @@ MODEL_SOURCES = {
 }
 
 
+# -----------------------------------------------------------------------------
+# TŘÍDA P: OVĚŘENÍ ZNÁMÝCH STRÁNEK → (čtení změněných) → ingest_rich
+# -----------------------------------------------------------------------------
+# ⚠ OD 2026-11-09. Zdroje sebrané kdysi jednorázově, bez sběrače (dřív „?“ a T).
+# `refresh_pages.py` stáhne adresy, které o nich katalog má: kde citace lhůty
+# na stránce pořád stojí, záznam dostane razítko „ověřeno dnes“; změněné
+# stránky jdou ke čtení (model s klíčem, jinak agenti přes `extract_manual`).
+# Výstup se spojí s týmž záznamem i u `id` z názvu (`catalog_id`). Nové výzvy
+# tahle cesta nenajde — to umí jen sběrač.
+PAGE_SOURCES = (
+    "fondbudoucnosti", "fondpaliativnipece", "kellner", "krasapomoci", "mv", "mzp",
+    "nadace-agrofert", "nadace-agrofert.cz", "nadacecez.cz", "nadacecs", "nadaceo2.cz",
+    "nadaceokd", "nadacevodafone.cz", "nasedite", "nros.cz", "socialninadacnifond", "vdv",
+)
+
+
+def page_chain(slug, today):
+    """Ověření stránek, příprava vstupu, čtení, ingest — tvar jako `model_chain`."""
+    docs = f"data/{slug}_documents.jsonl"
+    return [
+        (["refresh_pages.py", "--source", slug, "--stamp"], "ověření stránek"),
+        (["build_extract_input.py", docs, "--source", slug, "--out-dir", f"data/{slug}_in",
+          "--force-type", "grant", "--no-prefilter"], "příprava vstupu"),
+        (["extract_api.py", "--in-dir", f"data/{slug}_in", "--out-dir", f"data/{slug}_out"], "čtení změněných"),
+        (["ingest_rich.py", "--out-dir", f"data/{slug}_out", "--src", f"data/{slug}_in",
+          "--existing", "data/opportunities.jsonl", "--out", "data/opportunities.jsonl",
+          "--today", today], "ingest"),
+    ]
+
+
 def model_chain(slug, harvest, today, limit=0):
     """Čtyři kroky třídy C pro jeden zdroj. Tvar cest je týž jako u třídy B."""
     docs = f"data/{slug}_documents.jsonl"
@@ -555,7 +585,7 @@ def counts(path="data/opportunities.jsonl"):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--only", help="čárkou oddělené hosty z registru")
-    ap.add_argument("--tier", choices=["structured", "html", "extract", "model", "all"],
+    ap.add_argument("--tier", choices=["structured", "html", "extract", "model", "pages", "all"],
                     help="structured/html = strukturní ingest (třída A); extract = "
                          "deterministická vrstva 2 (třída B); model = vrstva 2 přes model "
                          "(třída C, chce ANTHROPIC_API_KEY); all = A + B (C jen s klíčem)")
@@ -600,20 +630,23 @@ def main():
     # ⚠ VÝCHOZÍ BĚH JE JEN TŘÍDA A, a je to schválně. Třída B je dalších 21 webů,
     # tedy podstatně delší běh po síti — kdo chce obojí, řekne si `--tier all`.
     # Tak se pouští ruční obnova (plánovaný `refresh.yml` odešel 2026-10-22).
-    chosen, chosen_extract, chosen_model = sorted(SOURCES), [], []
+    chosen, chosen_extract, chosen_model, chosen_pages = sorted(SOURCES), [], [], []
     has_key = bool(os.environ.get("ANTHROPIC_API_KEY"))
     if a.tier == "extract":
         chosen, chosen_extract = [], sorted(EXTRACT_SOURCES)
     elif a.tier == "model":
         chosen, chosen_model = [], sorted(MODEL_SOURCES)
+    elif a.tier == "pages":
+        chosen, chosen_pages = [], sorted(PAGE_SOURCES)
     elif a.tier == "all":
         chosen, chosen_extract = sorted(SOURCES), sorted(EXTRACT_SOURCES)
         chosen_model = sorted(MODEL_SOURCES) if has_key else []
+        chosen_pages = sorted(PAGE_SOURCES)   # ověření a razítka jdou i bez klíče
     elif a.tier:
         chosen = [h for h in chosen if SOURCES[h][3] == a.tier]
     if a.only:
         want = [s.strip() for s in a.only.split(",") if s.strip()]
-        known = set(SOURCES) | set(EXTRACT_SOURCES) | set(MODEL_SOURCES)
+        known = set(SOURCES) | set(EXTRACT_SOURCES) | set(MODEL_SOURCES) | set(PAGE_SOURCES)
         unknown = [w for w in want if w not in known]
         if unknown:
             print(f"✖ Neznámé zdroje: {', '.join(unknown)}")
@@ -622,6 +655,7 @@ def main():
         chosen = [w for w in want if w in SOURCES]
         chosen_extract = [w for w in want if w in EXTRACT_SOURCES]
         chosen_model = [w for w in want if w in MODEL_SOURCES]
+        chosen_pages = [w for w in want if w in PAGE_SOURCES]
     if chosen_model and not has_key and not a.dry_run and not a.prepare:
         print(f"· třída C ({len(chosen_model)} zdrojů) přeskočena: chybí ANTHROPIC_API_KEY")
         chosen_model = []
@@ -735,6 +769,24 @@ def main():
         if a.prepare:
             print("\n  → čtení: python scripts/extract_manual.py --in-dir data/<slug>_in "
                   "--out-dir data/<slug>_out --tasks data/<slug>_tasks  (docs/REFRESH.md)")
+
+    if not a.tail_only and chosen_pages:
+        today = datetime.date.today().isoformat()
+        read = has_key and not a.prepare
+        print(f"\n═══ OVĚŘENÍ ZNÁMÝCH STRÁNEK ({len(chosen_pages)} zdrojů) ═══")
+        if not read:
+            print("  · čtení změněných stránek bez klíče dělají agenti (extract_manual.py), ingest až po nich")
+        for slug in chosen_pages:
+            if over_budget():
+                skipped_budget.append(slug)
+                continue
+            print(f"\n  {slug}")
+            chain = page_chain(slug, today)
+            for args, label in (chain if read else chain[:2]):
+                ok, _ = run(args, label, a.dry_run, step_timeout())
+                if not ok:
+                    failed.append(f"{slug} ({label})")
+                    break
 
     if not a.skip_tail:
         print(f"\n═══ PŘEPOČET A EXPORT ═══")

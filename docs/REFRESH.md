@@ -52,6 +52,12 @@ druh). Staré výstupy bez adresy převedl jednorázově `scripts/pair_model_out
 Agent nesmí vymýšlet hodnoty mimo číselník. Co přesto přinese (`ministerstvo`, `banka`,
 `trh práce`…), se mapuje v `data/consolidation_maps.json`; zbylé singletony hlásí `consolidate`.
 
+**Zdroje bez sběrače obnovuje třída P** (`refresh_run.py --tier pages`, 2026‑11‑09):
+`refresh_pages.py` stáhne stránky, které katalog o zdroji zná. Kde citace lhůty na stránce
+pořád stojí, dostane záznam razítko „ověřeno dnes“ (`--stamp`); změněné stránky a živé
+záznamy bez citace jdou ke čtení (`catalog_id` → výstup na týž záznam, i s `id` z názvu).
+Nedostupné stránky se jen vypíšou. Nové výzvy tahle cesta nenajde, to umí jen sběrač.
+
 **Výstupy se srovnávají podle adresy** (`extract_api.realign`, volá ho `extract_api`
 i `extract_manual`): po přečíslování vstupů se výstup přesune pod číslo svého vstupu,
 výstup výzvy, která z webu zmizela, jde do `data/<zdroj>_out_stale/`.

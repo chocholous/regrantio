@@ -148,7 +148,8 @@
   "rozvoj venkova": "komunitni_rozvoj",
   "přístupnost staveb": "bydleni_infrastruktura",
   "rozvoj_obci": "komunitni_rozvoj",
-  "trh práce": "socialni_sluzby"
+  "trh práce": "socialni_sluzby",
+  "pohraničí": "mezinarodni_spoluprace"
  },
  "typ_zadatele": {
   "neziskovka (spolek/o.p.s./církev)": "neziskovka",

@@ -55,7 +55,9 @@ def _shape(r, source_type, source):
         du, tp = (u.get("url"), u.get("txt_path")) if isinstance(u, dict) else (u, None)
         if du:
             docs.append((urljoin(r.get("url", ""), du), tp))
-    return r.get("url"), source, title, body, docs
+    # `catalog_id` (refresh_pages.py): obnova stránky, kterou katalog zná pod
+    # jiným id než adresou (`grant:<zdroj>:<název>`) → výstup na TÝŽ záznam.
+    return r.get("catalog_id") or r.get("url"), source, title, body, docs
 
 def main():
     ap = argparse.ArgumentParser()

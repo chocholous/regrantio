@@ -165,6 +165,31 @@ def test_realign_presune_vystup_za_svym_vstupem():
         assert parked == ["grant_00.1.json", "grant_00.json"]       # nic se nepřepsalo
 
 
+def test_overeni_stranky_podle_citace_lhuty():
+    """refresh_pages: citace lhůty na stránce pořád stojí → beze změny, i složená z kusů."""
+    from refresh_pages import norm, quote_on_page
+    page = norm("Program 2026.  Žádosti lze podávat\xa0do 31. 3. 2027 na adrese fondu. Formulář ke stažení.")
+    assert quote_on_page("Žádosti lze podávat do 31. 3. 2027", page)
+    assert quote_on_page("Program 2026. / Žádosti lze podávat do 31. 3. 2027", page)
+    assert not quote_on_page("Žádosti lze podávat do 30. 6. 2026", page)    # lhůta se změnila
+    assert not quote_on_page("", page)
+
+
+def test_catalog_id_zachova_zaznam_s_id_z_nazvu():
+    """Obnova stránky záznamu `grant:<zdroj>:<název>` dá dokumentu TOTÉŽ id, ne adresu."""
+    with tempfile.TemporaryDirectory() as tmp:
+        docs = f"{tmp}/docs.jsonl"
+        with open(docs, "w", encoding="utf-8") as f:
+            f.write(json.dumps({"url": "https://n.cz/program", "catalog_id": "grant:n.cz:program2026",
+                                "title": "Program", "text": "Podpora spolků " * 20, "documents": []},
+                               ensure_ascii=False) + "\n")
+        p = subprocess.run([sys.executable, os.path.join(ROOT, "scripts", "build_extract_input.py"), docs,
+                            "--source", "n", "--out-dir", f"{tmp}/in", "--no-prefilter"],
+                           cwd=ROOT, capture_output=True, text=True, encoding="utf-8")
+        assert p.returncode == 0, p.stderr[-400:]
+        assert json.load(open(f"{tmp}/in/grant_00.json", encoding="utf-8"))["id"] == "grant:n.cz:program2026"
+
+
 def test_kod_vyzvy_v_nazvu():
     assert code("Výzva č. 31_22_019 – Nákup vozidel") == "31_22_019"
     assert code("2026-D-5-5-47 Účast českých děl") == "2026-D-5-5-47"
