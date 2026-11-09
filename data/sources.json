@@ -315,7 +315,7 @@
 		"type": "ministerstvo",
 		"refresh": "C",
 		"harvester": "eagri.py",
-		"records": 10,
+		"records": 9,
 		"live": 6,
 		"last_fetched": "2026-11-09"
 	},
@@ -788,8 +788,8 @@
 		"type": "ministerstvo",
 		"refresh": "C",
 		"harvester": "mpo.py",
-		"records": 9,
-		"live": 7,
+		"records": 8,
+		"live": 6,
 		"last_fetched": "2026-11-09"
 	},
 	"mpsv": {
@@ -799,7 +799,7 @@
 		"type": "ministerstvo",
 		"refresh": "C",
 		"harvester": "mpsv.py",
-		"records": 13,
+		"records": 11,
 		"live": 3,
 		"last_fetched": "2026-11-09"
 	},
@@ -1328,7 +1328,7 @@
 		"refresh": "C",
 		"harvester": "sfzp.py",
 		"records": 23,
-		"live": 11,
+		"live": 12,
 		"last_fetched": "2026-11-09"
 	},
 	"sirius": {

@@ -1,94 +1,94 @@
 {
 	"today": "2026-11-09",
-	"records": 4263,
-	"grants": 4238,
+	"records": 4259,
+	"grants": 4234,
 	"live": 1868,
 	"sources": 136,
 	"status": {
-		"open": 551,
-		"closed": 2370,
-		"unknown": 940,
+		"closed": 2366,
+		"open": 550,
+		"unknown": 941,
 		"announced": 377
 	},
 	"scope_live": {
-		"national": 316,
+		"national": 315,
+		"regional": 582,
 		"local": 527,
-		"regional": 581,
 		"international": 10,
 		"eu_central": 434
 	},
 	"deadline_kind_live": {
 		"fixed": 909,
-		"rolling": 65,
-		"unknown": 737,
+		"unknown": 738,
+		"rolling": 64,
 		"recurring": 157
 	},
 	"fields": {
 		"deadline": {
-			"live": 928,
-			"live_pct": 49.7,
-			"all": 3298,
+			"live": 927,
+			"live_pct": 49.6,
+			"all": 3293,
 			"all_pct": 77.8
 		},
 		"amount": {
 			"live": 96,
 			"live_pct": 5.1,
-			"all": 276,
-			"all_pct": 6.5
+			"all": 273,
+			"all_pct": 6.4
 		},
 		"eligible_applicants": {
 			"live": 1254,
 			"live_pct": 67.1,
-			"all": 2593,
-			"all_pct": 61.2
+			"all": 2589,
+			"all_pct": 61.1
 		},
 		"typ_zadatele": {
 			"live": 785,
 			"live_pct": 42.0,
-			"all": 1649,
+			"all": 1645,
 			"all_pct": 38.9
 		},
 		"oblast": {
 			"live": 1330,
 			"live_pct": 71.2,
-			"all": 3538,
+			"all": 3534,
 			"all_pct": 83.5
 		},
 		"kraj_nebo_celostatni": {
 			"live": 1866,
 			"live_pct": 99.9,
-			"all": 4236,
+			"all": 4232,
 			"all_pct": 100.0
 		},
 		"how_to_apply": {
-			"live": 1536,
+			"live": 1535,
 			"live_pct": 82.2,
-			"all": 3810,
+			"all": 3805,
 			"all_pct": 89.9
 		},
 		"source_doc": {
-			"live": 1548,
-			"live_pct": 82.9,
-			"all": 3727,
-			"all_pct": 87.9
+			"live": 1554,
+			"live_pct": 83.2,
+			"all": 3733,
+			"all_pct": 88.2
 		},
 		"contact": {
-			"live": 217,
-			"live_pct": 11.6,
-			"all": 569,
-			"all_pct": 13.4
+			"live": 221,
+			"live_pct": 11.8,
+			"all": 574,
+			"all_pct": 13.6
 		},
 		"documents": {
-			"live": 242,
-			"live_pct": 13.0,
-			"all": 677,
-			"all_pct": 16.0
+			"live": 247,
+			"live_pct": 13.2,
+			"all": 683,
+			"all_pct": 16.1
 		},
 		"call_number": {
-			"live": 681,
-			"live_pct": 36.5,
-			"all": 1950,
-			"all_pct": 46.0
+			"live": 680,
+			"live_pct": 36.4,
+			"all": 1945,
+			"all_pct": 45.9
 		}
 	},
 	"freshness_live": {
@@ -98,9 +98,9 @@
 		"nevime": 449
 	},
 	"citations": {
-		"total": 17664,
-		"located": 8736,
-		"located_pct": 49.5
+		"total": 17725,
+		"located": 8845,
+		"located_pct": 49.9
 	},
 	"provenance_live": {
 		"amount": {
@@ -108,32 +108,32 @@
 			"parsed": 19,
 			"model": 77,
 			"derived": 0,
-			"cited": 58,
-			"cited_pct": 60.4
+			"cited": 59,
+			"cited_pct": 61.5
 		},
 		"deadline": {
-			"present": 928,
+			"present": 927,
 			"parsed": 164,
-			"model": 762,
+			"model": 761,
 			"derived": 2,
-			"cited": 564,
-			"cited_pct": 60.8
+			"cited": 568,
+			"cited_pct": 61.3
 		},
 		"eligible_applicants": {
 			"present": 1254,
 			"parsed": 385,
 			"model": 869,
 			"derived": 0,
-			"cited": 210,
-			"cited_pct": 16.7
+			"cited": 216,
+			"cited_pct": 17.2
 		},
 		"focus_area": {
 			"present": 1756,
 			"parsed": 646,
 			"model": 1110,
 			"derived": 0,
-			"cited": 296,
-			"cited_pct": 16.9
+			"cited": 302,
+			"cited_pct": 17.2
 		},
 		"oblast": {
 			"present": 1330,
@@ -148,16 +148,16 @@
 			"parsed": 174,
 			"model": 761,
 			"derived": 0,
-			"cited": 55,
-			"cited_pct": 5.9
+			"cited": 59,
+			"cited_pct": 6.3
 		},
 		"region": {
 			"present": 1866,
 			"parsed": 709,
 			"model": 1157,
 			"derived": 0,
-			"cited": 247,
-			"cited_pct": 13.2
+			"cited": 250,
+			"cited_pct": 13.4
 		},
 		"typ_zadatele": {
 			"present": 785,
@@ -170,7 +170,7 @@
 	},
 	"families": {
 		"families": 380,
-		"variants": 416,
+		"variants": 417,
 		"recurring": 324
 	},
 	"sources_by_state": {
@@ -501,7 +501,7 @@
 			"name": "Ministerstvo zemědělství",
 			"type": "ministerstvo",
 			"refresh": "C",
-			"records": 10,
+			"records": 9,
 			"live": 6,
 			"last_fetched": "2026-11-09",
 			"days": 0,
@@ -974,8 +974,8 @@
 			"name": "Ministerstvo průmyslu a obchodu",
 			"type": "ministerstvo",
 			"refresh": "C",
-			"records": 9,
-			"live": 7,
+			"records": 8,
+			"live": 6,
 			"last_fetched": "2026-11-09",
 			"days": 0,
 			"state": "ok"
@@ -985,7 +985,7 @@
 			"name": "Ministerstvo práce a sociálních věcí",
 			"type": "ministerstvo",
 			"refresh": "C",
-			"records": 13,
+			"records": 11,
 			"live": 3,
 			"last_fetched": "2026-11-09",
 			"days": 0,
@@ -1514,7 +1514,7 @@
 			"type": "statni_fond",
 			"refresh": "C",
 			"records": 23,
-			"live": 11,
+			"live": 12,
 			"last_fetched": "2026-11-09",
 			"days": 0,
 			"state": "ok"

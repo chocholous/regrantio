@@ -6,29 +6,29 @@ Změřeno k **2026-11-09** skriptem `scripts/quality_report.py`. Čísla u živ�
 
 | | |
 |---|---:|
-| záznamů celkem | 4263 |
-| z toho výzev | 4238 |
+| záznamů celkem | 4259 |
+| z toho výzev | 4234 |
 | **živých k dnešku** | **1868** |
 | zdrojů | 136 |
-| stav | open 551 · announced 377 · unknown 940 · closed 2370 |
-| dosah živých | místní 527 · krajský 581 · celostátní 316 · mezinárodní 10 · EU centrální 434 |
-| druh lhůty u živých | jedna lhůta 909 · průběžně 65 · opakovaně 157 · neuvedeno 737 |
+| stav | open 550 · announced 377 · unknown 941 · closed 2366 |
+| dosah živých | místní 527 · krajský 582 · celostátní 315 · mezinárodní 10 · EU centrální 434 |
+| druh lhůty u živých | jedna lhůta 909 · průběžně 64 · opakovaně 157 · neuvedeno 738 |
 
 ## Vyplněnost polí
 
 | pole | živé | archiv |
 |---|---:|---:|
-| lhůta | 49.7 % (928) | 77.8 % (3298) |
-| částka pro žadatele | 5.1 % (96) | 6.5 % (276) |
-| kdo smí žádat (text) | 67.1 % (1254) | 61.2 % (2593) |
-| typ žadatele (faseta) | 42.0 % (785) | 38.9 % (1649) |
-| oblast | 71.2 % (1330) | 83.5 % (3538) |
-| území | 99.9 % (1866) | 100.0 % (4236) |
-| jak podat | 82.2 % (1536) | 89.9 % (3810) |
-| zdrojový dokument | 82.9 % (1548) | 87.9 % (3727) |
-| kontakt | 11.6 % (217) | 13.4 % (569) |
-| dokumenty | 13.0 % (242) | 16.0 % (677) |
-| číslo výzvy | 36.5 % (681) | 46.0 % (1950) |
+| lhůta | 49.6 % (927) | 77.8 % (3293) |
+| částka pro žadatele | 5.1 % (96) | 6.4 % (273) |
+| kdo smí žádat (text) | 67.1 % (1254) | 61.1 % (2589) |
+| typ žadatele (faseta) | 42.0 % (785) | 38.9 % (1645) |
+| oblast | 71.2 % (1330) | 83.5 % (3534) |
+| území | 99.9 % (1866) | 100.0 % (4232) |
+| jak podat | 82.2 % (1535) | 89.9 % (3805) |
+| zdrojový dokument | 83.2 % (1554) | 88.2 % (3733) |
+| kontakt | 11.8 % (221) | 13.6 % (574) |
+| dokumenty | 13.2 % (247) | 16.1 % (683) |
+| číslo výzvy | 36.4 % (680) | 45.9 % (1945) |
 
 ## Čerstvost živých záznamů
 
@@ -41,22 +41,22 @@ Změřeno k **2026-11-09** skriptem `scripts/quality_report.py`. Čísla u živ�
 
 ## Doložitelnost
 
-Citací celkem 17664, ve zdroji dohledaných **8736 (49.5 %)**. Nedohledaná citace nedokládá nic; produkt u takového pole původ neukazuje jako doložený.
+Citací celkem 17725, ve zdroji dohledaných **8845 (49.9 %)**. Nedohledaná citace nedokládá nic; produkt u takového pole původ neukazuje jako doložený.
 
 | pole (živé) | má hodnotu | parser | model | dopočet | doloženo citací |
 |---|---:|---:|---:|---:|---:|
-| amount | 96 | 19 | 77 | 0 | 60.4 % |
-| deadline | 928 | 164 | 762 | 2 | 60.8 % |
-| eligible_applicants | 1254 | 385 | 869 | 0 | 16.7 % |
-| focus_area | 1756 | 646 | 1110 | 0 | 16.9 % |
+| amount | 96 | 19 | 77 | 0 | 61.5 % |
+| deadline | 927 | 164 | 761 | 2 | 61.3 % |
+| eligible_applicants | 1254 | 385 | 869 | 0 | 17.2 % |
+| focus_area | 1756 | 646 | 1110 | 0 | 17.2 % |
 | oblast | 1330 | 174 | 1156 | 0 | 18.3 % |
-| open_from | 935 | 174 | 761 | 0 | 5.9 % |
-| region | 1866 | 709 | 1157 | 0 | 13.2 % |
+| open_from | 935 | 174 | 761 | 0 | 6.3 % |
+| region | 1866 | 709 | 1157 | 0 | 13.4 % |
 | typ_zadatele | 785 | 369 | 416 | 0 | 9.6 % |
 
 ## Rodiny ročníků
 
-380 programů má víc než jeden záznam; 324 z nich se vyhlašuje opakovaně (dva a víc ročníků); 416 starších ročníků nese `variant_of`.
+380 programů má víc než jeden záznam; 324 z nich se vyhlašuje opakovaně (dva a víc ročníků); 417 starších ročníků nese `variant_of`.
 
 ## Zdroje
 
@@ -99,11 +99,11 @@ Citací celkem 17664, ve zdroji dohledaných **8736 (49.5 %)**. Nedohledaná cit
 | Nadace (OSF, Vodafone, Abakus, LPR, CLF) (`nadace_spa`) | nadace | B | 17 | 14 | 2026-11-08 | ok |
 | Praha 12 (`dotace.praha12.cz`) | samosprava_obec | A | 16 | 13 | 2026-11-08 | ok |
 | Město Plzeň (`dotace.plzen.eu`) | samosprava_obec | A | 30 | 12 | 2026-11-08 | ok |
+| Státní fond životního prostředí (`sfzp`) | statni_fond | C | 23 | 12 | 2026-11-09 | ok |
 | Město Dobříš (`dotace.mestodobris.cz`) | samosprava_obec | A | 12 | 11 | 2026-11-08 | ok |
 | Město Tišnov (`dotace.tisnov.cz`) | samosprava_obec | A | 13 | 11 | 2026-11-08 | ok |
 | Město Havířov (`havirov-city.cz`) | samosprava_obec | A | 11 | 11 | 2026-11-08 | ok |
 | Město Děčín (`mmdecin.cz`) | samosprava_obec | A | 19 | 11 | 2026-11-08 | ok |
-| Státní fond životního prostředí (`sfzp`) | statni_fond | C | 23 | 11 | 2026-11-09 | ok |
 | Město Frýdek‑Místek (`frydekmistek.cz`) | samosprava_obec | A | 21 | 10 | 2026-11-08 | ok |
 | Národní program Životní prostředí (`npzp`) | statni_fond | B | 10 | 10 | 2026-11-08 | ok |
 | Zlínský kraj (`zlinskykraj.cz`) | samosprava_kraj | A | 18 | 10 | 2026-11-08 | ok |
@@ -120,15 +120,15 @@ Citací celkem 17664, ve zdroji dohledaných **8736 (49.5 %)**. Nedohledaná cit
 | Česko‑německý fond budoucnosti (`fondbudoucnosti`) | nadacni_fond | P | 23 | 7 | 2026-11-09 | ok |
 | Město Kladno (`mestokladno.cz`) | samosprava_obec | A | 7 | 7 | 2026-11-08 | ok |
 | Ministerstvo pro místní rozvoj (`mmr`) | ministerstvo | C | 19 | 7 | 2026-11-09 | ok |
-| Ministerstvo průmyslu a obchodu (`mpo`) | ministerstvo | C | 9 | 7 | 2026-11-09 | ok |
 | Nadace Via (`nadacevia`) | nadace | B | 27 | 7 | 2026-11-08 | ok |
 | OP Jan Amos Komenský (MŠMT) (`opjak`) | ministerstvo | B | 8 | 7 | 2026-11-08 | ok |
 | OP Životní prostředí (SFŽP) (`opzp`) | ministerstvo | B | 107 | 7 | 2026-11-08 | ok |
 | Městské obvody Ostravy (`plone_ostrava`) | samosprava_obec | B | 12 | 7 | 2026-11-08 | ok |
 | Technologická agentura ČR (`tacr`) | statni_agentura | B | 25 | 7 | 2026-11-08 | ok |
-| Ministerstvo zemědělství (`eagri`) | ministerstvo | C | 10 | 6 | 2026-11-09 | ok |
+| Ministerstvo zemědělství (`eagri`) | ministerstvo | C | 9 | 6 | 2026-11-09 | ok |
 | Visegrad Fund / ERSTE Foundation (`intl_funds`) | zahranicni_fond | B | 6 | 6 | 2026-11-08 | ok |
 | Město Kroměříž (`kromeriz.dsw2.otevrenamesta.cz`) | samosprava_obec | A | 10 | 6 | 2026-11-08 | ok |
+| Ministerstvo průmyslu a obchodu (`mpo`) | ministerstvo | C | 8 | 6 | 2026-11-09 | ok |
 | Město Česká Lípa (`mucl.cz`) | samosprava_obec | A | 14 | 6 | 2026-11-08 | ok |
 | Nadace ČEZ (`nadacecez`) | firemni_nadace | C | 16 | 6 |  | neovereno |
 | Státní fond audiovize (`sfa`) | statni_fond | C | 8 | 6 | 2026-11-09 | ok |
@@ -153,7 +153,7 @@ Citací celkem 17664, ve zdroji dohledaných **8736 (49.5 %)**. Nedohledaná cit
 | Město Karviná (`karvina.cz`) | samosprava_obec | A | 15 | 3 | 2026-11-09 | ok |
 | Nadace The Kellner Family Foundation (`kellner`) | firemni_nadace | P | 4 | 3 | 2026-11-09 | ok |
 | Město Loket (`loket.dsw2.otevrenamesta.cz`) | samosprava_obec | A | 6 | 3 | 2026-11-08 | ok |
-| Ministerstvo práce a sociálních věcí (`mpsv`) | ministerstvo | C | 13 | 3 | 2026-11-09 | ok |
+| Ministerstvo práce a sociálních věcí (`mpsv`) | ministerstvo | C | 11 | 3 | 2026-11-09 | ok |
 | Město Opava (`opava-city.cz`) | samosprava_obec | A | 14 | 3 | 2026-11-08 | ok |
 | Pardubický kraj (`pardubickykraj.cz`) | samosprava_kraj | C | 4 | 3 |  | neovereno |
 | Město Přerov (`prerov.eu`) | samosprava_obec | A | 10 | 3 | 2026-11-08 | ok |
