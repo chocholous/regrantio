@@ -1,189 +1,191 @@
 {
-	"today": "2026-10-24",
-	"records": 4176,
-	"grants": 4151,
-	"live": 1912,
+	"today": "2026-11-09",
+	"records": 4298,
+	"grants": 4273,
+	"live": 1897,
 	"sources": 137,
 	"status": {
-		"closed": 2239,
-		"announced": 383,
-		"open": 571,
-		"unknown": 958
+		"closed": 2376,
+		"open": 543,
+		"unknown": 977,
+		"announced": 377
 	},
 	"scope_live": {
-		"national": 321,
-		"local": 515,
-		"regional": 614,
+		"national": 339,
+		"local": 532,
+		"regional": 582,
 		"international": 10,
-		"eu_central": 452
+		"eu_central": 434
 	},
 	"deadline_kind_live": {
-		"fixed": 942,
-		"unknown": 738,
-		"rolling": 81,
-		"recurring": 151
+		"fixed": 903,
+		"unknown": 745,
+		"rolling": 83,
+		"recurring": 166
 	},
 	"fields": {
 		"deadline": {
-			"live": 954,
-			"live_pct": 49.9,
-			"all": 3193,
-			"all_pct": 76.9
+			"live": 920,
+			"live_pct": 48.5,
+			"all": 3296,
+			"all_pct": 77.1
 		},
 		"amount": {
-			"live": 95,
-			"live_pct": 5.0,
-			"all": 267,
-			"all_pct": 6.4
+			"live": 98,
+			"live_pct": 5.2,
+			"all": 281,
+			"all_pct": 6.6
 		},
 		"eligible_applicants": {
-			"live": 1298,
-			"live_pct": 67.9,
-			"all": 2585,
-			"all_pct": 62.3
+			"live": 1273,
+			"live_pct": 67.1,
+			"all": 2619,
+			"all_pct": 61.3
 		},
 		"typ_zadatele": {
-			"live": 589,
-			"live_pct": 30.8,
-			"all": 1358,
-			"all_pct": 32.7
+			"live": 807,
+			"live_pct": 42.5,
+			"all": 1678,
+			"all_pct": 39.3
 		},
 		"oblast": {
-			"live": 1416,
-			"live_pct": 74.1,
-			"all": 3536,
-			"all_pct": 85.2
+			"live": 1359,
+			"live_pct": 71.6,
+			"all": 3573,
+			"all_pct": 83.6
 		},
 		"kraj_nebo_celostatni": {
-			"live": 1911,
+			"live": 1896,
 			"live_pct": 99.9,
-			"all": 4150,
+			"all": 4272,
 			"all_pct": 100.0
 		},
 		"how_to_apply": {
-			"live": 1554,
-			"live_pct": 81.3,
-			"all": 3708,
-			"all_pct": 89.3
+			"live": 1545,
+			"live_pct": 81.4,
+			"all": 3824,
+			"all_pct": 89.5
 		},
 		"source_doc": {
-			"live": 1567,
-			"live_pct": 82.0,
-			"all": 3630,
-			"all_pct": 87.4
+			"live": 1559,
+			"live_pct": 82.2,
+			"all": 3738,
+			"all_pct": 87.5
 		},
 		"contact": {
-			"live": 230,
-			"live_pct": 12.0,
-			"all": 561,
+			"live": 222,
+			"live_pct": 11.7,
+			"all": 578,
 			"all_pct": 13.5
 		},
 		"documents": {
-			"live": 254,
+			"live": 252,
 			"live_pct": 13.3,
-			"all": 665,
-			"all_pct": 16.0
+			"all": 689,
+			"all_pct": 16.1
 		},
 		"call_number": {
-			"live": 698,
-			"live_pct": 36.5,
-			"all": 1927,
-			"all_pct": 46.4
+			"live": 687,
+			"live_pct": 36.2,
+			"all": 1956,
+			"all_pct": 45.8
 		}
 	},
 	"freshness_live": {
-		"do_7": 1270,
-		"do_30": 14,
-		"nevime": 622,
-		"starsi": 6
+		"do_7": 1334,
+		"do_30": 35,
+		"starsi": 20,
+		"nevime": 508
 	},
 	"citations": {
-		"total": 17325,
-		"located": 8278,
-		"located_pct": 47.8
+		"total": 17979,
+		"located": 8960,
+		"located_pct": 49.8
 	},
 	"provenance_live": {
 		"amount": {
-			"present": 95,
-			"parsed": 17,
-			"model": 78,
+			"present": 98,
+			"parsed": 19,
+			"model": 79,
 			"derived": 0,
-			"cited": 56,
-			"cited_pct": 58.9
+			"cited": 59,
+			"cited_pct": 60.2
 		},
 		"deadline": {
-			"present": 954,
-			"parsed": 141,
-			"model": 811,
+			"present": 920,
+			"parsed": 164,
+			"model": 754,
 			"derived": 2,
-			"cited": 562,
-			"cited_pct": 58.9
+			"cited": 557,
+			"cited_pct": 60.5
 		},
 		"eligible_applicants": {
-			"present": 1298,
-			"parsed": 382,
-			"model": 916,
+			"present": 1273,
+			"parsed": 385,
+			"model": 888,
 			"derived": 0,
-			"cited": 209,
-			"cited_pct": 16.1
+			"cited": 219,
+			"cited_pct": 17.2
 		},
 		"focus_area": {
-			"present": 1789,
-			"parsed": 603,
-			"model": 1186,
+			"present": 1785,
+			"parsed": 646,
+			"model": 1139,
 			"derived": 0,
-			"cited": 304,
-			"cited_pct": 17.0
+			"cited": 314,
+			"cited_pct": 17.6
 		},
 		"oblast": {
-			"present": 1416,
+			"present": 1359,
 			"parsed": 174,
-			"model": 1242,
+			"model": 1185,
 			"derived": 0,
-			"cited": 256,
-			"cited_pct": 18.1
+			"cited": 261,
+			"cited_pct": 19.2
 		},
 		"open_from": {
-			"present": 964,
-			"parsed": 150,
-			"model": 814,
+			"present": 932,
+			"parsed": 174,
+			"model": 758,
 			"derived": 0,
-			"cited": 46,
-			"cited_pct": 4.8
+			"cited": 53,
+			"cited_pct": 5.7
 		},
 		"region": {
-			"present": 1911,
-			"parsed": 667,
-			"model": 1244,
+			"present": 1896,
+			"parsed": 709,
+			"model": 1187,
 			"derived": 0,
-			"cited": 248,
-			"cited_pct": 13.0
+			"cited": 251,
+			"cited_pct": 13.2
 		},
 		"typ_zadatele": {
-			"present": 589,
-			"parsed": 135,
-			"model": 454,
+			"present": 807,
+			"parsed": 369,
+			"model": 438,
 			"derived": 0,
-			"cited": 71,
-			"cited_pct": 12.1
+			"cited": 82,
+			"cited_pct": 10.2
 		}
 	},
 	"families": {
-		"families": 345,
-		"variants": 383,
-		"recurring": 289
+		"families": 381,
+		"variants": 416,
+		"recurring": 324
 	},
 	"sources_by_state": {
-		"neovereno": 40,
-		"ok": 74,
+		"ok": 104,
+		"neovereno": 9,
 		"zmrazeny": 3,
-		"bez_cesty": 20
+		"bez_cesty": 20,
+		"starne": 1
 	},
 	"live_by_source_state": {
-		"neovereno": 186,
-		"ok": 1644,
+		"ok": 1736,
+		"neovereno": 77,
 		"zmrazeny": 22,
-		"bez_cesty": 60
+		"bez_cesty": 60,
+		"starne": 2
 	},
 	"sources_table": [
 		{
@@ -193,9 +195,9 @@
 			"refresh": "C",
 			"records": 3,
 			"live": 0,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "czechaid",
@@ -204,8 +206,8 @@
 			"refresh": "B",
 			"records": 13,
 			"live": 8,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -214,9 +216,9 @@
 			"type": "samosprava_obec",
 			"refresh": "A",
 			"records": 51,
-			"live": 31,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"live": 8,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -226,8 +228,8 @@
 			"refresh": "A",
 			"records": 27,
 			"live": 26,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -237,8 +239,8 @@
 			"refresh": "A",
 			"records": 206,
 			"live": 84,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -247,9 +249,9 @@
 			"type": "samosprava_kraj",
 			"refresh": "A",
 			"records": 138,
-			"live": 49,
-			"last_fetched": "2026-10-22",
-			"days": 2,
+			"live": 44,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -259,8 +261,8 @@
 			"refresh": "A",
 			"records": 15,
 			"live": 14,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -270,8 +272,8 @@
 			"refresh": "A",
 			"records": 29,
 			"live": 16,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -281,8 +283,8 @@
 			"refresh": "A",
 			"records": 7,
 			"live": 5,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -290,10 +292,10 @@
 			"name": "Město Dobříš",
 			"type": "samosprava_obec",
 			"refresh": "A",
-			"records": 10,
-			"live": 9,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"records": 12,
+			"live": 11,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -303,8 +305,8 @@
 			"refresh": "A",
 			"records": 32,
 			"live": 16,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -313,43 +315,43 @@
 			"type": "samosprava_obec",
 			"refresh": "A",
 			"records": 29,
-			"live": 22,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"live": 15,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
 			"slug": "dotace.ostrava.cz",
 			"name": "Město Ostrava",
 			"type": "samosprava_obec",
-			"refresh": "C",
-			"records": 20,
-			"live": 11,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"refresh": "A",
+			"records": 46,
+			"live": 34,
+			"last_fetched": "2026-11-08",
+			"days": 1,
+			"state": "ok"
 		},
 		{
 			"slug": "dotace.pardubickykraj.cz",
 			"name": "Pardubický kraj",
 			"type": "samosprava_kraj",
 			"refresh": "A",
-			"records": 114,
-			"live": 25,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"records": 115,
+			"live": 8,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
 			"slug": "dotace.plzen.eu",
 			"name": "Město Plzeň",
 			"type": "samosprava_obec",
-			"refresh": "C",
-			"records": 20,
-			"live": 2,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"refresh": "A",
+			"records": 30,
+			"live": 12,
+			"last_fetched": "2026-11-08",
+			"days": 1,
+			"state": "ok"
 		},
 		{
 			"slug": "dotace.plzensky-kraj.cz",
@@ -369,8 +371,8 @@
 			"refresh": "A",
 			"records": 10,
 			"live": 9,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -380,8 +382,8 @@
 			"refresh": "A",
 			"records": 11,
 			"live": 7,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -391,8 +393,8 @@
 			"refresh": "A",
 			"records": 16,
 			"live": 13,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -402,8 +404,8 @@
 			"refresh": "A",
 			"records": 10,
 			"live": 7,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -413,8 +415,8 @@
 			"refresh": "A",
 			"records": 9,
 			"live": 8,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -424,8 +426,8 @@
 			"refresh": "A",
 			"records": 35,
 			"live": 33,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -435,8 +437,8 @@
 			"refresh": "A",
 			"records": 1,
 			"live": 0,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -446,8 +448,8 @@
 			"refresh": "A",
 			"records": 3,
 			"live": 0,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -457,8 +459,8 @@
 			"refresh": "A",
 			"records": 4,
 			"live": 3,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -468,8 +470,8 @@
 			"refresh": "A",
 			"records": 13,
 			"live": 11,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -477,10 +479,10 @@
 			"name": "Město Ústí nad Labem",
 			"type": "samosprava_obec",
 			"refresh": "A",
-			"records": 87,
-			"live": 81,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"records": 90,
+			"live": 80,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -501,9 +503,9 @@
 			"refresh": "C",
 			"records": 10,
 			"live": 6,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "eeagrants",
@@ -523,8 +525,8 @@
 			"refresh": "B",
 			"records": 234,
 			"live": 14,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -532,10 +534,10 @@
 			"name": "Evropská komise (Funding & Tenders)",
 			"type": "evropska_komise",
 			"refresh": "B",
-			"records": 766,
-			"live": 452,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"records": 779,
+			"live": 434,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -566,21 +568,21 @@
 			"type": "samosprava_kraj",
 			"refresh": "A",
 			"records": 316,
-			"live": 237,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"live": 234,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
 			"slug": "frydekmistek.cz",
 			"name": "Město Frýdek‑Místek",
 			"type": "samosprava_obec",
-			"refresh": "C",
-			"records": 10,
-			"live": 1,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"refresh": "A",
+			"records": 21,
+			"live": 10,
+			"last_fetched": "2026-11-08",
+			"days": 1,
+			"state": "ok"
 		},
 		{
 			"slug": "gacr",
@@ -589,42 +591,42 @@
 			"refresh": "C",
 			"records": 14,
 			"live": 1,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "granty.chomutov.cz",
 			"name": "Město Chomutov",
 			"type": "samosprava_obec",
-			"refresh": "C",
-			"records": 11,
-			"live": 10,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"refresh": "A",
+			"records": 17,
+			"live": 14,
+			"last_fetched": "2026-11-08",
+			"days": 1,
+			"state": "ok"
 		},
 		{
 			"slug": "granty.liberec.cz",
 			"name": "Město Liberec",
 			"type": "samosprava_obec",
-			"refresh": "C",
+			"refresh": "A",
 			"records": 7,
 			"live": 2,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-11-08",
+			"days": 1,
+			"state": "ok"
 		},
 		{
 			"slug": "havirov-city.cz",
 			"name": "Město Havířov",
 			"type": "samosprava_obec",
-			"refresh": "C",
+			"refresh": "A",
 			"records": 11,
 			"live": 11,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-11-08",
+			"days": 1,
+			"state": "ok"
 		},
 		{
 			"slug": "hlavka",
@@ -632,10 +634,10 @@
 			"type": "nadace",
 			"refresh": "C",
 			"records": 4,
-			"live": 0,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"live": 1,
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "hodonin.eu",
@@ -643,9 +645,9 @@
 			"type": "samosprava_obec",
 			"refresh": "A",
 			"records": 97,
-			"live": 43,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"live": 40,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -655,8 +657,8 @@
 			"refresh": "A",
 			"records": 4,
 			"live": 4,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -677,8 +679,8 @@
 			"refresh": "B",
 			"records": 6,
 			"live": 4,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -688,8 +690,8 @@
 			"refresh": "B",
 			"records": 6,
 			"live": 6,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -699,8 +701,8 @@
 			"refresh": "A",
 			"records": 120,
 			"live": 55,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -710,8 +712,8 @@
 			"refresh": "A",
 			"records": 11,
 			"live": 3,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -764,9 +766,9 @@
 			"type": "samosprava_kraj",
 			"refresh": "A",
 			"records": 86,
-			"live": 25,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"live": 24,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -774,10 +776,10 @@
 			"name": "Ústecký kraj",
 			"type": "samosprava_kraj",
 			"refresh": "A",
-			"records": 112,
-			"live": 19,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"records": 113,
+			"live": 18,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -786,9 +788,9 @@
 			"type": "samosprava_kraj",
 			"refresh": "A",
 			"records": 11,
-			"live": 8,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"live": 5,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -809,8 +811,8 @@
 			"refresh": "A",
 			"records": 3,
 			"live": 1,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -820,8 +822,8 @@
 			"refresh": "A",
 			"records": 10,
 			"live": 6,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -830,10 +832,10 @@
 			"type": "nadace",
 			"refresh": "C",
 			"records": 2,
-			"live": 0,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"live": 1,
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "letnany.cz",
@@ -853,8 +855,8 @@
 			"refresh": "A",
 			"records": 4,
 			"live": 0,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -864,8 +866,8 @@
 			"refresh": "A",
 			"records": 6,
 			"live": 3,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -875,8 +877,8 @@
 			"refresh": "A",
 			"records": 4,
 			"live": 1,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -886,20 +888,20 @@
 			"refresh": "A",
 			"records": 10,
 			"live": 0,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
 			"slug": "mestojablonec.cz",
 			"name": "Město Jablonec nad Nisou",
 			"type": "samosprava_obec",
-			"refresh": "C",
+			"refresh": "A",
 			"records": 14,
 			"live": 5,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-11-08",
+			"days": 1,
+			"state": "ok"
 		},
 		{
 			"slug": "mestokladno.cz",
@@ -908,8 +910,8 @@
 			"refresh": "A",
 			"records": 7,
 			"live": 7,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -920,16 +922,16 @@
 			"records": 53,
 			"live": 2,
 			"last_fetched": "2026-10-09",
-			"days": 15,
-			"state": "ok"
+			"days": 31,
+			"state": "starne"
 		},
 		{
 			"slug": "mkcr",
 			"name": "Ministerstvo kultury",
 			"type": "ministerstvo",
 			"refresh": "C",
-			"records": 29,
-			"live": 15,
+			"records": 28,
+			"live": 14,
 			"last_fetched": null,
 			"days": null,
 			"state": "neovereno"
@@ -938,34 +940,34 @@
 			"slug": "mmdecin.cz",
 			"name": "Město Děčín",
 			"type": "samosprava_obec",
-			"refresh": "C",
-			"records": 13,
-			"live": 6,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"refresh": "A",
+			"records": 19,
+			"live": 11,
+			"last_fetched": "2026-11-08",
+			"days": 1,
+			"state": "ok"
 		},
 		{
 			"slug": "mmkv.cz",
 			"name": "Město Karlovy Vary",
 			"type": "samosprava_obec",
-			"refresh": "C",
+			"refresh": "A",
 			"records": 8,
-			"live": 7,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"live": 5,
+			"last_fetched": "2026-11-08",
+			"days": 1,
+			"state": "ok"
 		},
 		{
 			"slug": "mmr",
 			"name": "Ministerstvo pro místní rozvoj",
 			"type": "ministerstvo",
 			"refresh": "C",
-			"records": 9,
-			"live": 6,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"records": 19,
+			"live": 7,
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "mpo",
@@ -974,30 +976,30 @@
 			"refresh": "C",
 			"records": 9,
 			"live": 7,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "mpsv",
 			"name": "Ministerstvo práce a sociálních věcí",
 			"type": "ministerstvo",
 			"refresh": "C",
-			"records": 11,
+			"records": 13,
 			"live": 3,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "msk.cz",
 			"name": "Moravskoslezský kraj",
 			"type": "samosprava_kraj",
 			"refresh": "A",
-			"records": 112,
+			"records": 115,
 			"live": 30,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1005,10 +1007,10 @@
 			"name": "Ministerstvo školství, mládeže a tělovýchovy",
 			"type": "ministerstvo",
 			"refresh": "B",
-			"records": 27,
-			"live": 14,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"records": 32,
+			"live": 19,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1018,8 +1020,8 @@
 			"refresh": "A",
 			"records": 14,
 			"live": 6,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1028,9 +1030,9 @@
 			"type": "samosprava_obec",
 			"refresh": "A",
 			"records": 10,
-			"live": 6,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"live": 2,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1040,8 +1042,8 @@
 			"refresh": "A",
 			"records": 1,
 			"live": 0,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1106,19 +1108,19 @@
 			"refresh": "C",
 			"records": 3,
 			"live": 2,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "nadace_spa",
 			"name": "Nadace (OSF, Vodafone, Abakus, LPR, CLF)",
 			"type": "nadace",
 			"refresh": "B",
-			"records": 16,
-			"live": 13,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"records": 17,
+			"live": 14,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1192,10 +1194,10 @@
 			"name": "Nadace Via",
 			"type": "nadace",
 			"refresh": "B",
-			"records": 26,
-			"live": 6,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"records": 27,
+			"live": 7,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1227,8 +1229,8 @@
 			"refresh": "A",
 			"records": 1,
 			"live": 1,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1238,8 +1240,8 @@
 			"refresh": "B",
 			"records": 10,
 			"live": 10,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1249,8 +1251,8 @@
 			"refresh": "B",
 			"records": 9,
 			"live": 9,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1271,8 +1273,8 @@
 			"refresh": "B",
 			"records": 21,
 			"live": 1,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1280,33 +1282,33 @@
 			"name": "Olomoucký kraj",
 			"type": "samosprava_kraj",
 			"refresh": "A",
-			"records": 12,
-			"live": 5,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"records": 11,
+			"live": 4,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
 			"slug": "olomouc.eu",
 			"name": "Město Olomouc",
 			"type": "samosprava_obec",
-			"refresh": "C",
-			"records": 19,
-			"live": 5,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"refresh": "A",
+			"records": 23,
+			"live": 4,
+			"last_fetched": "2026-11-08",
+			"days": 1,
+			"state": "ok"
 		},
 		{
 			"slug": "opava-city.cz",
 			"name": "Město Opava",
 			"type": "samosprava_obec",
-			"refresh": "C",
-			"records": 7,
-			"live": 0,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"refresh": "A",
+			"records": 14,
+			"live": 3,
+			"last_fetched": "2026-11-08",
+			"days": 1,
+			"state": "ok"
 		},
 		{
 			"slug": "opd",
@@ -1315,8 +1317,8 @@
 			"refresh": "B",
 			"records": 12,
 			"live": 5,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1326,8 +1328,8 @@
 			"refresh": "B",
 			"records": 8,
 			"live": 7,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1335,10 +1337,10 @@
 			"name": "OP Spravedlivá transformace (MŽP)",
 			"type": "ministerstvo",
 			"refresh": "B",
-			"records": 103,
-			"live": 7,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"records": 105,
+			"live": 8,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1346,10 +1348,10 @@
 			"name": "OP TAK (MPO)",
 			"type": "ministerstvo",
 			"refresh": "B",
-			"records": 60,
-			"live": 7,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"records": 61,
+			"live": 8,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1359,8 +1361,8 @@
 			"refresh": "B",
 			"records": 107,
 			"live": 7,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1370,8 +1372,8 @@
 			"refresh": "B",
 			"records": 1,
 			"live": 0,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1381,20 +1383,20 @@
 			"refresh": "A",
 			"records": 4,
 			"live": 2,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
 			"slug": "pardubice.eu",
 			"name": "Město Pardubice",
 			"type": "samosprava_obec",
-			"refresh": "C",
+			"refresh": "A",
 			"records": 12,
 			"live": 4,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-11-08",
+			"days": 1,
+			"state": "ok"
 		},
 		{
 			"slug": "pardubickykraj.cz",
@@ -1414,9 +1416,9 @@
 			"refresh": "C",
 			"records": 1,
 			"live": 0,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "plone_ostrava",
@@ -1425,8 +1427,8 @@
 			"refresh": "B",
 			"records": 12,
 			"live": 7,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1434,10 +1436,10 @@
 			"name": "Hlavní město Praha",
 			"type": "samosprava_kraj",
 			"refresh": "A",
-			"records": 38,
-			"live": 37,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"records": 39,
+			"live": 38,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1447,31 +1449,31 @@
 			"refresh": "A",
 			"records": 2,
 			"live": 1,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
 			"slug": "prerov.eu",
 			"name": "Město Přerov",
 			"type": "samosprava_obec",
-			"refresh": "C",
-			"records": 9,
-			"live": 4,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"refresh": "A",
+			"records": 10,
+			"live": 3,
+			"last_fetched": "2026-11-08",
+			"days": 1,
+			"state": "ok"
 		},
 		{
 			"slug": "prostejov.eu",
 			"name": "Město Prostějov",
 			"type": "samosprava_obec",
-			"refresh": "C",
-			"records": 3,
-			"live": 0,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"refresh": "A",
+			"records": 5,
+			"live": 3,
+			"last_fetched": "2026-11-08",
+			"days": 1,
+			"state": "ok"
 		},
 		{
 			"slug": "sfa",
@@ -1479,10 +1481,10 @@
 			"type": "statni_fond",
 			"refresh": "C",
 			"records": 8,
-			"live": 0,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"live": 6,
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "sfdi",
@@ -1491,9 +1493,9 @@
 			"refresh": "C",
 			"records": 8,
 			"live": 4,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "sfk",
@@ -1502,9 +1504,9 @@
 			"refresh": "C",
 			"records": 1,
 			"live": 0,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "sfpi",
@@ -1522,11 +1524,11 @@
 			"name": "Státní fond životního prostředí",
 			"type": "statni_fond",
 			"refresh": "C",
-			"records": 19,
+			"records": 23,
 			"live": 11,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "sirius",
@@ -1535,9 +1537,9 @@
 			"refresh": "C",
 			"records": 1,
 			"live": 0,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "socialninadacnifond",
@@ -1557,8 +1559,8 @@
 			"refresh": "A",
 			"records": 3,
 			"live": 1,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1568,8 +1570,8 @@
 			"refresh": "A",
 			"records": 99,
 			"live": 46,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1579,8 +1581,8 @@
 			"refresh": "A",
 			"records": 3,
 			"live": 2,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1590,8 +1592,8 @@
 			"refresh": "A",
 			"records": 21,
 			"live": 21,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1599,10 +1601,10 @@
 			"name": "Technologická agentura ČR",
 			"type": "statni_agentura",
 			"refresh": "B",
-			"records": 24,
+			"records": 25,
 			"live": 7,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1612,8 +1614,8 @@
 			"refresh": "A",
 			"records": 7,
 			"live": 3,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1623,8 +1625,8 @@
 			"refresh": "A",
 			"records": 6,
 			"live": 5,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1645,9 +1647,9 @@
 			"refresh": "C",
 			"records": 1,
 			"live": 0,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "vinarskyfond",
@@ -1656,9 +1658,9 @@
 			"refresh": "C",
 			"records": 5,
 			"live": 0,
-			"last_fetched": null,
-			"days": null,
-			"state": "neovereno"
+			"last_fetched": "2026-11-09",
+			"days": 0,
+			"state": "ok"
 		},
 		{
 			"slug": "vlada",
@@ -1667,8 +1669,8 @@
 			"refresh": "B",
 			"records": 7,
 			"live": 0,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		},
 		{
@@ -1688,9 +1690,9 @@
 			"type": "samosprava_kraj",
 			"refresh": "A",
 			"records": 18,
-			"live": 11,
-			"last_fetched": "2026-10-24",
-			"days": 0,
+			"live": 10,
+			"last_fetched": "2026-11-08",
+			"days": 1,
 			"state": "ok"
 		}
 	]
