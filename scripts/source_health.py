@@ -67,6 +67,14 @@ COLLAPSE_RATIO = 0.5
 # Od kolika záznamů má smysl hlídat i částečný propad.
 MIN_FOR_RATIO = 10
 
+# Zdroje vyřazené VĚDOMĚ: zmizení není porucha. Každý s důvodem a náhradou;
+# brána je pustí, ale jen jmenované, takže omylem vyschlý zdroj zastaví dál.
+RETIRED = {
+    # Úřední deska JMK za přihlášením a s daty sejmutí místo lhůt (2026-11-10);
+    # kraj čte dotační portál `jmk_edotace` (`fix_dataset.DROP_STRAY`).
+    "kr-jihomoravsky.cz": "jmk_edotace",
+}
+
 
 def counts_from_catalog(path=CATALOG):
     """Počty záznamů po zdrojích v živém katalogu (JSONL)."""
@@ -96,6 +104,8 @@ def compare(now, before, min_tracked=MIN_TRACKED, collapse_ratio=COLLAPSE_RATIO,
     dried, collapsed, fresh = [], [], []
     for src, had in before.items():
         has = now.get(src, 0)
+        if src in RETIRED and has == 0:
+            continue
         if had >= min_tracked and has == 0:
             dried.append((src, had))
         elif had >= min_for_ratio and has < had * (1 - collapse_ratio):

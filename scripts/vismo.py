@@ -22,6 +22,8 @@ from limits import L
 # POZOR: 'dotac' nematchuje 'dotační' (č≠c)! → dota[cč] chytí dotace i dotační
 DOTACE_RE = re.compile(r"dota[cč]|grant|příspěv|prispev|fond", re.I)   # pro DISCOVERY (široké)
 RECURSE_RE = re.compile(r"dota[cč]|grant|výzv|vyzv", re.I)             # pro REKURZI (úzké — ne 'příspěvkové org')
+NARROW_RE = re.compile(r"dota[cč]|grant", re.I)                          # DISCOVERY nejdřív úzce
+NOT_DOTACE_RE = re.compile(r"příspěvkov\w*(?:%2D|[\s-])+organizac|prispevkov\w*(?:%2D|[\s-])+organizac", re.I)
 # dokumentový listing = <div class="dok">…<ul class="ui">…</ul> (NE levé nav menu, to je taky ul.ui!)
 DOK_BLOCK = re.compile(r'class="dok"[^>]*>(.*?)</ul>', re.S)
 LI = re.compile(r'<li[^>]*>(.*?)</li>', re.S)
@@ -56,10 +58,14 @@ def find_dotace(base):
     home, _ = fetch(base)
     if home:
         anchors = re.findall(r'<a[^>]+href="([^"]+)"[^>]*>([^<]+)</a>', home)
-        # 1) preferuj kanonickou vismo sekci (ds/ms/d-NNNN) s dotačním textem
-        for href, txt in anchors:
-            if DOTACE_RE.search(txt) and re.search(r"/(ds|ms|d)-\d+", href):
-                return urljoin(base + "/", href), "homepage"
+        # 1) preferuj kanonickou vismo sekci (ds/ms/os/d-NNNN) s dotačním textem.
+        #    ⚠ NEJDŘÍV ÚZCE (2026-11-10): široký vzor chytal „Příspěvkové organizace
+        #    města“ dřív než „Granty a dotace“ (Třebíč); sekce odboru `os-` je u
+        #    části měst jediné místo, kde dotace jsou.
+        for vzor in (NARROW_RE, DOTACE_RE):
+            for href, txt in anchors:
+                if vzor.search(txt) and not NOT_DOTACE_RE.search(txt) and re.search(r"/(ds|ms|os|d)-\d+", href):
+                    return urljoin(base + "/", href), "homepage"
         # 2) fallback: sluggovaný hub (BEZ ds/ms/d čísla) — některé vismo weby migrovaly
         #    na slug URL (např. letnany /dotace-granty-1). Ber jen když dotační je
         #    text I href (úzké → nevybere náhodný odkaz se slovem „dotace" v textu).
@@ -71,10 +77,12 @@ def find_dotace(base):
         s, _ = fetch(base + sm)
         if s:
             locs = re.findall(r"<loc>([^<]+)</loc>", s) or re.findall(r'href="([^"]+)"', s)
-            cands = [u for u in locs if DOTACE_RE.search(u) and re.search(r"/(ds|ms)-\d+", u)]
-            if cands:
-                cands.sort(key=len)
-                return urljoin(base + "/", cands[0]), "sitemap"
+            for vzor in (NARROW_RE, DOTACE_RE):
+                cands = [u for u in locs if vzor.search(u) and not NOT_DOTACE_RE.search(u)
+                         and re.search(r"/(ds|ms|os)-\d+", u)]
+                if cands:
+                    cands.sort(key=len)
+                    return urljoin(base + "/", cands[0]), "sitemap"
     return None, None
 
 

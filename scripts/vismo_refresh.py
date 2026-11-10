@@ -130,6 +130,27 @@ def closer(d, best, today):
     return d < best if d >= today else d > best
 
 
+# Města na klasickém Vismu, která v katalogu ještě nebyla (2026-11-10). Výpis
+# dotací čte `vismo.py` beze změny; záznam vznikne, až příloha uvede lhůtu
+# s rokem (pravidlo výš), a od té chvíle se web obnovuje z katalogu jako
+# ostatní. Území se zapisuje tady, protože nový web nemá v katalogu záznam,
+# ze kterého by se převzalo (bez něj by shoda nepoznala, kde program platí).
+# Prověřeno 23 měst na Vismu: jen tahle tři dají výpis bez úprav; Třebíč,
+# Vyškov, Vsetín, Uničov, Kopřivnice, Písek, Rychnov, Cheb, Mělník mají
+# programy jako přílohy složky nebo jinou strukturu (PRUVODCE §10.4).
+NEW_HOSTS = {
+    "zabreh.cz": ("https://www.zabreh.cz", "Zábřeh", "Šumperk", "Olomoucký kraj"),
+    "ceska-trebova.cz": ("https://www.ceska-trebova.cz", "Česká Třebová", "Ústí nad Orlicí", "Pardubický kraj"),
+    "rokycany.cz": ("https://www.rokycany.cz", "Rokycany", "Rokycany", "Plzeňský kraj"),
+}
+
+
+def new_host_facets(host):
+    base, obec, okres, kraj = NEW_HOSTS[host]
+    return {"typ_poskytovatele": "samosprava_obec", "zdroj_financovani": ["krajsky"],
+            "region": {"nazev": obec, "obec": obec, "okres": okres, "kraj": kraj, "celostatni": False}}
+
+
 def catalog_vismo():
     """id → záznam pro klasické Vismo v katalogu (platforma `vismo`)."""
     out = {}
@@ -143,11 +164,13 @@ def catalog_vismo():
 
 
 def harvest(args):
-    hosts = sorted({r["source"] for r in catalog_vismo().values()})
+    known = {r["source"] for r in catalog_vismo().values()}
+    hosts = sorted(known | set(NEW_HOSTS))
     if os.path.exists(LISTING):
         os.remove(LISTING)
     for h in hosts:
-        cmd = [sys.executable, os.path.join("scripts", "vismo.py"), "--base", f"https://{h}", "--out", LISTING]
+        base = NEW_HOSTS[h][0] if h in NEW_HOSTS and h not in known else f"https://{h}"
+        cmd = [sys.executable, os.path.join("scripts", "vismo.py"), "--base", base, "--out", LISTING]
         r = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", timeout=args.timeout)
         line = next((ln for ln in r.stdout.splitlines() if "MARKER" in ln), r.stderr.strip()[-200:])
         print(line, flush=True)
@@ -251,7 +274,7 @@ def ingest(args):
                 rec.update(open_from=of or old.get("open_from"), deadline=dl, status=st, status_confidence=conf)
         else:
             stats["new"] += 1
-            facets = region_of.get(host) or {}
+            facets = region_of.get(host) or (new_host_facets(host) if host in NEW_HOSTS else {})
             rec.update({
                 "focus_area": None, "amount": None, "eligible_applicants": None,
                 "required_attachments": [], "how_to_apply": None, "source_doc": doc["url"],

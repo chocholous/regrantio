@@ -152,6 +152,11 @@ DROP_STRAY = [
     # modelu podle pořadí (viz `ingest_rich`, `_source_id`). Sedm takových
     # záznamů; kód je v adrese i v názvu, takže nesoulad je jednoznačný.
     lambda r: r.get("source") == "sfa" and _sfa_code_mismatch(r),
+    # Úřední deska Jihomoravského kraje (2026-11-10): od 1. 9. za přihlášením
+    # a výpis nesl data SEJMUTÍ z desky místo lhůt (programy „otevřené“ do
+    # 2029), smlouvy a oznámení o pozastavení sběru. Kraj teď čte jeho dotační
+    # portál (`jmk_edotace`); záznamy z desky se neobnoví a mátly by.
+    lambda r: r.get("source") == "kr-jihomoravsky.cz",
 ]
 
 
@@ -188,6 +193,7 @@ PROVIDER_TYPE = {
     "vinarskyfond": "statni_fond",    # Vinařský fond
     "nrb": "statni_fond",             # Národní rozvojová banka (nrb.cz) — státní banka, úvěry s dotační složkou (2026‑09‑29)
     "sfa": "statni_fond",             # Státní fond audiovize (sfa.gov.cz)
+    "jmk_edotace": "samosprava_kraj",  # Jihomoravský kraj, dotační portál e-dotace.jmk.cz (2026‑11‑10)
     "npzp": "statni_fond",            # Národní program Životní prostředí (narodniprogramzp.cz) — MŽP, administruje SFŽP (2026‑10‑03)
     "sfzp": "statni_fond",            # Státní fond životního prostředí (sfzp.gov.cz)
     "sfpi": "statni_fond",            # Státní fond podpory investic / SFRB (sfpi.cz) — bydlení

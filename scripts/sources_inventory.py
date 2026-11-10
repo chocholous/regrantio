@@ -49,7 +49,6 @@ CURATED = ("name", "homepage", "note")
 # Zdroje, o kterých víme, že se obnovit nedají, a proč. Kurátorované; sem se
 # píše ručně, ne odvozením — „zmrazený" je rozhodnutí, ne měření.
 FROZEN = {
-    "kr-jihomoravsky.cz": "úřední deska za přihlášením (HTTP 401 od 2026-09-01)",
     "sfpi": "WP REST API zrušeno (404)",
     "eeagrants": "období 2014–2021 skončilo, 0 živých výzev; harvester mimo registr obnovy do nového programu (2026-09-15)",
 }

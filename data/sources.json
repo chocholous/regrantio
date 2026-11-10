@@ -302,11 +302,11 @@
 		"homepage": "https://dotaceeu.cz",
 		"note": null,
 		"type": "ministerstvo",
-		"refresh": "A",
-		"harvester": "kentico_irop.py",
-		"records": 13,
-		"live": 5,
-		"last_fetched": null
+		"refresh": "B",
+		"harvester": "dotaceeu.py",
+		"records": 21,
+		"live": 13,
+		"last_fetched": "2026-11-10"
 	},
 	"eagri": {
 		"name": "Ministerstvo zemědělství",
@@ -349,7 +349,7 @@
 		"refresh": "B",
 		"harvester": "eu_ft.py",
 		"records": 779,
-		"live": 434,
+		"live": 433,
 		"last_fetched": "2026-11-08"
 	},
 	"fondbudoucnosti": {
@@ -460,7 +460,7 @@
 		"harvester": "vismo.py",
 		"records": 97,
 		"live": 40,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-10"
 	},
 	"hradeckralove.org": {
 		"name": "Město Hradec Králové",
@@ -471,7 +471,7 @@
 		"harvester": "vismo.py",
 		"records": 4,
 		"live": 4,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-10"
 	},
 	"hzs": {
 		"name": "Hasičský záchranný sbor ČR (MV)",
@@ -528,6 +528,17 @@
 		"live": 3,
 		"last_fetched": "2026-11-08"
 	},
+	"jmk_edotace": {
+		"name": "Jihomoravský kraj",
+		"homepage": "https://e-dotace.jmk.cz",
+		"note": null,
+		"type": "samosprava_kraj",
+		"refresh": "B",
+		"harvester": "jmk_edotace.py",
+		"records": 3,
+		"live": 2,
+		"last_fetched": "2026-11-10"
+	},
 	"karvina.cz": {
 		"name": "Město Karviná",
 		"homepage": "https://www.karvina.cz",
@@ -561,17 +572,6 @@
 		"live": 0,
 		"last_fetched": null
 	},
-	"kr-jihomoravsky.cz": {
-		"name": "Jihomoravský kraj",
-		"homepage": "https://eud.jmk.cz",
-		"note": "úřední deska za přihlášením (HTTP 401 od 2026-09-01)",
-		"type": "samosprava_kraj",
-		"refresh": "F",
-		"harvester": "jm_harvest.py",
-		"records": 34,
-		"live": 19,
-		"last_fetched": null
-	},
 	"kr-karlovarsky.cz": {
 		"name": "Karlovarský kraj",
 		"homepage": "https://www.kr-karlovarsky.cz",
@@ -580,7 +580,7 @@
 		"refresh": "A",
 		"harvester": "karlovarsky_harvest.py",
 		"records": 86,
-		"live": 24,
+		"live": 23,
 		"last_fetched": "2026-11-08"
 	},
 	"kr-ustecky.cz": {
@@ -625,7 +625,7 @@
 		"harvester": "vismo.py",
 		"records": 3,
 		"live": 1,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-10"
 	},
 	"kromeriz.dsw2.otevrenamesta.cz": {
 		"name": "Město Kroměříž",
@@ -702,7 +702,7 @@
 		"harvester": "vismo.py",
 		"records": 10,
 		"live": 0,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-10"
 	},
 	"mestojablonec.cz": {
 		"name": "Město Jablonec nad Nisou",
@@ -724,7 +724,7 @@
 		"harvester": "kladno_harvest.py",
 		"records": 7,
 		"live": 7,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-10"
 	},
 	"mk": {
 		"name": "Ministerstvo kultury",
@@ -845,7 +845,7 @@
 		"harvester": "vismo.py",
 		"records": 10,
 		"live": 2,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-10"
 	},
 	"mulitvinov.cz": {
 		"name": "Město Litvínov",
@@ -856,7 +856,7 @@
 		"harvester": "vismo.py",
 		"records": 1,
 		"live": 0,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-10"
 	},
 	"mv": {
 		"name": "Ministerstvo vnitra",
@@ -1284,7 +1284,7 @@
 		"refresh": "C",
 		"harvester": "sfa.py",
 		"records": 8,
-		"live": 6,
+		"live": 5,
 		"last_fetched": "2026-11-09"
 	},
 	"sfdi": {
@@ -1362,7 +1362,7 @@
 		"harvester": "vismo.py",
 		"records": 3,
 		"live": 1,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-10"
 	},
 	"stredoceskykraj.cz": {
 		"name": "Středočeský kraj",
@@ -1372,7 +1372,7 @@
 		"refresh": "A",
 		"harvester": "stredocesky_harvest.py",
 		"records": 99,
-		"live": 46,
+		"live": 45,
 		"last_fetched": "2026-11-08"
 	},
 	"stredoceskykraj.dsw2.otevrenamesta.cz": {
@@ -1395,7 +1395,7 @@
 		"harvester": "vismo.py",
 		"records": 21,
 		"live": 21,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-10"
 	},
 	"tacr": {
 		"name": "Technologická agentura ČR",

@@ -66,3 +66,42 @@ a NEPROHLÁSÍ zdroj za hotový, dokud gate neskončí PASS. Completeness se MĚ
 Surový strukturální diff (Stage 1) říká „co jsme NEvzali", NE „uniklá výzva". Bez Stage 2 (classify)
 NENÍ completeness doložená. A sitemap je jen lower-bound (může být neúplná/stará) — proto u no-sitemap
 zdrojů re-crawl saturace.
+
+---
+
+# Pokrytí poskytovatelů — co v katalogu chybí (revize 2026-11-10)
+
+Jiná otázka než obě výše: **čteme vůbec všechny důležité poskytovatele?**
+Postup: inventář `data/sources.json` proti tomu, kde se v Česku dotace pro
+obce, spolky, NNO, školy a firmy skutečně vyhlašují; u každé mezery ověřeno
+živě, jestli jde zdroj číst a jak.
+
+## Doplněno 10. 11.
+
+| zdroj | slug | třída | co přineslo |
+|---|---|---|---|
+| Jihomoravský kraj, dotační portál e‑dotace.jmk.cz | `jmk_edotace` | B | programy s lhůtou, alokací, rozpětím, spoluúčastí; portál vrací data jako proud RSC (`RSC: 1`) |
+| dotaceeu.cz (MS2021+) | `dotaceeu.cz` | B | OP Rybářství, OP AMIF (NNO pro migraci), finanční nástroje; výzvy jen pro jmenovaný státní úřad vynechány |
+| Zábřeh, Česká Třebová, Rokycany | Vismo | A | výpis dotací přes `vismo_refresh.NEW_HOSTS`; záznam vznikne, až příloha uvede lhůtu |
+
+Vyřazeno: úřední deska JMK (`kr-jihomoravsky.cz`, 34 záznamů s daty sejmutí
+místo lhůt, smlouvy a oznámení; `fix_dataset.DROP_STRAY`, `source_health.RETIRED`).
+
+## Mezery podle přínosu pro uživatele
+
+| # | mezera | proč na ní záleží | stav zdroje | cesta |
+|---|---|---|---|---|
+| 1 | **MAS (180 místních akčních skupin)** | hlavní peníze pro malé obce, spolky a zemědělce (CLLD z IROP, OPZ+, SZP) | souhrnný seznam neexistuje (ŘO IROP odkazuje na weby MAS); katalog má jen nadřazené výzvy ŘO pro MAS | sběrač na rodiny webů MAS (část běží na stejném CMS, `evt_file.php`) a 20 největších MAS ručně; čtení modelem |
+| 2 | **SZIF, projektové intervence SZP** (investice do podniků, lesy, mladý zemědělec, LEADER) | zemědělci, lesníci, venkov | kola příjmu jsou v PDF (pravidla, harmonogram); web se mění (`szif-novy.gov.cz` v ověřovacím provozu) | třída C nad harmonogramem a pravidly; počkat na nový web |
+| 3 | **Nadace** | spolky žijí z nadací; v katalogu 16 otevřených výzev | chybí mj. Nadace Divoké husy, Nadace Proměny, Nadace Kooperativy, Nadace Komerční banky Jistota (doména neodpovídá), Nadace ČSOB | třída P/C, výzvy jsou několikrát ročně |
+| 4 | **Města na Vismu s jinou strukturou** | obecní programy | Třebíč, Vyškov, Vsetín, Uničov, Kopřivnice, Písek, Rychnov n. K., Cheb, Mělník, Valašské Meziříčí: programy jako přílohy složky (Třebíč), ne dokumenty `d-` | rozšířit `vismo.py` o přílohy složky; Letňany selhávají v objevu i se starým kódem |
+| 5 | **Statutární města bez zdroje** | | České Budějovice (portál za přihlášením), Zlín (vlastní CMS, stránka „Programy - výzvy … z účelových fondů“) | Zlín třída C; ČB jen dohodou |
+| 6 | **DZS (Erasmus+, Evropský sbor solidarity)** | školy, mládež, NNO | web dostupný | třída C; část centralizovaných výzev je v `eu_ft` |
+| 7 | **AOPK ČR** (Program péče o krajinu, POPFK) | obce, spolky ochrany přírody | `aopk.gov.cz` dostupné, `dotace.nature.cz` neodpovídá | třída C |
+| 8 | **Fondy malých projektů euroregionů, Interreg AT‑CZ, BY‑CZ, SN‑CZ** | obce a spolky v pohraničí | `at-cz.eu` a `sn-cz2027.eu` vracejí 429 (omezení četnosti), `by-cz.eu` dostupné | rozšířit `interreg.py`; jen s ohledem na omezení |
+| 9 | **Ministerstva bez zdroje:** MZV, MO, MSp, MD (BESIP) | menší programy pro NNO | | třída C |
+| 10 | **MŽP** (3 stránky 403 pro roboty), **SFPI** (REST zrušeno), **EHP a Norské fondy** (nové období) | | zmrazené nebo blokované | jen dohodou nebo novým zdrojem; neobcházet |
+
+Měřítko: podíl českých otevřených výzev (bez Evropské komise) a podíl
+pro typ žadatele „obec do 2 000 obyvatel“ a „spolek“. 10. 11.: českých
+otevřených a vyhlášených výzev 487 z 920.

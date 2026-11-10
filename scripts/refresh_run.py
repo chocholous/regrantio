@@ -118,11 +118,8 @@ SOURCES = {
         ["ingest_kraj.py", "data/h_kraj_karlovarsky.json"],
         "html",
     ),
-    "kr-jihomoravsky.cz": (
-        ["jm_harvest.py"], "data/h_kraj_jm.json",
-        ["ingest_kraj.py", "data/h_kraj_jm.json"],
-        "html",
-    ),
+    # `kr-jihomoravsky.cz` (úřední deska) vyřazen 2026-11-10: za přihlášením,
+    # kraj čte `jmk_edotace` (EXTRACT_SOURCES, `source_health.RETIRED`).
     "kraj-jihocesky.cz": (
         ["jihocesky_harvest.py"], "data/h_kraj_jihocesky.json",
         ["ingest_kraj.py", "data/h_kraj_jihocesky.json"],
@@ -342,6 +339,13 @@ EXTRACT_SOURCES = {
     # a detaily výzev se štítky na řádcích; konkurence z něj výzvy má, katalog
     # neměl žádnou. Parser je deterministický (`extractors/npzp.py`).
     "npzp": (["npzp.py"], "html"),
+    # Jihomoravský kraj, dotační portál (2026-11-10): úřední deska `kr-jihomoravsky.cz`
+    # je od 1. 9. za přihlášením a nesla data sejmutí místo lhůt. Portál vrací
+    # programy jako datový proud RSC; parser je deterministický (`extractors/jmk_edotace.py`).
+    "jmk_edotace": (["jmk_edotace.py"], "html"),
+    # dotaceeu.cz (2026-11-10): výzvy z MS2021+ jen pro programy, které jiný zdroj
+    # nečte (OP Rybářství, OP AMIF, OP FVB, OP NSHV, finanční nástroje).
+    "dotaceeu.cz": (["dotaceeu.py"], "html"),
     "opzp": (["opzp.py"], "html"),
     "osf": (["osf.py"], "html"),
     # ⚠ S ROZPOČTEM (2026‑09‑23): dvacet webů obvodů se do stropu kroku

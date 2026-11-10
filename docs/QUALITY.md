@@ -1,92 +1,91 @@
 # Kvalita datové základny
 
-Změřeno k **2026-11-09** skriptem `scripts/quality_report.py`. Čísla u živých záznamů (open · announced · unknown) jsou ta, která vidí uživatel; archiv je uvedený vedle.
+Změřeno k **2026-11-10** skriptem `scripts/quality_report.py`. Čísla u živých záznamů (open · announced · unknown) jsou ta, která vidí uživatel; archiv je uvedený vedle.
 
 ## Rozsah
 
 | | |
 |---|---:|
-| záznamů celkem | 4257 |
-| z toho výzev | 4232 |
-| **živých k dnešku** | **1863** |
+| záznamů celkem | 4234 |
+| z toho výzev | 4209 |
+| **živých k dnešku** | **1850** |
 | zdrojů | 136 |
-| stav | open 550 · announced 377 · unknown 936 · closed 2369 |
-| dosah živých | místní 527 · krajský 582 · celostátní 310 · mezinárodní 10 · EU centrální 434 |
-| druh lhůty u živých | jedna lhůta 909 · průběžně 61 · opakovaně 157 · neuvedeno 736 |
+| stav | open 539 · announced 378 · unknown 933 · closed 2359 |
+| dosah živých | místní 527 · krajský 563 · celostátní 317 · mezinárodní 10 · EU centrální 433 |
+| druh lhůty u živých | jedna lhůta 899 · průběžně 61 · opakovaně 158 · neuvedeno 732 |
 
 ## Vyplněnost polí
 
 | pole | živé | archiv |
 |---|---:|---:|
-| lhůta | 49.8 % (927) | 77.9 % (3296) |
-| částka pro žadatele | 5.0 % (93) | 6.5 % (274) |
-| kdo smí žádat (text) | 67.1 % (1251) | 61.2 % (2589) |
-| typ žadatele (faseta) | 42.0 % (782) | 38.9 % (1645) |
-| oblast | 71.1 % (1325) | 83.5 % (3532) |
-| území | 99.9 % (1861) | 100.0 % (4230) |
-| jak podat | 82.1 % (1530) | 89.9 % (3803) |
-| zdrojový dokument | 83.3 % (1552) | 88.2 % (3731) |
-| kontakt | 11.9 % (221) | 13.7 % (579) |
-| dokumenty | 13.3 % (247) | 16.3 % (688) |
-| číslo výzvy | 36.3 % (677) | 46.0 % (1945) |
+| lhůta | 49.6 % (917) | 77.8 % (3276) |
+| částka pro žadatele | 5.1 % (94) | 6.6 % (277) |
+| kdo smí žádat (text) | 67.9 % (1256) | 61.5 % (2590) |
+| typ žadatele (faseta) | 42.5 % (787) | 39.1 % (1645) |
+| oblast | 71.4 % (1321) | 83.6 % (3517) |
+| území | 99.9 % (1848) | 100.0 % (4207) |
+| jak podat | 82.2 % (1521) | 89.9 % (3784) |
+| zdrojový dokument | 83.2 % (1539) | 88.1 % (3708) |
+| kontakt | 11.9 % (220) | 13.7 % (578) |
+| dokumenty | 12.6 % (234) | 15.7 % (662) |
+| číslo výzvy | 36.3 % (672) | 45.9 % (1930) |
 
 ## Čerstvost živých záznamů
 
 | ověřeno u zdroje | záznamů |
 |---|---:|
-| do 7 dnů | 1359 |
-| do 30 dnů | 35 |
+| do 7 dnů | 1370 |
+| do 30 dnů | 34 |
 | starší | 20 |
-| nevíme (bez razítka) | 449 |
+| nevíme (bez razítka) | 426 |
 
 ## Doložitelnost
 
-Citací celkem 17816, ve zdroji dohledaných **8937 (50.2 %)**. Nedohledaná citace nedokládá nic; produkt u takového pole původ neukazuje jako doložený.
+Citací celkem 17641, ve zdroji dohledaných **8970 (50.8 %)**. Nedohledaná citace nedokládá nic; produkt u takového pole původ neukazuje jako doložený.
 
 | pole (živé) | má hodnotu | parser | model | dopočet | doloženo citací |
 |---|---:|---:|---:|---:|---:|
-| amount | 93 | 19 | 74 | 0 | 63.4 % |
-| deadline | 927 | 164 | 761 | 2 | 61.3 % |
-| eligible_applicants | 1251 | 385 | 866 | 0 | 17.3 % |
-| focus_area | 1751 | 646 | 1105 | 0 | 17.2 % |
-| oblast | 1325 | 174 | 1151 | 0 | 18.4 % |
-| open_from | 935 | 174 | 761 | 0 | 6.3 % |
-| region | 1861 | 709 | 1152 | 0 | 13.4 % |
-| typ_zadatele | 782 | 369 | 413 | 0 | 9.6 % |
+| amount | 94 | 19 | 75 | 0 | 61.7 % |
+| deadline | 917 | 157 | 758 | 2 | 63.2 % |
+| eligible_applicants | 1256 | 385 | 871 | 0 | 17.1 % |
+| focus_area | 1745 | 639 | 1106 | 0 | 17.2 % |
+| oblast | 1321 | 174 | 1147 | 0 | 18.4 % |
+| open_from | 923 | 165 | 758 | 0 | 6.3 % |
+| region | 1848 | 700 | 1148 | 0 | 13.5 % |
+| typ_zadatele | 787 | 369 | 418 | 0 | 9.4 % |
 
 ## Rodiny ročníků
 
-380 programů má víc než jeden záznam; 324 z nich se vyhlašuje opakovaně (dva a víc ročníků); 417 starších ročníků nese `variant_of`.
+378 programů má víc než jeden záznam; 322 z nich se vyhlašuje opakovaně (dva a víc ročníků); 417 starších ročníků nese `variant_of`.
 
 ## Zdroje
 
 | stav | zdrojů | živých záznamů |
 |---|---:|---:|
-| ok (ověřeno do 21 dnů) | 120 | 1765 |
+| ok (ověřeno do 21 dnů) | 122 | 1776 |
 | stárne (nad 21 dnů) | 1 | 2 |
-| má cestu, nikdy neověřeno | 9 | 74 |
+| má cestu, nikdy neověřeno | 8 | 69 |
 | bez zapsané cesty k obnově | 3 | 0 |
-| zmrazený | 3 | 22 |
+| zmrazený | 2 | 3 |
 
 | zdroj | typ | obnova | záznamů | živých | ověřeno | stav |
 |---|---|---|---:|---:|---|---|
-| Evropská komise (Funding & Tenders) (`eu_ft`) | evropska_komise | B | 779 | 434 | 2026-11-08 | ok |
+| Evropská komise (Funding & Tenders) (`eu_ft`) | evropska_komise | B | 779 | 433 | 2026-11-08 | ok |
 | Kraj Vysočina (Fond Vysočiny) (`fondvysociny.cz`) | samosprava_kraj | A | 316 | 234 | 2026-11-08 | ok |
 | Královéhradecký kraj (`dotace.khk.cz`) | samosprava_kraj | A | 206 | 84 | 2026-11-08 | ok |
 | Město Ústí nad Labem (`dotace.usti-nad-labem.cz`) | samosprava_obec | A | 90 | 80 | 2026-11-08 | ok |
 | IROP (MMR) (`irop.gov.cz`) | ministerstvo | A | 120 | 55 | 2026-11-08 | ok |
-| Středočeský kraj (`stredoceskykraj.cz`) | samosprava_kraj | A | 99 | 46 | 2026-11-08 | ok |
+| Středočeský kraj (`stredoceskykraj.cz`) | samosprava_kraj | A | 99 | 45 | 2026-11-08 | ok |
 | Liberecký kraj (`dotace.kraj-lbc.cz`) | samosprava_kraj | A | 138 | 44 | 2026-11-08 | ok |
 | Ministerstvo zdravotnictví (`mzcr`) | ministerstvo | C | 83 | 41 |  | neovereno |
-| Město Hodonín (`hodonin.eu`) | samosprava_obec | A | 97 | 40 | 2026-11-08 | ok |
+| Město Hodonín (`hodonin.eu`) | samosprava_obec | A | 97 | 40 | 2026-11-10 | ok |
 | Hlavní město Praha (`praha.eu`) | samosprava_kraj | A | 39 | 38 | 2026-11-08 | ok |
 | Město Ostrava (`dotace.ostrava.cz`) | samosprava_obec | A | 46 | 34 | 2026-11-08 | ok |
 | Praha 3 (`dotace.praha3.cz`) | samosprava_obec | A | 35 | 33 | 2026-11-08 | ok |
 | Moravskoslezský kraj (`msk.cz`) | samosprava_kraj | A | 115 | 30 | 2026-11-08 | ok |
 | Obec Chýně (`dotace.chyne.cz`) | samosprava_obec | A | 27 | 26 | 2026-11-08 | ok |
-| Karlovarský kraj (`kr-karlovarsky.cz`) | samosprava_kraj | A | 86 | 24 | 2026-11-08 | ok |
-| Město Tábor (`taborcz.eu`) | samosprava_obec | A | 21 | 21 | 2026-11-08 | ok |
-| Jihomoravský kraj (`kr-jihomoravsky.cz`) | samosprava_kraj | F | 34 | 19 |  | zmrazeny |
+| Karlovarský kraj (`kr-karlovarsky.cz`) | samosprava_kraj | A | 86 | 23 | 2026-11-08 | ok |
+| Město Tábor (`taborcz.eu`) | samosprava_obec | A | 21 | 21 | 2026-11-10 | ok |
 | Ústecký kraj (`kr-ustecky.cz`) | samosprava_kraj | A | 113 | 18 | 2026-11-08 | ok |
 | Ministerstvo školství, mládeže a tělovýchovy (`msmt`) | ministerstvo | B | 30 | 17 | 2026-11-08 | ok |
 | Město Mělník (`dotace.melnik.cz`) | samosprava_obec | A | 29 | 16 | 2026-11-08 | ok |
@@ -98,6 +97,7 @@ Citací celkem 17816, ve zdroji dohledaných **8937 (50.2 %)**. Nedohledaná cit
 | Ministerstvo kultury (`mkcr`) | ministerstvo | C | 28 | 14 |  | neovereno |
 | Nadace (OSF, Vodafone, Abakus, LPR, CLF) (`nadace_spa`) | nadace | B | 17 | 14 | 2026-11-08 | ok |
 | Praha 12 (`dotace.praha12.cz`) | samosprava_obec | A | 16 | 13 | 2026-11-08 | ok |
+| Dotace EU (MMR) (`dotaceeu.cz`) | ministerstvo | B | 21 | 13 | 2026-11-10 | ok |
 | Město Plzeň (`dotace.plzen.eu`) | samosprava_obec | A | 30 | 12 | 2026-11-08 | ok |
 | Státní fond životního prostředí (`sfzp`) | statni_fond | C | 23 | 12 | 2026-11-09 | ok |
 | Město Dobříš (`dotace.mestodobris.cz`) | samosprava_obec | A | 12 | 11 | 2026-11-08 | ok |
@@ -118,7 +118,7 @@ Citací celkem 17816, ve zdroji dohledaných **8937 (50.2 %)**. Nedohledaná cit
 | Praha 11 (`dotace.praha11.cz`) | samosprava_obec | A | 11 | 7 | 2026-11-08 | ok |
 | Praha 14 (`dotace.praha14.cz`) | samosprava_obec | A | 10 | 7 | 2026-11-08 | ok |
 | Česko‑německý fond budoucnosti (`fondbudoucnosti`) | nadacni_fond | P | 23 | 7 | 2026-11-09 | ok |
-| Město Kladno (`mestokladno.cz`) | samosprava_obec | A | 7 | 7 | 2026-11-08 | ok |
+| Město Kladno (`mestokladno.cz`) | samosprava_obec | A | 7 | 7 | 2026-11-10 | ok |
 | Ministerstvo pro místní rozvoj (`mmr`) | ministerstvo | C | 19 | 7 | 2026-11-09 | ok |
 | Nadace Via (`nadacevia`) | nadace | B | 27 | 7 | 2026-11-08 | ok |
 | OP Jan Amos Komenský (MŠMT) (`opjak`) | ministerstvo | B | 8 | 7 | 2026-11-08 | ok |
@@ -131,16 +131,15 @@ Citací celkem 17816, ve zdroji dohledaných **8937 (50.2 %)**. Nedohledaná cit
 | Ministerstvo průmyslu a obchodu (`mpo`) | ministerstvo | C | 8 | 6 | 2026-11-09 | ok |
 | Město Česká Lípa (`mucl.cz`) | samosprava_obec | A | 14 | 6 | 2026-11-08 | ok |
 | Nadace ČEZ (`nadacecez`) | firemni_nadace | C | 16 | 6 |  | neovereno |
-| Státní fond audiovize (`sfa`) | statni_fond | C | 8 | 6 | 2026-11-09 | ok |
 | Sociální nadační fond Praha (`socialninadacnifond`) | nadacni_fond | P | 10 | 6 | 2026-11-09 | ok |
 | Město Bystřice (`dotace.mestobystrice.cz`) | samosprava_obec | A | 7 | 5 | 2026-11-08 | ok |
-| Dotace EU (MMR) (`dotaceeu.cz`) | ministerstvo | A | 13 | 5 |  | neovereno |
 | Jihočeský kraj (`kraj-jihocesky.cz`) | samosprava_kraj | A | 11 | 5 | 2026-11-08 | ok |
 | Město Jablonec nad Nisou (`mestojablonec.cz`) | samosprava_obec | A | 14 | 5 | 2026-11-08 | ok |
 | Město Karlovy Vary (`mmkv.cz`) | samosprava_obec | A | 8 | 5 | 2026-11-08 | ok |
 | OP Doprava (MD) (`opd`) | ministerstvo | B | 12 | 5 | 2026-11-08 | ok |
+| Státní fond audiovize (`sfa`) | statni_fond | C | 8 | 5 | 2026-11-09 | ok |
 | Město Třinec (`trinecko.cz`) | samosprava_obec | A | 6 | 5 | 2026-11-08 | ok |
-| Město Hradec Králové (`hradeckralove.org`) | samosprava_obec | A | 4 | 4 | 2026-11-08 | ok |
+| Město Hradec Králové (`hradeckralove.org`) | samosprava_obec | A | 4 | 4 | 2026-11-10 | ok |
 | Hasičský záchranný sbor ČR (MV) (`hzs`) | ministerstvo | B | 4 | 4 |  | neovereno |
 | Interreg (CZ‑PL, SK‑CZ) (`interreg`) | zahranicni_fond | B | 6 | 4 | 2026-11-08 | ok |
 | Olomoucký kraj (`olkraj.cz`) | samosprava_kraj | A | 11 | 4 | 2026-11-08 | ok |
@@ -160,8 +159,9 @@ Citací celkem 17816, ve zdroji dohledaných **8937 (50.2 %)**. Nedohledaná cit
 | Státní fond podpory investic (`sfpi`) | statni_fond | F | 6 | 3 |  | zmrazeny |
 | Město Teplice (`teplice.cz`) | samosprava_obec | A | 7 | 3 | 2026-11-08 | ok |
 | Město Liberec (`granty.liberec.cz`) | samosprava_obec | A | 7 | 2 | 2026-11-08 | ok |
+| Jihomoravský kraj (`jmk_edotace`) | samosprava_kraj | B | 3 | 2 | 2026-11-10 | ok |
 | Ministerstvo kultury (`mk`) | ministerstvo | B | 53 | 2 | 2026-10-09 | starne |
-| Město Kolín (`mukolin.cz`) | samosprava_obec | A | 10 | 2 | 2026-11-08 | ok |
+| Město Kolín (`mukolin.cz`) | samosprava_obec | A | 10 | 2 | 2026-11-10 | ok |
 | Ministerstvo vnitra (`mv`) | ministerstvo | P | 7 | 2 | 2026-11-09 | ok |
 | Ministerstvo životního prostředí (`mzp`) | ministerstvo | P | 8 | 2 | 2026-11-09 | ok |
 | Nadace Agrofert (`nadace-agrofert`) | firemni_nadace | P | 5 | 2 | 2026-11-09 | ok |
@@ -173,7 +173,7 @@ Citací celkem 17816, ve zdroji dohledaných **8937 (50.2 %)**. Nedohledaná cit
 | Plzeňský kraj (`dotace.plzensky-kraj.cz`) | samosprava_kraj | C | 20 | 1 |  | neovereno |
 | Nadání Josefa, Marie a Zdeňky Hlávkových (`hlavka`) | nadace | C | 4 | 1 | 2026-11-09 | ok |
 | Nadační fond Krása pomoci (`krasapomoci`) | nadacni_fond | P | 2 | 1 | 2026-11-09 | ok |
-| Město Krnov (`krnov.cz`) | samosprava_obec | A | 3 | 1 | 2026-11-08 | ok |
+| Město Krnov (`krnov.cz`) | samosprava_obec | A | 3 | 1 | 2026-11-10 | ok |
 | Nadace Leontinka (`leontinka`) | nadace | C | 2 | 1 | 2026-11-09 | ok |
 | Město Mladá Boleslav (`mb-net.cz`) | samosprava_obec | A | 4 | 1 | 2026-11-08 | ok |
 | Nadace České spořitelny (`nadacecs`) | firemni_nadace | P | 2 | 1 | 2026-11-09 | ok |
@@ -181,7 +181,7 @@ Citací celkem 17816, ve zdroji dohledaných **8937 (50.2 %)**. Nedohledaná cit
 | Město Nové Město nad Metují (`novemestonm.dsw2.otevrenamesta.cz`) |  | A | 1 | 1 | 2026-11-08 | ok |
 | Národní sportovní agentura (`nsa`) | statni_agentura | B | 21 | 1 | 2026-11-08 | ok |
 | Praha 6 (`praha6.dsw2.otevrenamesta.cz`) | samosprava_obec | A | 2 | 1 | 2026-11-08 | ok |
-| Město Sokolov (`sokolov.cz`) | samosprava_obec | A | 3 | 1 | 2026-11-08 | ok |
+| Město Sokolov (`sokolov.cz`) | samosprava_obec | A | 3 | 1 | 2026-11-10 | ok |
 | Nadační fond Albert (`albert`) | firemni_nadace | C | 3 | 0 | 2026-11-09 | ok |
 | Praha 4 (`dotace.praha4.cz`) | samosprava_obec | A | 1 | 0 | 2026-11-08 | ok |
 | Praha 8 (`dotace.praha8.cz`) | samosprava_obec | A | 3 | 0 | 2026-11-08 | ok |
@@ -190,9 +190,9 @@ Citací celkem 17816, ve zdroji dohledaných **8937 (50.2 %)**. Nedohledaná cit
 | Konto Bariéry (`kontobariery`) |  | ? | 1 | 0 |  | bez_cesty |
 | Praha 18 (Letňany) (`letnany.cz`) | samosprava_obec | A | 2 | 0 |  | neovereno |
 | Praha‑Libuš (`libus.dsw2.otevrenamesta.cz`) | samosprava_obec | A | 4 | 0 | 2026-11-08 | ok |
-| Město Most (`mesto-most.cz`) | samosprava_obec | A | 10 | 0 | 2026-11-08 | ok |
+| Město Most (`mesto-most.cz`) | samosprava_obec | A | 10 | 0 | 2026-11-10 | ok |
 | Ministerstvo práce a sociálních věcí (`mpsv`) | ministerstvo | C | 11 | 0 | 2026-11-09 | ok |
-| Město Litvínov (`mulitvinov.cz`) | samosprava_obec | A | 1 | 0 | 2026-11-08 | ok |
+| Město Litvínov (`mulitvinov.cz`) | samosprava_obec | A | 1 | 0 | 2026-11-10 | ok |
 | Nadace ČEZ (`nadacecez.cz`) | nadace | P | 1 | 0 | 2026-11-09 | ok |
 | Nadace O2 (`nadaceo2.cz`) | nadace | P | 1 | 0 | 2026-11-09 | ok |
 | Nadace táta a máma (`nadacetm`) |  | ? | 1 | 0 |  | bez_cesty |

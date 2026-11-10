@@ -55,12 +55,12 @@ Třídy obnovy (`data/sources.json`, sloupec `refresh`):
 
 | třída | cesta | zdrojů |
 |---|---|---:|
-| A | harvest → strukturní ingest (`ingest_kraj`, `ingest_dotis`, rodiny vismo / dsw2 / kentico / plone) | 70 |
-| B | harvest → `scripts/extractors/<slug>.py` → `ingest_rich` | 22 |
+| A | harvest → strukturní ingest (`ingest_kraj`, `ingest_dotis`, rodiny vismo / dsw2 / kentico / plone) | 69 |
+| B | harvest → `scripts/extractors/<slug>.py` → `ingest_rich` | 24 |
 | C | harvest → `build_extract_input` → `extract_api.py` (model) nebo agenti (`extract_manual.py`) → `ingest_rich` | 22 |
 | P | bez sběrače: `refresh_pages.py` ověří stránky, které katalog zná (citace lhůty stojí → razítko), změněné přečte model nebo agent → `ingest_rich` | 16 |
 | T | „extraktor" opisuje červnová data, obnovu jen předstírá; bez harvesteru | 0 |
-| F | zmrazený (zdroj za přihlášením nebo mrtvý) | 3 |
+| F | zmrazený (zdroj za přihlášením nebo mrtvý) | 2 |
 | ? | jednorázový sběr bez zapsané cesty k obnově | 3 |
 
 ## Pevná pravidla
@@ -101,6 +101,7 @@ tests/              test_core · test_identity · test_notacall · test_fix · t
 | Kontrakt exportu (1.2) | [`docs/EXPORT.md`](docs/EXPORT.md) |
 | Obnova: třídy, kadence, pojistky | [`docs/REFRESH.md`](docs/REFRESH.md) |
 | Kvalita dat, stav zdrojů | [`docs/QUALITY.md`](docs/QUALITY.md) |
+| **Co v katalogu chybí** (poskytovatelé, priority, cesta) | [`docs/coverage.md`](docs/coverage.md) poslední oddíl |
 | Jak pracovat, pasti | [`docs/SESSION_PLAYBOOK.md`](docs/SESSION_PLAYBOOK.md) |
 | Co zbývá, blokery | [`REMAINING.md`](REMAINING.md) |
 | Rodiny CMS, detekce | [`docs/platform_playbook.md`](docs/platform_playbook.md) · [`docs/detection.md`](docs/detection.md) |
