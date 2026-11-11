@@ -492,6 +492,52 @@ def check_catalog_identity():
     print(f"    ({len(seen)} unikátních id, žádné chybějící)")
 
 
+# Kolik programů smí mít víc otevřených ročníků se začátkem příjmu v témže
+# roce. Dva jsou známé a neškodné (obecná a ročníková stránka téhož programu
+# v Dobříši a Pardubickém kraji); práh nechává místo na pár dalších, ne na
+# celý zdroj.
+MAX_SAME_YEAR_ROUNDS = 5
+
+
+def check_one_round_per_year():
+    """Jeden program nemá v jednom roce víc otevřených ročníků.
+
+    ⚠ NAMĚŘENO 2026-11-11 v produktu. Hodonín měl u pěti programů dva až tři
+    ročníky „otevřené od 1. 11. 2026“: stránky z let 2017 až 2022, jejichž
+    lhůtě psané bez roku doplnila vrstva 2 rok čtení. Každý z těch záznamů byl
+    formálně v pořádku (platné datum, název, id, citace), takže žádná kontrola
+    jednotlivého záznamu to chytit nemohla. Vidět je to až na rodině: tentýž
+    program u téhož poskytovatele nezačíná přijímat žádosti dvakrát v jednom
+    roce. Víceletý program (příjem od loňska i od letoška, lhůta za tři roky)
+    má začátky v různých letech a sem nepatří.
+
+    Opravu dělá `fix_dataset.round_from_listing`, kde výpis nese datum
+    vyvěšení. Tahle kontrola hlídá výsledek u všech zdrojů, i tam, kde ta
+    opora chybí: pár známých dvojic projde, skok nad práh ne.
+    """
+    sys.path.insert(0, os.path.join(ROOT, "scripts"))
+    from enrich import program_key
+
+    families = {}
+    for rec in _ke_zverejneni():
+        if rec.get("kind") != "grant" or rec.get("status") != "open":
+            continue
+        start = rec.get("open_from")
+        if not (isinstance(start, str) and len(start) >= 4 and start[:4].isdigit()):
+            continue
+        key = program_key(rec)
+        if key:
+            families.setdefault((rec.get("source"), key, start[:4]), []).append(rec)
+    doubled = {k: v for k, v in families.items() if len(v) > 1}
+    for (source, _key, year), recs in sorted(doubled.items(), key=lambda kv: str(kv[0])):
+        print(f"    ! {source} {year}: {len(recs)}× otevřeno „{(recs[0].get('title') or '')[:60]}“")
+    if len(doubled) > MAX_SAME_YEAR_ROUNDS:
+        raise RuntimeError(
+            f"{len(doubled)} programů má víc otevřených ročníků se začátkem v témže roce "
+            f"(práh {MAX_SAME_YEAR_ROUNDS}); nejspíš lhůta bez roku s doplněným rokem čtení")
+    print(f"    ({len(doubled)} programů s více otevřenými ročníky v témže roce, práh {MAX_SAME_YEAR_ROUNDS})")
+
+
 def main():
     print("# VALIDATE RELEASE\n")
     check("compile all .py", compile_all)
@@ -501,6 +547,7 @@ def main():
     check("kontrakt publikovaného exportu", check_product_contract)
     check("kvalita dat (termíny, tituly)", check_data_quality)
     check("výzvy, ne oznámení výsledků", check_only_calls)
+    check("jeden otevřený ročník programu v roce", check_one_round_per_year)
     check("identita záznamů v katalogu", check_catalog_identity)
     check("propad počtu záznamů (brána)", check_no_collapse)
     check("vyschlý zdroj (brána)", check_no_source_collapse)
