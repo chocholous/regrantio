@@ -262,12 +262,24 @@ def clean_text(value):
 #
 # Když se částka rovná alokaci, nevíme, kolik dostane jeden žadatel → null.
 # Alokace zůstává ve `facets.vyse_alokace_czk` a produkt ji ukazuje zvlášť.
+# ⚠ NAMĚŘENO 2026-11-11: jedenáct výzev mělo částku 50, 70 nebo 80 Kč a produkt
+# u nich psal „až 50 Kč“. Je to míra podpory („nejvýše 70 % nákladů“) nebo
+# tisíce bez jednotky („50 tis.“) přečtené jako koruny. Které z toho, číslo
+# samo neříká, takže se nedomýšlí: částka pod tisíc korun není částka.
+MIN_AMOUNT_CZK = 1000
+
+
 def amount_per_applicant(rec):
-    """Vrátí (amount, vyse_max_zadatel_czk) po pravidle „částka není alokace"."""
+    """Vrátí (amount, vyse_max_zadatel_czk) po pravidlech „částka není alokace"
+    a „pod tisíc korun to není částka"."""
     f = rec.get("facets") or {}
     alok = f.get("vyse_alokace_czk")
     amount = rec.get("amount")
     maxz = f.get("vyse_max_zadatel_czk")
+    if isinstance(amount, (int, float)) and amount < MIN_AMOUNT_CZK:
+        amount = None
+    if isinstance(maxz, (int, float)) and maxz < MIN_AMOUNT_CZK:
+        maxz = None
     if alok is not None:
         # Rovná alokaci = je to alokace. Vyšší než alokace = špatně přečtené
         # číslo (strop na žadatele nemůže být víc, než výzva rozdělí celkem).

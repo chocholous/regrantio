@@ -19,7 +19,7 @@ Změřeno k **2026-11-11** skriptem `scripts/quality_report.py`. Čísla u živ�
 | pole | živé | archiv |
 |---|---:|---:|
 | lhůta | 49.6 % (903) | 78.2 % (3299) |
-| částka pro žadatele | 4.4 % (81) | 6.5 % (276) |
+| částka pro žadatele | 4.3 % (78) | 6.3 % (265) |
 | kdo smí žádat (text) | 66.9 % (1219) | 61.4 % (2589) |
 | typ žadatele (faseta) | 41.5 % (755) | 39.0 % (1644) |
 | oblast | 70.5 % (1284) | 83.4 % (3516) |
@@ -45,7 +45,7 @@ Citací celkem 17629, ve zdroji dohledaných **8952 (50.8 %)**. Nedohledaná cit
 
 | pole (živé) | má hodnotu | parser | model | dopočet | doloženo citací |
 |---|---:|---:|---:|---:|---:|
-| amount | 81 | 19 | 62 | 0 | 58.0 % |
+| amount | 78 | 17 | 61 | 0 | 57.7 % |
 | deadline | 903 | 157 | 736 | 10 | 62.0 % |
 | eligible_applicants | 1219 | 385 | 834 | 0 | 16.7 % |
 | focus_area | 1708 | 639 | 1069 | 0 | 16.3 % |

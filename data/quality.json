@@ -31,10 +31,10 @@
 			"all_pct": 78.2
 		},
 		"amount": {
-			"live": 81,
-			"live_pct": 4.4,
-			"all": 276,
-			"all_pct": 6.5
+			"live": 78,
+			"live_pct": 4.3,
+			"all": 265,
+			"all_pct": 6.3
 		},
 		"eligible_applicants": {
 			"live": 1219,
@@ -104,12 +104,12 @@
 	},
 	"provenance_live": {
 		"amount": {
-			"present": 81,
-			"parsed": 19,
-			"model": 62,
+			"present": 78,
+			"parsed": 17,
+			"model": 61,
 			"derived": 0,
-			"cited": 47,
-			"cited_pct": 58.0
+			"cited": 45,
+			"cited_pct": 57.7
 		},
 		"deadline": {
 			"present": 903,

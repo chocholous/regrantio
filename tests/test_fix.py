@@ -61,6 +61,13 @@ def test_chybejici_castka_se_doplni_ze_stropu():
     assert amount_per_applicant(_rec(None, alok=21_000_000, maxz=400_000)) == (400_000, 400_000)
 
 
+def test_castka_pod_tisic_korun_neni_castka():
+    # „nejvýše 70 %“ nebo „50 tis.“ přečtené jako koruny (2026-11-11)
+    assert amount_per_applicant(_rec(70, alok=220_000, maxz=70)) == (None, None)
+    assert amount_per_applicant(_rec(50, maxz=50)) == (None, None)
+    assert amount_per_applicant(_rec(1_000)) == (1_000, None)
+
+
 def test_strop_vyssi_nez_alokace_je_spatne_prectene_cislo():
     # „125 000 Kč / 5 000 EUR" slepené do 1 250 005 000 při alokaci 5 mil.
     assert amount_per_applicant(_rec(None, alok=5_000_000, maxz=1_250_005_000)) == (None, None)
