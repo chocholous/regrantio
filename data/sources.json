@@ -162,7 +162,7 @@
 		"refresh": "A",
 		"harvester": "plzen_mesto_harvest.py",
 		"records": 30,
-		"live": 12,
+		"live": 11,
 		"last_fetched": "2026-11-08"
 	},
 	"dotace.plzensky-kraj.cz": {
@@ -349,7 +349,7 @@
 		"refresh": "B",
 		"harvester": "eu_ft.py",
 		"records": 779,
-		"live": 433,
+		"live": 430,
 		"last_fetched": "2026-11-08"
 	},
 	"fondbudoucnosti": {
@@ -458,9 +458,9 @@
 		"type": "samosprava_obec",
 		"refresh": "A",
 		"harvester": "vismo.py",
-		"records": 97,
-		"live": 40,
-		"last_fetched": "2026-11-10"
+		"records": 105,
+		"live": 20,
+		"last_fetched": "2026-11-11"
 	},
 	"hradeckralove.org": {
 		"name": "Město Hradec Králové",
@@ -503,7 +503,7 @@
 		"refresh": "B",
 		"harvester": "intl_funds.py",
 		"records": 6,
-		"live": 6,
+		"live": 5,
 		"last_fetched": "2026-11-08"
 	},
 	"irop.gov.cz": {
@@ -613,7 +613,7 @@
 		"refresh": "P",
 		"harvester": "refresh_pages.py",
 		"records": 2,
-		"live": 1,
+		"live": 0,
 		"last_fetched": "2026-11-09"
 	},
 	"krnov.cz": {
@@ -1163,7 +1163,7 @@
 		"refresh": "B",
 		"harvester": "opzp.py",
 		"records": 107,
-		"live": 7,
+		"live": 6,
 		"last_fetched": "2026-11-08"
 	},
 	"osf": {
@@ -1405,7 +1405,7 @@
 		"refresh": "B",
 		"harvester": "tacr.py",
 		"records": 25,
-		"live": 7,
+		"live": 5,
 		"last_fetched": "2026-11-08"
 	},
 	"teplice.cz": {

@@ -338,6 +338,74 @@ def majority_types(recs):
     return {s: c.most_common(1)[0][0] for s, c in by.items()}
 
 
+def round_from_listing(open_from, deadline, published, section):
+    """Lhůty starého ročníku vrátí do roku, kdy byla stránka vyvěšena.
+
+    ⚠ NAMĚŘENO 2026-11-11: dvanáct stránek Hodonína z let 2017 až 2022 mělo
+    v katalogu příjem žádostí „od 1. 11. 2026 do 21. 12. 2026“ a v produktu
+    stály mezi výzvami, o které jde žádat teď. Program uvádí lhůtu bez roku
+    („do 21. 12.“), vrstva 2 doplnila rok čtení. Výpis úřední desky přitom nese
+    datum vyvěšení i oddíl „Dotační programy rok 2018“.
+
+    Pravidlo: stránka z oddílu s rokem nezačíná přijímat žádosti rok a víc
+    po svém vyvěšení (program vyvěšený 19. 9. 2025 s příjmem „od 1. 11.“
+    přijímá od 1. 11. 2025, ne 2026); kde začátek příjmu chybí, nesmí lhůta
+    ležet dva a víc let za rokem vyvěšení. Takový záznam se posune o celé roky
+    zpět na první výskyt téhož dne po vyvěšení. Víceletý program (příjem začal
+    včas, lhůta za tři roky) zůstává, stejně jako stránka z oddílu bez roku:
+    tu může město každý rok přepisovat na místě a datum vyvěšení o ročníku
+    nic neříká.
+
+    Vrací (open_from, deadline) po opravě, nebo None, když není co opravit.
+    """
+    if not published or not re.search(r"20[0-9]{2}", section or ""):
+        return None
+    iso = re.compile(r"^(20[0-9]{2})-([0-9]{2})-([0-9]{2})$")
+    anchor = open_from if isinstance(open_from, str) and iso.match(open_from) else deadline
+    m = iso.match(anchor) if isinstance(anchor, str) else None
+    if not m:
+        return None
+    year, md = int(m.group(1)), (int(m.group(2)), int(m.group(3)))
+    if anchor is open_from:
+        stale = anchor >= f"{published.year + 1:04d}-{published.month:02d}-{published.day:02d}"
+    else:
+        stale = year - published.year >= 2
+    if not stale:
+        return None
+    target = published.year if md >= (published.month, published.day) else published.year + 1
+    shift = year - target
+
+    def back(value):
+        mm = iso.match(value) if isinstance(value, str) else None
+        if not mm:
+            return value
+        y, mo, d = int(mm.group(1)) - shift, int(mm.group(2)), int(mm.group(3))
+        if (mo, d) == (2, 29) and not (y % 4 == 0 and (y % 100 != 0 or y % 400 == 0)):
+            d = 28
+        return f"{y:04d}-{mo:02d}-{d:02d}"
+
+    return back(open_from), back(deadline)
+
+
+def load_listing_dates(path=os.path.join("data", "vismo_listing.jsonl")):
+    """adresa stránky → (datum vyvěšení, oddíl) z výpisu úřední desky; {} bez souboru."""
+    out = {}
+    if not os.path.exists(path):
+        return out
+    for line in open(path, encoding="utf-8"):
+        if not line.strip():
+            continue
+        row = json.loads(line)
+        m = re.match(r" *([0-9]{1,2})[.] *([0-9]{1,2})[.] *(20[0-9]{2})", row.get("date") or "")
+        if not m or not row.get("url"):
+            continue
+        try:
+            out[row["url"]] = (date(int(m.group(3)), int(m.group(2)), int(m.group(1))), row.get("section") or "")
+        except ValueError:
+            continue
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--in", dest="inp", default="data/opportunities.jsonl")
@@ -416,6 +484,26 @@ def main():
         if d is not None and not (isinstance(d, str) and HTTP_URL.match(d.strip())):
             r["source_doc"] = None
             doc_cleared += 1
+
+    # ---- A10) starý ročník s letošním rokem (viz round_from_listing) ----
+    # ⚠ PŘED DEDUPEM A3: ten slučuje podle (zdroj, název, lhůta). Dokud starý
+    # ročník nesl letošní lhůtu, sloučil se s letošním a zmizel ten pravý.
+    listing = load_listing_dates()
+    rounds_fixed = []
+    for r in recs:
+        hit = listing.get(r.get("source_url"))
+        if not hit or r.get("kind") != "grant":
+            continue
+        fixed = round_from_listing(r.get("open_from"), r.get("deadline"), hit[0], hit[1])
+        if not fixed or fixed == (r.get("open_from"), r.get("deadline")):
+            continue
+        rounds_fixed.append((r.get("id"), r.get("deadline"), fixed[1]))
+        extra = r.get("extra") or {}
+        r["extra"] = extra
+        extra["round_from_listing"] = {
+            "published": hit[0].isoformat(), "section": hit[1],
+            "was": [r.get("open_from"), r.get("deadline")]}
+        r["open_from"], r["deadline"] = fixed
 
     # ---- A2) variant dedup (agrofert: .cz apify kopie překrývající bohatší bare-slug) ----
     def ntitle(r):
@@ -653,6 +741,10 @@ def main():
         for s, c in unresolved.most_common():
             print(f"      {s}: {c}")
 
+    if rounds_fixed:
+        print(f"\n=== A10) starý ročník s rokem čtení → rok vyvěšení: {len(rounds_fixed)} ===")
+        for rid, was, now in rounds_fixed[:20]:
+            print(f"  {rid}: {was} → {now}")
     print(f"\n=== C) přepočet statusu k {today.isoformat()} ===")
     for k, c in sorted(transitions.items(), key=lambda x: -x[1]):
         print(f"  {k}: {c}")

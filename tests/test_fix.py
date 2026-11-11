@@ -17,7 +17,10 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "scripts"))
 
-from fix_dataset import amount_per_applicant, clean_text, fondvysociny_types, is_rolling_word  # noqa: E402
+from datetime import date  # noqa: E402
+
+from fix_dataset import (  # noqa: E402
+    amount_per_applicant, clean_text, fondvysociny_types, is_rolling_word, round_from_listing)
 from ingest_rich import _num  # noqa: E402
 
 
@@ -118,6 +121,43 @@ def test_fv_ostatni_a_prazdno_nic_netvrdi():
     assert fondvysociny_types("Právnická osoba - ostatní") == []
     assert fondvysociny_types("") == []
     assert fondvysociny_types(None) == []
+
+
+# --- starý ročník nesmí dostat rok čtení (Hodonín, 2026-11-11) ---
+def test_stary_rocnik_se_vrati_do_roku_vyveseni():
+    got = round_from_listing("2026-11-01", "2026-12-21", date(2017, 9, 15), "Dotační programy rok 2018")
+    assert got == ("2017-11-01", "2017-12-21")
+
+
+def test_lhuta_pred_dnem_vyveseni_patri_do_dalsiho_roku():
+    got = round_from_listing(None, "2026-01-31", date(2019, 9, 18), "Dotační programy rok 2020")
+    assert got == (None, "2020-01-31")
+
+
+def test_prijem_rok_po_vyveseni_je_take_spatny_rok():
+    got = round_from_listing("2026-11-01", "2026-12-10", date(2025, 9, 19), "Dotační programy rok 2026")
+    assert got == ("2025-11-01", "2025-12-10")
+
+
+def test_lhuta_pristi_rok_bez_zacatku_prijmu_zustava():
+    assert round_from_listing(None, "2026-10-31", date(2025, 9, 19), "Dotační programy rok 2026") is None
+
+
+def test_vicelety_program_zustava():
+    assert round_from_listing("2025-11-01", "2028-09-30", date(2025, 9, 19), "Dotační programy rok 2026") is None
+
+
+def test_letosni_rocnik_zustava():
+    assert round_from_listing("2026-11-01", "2026-12-10", date(2026, 9, 21), "Dotační programy rok 2027") is None
+
+
+def test_oddil_bez_roku_nic_netvrdi():
+    assert round_from_listing("2026-11-01", "2026-12-21", date(2017, 9, 15), "Dotace") is None
+
+
+def test_prubezna_lhuta_se_nemeni():
+    got = round_from_listing("2026-11-01", "průběžně", date(2017, 9, 15), "Dotační programy rok 2018")
+    assert got == ("2017-11-01", "průběžně")
 
 
 if __name__ == "__main__":

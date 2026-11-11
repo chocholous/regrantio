@@ -120,6 +120,76 @@ def submission_window(text, today=None):
     return (of.isoformat() if of else None), dl.isoformat(), q
 
 
+BARE_DATE = re.compile(r"(\d{1,2})\.\s*(\d{1,2})\.(?!\s*\d)")
+
+
+def listing_date(doc):
+    """Datum vyvěšení z výpisu úřední desky („15.9.2017“), nebo None."""
+    m = re.match(r"\s*(\d{1,2})\.\s*(\d{1,2})\.\s*(20\d\d)", doc.get("date") or "")
+    return _date(*m.groups()) if m else None
+
+
+def yearless_window(text, published, today=None):
+    """→ (open_from, deadline, doslovná věta) z lhůty psané BEZ ROKU, nebo (None, None, None).
+
+    ⚠ NAMĚŘENO 2026-11-11 (Hodonín): program píše „od 1. 11. do 10. 12.“ bez
+    roku. Pravidlo výš takovou lhůtu nečte, takže z deseti letošních programů
+    nebyl v katalogu ani jeden, a staré ročníky, kterým rok doplnil model,
+    stály mezi otevřenými. Rok tu neurčuje odhad, ale DATUM VYVĚŠENÍ z výpisu:
+    lhůta je první výskyt toho dne po vyvěšení (program vyvěšený 16. 9. 2026
+    s lhůtou „do 10. 12.“ přijímá do 10. 12. 2026). Volá se jen pro stránku
+    z oddílu s rokem („Dotační programy rok 2027“); stránku, kterou město
+    každý rok přepisuje na místě, datum vyvěšení neurčuje.
+
+    Víc termínů v jednom oddílu (tři kola individuálních dotací): jako
+    u lhůty s rokem platí nejbližší, který ještě neminul, jinak poslední.
+    """
+    today = today or datetime.date.today()
+    def after(day, month, start):
+        for year in (start.year, start.year + 1):
+            d = _date(day, month, year)
+            if d and d >= start:
+                return d
+        return None
+
+    def section_end(tail, start):
+        # „v souladu s čl. 1“ uprostřed věty je odkaz, ne další článek: dvoukolové
+        # programy (sociální oblast, děti a mládež) jím začínají a lhůty jsou až za ním.
+        for m in STOP.finditer(tail, start):
+            if re.search(r"(?:\bs|dle|podle|viz)\s+$", tail[max(0, m.start() - 8): m.start()], re.I):
+                continue
+            return m.start()
+        return len(tail)
+
+    best = None
+    for h in LHUTA_HEAD.finditer(text or ""):
+        tail = text[h.start(): h.start() + 900]
+        win = tail[: section_end(tail, h.end() - h.start())]
+        flat = re.sub(r"\([^()]*\)", " ", win)
+        starts, ends = [], []
+        for m in BARE_DATE.finditer(flat):
+            near = re.findall(r"\b(od|do|nejpozději)\b", flat[max(0, m.start() - 22): m.start()].lower())
+            kind = near[-1] if near else None
+            if kind == "od":
+                starts.append((int(m.group(1)), int(m.group(2))))
+            elif kind in ("do", "nejpozději"):
+                ends.append((int(m.group(1)), int(m.group(2))))
+        if not ends:
+            continue
+        dls = [d for d in (after(dd, mm, published) for dd, mm in ends) if d]
+        if not dls:
+            continue
+        upcoming = [d for d in dls if d >= today]
+        dl = min(upcoming) if upcoming else max(dls)
+        ofs = [d for d in (after(dd, mm, published) for dd, mm in starts) if d and d <= dl]
+        cand = (max(ofs) if ofs else None, dl, re.sub(r"\s+", " ", win).strip()[:300])
+        if best is None or closer(dl.isoformat(), best[1].isoformat(), today.isoformat()):
+            best = cand
+    if not best:
+        return None, None, None
+    return (best[0].isoformat() if best[0] else None), best[1].isoformat(), best[2]
+
+
 def closer(d, best, today):
     """Je lhůta `d` lepší než `best`? Nadcházející před minulou; z nadcházejících
     nejbližší, z minulých nejpozdější. (Tělo stránky a přílohy, ISO řetězce.)"""
@@ -230,6 +300,8 @@ def ingest(args):
     recs, stats = [], {"known": 0, "known_dated": 0, "candidates": 0, "new": 0, "fetch_fail": 0}
     for doc in listing:
         host = doc["foundation_id"]
+        if args.host and host != args.host:
+            continue
         gid = canon_key("grant", doc["title"], doc["url"])
         old = known.get(gid)
         if not old:
@@ -249,9 +321,21 @@ def ingest(args):
             o, d, q = submission_window(t, today)
             if d and closer(d, dl, today.isoformat()):
                 of, dl, quote = o, d, q
+        derived = False
+        published = listing_date(doc)
+        # Známý záznam s lhůtou se tu nepřepisuje: rok mu srovná
+        # `fix_dataset.round_from_listing`, den a měsíc přečetla vrstva 2.
+        has_deadline = bool(old and old.get("deadline"))
+        if not dl and not has_deadline and published and re.search(r"20\d\d", doc.get("section") or ""):
+            for t in texts_of(detail):
+                o, d, q = yearless_window(t, published, today)
+                if d and closer(d, dl, today.isoformat()):
+                    of, dl, quote, derived = o, d, q, True
         if not old and (not dl or datetime.date.fromisoformat(dl) < today - datetime.timedelta(days=90)):
             continue
         st, conf = compute_status(of, dl, today, title=doc["title"]) if dl else ("unknown", "low")
+        if derived:
+            conf = "derived"
         docs = [{"url": a.get("url"), "txt_path": a.get("txt_path")} for a in detail.get("attachments") or []]
         rec = {
             "kind": "grant", "source": host, "id": gid,
@@ -264,6 +348,10 @@ def ingest(args):
         }
         if dl:
             rec["citations"] = [{"field": "deadline", "value": dl, "quote": quote}]
+        if derived:
+            # Rok není v textu: odkud je, říká záznam sám (pravidlo 2, doložené odvození).
+            rec["extra"] = {"deadline_derived_rule": "rok_z_data_vyveseni",
+                            "deadline_derived_from": f"{quote} · vyvěšeno {published.isoformat()}"}
         if old:
             stats["known_dated"] += bool(dl)
             # Známý záznam: z jeho kopie se mění JEN lhůta a stav, a to jen když je
@@ -271,7 +359,12 @@ def ingest(args):
             # obohaceného záznamu to hlídá i `upsert.merge`.
             rec = dict(old)
             if dl:
-                rec.update(open_from=of or old.get("open_from"), deadline=dl, status=st, status_confidence=conf)
+                rec.update(open_from=of or (None if derived else old.get("open_from")), deadline=dl,
+                           status=st, status_confidence=conf)
+                if derived:
+                    rec["extra"] = dict(old.get("extra") or {},
+                                        deadline_derived_rule="rok_z_data_vyveseni",
+                                        deadline_derived_from=f"{quote} · vyvěšeno {published.isoformat()}")
         else:
             stats["new"] += 1
             facets = region_of.get(host) or (new_host_facets(host) if host in NEW_HOSTS else {})
@@ -282,7 +375,7 @@ def ingest(args):
                            "typ_poskytovatele": facets.get("typ_poskytovatele"),
                            "forma_podpory": ["dotace"], "zdroj_financovani": facets.get("zdroj_financovani") or [],
                            "region": facets.get("region")},
-                "extra": {"section": doc.get("section")} if doc.get("section") else {},
+                "extra": dict(rec.get("extra") or {}, **({"section": doc.get("section")} if doc.get("section") else {})),
             })
         recs.append(rec)
         print(f"  {'NOVÝ ' if not old else '     '}{host[:16]:16} {st:9} {dl or '—':10}  {doc['title'][:70]}", flush=True)
@@ -303,6 +396,7 @@ def main():
     ap.add_argument("step", choices=["harvest", "ingest"])
     ap.add_argument("--out", default=CATALOG)
     ap.add_argument("--today")
+    ap.add_argument("--host", help="jen jeden web z výpisu (ingest)")
     ap.add_argument("--timeout", type=int, default=600, help="strop na sběr jednoho webu (s)")
     ap.add_argument("--fetch-timeout", type=int, default=30, help="strop na jeden požadavek (s)")
     ap.add_argument("--max-mb", type=int, default=25)

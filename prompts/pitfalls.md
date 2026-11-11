@@ -60,6 +60,8 @@ NENÍ to:
 - **rolling/kontinuální** výzvy („do vyčerpání alokace / průběžně") = open bez fixního deadline → status open, deadline=null/„průběžně".
 - **ROK V NÁZVU víceletého programu ≠ rok příjmu žádostí** (Praha kultura): „Program podpory … v roce 2025 pro víceleté dotace na léta **2026–2029**" měl příjem žádostí s deadlinem **2024-06-26**. Rozsah let v názvu = období financování, NE okno podání. → „aktuálnost"/open ber VÝHRADNĚ z `deadline` (open_from→deadline okno vs dnešek), nikdy z roku v názvu/URL. Výběr „co je aktuální" podle roku v titulku nadhodnocuje.
 
+- **DATUM BEZ ROKU NEDOSTANE ROK ČTENÍ** (Hodonín, 2026‑11‑11): program píše „žádosti od 1. 11. do 21. 12.“ bez roku; stránky z let 2017 až 2022 tak dostaly lhůtu v roce 2026 a stály mezi otevřenými. Rok vezmi z dokumentu (rok programu v názvu nebo záhlaví, datum schválení, datum vyvěšení); když tam není, `deadline=null` a doslovná věta do `extra.deadliny`. Pojistka za modelem: `fix_dataset.round_from_listing` (výpis úřední desky s datem vyvěšení a oddílem s rokem).
+
 ### how_to_apply
 - „kontakt na agregátor (neváhejte nás kontaktovat)" ≠ jak podat u poskytovatele
 - „post-hodnoticí instrukce / ISKP21+ dokládání" ≠ prvotní podání žádosti
