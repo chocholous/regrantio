@@ -1,6 +1,6 @@
 # Kvalita datové základny
 
-Změřeno k **2026-11-11** skriptem `scripts/quality_report.py`. Čísla u živých záznamů (open · announced · unknown) jsou ta, která vidí uživatel; archiv je uvedený vedle.
+Změřeno k **2026-11-12** skriptem `scripts/quality_report.py`. Čísla u živých záznamů (open · announced · unknown) jsou ta, která vidí uživatel; archiv je uvedený vedle.
 
 ## Rozsah
 
@@ -12,7 +12,7 @@ Změřeno k **2026-11-11** skriptem `scripts/quality_report.py`. Čísla u živ�
 | zdrojů | 136 |
 | stav | open 523 · announced 380 · unknown 918 · closed 2396 |
 | dosah živých | místní 506 · krajský 563 · celostátní 313 · mezinárodní 9 · EU centrální 430 |
-| druh lhůty u živých | jedna lhůta 877 · průběžně 58 · opakovaně 156 · neuvedeno 730 |
+| druh lhůty u živých | jedna lhůta 880 · průběžně 58 · opakovaně 153 · neuvedeno 730 |
 
 ## Vyplněnost polí
 
@@ -20,14 +20,14 @@ Změřeno k **2026-11-11** skriptem `scripts/quality_report.py`. Čísla u živ�
 |---|---:|---:|
 | lhůta | 49.6 % (903) | 78.2 % (3299) |
 | částka pro žadatele | 4.3 % (78) | 6.3 % (265) |
-| kdo smí žádat (text) | 66.9 % (1219) | 61.4 % (2589) |
-| typ žadatele (faseta) | 41.5 % (755) | 39.0 % (1644) |
-| oblast | 70.5 % (1284) | 83.4 % (3516) |
+| kdo smí žádat (text) | 67.1 % (1222) | 61.5 % (2592) |
+| typ žadatele (faseta) | 41.6 % (758) | 39.1 % (1647) |
+| oblast | 70.7 % (1287) | 83.4 % (3519) |
 | území | 99.9 % (1819) | 100.0 % (4215) |
-| jak podat | 81.5 % (1484) | 89.7 % (3783) |
-| zdrojový dokument | 84.5 % (1538) | 88.1 % (3717) |
+| jak podat | 81.7 % (1487) | 89.8 % (3786) |
+| zdrojový dokument | 84.3 % (1535) | 88.1 % (3714) |
 | kontakt | 10.5 % (192) | 13.7 % (577) |
-| dokumenty | 11.3 % (205) | 15.7 % (661) |
+| dokumenty | 11.4 % (208) | 15.7 % (664) |
 | číslo výzvy | 36.6 % (666) | 45.8 % (1930) |
 
 ## Čerstvost živých záznamů
@@ -41,18 +41,18 @@ Změřeno k **2026-11-11** skriptem `scripts/quality_report.py`. Čísla u živ�
 
 ## Doložitelnost
 
-Citací celkem 17629, ve zdroji dohledaných **8952 (50.8 %)**. Nedohledaná citace nedokládá nic; produkt u takového pole původ neukazuje jako doložený.
+Citací celkem 17668, ve zdroji dohledaných **8994 (50.9 %)**. Nedohledaná citace nedokládá nic; produkt u takového pole původ neukazuje jako doložený.
 
 | pole (živé) | má hodnotu | parser | model | dopočet | doloženo citací |
 |---|---:|---:|---:|---:|---:|
 | amount | 78 | 17 | 61 | 0 | 57.7 % |
-| deadline | 903 | 157 | 736 | 10 | 62.0 % |
-| eligible_applicants | 1219 | 385 | 834 | 0 | 16.7 % |
-| focus_area | 1708 | 639 | 1069 | 0 | 16.3 % |
-| oblast | 1284 | 174 | 1110 | 0 | 17.1 % |
-| open_from | 910 | 173 | 737 | 0 | 5.1 % |
-| region | 1819 | 708 | 1111 | 0 | 12.4 % |
-| typ_zadatele | 755 | 369 | 386 | 0 | 8.6 % |
+| deadline | 903 | 157 | 739 | 7 | 62.3 % |
+| eligible_applicants | 1222 | 385 | 837 | 0 | 16.9 % |
+| focus_area | 1711 | 639 | 1072 | 0 | 16.5 % |
+| oblast | 1287 | 174 | 1113 | 0 | 17.0 % |
+| open_from | 910 | 170 | 740 | 0 | 5.4 % |
+| region | 1819 | 705 | 1114 | 0 | 12.5 % |
+| typ_zadatele | 758 | 369 | 389 | 0 | 9.0 % |
 
 ## Rodiny ročníků
 
@@ -85,7 +85,7 @@ Citací celkem 17629, ve zdroji dohledaných **8952 (50.8 %)**. Nedohledaná cit
 | Obec Chýně (`dotace.chyne.cz`) | samosprava_obec | A | 27 | 26 | 2026-11-08 | ok |
 | Karlovarský kraj (`kr-karlovarsky.cz`) | samosprava_kraj | A | 86 | 23 | 2026-11-08 | ok |
 | Město Tábor (`taborcz.eu`) | samosprava_obec | A | 21 | 21 | 2026-11-10 | ok |
-| Město Hodonín (`hodonin.eu`) | samosprava_obec | A | 105 | 20 | 2026-11-11 | ok |
+| Město Hodonín (`hodonin.eu`) | samosprava_obec | A | 105 | 20 | 2026-11-12 | ok |
 | Ústecký kraj (`kr-ustecky.cz`) | samosprava_kraj | A | 113 | 18 | 2026-11-08 | ok |
 | Ministerstvo školství, mládeže a tělovýchovy (`msmt`) | ministerstvo | B | 30 | 17 | 2026-11-08 | ok |
 | Město Mělník (`dotace.melnik.cz`) | samosprava_obec | A | 29 | 16 | 2026-11-08 | ok |

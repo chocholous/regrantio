@@ -1,5 +1,5 @@
 {
-	"today": "2026-11-11",
+	"today": "2026-11-12",
 	"records": 4242,
 	"grants": 4217,
 	"live": 1821,
@@ -11,17 +11,17 @@
 		"unknown": 918
 	},
 	"scope_live": {
+		"local": 506,
 		"national": 313,
 		"regional": 563,
-		"local": 506,
 		"international": 9,
 		"eu_central": 430
 	},
 	"deadline_kind_live": {
-		"fixed": 877,
+		"fixed": 880,
 		"unknown": 730,
 		"rolling": 58,
-		"recurring": 156
+		"recurring": 153
 	},
 	"fields": {
 		"deadline": {
@@ -37,21 +37,21 @@
 			"all_pct": 6.3
 		},
 		"eligible_applicants": {
-			"live": 1219,
-			"live_pct": 66.9,
-			"all": 2589,
-			"all_pct": 61.4
+			"live": 1222,
+			"live_pct": 67.1,
+			"all": 2592,
+			"all_pct": 61.5
 		},
 		"typ_zadatele": {
-			"live": 755,
-			"live_pct": 41.5,
-			"all": 1644,
-			"all_pct": 39.0
+			"live": 758,
+			"live_pct": 41.6,
+			"all": 1647,
+			"all_pct": 39.1
 		},
 		"oblast": {
-			"live": 1284,
-			"live_pct": 70.5,
-			"all": 3516,
+			"live": 1287,
+			"live_pct": 70.7,
+			"all": 3519,
 			"all_pct": 83.4
 		},
 		"kraj_nebo_celostatni": {
@@ -61,15 +61,15 @@
 			"all_pct": 100.0
 		},
 		"how_to_apply": {
-			"live": 1484,
-			"live_pct": 81.5,
-			"all": 3783,
-			"all_pct": 89.7
+			"live": 1487,
+			"live_pct": 81.7,
+			"all": 3786,
+			"all_pct": 89.8
 		},
 		"source_doc": {
-			"live": 1538,
-			"live_pct": 84.5,
-			"all": 3717,
+			"live": 1535,
+			"live_pct": 84.3,
+			"all": 3714,
 			"all_pct": 88.1
 		},
 		"contact": {
@@ -79,9 +79,9 @@
 			"all_pct": 13.7
 		},
 		"documents": {
-			"live": 205,
-			"live_pct": 11.3,
-			"all": 661,
+			"live": 208,
+			"live_pct": 11.4,
+			"all": 664,
 			"all_pct": 15.7
 		},
 		"call_number": {
@@ -98,9 +98,9 @@
 		"nevime": 426
 	},
 	"citations": {
-		"total": 17629,
-		"located": 8952,
-		"located_pct": 50.8
+		"total": 17668,
+		"located": 8994,
+		"located_pct": 50.9
 	},
 	"provenance_live": {
 		"amount": {
@@ -114,58 +114,58 @@
 		"deadline": {
 			"present": 903,
 			"parsed": 157,
-			"model": 736,
-			"derived": 10,
-			"cited": 560,
-			"cited_pct": 62.0
+			"model": 739,
+			"derived": 7,
+			"cited": 563,
+			"cited_pct": 62.3
 		},
 		"eligible_applicants": {
-			"present": 1219,
+			"present": 1222,
 			"parsed": 385,
-			"model": 834,
+			"model": 837,
 			"derived": 0,
-			"cited": 204,
-			"cited_pct": 16.7
+			"cited": 207,
+			"cited_pct": 16.9
 		},
 		"focus_area": {
-			"present": 1708,
+			"present": 1711,
 			"parsed": 639,
-			"model": 1069,
+			"model": 1072,
 			"derived": 0,
-			"cited": 279,
-			"cited_pct": 16.3
+			"cited": 282,
+			"cited_pct": 16.5
 		},
 		"oblast": {
-			"present": 1284,
+			"present": 1287,
 			"parsed": 174,
-			"model": 1110,
+			"model": 1113,
 			"derived": 0,
 			"cited": 219,
-			"cited_pct": 17.1
+			"cited_pct": 17.0
 		},
 		"open_from": {
 			"present": 910,
-			"parsed": 173,
-			"model": 737,
+			"parsed": 170,
+			"model": 740,
 			"derived": 0,
-			"cited": 46,
-			"cited_pct": 5.1
+			"cited": 49,
+			"cited_pct": 5.4
 		},
 		"region": {
 			"present": 1819,
-			"parsed": 708,
-			"model": 1111,
+			"parsed": 705,
+			"model": 1114,
 			"derived": 0,
-			"cited": 225,
-			"cited_pct": 12.4
+			"cited": 228,
+			"cited_pct": 12.5
 		},
 		"typ_zadatele": {
-			"present": 755,
+			"present": 758,
 			"parsed": 369,
-			"model": 386,
+			"model": 389,
 			"derived": 0,
-			"cited": 65,
-			"cited_pct": 8.6
+			"cited": 68,
+			"cited_pct": 9.0
 		}
 	},
 	"families": {
@@ -196,7 +196,7 @@
 			"records": 3,
 			"live": 0,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -207,7 +207,7 @@
 			"records": 13,
 			"live": 8,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -218,7 +218,7 @@
 			"records": 51,
 			"live": 8,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -229,7 +229,7 @@
 			"records": 27,
 			"live": 26,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -240,7 +240,7 @@
 			"records": 206,
 			"live": 84,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -251,7 +251,7 @@
 			"records": 138,
 			"live": 44,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -262,7 +262,7 @@
 			"records": 15,
 			"live": 14,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -273,7 +273,7 @@
 			"records": 29,
 			"live": 16,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -284,7 +284,7 @@
 			"records": 7,
 			"live": 5,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -295,7 +295,7 @@
 			"records": 12,
 			"live": 11,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -306,7 +306,7 @@
 			"records": 32,
 			"live": 16,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -317,7 +317,7 @@
 			"records": 29,
 			"live": 15,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -328,7 +328,7 @@
 			"records": 46,
 			"live": 34,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -339,7 +339,7 @@
 			"records": 115,
 			"live": 8,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -350,7 +350,7 @@
 			"records": 30,
 			"live": 11,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -372,7 +372,7 @@
 			"records": 10,
 			"live": 9,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -383,7 +383,7 @@
 			"records": 11,
 			"live": 7,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -394,7 +394,7 @@
 			"records": 16,
 			"live": 13,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -405,7 +405,7 @@
 			"records": 10,
 			"live": 7,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -416,7 +416,7 @@
 			"records": 9,
 			"live": 8,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -427,7 +427,7 @@
 			"records": 35,
 			"live": 33,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -438,7 +438,7 @@
 			"records": 1,
 			"live": 0,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -449,7 +449,7 @@
 			"records": 3,
 			"live": 0,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -460,7 +460,7 @@
 			"records": 4,
 			"live": 3,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -471,7 +471,7 @@
 			"records": 13,
 			"live": 11,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -482,7 +482,7 @@
 			"records": 90,
 			"live": 80,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -493,7 +493,7 @@
 			"records": 21,
 			"live": 13,
 			"last_fetched": "2026-11-10",
-			"days": 1,
+			"days": 2,
 			"state": "ok"
 		},
 		{
@@ -504,7 +504,7 @@
 			"records": 9,
 			"live": 6,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -526,7 +526,7 @@
 			"records": 234,
 			"live": 14,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -537,7 +537,7 @@
 			"records": 779,
 			"live": 430,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -548,7 +548,7 @@
 			"records": 23,
 			"live": 7,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -559,7 +559,7 @@
 			"records": 9,
 			"live": 0,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -570,7 +570,7 @@
 			"records": 316,
 			"live": 234,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -581,7 +581,7 @@
 			"records": 21,
 			"live": 10,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -592,7 +592,7 @@
 			"records": 16,
 			"live": 3,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -603,7 +603,7 @@
 			"records": 17,
 			"live": 14,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -614,7 +614,7 @@
 			"records": 7,
 			"live": 2,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -625,7 +625,7 @@
 			"records": 11,
 			"live": 11,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -636,7 +636,7 @@
 			"records": 4,
 			"live": 1,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -646,7 +646,7 @@
 			"refresh": "A",
 			"records": 105,
 			"live": 20,
-			"last_fetched": "2026-11-11",
+			"last_fetched": "2026-11-12",
 			"days": 0,
 			"state": "ok"
 		},
@@ -658,7 +658,7 @@
 			"records": 4,
 			"live": 4,
 			"last_fetched": "2026-11-10",
-			"days": 1,
+			"days": 2,
 			"state": "ok"
 		},
 		{
@@ -680,7 +680,7 @@
 			"records": 6,
 			"live": 4,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -691,7 +691,7 @@
 			"records": 6,
 			"live": 5,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -702,7 +702,7 @@
 			"records": 120,
 			"live": 55,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -713,7 +713,7 @@
 			"records": 11,
 			"live": 3,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -724,7 +724,7 @@
 			"records": 3,
 			"live": 2,
 			"last_fetched": "2026-11-10",
-			"days": 1,
+			"days": 2,
 			"state": "ok"
 		},
 		{
@@ -735,7 +735,7 @@
 			"records": 15,
 			"live": 3,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -746,7 +746,7 @@
 			"records": 4,
 			"live": 3,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -768,7 +768,7 @@
 			"records": 86,
 			"live": 23,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -779,7 +779,7 @@
 			"records": 113,
 			"live": 18,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -790,7 +790,7 @@
 			"records": 11,
 			"live": 5,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -801,7 +801,7 @@
 			"records": 2,
 			"live": 0,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -812,7 +812,7 @@
 			"records": 3,
 			"live": 1,
 			"last_fetched": "2026-11-10",
-			"days": 1,
+			"days": 2,
 			"state": "ok"
 		},
 		{
@@ -823,7 +823,7 @@
 			"records": 10,
 			"live": 6,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -834,7 +834,7 @@
 			"records": 2,
 			"live": 1,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -856,7 +856,7 @@
 			"records": 4,
 			"live": 0,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -867,7 +867,7 @@
 			"records": 6,
 			"live": 3,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -878,7 +878,7 @@
 			"records": 4,
 			"live": 1,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -889,7 +889,7 @@
 			"records": 10,
 			"live": 0,
 			"last_fetched": "2026-11-10",
-			"days": 1,
+			"days": 2,
 			"state": "ok"
 		},
 		{
@@ -900,7 +900,7 @@
 			"records": 14,
 			"live": 5,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -911,7 +911,7 @@
 			"records": 7,
 			"live": 7,
 			"last_fetched": "2026-11-10",
-			"days": 1,
+			"days": 2,
 			"state": "ok"
 		},
 		{
@@ -922,7 +922,7 @@
 			"records": 53,
 			"live": 2,
 			"last_fetched": "2026-10-09",
-			"days": 33,
+			"days": 34,
 			"state": "starne"
 		},
 		{
@@ -944,7 +944,7 @@
 			"records": 19,
 			"live": 11,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -955,7 +955,7 @@
 			"records": 8,
 			"live": 5,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -966,7 +966,7 @@
 			"records": 19,
 			"live": 7,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -977,7 +977,7 @@
 			"records": 8,
 			"live": 6,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -988,7 +988,7 @@
 			"records": 11,
 			"live": 0,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -999,7 +999,7 @@
 			"records": 115,
 			"live": 30,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1010,7 +1010,7 @@
 			"records": 30,
 			"live": 17,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1021,7 +1021,7 @@
 			"records": 14,
 			"live": 6,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1032,7 +1032,7 @@
 			"records": 10,
 			"live": 2,
 			"last_fetched": "2026-11-10",
-			"days": 1,
+			"days": 2,
 			"state": "ok"
 		},
 		{
@@ -1043,7 +1043,7 @@
 			"records": 1,
 			"live": 0,
 			"last_fetched": "2026-11-10",
-			"days": 1,
+			"days": 2,
 			"state": "ok"
 		},
 		{
@@ -1054,7 +1054,7 @@
 			"records": 7,
 			"live": 2,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -1076,7 +1076,7 @@
 			"records": 8,
 			"live": 2,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -1087,7 +1087,7 @@
 			"records": 5,
 			"live": 2,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -1098,7 +1098,7 @@
 			"records": 3,
 			"live": 2,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -1109,7 +1109,7 @@
 			"records": 17,
 			"live": 14,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1131,7 +1131,7 @@
 			"records": 1,
 			"live": 0,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -1142,7 +1142,7 @@
 			"records": 2,
 			"live": 1,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -1153,7 +1153,7 @@
 			"records": 1,
 			"live": 0,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -1164,7 +1164,7 @@
 			"records": 3,
 			"live": 2,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -1186,7 +1186,7 @@
 			"records": 27,
 			"live": 7,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1197,7 +1197,7 @@
 			"records": 1,
 			"live": 1,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -1208,7 +1208,7 @@
 			"records": 3,
 			"live": 2,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -1219,7 +1219,7 @@
 			"records": 1,
 			"live": 1,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1230,7 +1230,7 @@
 			"records": 10,
 			"live": 10,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1241,7 +1241,7 @@
 			"records": 9,
 			"live": 9,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1252,7 +1252,7 @@
 			"records": 1,
 			"live": 0,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -1263,7 +1263,7 @@
 			"records": 21,
 			"live": 1,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1274,7 +1274,7 @@
 			"records": 11,
 			"live": 4,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1285,7 +1285,7 @@
 			"records": 23,
 			"live": 4,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1296,7 +1296,7 @@
 			"records": 14,
 			"live": 3,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1307,7 +1307,7 @@
 			"records": 12,
 			"live": 5,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1318,7 +1318,7 @@
 			"records": 8,
 			"live": 7,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1329,7 +1329,7 @@
 			"records": 105,
 			"live": 8,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1340,7 +1340,7 @@
 			"records": 61,
 			"live": 8,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1351,7 +1351,7 @@
 			"records": 107,
 			"live": 6,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1362,7 +1362,7 @@
 			"records": 1,
 			"live": 0,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1373,7 +1373,7 @@
 			"records": 4,
 			"live": 2,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1384,7 +1384,7 @@
 			"records": 12,
 			"live": 4,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1406,7 +1406,7 @@
 			"records": 1,
 			"live": 0,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -1417,7 +1417,7 @@
 			"records": 12,
 			"live": 7,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1428,7 +1428,7 @@
 			"records": 39,
 			"live": 38,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1439,7 +1439,7 @@
 			"records": 2,
 			"live": 1,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1450,7 +1450,7 @@
 			"records": 10,
 			"live": 3,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1461,7 +1461,7 @@
 			"records": 5,
 			"live": 3,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1472,7 +1472,7 @@
 			"records": 8,
 			"live": 5,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -1483,7 +1483,7 @@
 			"records": 8,
 			"live": 4,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -1494,7 +1494,7 @@
 			"records": 1,
 			"live": 0,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -1516,7 +1516,7 @@
 			"records": 23,
 			"live": 12,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -1527,7 +1527,7 @@
 			"records": 1,
 			"live": 0,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -1538,7 +1538,7 @@
 			"records": 10,
 			"live": 6,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -1549,7 +1549,7 @@
 			"records": 3,
 			"live": 1,
 			"last_fetched": "2026-11-10",
-			"days": 1,
+			"days": 2,
 			"state": "ok"
 		},
 		{
@@ -1560,7 +1560,7 @@
 			"records": 99,
 			"live": 45,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1571,7 +1571,7 @@
 			"records": 3,
 			"live": 2,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1582,7 +1582,7 @@
 			"records": 21,
 			"live": 21,
 			"last_fetched": "2026-11-10",
-			"days": 1,
+			"days": 2,
 			"state": "ok"
 		},
 		{
@@ -1593,7 +1593,7 @@
 			"records": 25,
 			"live": 5,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1604,7 +1604,7 @@
 			"records": 7,
 			"live": 3,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1615,7 +1615,7 @@
 			"records": 6,
 			"live": 5,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1637,7 +1637,7 @@
 			"records": 1,
 			"live": 0,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -1648,7 +1648,7 @@
 			"records": 5,
 			"live": 0,
 			"last_fetched": "2026-11-09",
-			"days": 2,
+			"days": 3,
 			"state": "ok"
 		},
 		{
@@ -1659,7 +1659,7 @@
 			"records": 7,
 			"live": 0,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		},
 		{
@@ -1681,7 +1681,7 @@
 			"records": 18,
 			"live": 10,
 			"last_fetched": "2026-11-08",
-			"days": 3,
+			"days": 4,
 			"state": "ok"
 		}
 	]
