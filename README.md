@@ -1,26 +1,29 @@
 # Regrantio — datový systém pro dotační výzvy
 
-Sbírá dotační a grantové výzvy ze **135 zdrojů** (kraje, města, ministerstva,
+Sbírá dotační a grantové výzvy ze **136 zdrojů** (kraje, města, ministerstva,
 státní fondy a agentury, nadace, evropské programy), sjednocuje je do jednoho
-katalogu a publikuje ho **validovaný přímo do databáze** produktu
+katalogu a po bráně kvality je zapisuje **přímo do databáze** produktu
 [Grantio](https://github.com/chocholous/the-machine-app).
 
 **Jedna odpovědnost:** data. Regrantio neví nic o uživatelích, organizacích ani
-o produktu — jeho výstup je jeden export s otiskem a zápis do jedné tabulky. Produkt naopak nesahá do
-tohohle repozitáře. Hranice mezi projekty vede
-přes data, ne přes kód, a proto může být regrantio kdykoli neveřejné.
+o produktu; jeho výstup je jeden export s otiskem a zápis do tabulky katalogu.
+Produkt naopak nesahá do tohoto repozitáře. Hranice vede přes data, ne přes
+kód (jak celek drží pohromadě: `the-machine-app/docs/tech/ARCHITEKTURA.md`).
+
+Stav k 2026‑11‑12 (čísla měří brána a [`docs/QUALITY.md`](docs/QUALITY.md),
+tady jsou jen pro orientaci):
 
 | | |
 |---|---|
-| Katalog | `data/opportunities.jsonl` — **3 822 záznamů** (3 797 výzev + 25 profilů nadací), **v gitu** |
-| Publikovaný export | `docs/opportunities.json` — schema **1.2**, `content_hash`, [kontrakt](docs/EXPORT.md) |
-| Do produktu | `scripts/publish_db.py` zapisuje přímo do Postgresu Grantia (úschovna je volitelný archiv) |
-| Kvalita | [`docs/QUALITY.md`](docs/QUALITY.md) — měřeno při každé obnově, ne tvrzeno |
-| Inventář zdrojů | `data/sources.json` — 135 zdrojů, třída obnovy u každého |
-| Jazyk | Python 3.13, bez frameworku |
-| Testy | **123** v šesti souborech; všechny pouští `validate_release.py` |
-| CI | `.github/workflows/validate.yml` na každý push |
+| Katalog | `data/opportunities.jsonl`, 4 242 záznamů, **v gitu** |
+| Publikovaný export | `docs/opportunities.json`, kontrakt **1.3**, `content_hash` ([`docs/EXPORT.md`](docs/EXPORT.md)) |
+| Do produktu | `scripts/publish_db.py` zapisuje do Postgresu Grantia, ručně |
+| Inventář zdrojů | `data/sources.json`, 136 zdrojů, třída obnovy u každého |
+| Jazyk | Python 3.13 ve venv, bez frameworku |
+| Testy | 201 v deseti souborech; všechny pouští `validate_release.py` |
+| CI | `.github/workflows/validate.yml` na každý push (brána bez stažených dat) |
 | Větev | jediná: `main` |
+| Co zbývá | [`REMAINING.md`](REMAINING.md) |
 
 ---
 
@@ -34,139 +37,99 @@ python -m venv .venv
 .venv\Scripts\activate          # Windows
 # source .venv/bin/activate     # macOS / Linux
 
-pip install -r requirements.txt
+pip install -r requirements.txt            # sběr a brána
+pip install -r requirements-model.txt      # jen pro čtení modelem (třídy C a P s klíčem)
+pip install -r requirements-browser.txt    # jen pro zdroje vykreslené JavaScriptem
 ```
 
 ⚠ **Skripty se spouštějí z kořene repozitáře.** Cesty k datům jsou relativní
 (`data/...`), takže odjinud data nenajdou.
 
-⚠ **Fresh clone nemá stažená data** — jen katalog, který je v gitu. Jak je
-získat, je v [Data](#data).
+⚠ **Čerstvý klon nemá stažené dokumenty**, jen katalog, který je v gitu. Jak
+je získat, je v [Data](#data). K běžné obnově potřeba nejsou.
 
 ## Ověření, že to funguje
 
 ```bash
-python scripts/validate_release.py   # kompilace, testy, konfigurace, kontrakt exportu, BRÁNY
-python tests/test_core.py            # 23 testů kritické logiky
-python tests/test_identity.py        # 12 testů identity výzvy (rozpad × slití)
-python tests/test_publish.py         # 18 testů publikační cesty (manifest, otisk, brány)
+python scripts/validate_release.py   # brána: kompilace, testy, konfigurace, kontrakt, kvalita
 ```
 
-**Co brány zachytí, než se dataset publikuje** (`validate_release.py`):
+Brána má třináct kontrol a stojí v obnově **před** exportem; co neprojde, ven
+nejde. Kromě kompilace, testů a konfigurace hlídá:
 
-| brána | co chytá |
+| kontrola | co chytá |
 |---|---|
-| kvalita dat | neplatné datum, termín mimo 2000–2035, `deadline < open_from`, prázdný titul |
-| identita záznamů | chybějící `id`, duplicitní `id` — v produktu by se projevilo tichým přepisem |
-| propad počtu | katalog má míň než 80 % minule publikovaných záznamů → **vypadl zdroj** |
-| kontrakt polí | `eligible_applicants` není řetězec (strukturní ingesty dávaly seznam); zdroj bez jména v `data/source_names.json` |
+| kontrakt exportu | verze schématu, počet, jedinečné `id`, konzistentní otisk |
+| kvalita dat | neplatné datum, lhůta mimo rozumný rozsah, lhůta před začátkem příjmu, prázdný název |
+| výzvy, ne oznámení | výsledkové listiny, nábory, rozcestníky a časté dotazy mezi výzvami |
+| jeden otevřený ročník programu v roce | starý ročník vydávaný za letošní (lhůta bez roku) |
+| identita záznamů | chybějící nebo duplicitní `id` |
+| propad počtu | katalog má méně než 80 % minule publikovaných záznamů: vypadl zdroj |
+| vyschlý zdroj | zdroj, který minule dodával a teď nedodal nic |
+| známé stáří | ubývající razítka čerstvosti u obnovitelných zdrojů |
+| inventář | každý zdroj má jméno poskytovatele a třídu obnovy |
 
-⚠ Poslední z nich je jediná, která se ptá **kolik**. Dataset, ze kterého vypadlo
-pět zdrojů, projde všemi ostatními kontrolami bez námitky — každý ze zbylých
-záznamů je totiž v pořádku.
-
-⚠ **`pdftotext` VŽDY s `-enc UTF-8`** (2026‑09‑11). Bez toho na Windows píše
-Latin‑1 a znaky ř ž ě č š ů ň ť ď zahodí — „pedkládání zádostí". Postihlo to
-3 641 z 8 513 textů v korpusu (všechno konvertované po přechodu na Windows);
-model z toho češtinu ještě složil, deterministické parsery ne. Opravu
-existujících textů dělá `python scripts/fix_txt_encoding.py` (z originálů
-vedle textu; 32 textů bez originálu se opraví re‑harvestem).
+⚠ **`pdftotext` vždy s `-enc UTF-8`.** Bez toho na Windows zahodí českou
+diakritiku; deterministické parsery pak nic nenajdou. Existující texty opraví
+`python scripts/fix_txt_encoding.py`.
 
 ## Obnova katalogu
 
 ```bash
-python scripts/refresh_run.py --list        # co je v registru
-python scripts/refresh_run.py               # harvest → ingest → přepočet → brána → export
-python scripts/refresh_run.py --publish     # a rovnou publikuj do úschovny
+python scripts/refresh_run.py --list           # registr zdrojů po třídách
+python scripts/refresh_run.py --tier all       # A + B (C jen s klíčem), BEZ zápisu do databáze
+python scripts/refresh_run.py --tier pages     # P: ověří známé stránky, změněné připraví ke čtení
+python scripts/refresh_run.py --only <zdroj>   # jeden zdroj
+python scripts/refresh_run.py --tail-only      # jen přepočet, brána, export, kvalita (bez sítě)
 ```
 
-Zdroje se obnovují ve **třech třídách** (`data/sources.json`, sloupec `refresh`):
+Třídy obnovy (`data/sources.json`, sloupec `refresh`):
 
-| | jak | zdrojů | spustí |
-|---|---|---:|---|
-| A | harvest → strukturní ingest (vlastní skript nebo rodina vismo / dsw2 / kentico / plone) | 55 | `refresh_run.py` |
-| B | harvest → `scripts/extractors/<slug>.py` → `ingest_rich` | 20 | `refresh_run.py --tier extract` |
-| C | harvest → `build_extract_input` → **`extract_api.py` (model)** → `ingest_rich` | 37 (17 v registru) | `refresh_run.py --tier model` — chce `ANTHROPIC_API_KEY` |
+| třída | cesta | zdrojů |
+|---|---|---:|
+| A | sběr → strukturní převod (`ingest_kraj`, `ingest_dotis`, rodiny vismo, dsw2, kentico, plone) | 69 |
+| B | sběr → pevný parser `scripts/extractors/<zdroj>.py` → `ingest_rich` | 24 |
+| C | sběr → vstupy → model (`extract_api.py`, chce `ANTHROPIC_API_KEY`) nebo agenti (`extract_manual.py`) → `ingest_rich` | 22 |
+| P | bez sběrače: `refresh_pages.py` ověří známé stránky (citace lhůty stojí → razítko), změněné se čtou znovu | 16 |
+| F | zmrazený (zdroj za přihlášením nebo mrtvý) | 2 |
+| ? | jednorázový sběr bez zapsané cesty k obnově | 3 |
 
-⚠ **Třída C je od 2026‑09‑14 v registru obnovy.** `extract_api.py` volá týž
-prompt jako workflow v Claude Code (čte ho z `workflows/extract_wf.js`, ne
-z kopie) přes Messages API. Bez klíče se třída C přeskočí s větou, ne pádem;
-`--model-limit N` je sonda, `--budget-min` platí i tady. Dvacet zdrojů C bez
-položky v registru (města s vlastním harvesterem) a sedmnáct jednorázových
-nadačních sběrů („?") čeká na zapsání cesty — inventář to ukazuje.
+**Obnova je ruční** (rozhodnutí vlastníka z 22. 10. 2026). Postup: obnova,
+porovnání počtů po zdrojích s databází, `publish_db.py --dry-run`, zápis.
+Krok po kroku i s tím, co dělat při poruše:
+`the-machine-app/docs/tech/PROVOZ.md` §3 a §5. Třídy, pojistky a zkušenosti
+z ladění obnovy: [`docs/REFRESH.md`](docs/REFRESH.md).
 
-⚠ **OBNOVA JE RUČNÍ (zadavatel 2026‑10‑22: „kvalitnější bude to dělat ručně,
-kdy budu chtít“).** Workflow `.github/workflows/refresh.yml` odešel: bez
-tajemství sklízel a commitoval data, ale do databáze nezapsal, takže produkt
-11 dní stárnul nad čerstvým gitem. Postup: `refresh_run.py --tier all` (A + B,
-C jen s klíčem v `.env`), porovnat počty po zdrojích s databází, pak
-`publish_db.py --dry-run` a `publish_db.py` (`the-machine-app/docs/PROVOZ.md`
-§3). Odstavce níž popisují, jak se obnova ladila, dokud běžela v CI; jejich
-poučení (rozpočet, strop na krok, rotace podle `last_fetched`) platí i pro
-ruční běh.
+⚠ **Část souborů ve `scripts/extractors/` nejsou parsery, ale přepis jedné
+extrakce z léta 2026** (data napsaná natvrdo). Jsou vedené
+v `refresh_run.TRANSCRIBED`, do registru obnovy nepatří a jejich zdroje čte
+třída C.
 
-⚠ **Rozpočet a strop na krok (2026‑09‑15).** Běh v GitHub Actions má strop
-90 minut a 7. i 14. 9. do něj nedoběhl: `--budget-min 60` se kontroloval jen
-MEZI zdroji, takže jeden pomalý harvest (eeagrants 30 minut na 0 živých výzev,
-esfcr 20 minut) přetekl přes rozpočet i přes strop úlohy a s ním padl přepočet,
-brána i export. Od té doby má každý krok strop `--step-timeout-min` (v CI 12,
-zkrácený na zbytek rozpočtu), zdroje se berou od **nejdéle neověřených**
-(`last_fetched` v inventáři), aby se s rozpočtem střídaly, `esfcr` jde bez
-archivu ze sitemapy a `eeagrants` je zmražený (období skončilo, harvester
-mimo registr).
-
-⚠ **Rotace nerotovala a zdroje hladověly (2026‑09‑23).** Pořadí „nejdéle
-neověřené první" čte `data/sources.json` — jenže CI ho po přepočtu
-NECOMMITOVALO, takže každý běh dostal inventář z 15. 9. a řadil podle něj.
-Fronta tím zamrzla: v čele stály pokaždé čtyři zdroje bez razítka (mezi nimi
-zmražený `kr-jihomoravsky.cz` a `plone_ostrava`, který bral 12 minut a kvůli
-zápisu až na konci nezapsal nic), a co bylo na konci fronty, se neobnovilo
-ani jednou. Změřeno na běhu 21. 9.: **13 zdrojů z 34**, `fondvysociny.cz`
-a `stredoceskykraj.cz` naposledy 9. 9.
-
-Opraveno třemi zásahy: commit inventáře (`data/sources.json`, `quality.json`,
-`QUALITY.md`) v CI, zmražené zdroje se neharvestují vůbec
-(`refresh_run._frozen()`) a `plone_ostrava` dostal vlastní rozpočet
-(`--budget-min 8`), takže zapíše i to, co stihl. Ověřeno plným během
-23. 9.: **31 zdrojů z 34 za 35 minut**, katalog 3825 → 3852. Zbývají tři
-a u každého je důvod: `kr-jihomoravsky.cz` je za přihlášením (zmražený),
-`hzs` má na webu jen rozcestník bez výzev a `msmt` odmítl IP po příliš
-rychlé sklizni (403; harvest ověřený, viz níž).
-
-⚠ **Souborů `scripts/extractors/*.py` je 42, ale jen 15 z nich vstup opravdu ČTE.**
-Zbytek má data napsaná natvrdo — je to přepis jedné extrakce z 2026‑06/07, ne
-parser. Vypadají stejně, spustí se, vytisknou „wrote N grants" a skončí nulou;
-jenže `ingest_rich` páruje obsah se zdrojem podle POŘADÍ vstupních souborů,
-takže po každé změně listingu dostane záznam cizí odkaz. Jsou proto vedené
-v `refresh_run.TRANSCRIBED`, do registru nepatří a čeká je třída C.
-
-Podrobně v [docs/REFRESH.md](docs/REFRESH.md).
-
-## Publikování pro produkt
+## Zápis do produktu
 
 ```bash
 python scripts/publish_db.py --dry-run   # co by se zapsalo (čte databázi, nezapisuje)
-python scripts/publish_db.py             # zápis do Postgresu Grantia; nebo `refresh_run.py --publish-db`
+python scripts/publish_db.py             # zápis do Postgresu Grantia
 ```
 
-Zapisuje export **přímo do tabulky `catalog_grant`** pod service role
-(`PUBLIC_SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` v `.env`, nikdy v gitu).
+Zapisuje export do tabulky `catalog_grant` pod service role
+(`PUBLIC_SUPABASE_URL` a `SUPABASE_SERVICE_ROLE_KEY` v `.env`, nikdy v gitu).
 Tři pojistky: export nesmí být starší než data v katalogu, musí mít aspoň
 80 % dosavadních záznamů a nesmí naráz stáhnout víc než pětinu. Nic se
-nemaže — zmizelý záznam dostane `withdrawn_at`. Odvozené sloupce kontraktu
-1.2 se porovnávají zvlášť (`derived_changed`), protože nejsou v otisku.
+nemaže, zmizelý záznam dostane `withdrawn_at`. Odvozené sloupce kontraktu se
+porovnávají zvlášť, protože nejsou v otisku. Opakovaný `--dry-run` po zápisu
+musí hlásit 0 změn.
 
-`publish_export.py` (verzovaný export + manifest do úschovny Supabase Storage)
-zůstává jako volitelný archiv; není povinnou mezivrstvou.
+⚠ Zápis mění data, která čte běžící produkt. Pouští ho vlastník nebo vývoj
+s jeho souhlasem.
 
 ## Kvalita jako číslo
 
 `scripts/quality_report.py` běží v tailu každé obnovy a píše
-[`docs/QUALITY.md`](docs/QUALITY.md): živé výzvy, vyplněnost polí (lhůta,
-částka, žadatel…), čerstvost, doložitelnost citacemi, rodiny ročníků a stav
-každého zdroje (ok · stárne · bez cesty · zmrazený). K 2026‑09‑14: 1 971
-živých výzev, lhůta u 53 %, částka u 8 %, typ žadatele u 30 %, citace
-dohledané u 47 %, zdrojů ověřených do 21 dnů 30 ze 135.
+[`docs/QUALITY.md`](docs/QUALITY.md): živé výzvy, vyplněnost polí, čerstvost,
+doložitelnost citacemi, rodiny ročníků a stav každého zdroje. Co v katalogu
+chybí a jak se k tomu dostat, je v [`docs/coverage.md`](docs/coverage.md)
+(poslední oddíl).
 
 ---
 
@@ -240,8 +203,9 @@ sice zabírá 7 GB, ale bez rozbalovače je to jediná kopie originálů.
 python scripts/build_app.py     # → data/grants_app.html, fasetový prohlížeč
 ```
 
-Publikovaná verze: **[chocholous.github.io/regrantio](https://chocholous.github.io/regrantio/)**
-(staví `.github/workflows/pages.yml` na každý push).
+GitHub Pages nejsou zapnuté a workflow `pages.yml` běží jen ručně; publikace
+by zveřejnila celý katalog, což je rozhodnutí vlastníka, ne vedlejší efekt
+CI ([`REMAINING.md`](REMAINING.md), body 1 a 11).
 
 ---
 
@@ -250,7 +214,7 @@ Publikovaná verze: **[chocholous.github.io/regrantio](https://chocholous.github
 | Téma | Soubor |
 |---|---|
 | **Jak pracovat** — zlatá pravidla, recept na přidání zdroje, pasti | [docs/SESSION_PLAYBOOK.md](docs/SESSION_PLAYBOOK.md) |
-| **Co zbývá** — plán rozšiřování, stav datasetu | [REMAINING.md](REMAINING.md) |
+| **Co zbývá** a kdo má další krok | [REMAINING.md](REMAINING.md) |
 | **Publikovaná podoba katalogu** — tvar, schéma, záruky | [docs/EXPORT.md](docs/EXPORT.md) |
 | **Obnova** — co jak často, pojistky, úschovna | [docs/REFRESH.md](docs/REFRESH.md) |
 | **Model dat** | [schema/opportunity_schema.md](schema/opportunity_schema.md) |
@@ -261,6 +225,10 @@ Publikovaná verze: **[chocholous.github.io/regrantio](https://chocholous.github
 ---
 
 ## Jak je to postavené
+
+> Oddíly níž (principy a recept) vznikly v létě 2026 při stavbě sběru a popisují,
+> proč je systém navržený takhle. Počty a jména větví v nich jsou dobové;
+> dnešní cestu obnovy popisuje oddíl Obnova katalogu výš a `docs/REFRESH.md`.
 
 ## Klíčové principy (proč to takhle)
 

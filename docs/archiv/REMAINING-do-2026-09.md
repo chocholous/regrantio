@@ -1,0 +1,532 @@
+# REMAINING.md — stav projektu + co zbývá
+
+Živý plánovací dokument. **Aktuální stav, co je hotovo, co zbývá a proč.** JAK pracovat (zlatá pravidla,
+recept na zdroj, pasti) = `docs/SESSION_PLAYBOOK.md` + `CLAUDE.md`. Katalog je v gitu, zbytek dat v gitignored `data/`.
+
+> **Status k 2026-09-28: konec příjmu před uzávěrkou (kontrakt 1.3).**
+> Podnět z trhu: STEP – Výzkum a vývoj kritických technologií (OP TAK) měl
+> uzávěrku 30. 9. a příjem skončil 11. 8. po převisu 300 % alokace. Nové
+> odvozené pole `early_close` (`enrich.py`, `docs/EXPORT.md` §2c) nese větu
+> ze zdroje; když příjem UŽ skončil, export posune `deadline` na den konce.
+> Extraktor OP TAK čte takové věty z těla stránky.
+>
+> ✅ **STEP je v katalogu (týž den).** Sklizeň OP TAK brala jen adresy se
+> slovem „výzva“; od `eedeb3f` jde i po `/<slug>/a-<číslo>/` z výpisu a program
+> pozná z výčtu programů na webu. OP TAK 17 → 60 výzev, STEP – Výzkum a vývoj
+> uzavřená k 10. 8. podle zdroje, úvěry jako půjčky.
+>
+> **Zbývá:** Nové úspory energie (NRB, půjčka s dotační složkou) a dotační
+> řízení ministerstev pro NNO jako nové zdroje; registr příjemců (CEDR,
+> MONITOR MF) jako vrstva „kdo takové peníze dostal“ (`the-machine-app`
+> `docs/KONCEPCE.md` D4, D6).
+
+> **Status k 2026-09-26: čištění textů a částka na žadatele.** Revize dat
+> našla tři vady, které žádná kontrola nehlídala, protože byly formálně platné:
+>
+> 1. **549 ze 779 částek byla alokace celé výzvy**, ne strop na žadatele
+>    (OP Zaměstnanost plus až 97 mld. Kč). Grantio je ukazovalo jako
+>    „Maximálně na žadatele". Příčina v `ingest_rich.py` (hlavní částka měla
+>    přednost před štítkem stropu), pojistka `fix_dataset.amount_per_applicant`,
+>    kontrakt `amount` v `docs/EXPORT.md` zpřesněný.
+> 2. **Parser částek slepoval všechna čísla**: „125 000 Kč / 5 000 EUR" dalo
+>    1 250 005 000 (`ingest_rich._num`, teď bere první číslo, zná „mil"/„mld").
+> 3. **HTML entity a zdvojené mezery v textech** (20 + 4 záznamy,
+>    `fix_dataset.clean_text` v tailu každé obnovy).
+>
+> Testy `tests/test_fix.py` (obě strany pravidel), brána prošla, export
+> přepočtený. **Do databáze Grantia zatím nezapsáno**: `publish_db.py`
+> změní 784 záznamů (zkouška nanečisto 2026-09-26) a to je zásah do dat, která čte běžící produkt; pouští
+> ho zadavatel (`python scripts/publish_db.py`).
+
+> **Status k 2026-09-23.** Týdenní obnova sice od 15. 9. dobíhá, ale
+> **obnovovala jen třetinu zdrojů**: pořadí „nejdéle neověřené první" čte
+> `data/sources.json` a ten se v CI po přepočtu NECOMMITOVAL, takže každý běh
+> řadil podle inventáře z 15. 9. Fronta zamrzla — v čele stály pokaždé čtyři
+> zdroje bez razítka (`kr-jihomoravsky.cz` zmražený za přihlášením,
+> `plone_ostrava` 12 minut bez jediného zápisu, `hzs`, `msmt`) a na spodek
+> fronty nedošlo. Změřeno na běhu 21. 9.: **13 zdrojů z 34**;
+> `fondvysociny.cz` a `stredoceskykraj.cz` naposledy 9. 9.
+>
+> Opraveno: CI commituje inventář, zmražené zdroje se neharvestují
+> (`refresh_run._frozen()`), `plone_ostrava` má vlastní rozpočet a zapíše
+> i částečnou sklizeň, prázdná sklizeň nepřepíše předchozí soubor
+> (`scripts/jsonl_out.py`). `msmt` přepsán z mrtvého Marwel-crawlu na sitemapu
+> (web přešel na Next.js, starý harvest vracel `pages: 0`) a `plone_ostrava`
+> čte i text příloh, kde obvody mají skutečné lhůty. Ověřeno plným během
+> 23. 9.: **31 zdrojů z 34 za 35 minut**, katalog 3825 → **3852**, brána
+> prošla. Zbývají tři: `kr-jihomoravsky.cz` (401, zmražený), `hzs` (na webu
+> jen rozcestník) a `msmt` (403 po mé rychlé sklizni; harvest ověřený na
+> 103 stránkách a 225 přílohách, extrakce ověřená na vzorku).
+>
+> **Čeká na klíče:** `PUBLIC_SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`
+> v secrets repozitáře (zápis do databáze z CI; dnes ručně) a
+> `ANTHROPIC_API_KEY` (třída C, 37 zdrojů). Bez druhého klíče nemá **978
+> z 1851 živých záznamů** razítko čerstvosti a web na /pro-poskytovatele
+> slibuje obnovu „každý týden", což platí pro 33 deterministických zdrojů,
+> ne pro třídu C.
+
+> **Status k 2026-09-14 (změřeno, ne odhad).** Dataset **3 822 záznamů / 135 zdrojů**,
+> export schema **1.2** (`docs/opportunities.json`, 14 MB), publikace přímo do
+> databáze produktu (`publish_db.py`, běh #40). **122/122 testů**, brána má
+> **jedenáct** kontrol. Kvalita je měřená: [`docs/QUALITY.md`](docs/QUALITY.md)
+> — 1 971 živých výzev, lhůta 53 %, částka 8 %, typ žadatele 30 %, citace
+> dohledané 47 %, zdrojů ověřených do 21 dnů 30 ze 135.
+>
+> **Otevřené (rozhodnutí, ne kód):** klíč k modelu v secrets obnovy (třída C,
+> 37 zdrojů), zapsat cestu k obnově u 17 jednorázových nadačních sběrů, JMK za
+> přihlášením, SZIF přes prohlížeč, a jestli export dál commitovat (14 MB
+> týdně) nebo nechat jen v úschovně.
+
+---
+
+## 📊 Stav datasetu
+
+Čísla se tu už neopisují: měří je `scripts/quality_report.py` při každé obnově
+do [`docs/QUALITY.md`](docs/QUALITY.md) (k 2026-09-26: 3 852 záznamů, 1 787
+živých výzev, lhůta u 48,7 %, částka na žadatele u 4,8 %, typ žadatele u
+32,9 %). Tabulka, která tu stála, byla ze 3. 9. a nadpis ji vydával za
+aktuální.
+
+> ⚠ **`typ_zadatele` a `amount` jsou nejmenší čísla a je to poctivé.** Komu je
+> výzva určená a kolik dostane jeden žadatel, bývá v próze nebo v PDF pravidel;
+> raději `null` než vymyšlená hodnota. Produkt s tím počítá.
+
+---
+
+## ✅ Refresh 2026-09-03 — co proběhlo
+
+**13 ze 14 deterministických zdrojů obnoveno**, katalog 3441 → 3450 (+9),
+po vyčištění 3448. Brána prošla přes devět kontrol.
+
+| zdroj | výsledek |
+|---|---|
+| dotace.brno.cz | ✓ 32 programů, 19 změn |
+| dotace.khk.cz | ✓ 17 programů / 861 podprojektů, 4 změny |
+| dotace.kraj-lbc.cz | ✓ 104 programů (25 otevřených), 4 změny |
+| msk.cz | ✓ 91 programů, 13 změn |
+| stredoceskykraj.cz | ✓ 91 programů, 8 změn |
+| praha.eu | ✓ 33 programů, 7 změn |
+| fondvysociny.cz | ✓ 10 programů, 3 změny |
+| kr-karlovarsky.cz | ✓ 18 programů, 2 změny |
+| kr-ustecky.cz · kraj-jihocesky.cz · olkraj.cz · zlinskykraj.cz · dotace.pardubickykraj.cz | ✓ beze změny |
+| **kr-jihomoravsky.cz** | ✖ **HTTP 401 Unauthorized** |
+
+### kr-jihomoravsky.cz — potvrzeno, že je to zdroj
+
+2026-08-22 vracel „Configuration Error", 2026-09-01 se zavřel za autentizaci,
+dnes vrací **`401 - Unauthorized: Access is denied due to invalid credentials`**.
+Tři různé chyby v řadě za sebou, všechny na jejich straně. U nás není co
+opravovat a harvester to hlásí kódem 2 („zdroj"), ne kódem 1 („my").
+
+### ⚠ Co se u téhle obnovy naučilo
+
+`fetched_at` se doplnilo **až po** běhu, tedy druhým průchodem ingestů nad
+už staženými soubory. Ukázalo to pořadí, na které je potřeba dát pozor:
+ingest zapisuje syrová fakta z listingu, `fix_dataset` je pak přepočítá.
+Kdo pustí ingest znovu PO přepočtu, přepíše přepočtené syrovým a musí dojet
+`refresh_run.py --tail-only`. Samotný `refresh_run` to pořadí drží správně.
+
+---
+
+## ✅ Refresh 2026-08-22 — co proběhlo a co se rozbilo
+
+**13 ze 14 deterministických zdrojů obnoveno**, katalog 3450 → 3452, export
+přegenerován (`docs/opportunities.json`, 2026-08-22).
+
+| zdroj | výsledek |
+|---|---|
+| dotace.khk.cz | ✓ 121 programů |
+| fondvysociny.cz | ✓ 10 (3 aktualizované) |
+| kr-karlovarsky.cz | ✓ 18 programů, 2 změny |
+| msk.cz | ✓ 94 programů, 15 změn |
+| stredoceskykraj.cz | ✓ 91 programů, 8 změn |
+| praha.eu | ✓ 28 programů, 1 změna |
+| kr-ustecky.cz · kraj-jihocesky.cz · olkraj.cz · zlinskykraj.cz · dotace.kraj-lbc.cz · dotace.pardubickykraj.cz · dotace.brno.cz | ✓ beze změny |
+| **kr-jihomoravsky.cz** | ✖ **zdroj je rozbitý** |
+
+### ⚠ kr-jihomoravsky.cz — rozbitý ZDROJ, ne náš harvester
+
+`eud.jmk.cz` (GINIS úřední deska) vrací ASP.NET stránku **„Configuration
+Error"** — chybu jejich aplikace, ne změněnou strukturu. U nás není co
+opravovat; až to poskytovatel spraví, harvester poběží beze změny.
+
+Co se při tom opravilo u nás: harvester na to reagoval **třicetivteřinovým
+timeoutem na selektor a dvacetiřádkovým tracebackem** z Playwrightu — tedy
+hlášením, ze kterého se příčina nedala poznat. Teď skončí za pět vteřin s větou
+o tom, CO na stránce chybí a co je v titulku, a vrací **kód 2** = „zdroj",
+odlišený od kódu 1 = „my". Bez toho rozlišení se čas tráví čtením kódu, který
+je v pořádku.
+
+**Předchozí stav pro srovnání:** 2026-07-31 proběhlo všech 18 tehdejších zdrojů
+bez chyby, takže výpadek JMK je nový a týká se jen jeho.
+
+---
+
+## ✅ Session 2026-07-31 — co se stalo
+
+**Nové zdroje / doplněné mezery (+623 proti 2749 na začátku session):**
+- **esfcr (OPZ+/OPZ)** 233 · **mk (MK ČR)** 53 · **msmt** plný BFS 14 · **czechaid** 9 ·
+  **hzs** 4 · **plone_ostrava** 5 — nové zdroje z první části session.
+- **Fond Vysočiny 14 → 313**: harvester znal jen listing `aktivni` (18 programů), ale existuje
+  `vyhodnocene` s **326** — jediná velká mezera nalezená hloubkovým auditem.
+- **Praha 15 → 25**: harvester měl v komentáři, že sekce sociální/školství vracejí HTTP 500;
+  dnes fungují (24 položek) → doplněny mezi seedy.
+- **OP Doprava (opd3.opd.cz) 0 → 12** (*z toho 5 otevřených*): v REMAINING veden jako blocker
+  („ne-WP"), web mezitím přešel na server-rendered tabulku výzev → `scripts/opd.py`.
+- **Kvalita: `scripts/derive_deadlines.py`** — 24 grantů mělo termín ve zdroji, ale v jiném
+  tvaru (`extra.deadliny[]`: „každoročně 15. 11.", „31. ledna každého roku", hotové ISO).
+  Skript ho převede do strojového tvaru a u opakujících se promítne na NEJBLIŽŠÍ BUDOUCÍ
+  výskyt. NENÍ to halucinace — datum je doložené v `kontext` (doslovná věta ze zdroje);
+  odvozené záznamy nesou `status_confidence="derived"` + `extra.deadline_derived_from/_rule`.
+  Efekt: unknown 919 → 895, open 687 → 697.
+- **JS-renderované nadace 0 → 15**: `scripts/nadace_spa.py` (Playwright) pokrývá 6 nadací
+  jedním harvesterem — nespojuje je CMS, ale PŘEKÁŽKA (obsah renderuje JS, curl vrátí shell).
+  Partnerství · OSF · Vodafone · Liga proti rakovině · Český literární fond · Abakus.
+  Vrstva 2 filtruje 51/66 stránek: software (Grantys), výsledky, archivy a hlavně LISTINGY
+  (osf.cz/granty nese 5 různých uzávěrek → jeden záznam by z nich udělal chiméru).
+- **Visegrad Fund + ERSTE Foundation 0 → 6** (VŠECHNY otevřené): `scripts/intl_funds.py`.
+  Oba weby vracely HTTP 403 na default urllib UA → stačily realistické prohlížečové hlavičky.
+  Visegrad má pevné uzávěrky (1. 2. / 1. 6. / 1. 10.), extraktor bere NEJBLIŽŠÍ BUDOUCÍ datum.
+  EUR částky se NEpřevádějí na CZK (kurz) → jdou do extra.castka_eur, amount zůstává null.
+- **Interreg SK-CZ + CZ-PL 0 → 6**: `scripts/interreg.py` (WP REST, kategorie dle slugu).
+  Vrstva 2 FILTRUJE: z 13 postů je 8 náborů hodnotitelů/harmonogramů, ne dotačních výzev.
+- **Creative Europe / Kreativní Evropa: vědomě NEpřidáno** — výzvy vyhlašuje EACEA a v datasetu
+  už jsou přes EU F&T portál (13 aktuálních `CREA-*`); české zastoupení by bylo duplikací.
+- **grantovydiar.cz**: harvester hotový, NEingestován (veřejné id okno 100 % closed, zbytek za loginem).
+
+**Refresh:** všech 18 automatizovaných zdrojů (8 structured + 10 html) proběhlo bez chyby.
+
+**Infrastruktura a čistota:**
+- `scripts/refresh_run.py` — jeden příkaz na refresh kolo; **registr rozšířen o 5 zdrojů**
+  (`nadacevia`, `mzcr`, `mzp`, `mv`, `opd`), které měly kompletní řetěz, ale refresh je míjel.
+- `scripts/upsert.py` — html-tier ingesty upsertují do katalogu (dřív append-only skip).
+- Windows robustnost: UTF-8 guardy (76 skriptů), TLS přes `http_util`, MAX_PATH guard.
+
+**Hloubkový audit pokrytí (co se NEpotvrdilo):** prošel jsem 14 krajů, 12 ministerstev/fondů
+a 18 EU programů sondami. Vysočina a Praha byly JEDINÉ skutečné mezery. Jinde „vyšší čísla"
+znamenala navigaci, dokumenty starých programů (MPO: 262 podstránek = OPPI 2007–2013) nebo
+**awards místo výzev** (Zlínský kraj). Vědomě NEpřidáno: **NPO** (rozcestník na resortní výzvy,
+které už máme → duplikace) a **Ministerstvo dopravy** (web nemá dotační sekci; dopravní dotace
+jdou přes SFDI a nově OP Doprava).
+
+---
+
+## ✅ Pokrytí zdrojů — souhrn
+
+- **Samospráva:** 14 krajů + ~30 měst + 18 ostravských obvodů (vismo, DSW2, bespoke, plone).
+- **Ministerstva:** MŠMT (plný), MV, MŽP, MZe, MZČR, **MK (plný)**, MPSV, MPO, MMR, Úřad vlády, **HZS**.
+- **Státní fondy (100 %):** SFŽP (21), SFA, SFPI, SFDI, SFK.
+- **Agentury:** GA ČR (14), TA ČR (9), NSA (21), **CzechAid (9)**.
+- **EU OP řízené z ČR:** OPŽP (107), OP ST (101), OP JAK (8), **OPZ+/OPZ (233)**, IROP (120), dotaceEU (13).
+- **EU centrální:** EU F&T Portal 341 (Horizon/Erasmus+/LIFE/CERV/…).
+- **Mezinárodní:** EHP/Norsko (26), Česko-německý fond budoucnosti (36).
+- **Nadace/fondy:** ~17 (via, ČEZ, OKD, Agrofert, Albert, Sirius, Leontinka, ADRA, Hlávka, Kellner, VDV, OSF…).
+
+---
+
+## ⛔ Co zbývá — GENUINE BLOCKERY (recon 2026-07-31)
+
+Každý níže byl v této session ŽIVĚ přeověřen; „blocker" = ověřená technická překážka, ne odhad.
+
+| Zdroj | Blocker (ověřeno) |
+|---|---|
+| **SZIF (PRV/SZP)** | ⚠ **VERDIKT OPRAVEN 2026-09-04.** Není to blok na IP: skutečný prohlížeč (Playwright, Chrome UA) se na `szif.gov.cz` dostane bez potíží, `urllib` ne — WAF tedy filtruje podle TLS otisku klienta, ne podle adresy. Zbývající překážka je jiná: obsah programů visí na odkazech `CmDocument?rid=…`, které přímým `goto` vracejí `ERR_CONNECTION_RESET` a proklikem nenavigují. Listing `/cs/narodni-dotace` ale sám nese jména programů i věty o zahájení příjmu žádostí — sběr z něj je realistický. Chce vlastní session, ne proxy. |
+| ~~**OP TAK**~~ | ✅ **VYŘEŠENO 2026-09-04** — nebyl blokovaný, jen se přestěhoval. `agentura-api.org` je mrtvá doména; program běží na `optak.gov.cz` jako server-rendered web. Sebráno univerzálním `harvest_site.py`, 17 výzev. |
+| **Interreg AT-CZ** | HTTP 200, ale 0 výzvových odkazů — obsah je za JS/filtrem; chce Playwright recon |
+| **Interreg Central Europe** | ověřeno: VŠECHNA 4 kola uzavřená (poslední 11/2025), žádné otevřené výzvy → vědomě nepřidáno |
+| **Interreg Danube** | Adresa se změnila na `/calls-for-proposals` (ověřeno 2026-09-03; starý `/calls` je 404). Obsah je ale archiv — poslední kolo 2024, nic otevřeného → vědomě nepřidáno. |
+| **grantovydiar.cz** | login-gate (veřejné id okno je 100 % closed) |
+| **Zbylé nadace** (ČEZ detail, Neuron, Karla Janečka, Charty 77) | 403/DNS chyby nebo obsah jen v PDF |
+| Chybějící města (ČB, Zlín, Šumperk, Třebíč) | ověřeno Playwrightem: víceúrovňová navigace + PDF, render vrátil ~0 programů |
+| `h19_*` nadační batch | jednorázová v1 LLM cesta (REFRESH.md §6) |
+
+**Poznatek k obcházení blokací:** HTTP 403 u Visegradu, ERSTE a obou Interregů padalo na
+DEFAULTNÍM urllib User-Agentu — stačily realistické prohlížečové hlavičky (UA + Accept-Language
++ `Accept-Encoding: identity`). Než označíš zdroj za blokovaný, zkus tohle.
+
+### Živé přeověření 2026-09-03 (realistické hlavičky, přímý HTTP)
+
+Blokery výš jsou z 2026-07-31. Dnes přeověřeno, protože „blocker" starý pět
+týdnů je odhad, ne měření:
+
+| zdroj | dnes | závěr |
+|---|---|---|
+| **SZIF** | `ConnectionResetError` jen z `urllib` | ⚠ **přehodnoceno 2026-09-04** — prohlížeč projde, blok je na TLS otisku klienta. Viz oddíl blokerů výš. |
+| **Interreg Danube** | `/calls` = 404, ale **`/calls-for-proposals` vrací 200** | adresa v tabulce výš je **mrtvá**; nová funguje. Obsah jsou ale kola z 2022–2024, **žádná otevřená výzva** → nepřidáno, ale příště se na 404 neztrácí čas |
+| **Interreg Central Europe** | 200, `/calls-for-proposals/` | verdikt „všechna kola uzavřená" **platí dál** — na stránce jsou jen výsledky (first/second/third/strategic call) |
+
+⚠ **Poznámka k měření:** první pokus počítal výskyty vzorů v Node.js a hlásil
+nulu tam, kde data byla. `\b` v JavaScriptu nezná `ů` (slovní znak je jen
+`[A-Za-z0-9_]`), takže `programů\b` nikdy nesedlo. V Pythonu je `\b`
+unicode-aware a vzor sedí. **Vzory nad českým textem měř tím jazykem,
+ve kterém pak poběží.**
+
+## 🎯 Priority příští coverage session (s rozpočtem na nástroje)
+P1 **SZIF přes prohlížeč** (největší zbývající zdroj; blok je na TLS otisku, ne na IP) · P2 dotaceeu.cz — výzvy za filtrovacím formulářem · P3 nadace 17→40+ · P4 grantovydiar login.
+~~OP TAK~~ hotovo 2026-09-04 (přestěhoval se na `optak.gov.cz`, 17 výzev).
+
+---
+
+## ⚑ Stálé pasti (pro každou session)
+
+1. **Windows cp1250 konzole** — každý skript s non-ASCII printem má `sys.stdout.reconfigure(utf-8)` guard
+   (od 2026-07-31 plošně). Pozor i v YAML/JSON: ASCII `"` uvnitř českého `„…"` rozbije parser.
+2. **Status počítá KÓD, ne LLM** (`opportunities.py:compute_status`); ukládej RAW `open_from`/`deadline`.
+3. **Deadline-regexy:** gap `[^\n]`, NIKDY `[^\n.]` (české zkratky tzn./č. mají tečku);
+   „dotace NA OBDOBÍ od…do…" = realizace, NE lhůta podání (negativní guard).
+4. **WP fulltext discovery vrací všechny ročníky** — filtruj `--since`/`--since-year` na aktuální kolo.
+5. **Soubory otvírej s `encoding="utf-8"`** — default Windows open() píše cp1250 mojibake
+   (kouslo grantovydiar harvest 2026-07-31).
+6. **Katalog je v gitu, zdrojová data ne** — fresh clone má `data/opportunities.jsonl`, ale ne
+   stažená PDF a per-source harvesty; jejich obnova = `data_bundle/` nebo re-harvest.
+7. **Nehalucinovat** — `amount=null`/`deadline=null` zůstává null; žádné fiktivní záznamy.
+8. **Jen jeden proces smí psát `opportunities.jsonl`** — ingesty pouštěj sekvenčně
+   (`refresh_run.py` to garantuje; ad-hoc paralelní loops ne).
+
+---
+
+## ⚠ kr-jihomoravsky.cz — zdroj zavřený za autentizací (2026-09-01)
+
+**Změřeno při refreshi 2026-09-01.** Harvester hlásil „Úřední deska nevrátila
+filtr kategorií (select#m_oKategorie)". Není to změna markupu:
+
+```
+https://eud.jmk.cz/Gordic/Ginis/App/UDE01/Seznam.aspx?a=1   →  HTTP 401
+https://www.jmk.cz/                                          →  302 na /my.policy
+```
+
+Celý GINIS i hlavní web JMK je za přihlašovací bránou (F5 `my.policy`).
+
+**Veřejná náhrada hledaná a NENALEZENA.** `dotace.jmk.cz` přesměrovává na
+`dotace.kr-jihomoravsky.cz`, a ten obsahuje jediný odkaz — na
+`data.jmk.cz/pages/dotace-katalog`. To je ArcGIS Hub Open Data portál
+(197 datasetů, DCAT feed na `/api/feed/dcat-us/1.1.json`). Deset datasetů má
+v názvu „dotac", ale všechny jsou **retrospektivní**:
+
+  • Udělené dotace obcím v Jihomoravském kraji
+  • Schválená výše dotace obcím v roce 2025
+  • Čerpání krajských dotací / z fondů EU
+
+Tedy KDO UŽ PENÍZE DOSTAL, ne KAM SE DÁ ŽÁDAT. Pro produkt bezcenné.
+
+**Dopad:** 34 záznamů v katalogu (19 open, 13 closed, 2 unknown) zůstává
+zmrazených ke dni posledního úspěšného sběru. Nemažou se — mizející záznam
+by z uložených výzev udělal prázdné místo.
+
+**Co to odemkne:** přístup k úřední desce JMK (dohoda s krajem), nebo nalezení
+jiné veřejné stránky s VÝZVAMI. Bez toho se zdroj obnovit nedá a žádné množství
+práce na harvesteru s tím nic neudělá.
+
+---
+
+## ⚠ Kolik zdrojů funguje? Repozitář na to neumí odpovědět (2026-09-01)
+
+**Vazba mezi `routing.yaml` a `source` v datech neexistuje nikde v repozitáři.**
+
+Tři mechanické pokusy o spočítání funkčních zdrojů daly tři různé odpovědi:
+
+| jak | výsledek | proč je špatně |
+| --- | --- | --- |
+| klíče v `routing.yaml` | **81** | klíčuje se doménami (`esfcr.cz`), data krátkými id (`esfcr`) |
+| normalizace jmen | **51 spárováno** | heuristika; `msmt.gov.cz` ≠ `msmt`, `nadace-adra.cz` ≠ `nadace_adra` |
+| `source` vyčtený z harvesteru | **33** | u 48 zdrojů se nenajde, včetně těch se 148 záznamy |
+
+A `docs/PREHLED.md` v Grantiu tvrdilo **136** — počet různých hodnot `source`
+v datasetu, tedy zase něco jiného.
+
+**Příčina.** Sdílené harvestery berou `source` jako argument:
+
+```
+python3 scripts/dotis_harvest.py --web https://dotace.khk.cz \
+        --source dotace.khk.cz --out data/h_dotis_khk.json
+```
+
+`routing.yaml` u toho záznamu nese jen `harvester` a `note`. Identifikátor,
+pod kterým se záznamy do datasetu zapíšou, tedy nestojí ve skriptu ani
+v routeru — je jen ve způsobu, jakým se skript spustí. Jeden skript
+(`dotis_harvest.py`) přitom obsluhuje víc krajů, takže „jeden skript = jeden
+zdroj" neplatí a odvodit to nejde.
+
+**Důsledek.** Na otázku „který zdroj vyschl" se dnes odpovídá ručním
+procházením 81 položek. Vyschlý zdroj se tím pádem pozná až tehdy, když si
+někdo všimne, že v katalogu chybí kraj — což je pozdě.
+
+### ✅ VYŘEŠENO 2026-09-02 — ale jinak, než navrhoval předchozí odstavec
+
+Navrhovaná oprava zněla „přidat do `routing.yaml` pole `source:`". S daty v ruce
+se ukázalo, že by nestačila:
+
+| | |
+|---|---|
+| položek v `routing.yaml` | **81** |
+| hodnot `source` v datasetu | **136** |
+| z toho routing pokrývá (spárováno podle hostu ze `source_url`) | **74** |
+
+⚠ **`routing.yaml` NENÍ INVENTÁŘ ZDROJŮ A NIKDY JÍM NEBYL.** Je to směrovník
+„platforma → čím to harvestovat". Přes šedesát skutečně sbíraných zdrojů v něm
+položku nemá vůbec, protože jedou přes rodinu (`families:`) nebo přes vlastní
+skript. Doplnit tam `source:` by vyrobilo inventář, který o dvou třetinách sběru
+mlčí — a to je horší než žádný, protože se podle něj rozhoduje. K tomu jedna
+položka (`mk.gov.cz`) zapisuje **tři** různá `source` id, takže jedno pole
+by na ni stejně nestačilo.
+
+**Inventář už existuje a je jím dataset.** Každý záznam nese `source`, takže
+seznam zdrojů, které něco přinesly, je z dat čitelný přesně. Chybělo jediné:
+porovnání s minule publikovaným stavem.
+
+**Hotovo:** `scripts/source_health.py` + brána `vyschlý zdroj` ve
+`validate_release.py`. Porovnává živý katalog proti minule publikovanému
+exportu po jednotlivých zdrojích:
+
+```
+zdrojů v katalogu: 136   (minule 136)
+záznamů:           3441  (minule 3441)
+OK — žádný zdroj nevyschl ani nepropadl
+```
+
+⚠ **Brána na celkový počet tohle chytit NEMOHLA.** Práh je 80 % a největší
+zdroj má 341 z 3 441 záznamů, tedy 10 % — může tedy zmizet celý a projde.
+Naměřeno: ze 136 zdrojů by jich **133 mohlo vyschnout po jednom**, aniž by
+kterýkoli jednotlivý běh brána zastavila. Osm testů v `tests/test_publish.py`
+hlídá obě strany (co zastavit musí i co pustit musí).
+
+**Co zbývá:** propojení `routing.yaml` se `source` id je pořád nedodělek,
+ale je to úkol pro pohodlí („čím se ten zdroj sbírá"), ne pro bezpečnost
+(„co vyschlo"). Ta druhá otázka je zodpovězená.
+
+---
+
+## ✅ 148 záznamů odkazovalo na rozcestník, ne na výzvu (2026-09-02)
+
+**4,3 % celého katalogu** — všechno `dotace.khk.cz` (DOTIS, Královéhradecký
+kraj) — mělo `source_url` i `source_doc` nastavené na `https://dotace.khk.cz/`,
+tedy na ÚVODNÍ STRÁNKU portálu.
+
+Produkt u každé výzvy slibuje odkaz na originál. Tenhle odkaz ten slib formálně
+plní a věcně ne: žadatel skončí na rozcestníku se stovkou programů a hledá
+znovu. URL byla platná, stránka se otevřela, čtvrt roku si toho nikdo nevšiml —
+a přesně proto to nemohla chytit žádná stávající brána.
+
+**Hluboký odkaz existoval celou dobu.** DOTIS je React SPA; cesty jsou
+v `static/js/main.*.js` a mezi nimi `path:"/grantProgram/:memo"`. Klíč `memo`
+je kód programu (`26POVU1`), který už v titulku každého záznamu je. Ověřeno
+v prohlížeči: `https://dotace.khk.cz/grantProgram/26POVU1` vykreslí číselné
+označení, název i účel programu.
+
+Opraveno na dvou místech — v harvesteru (`ingest_dotis.py:dotis_url`, aby to
+tak přicházelo rovnou) i v úklidu (`fix_dataset.py` sekce A5, kvůli záznamům
+z dřívějších běhů). Tři testy v `test_core.py` hlídají obojí i to, že se
+odkaz NEVYROBÍ bez kódu: vymyšlený kód vykreslí prázdný detail, což je horší
+než rozcestník.
+
+⚠ **Změna `source_url` mění `content_hash`, ale ne to, co uvidí zákazník.**
+Ingest v Grantiu zakládá `catalog_grant_change` jen při posunu termínu nebo
+částky, takže 148 přepsaných odkazů neudělá 148 upozornění.
+
+---
+
+## ✅ Dvojí identita organizací — vyřešeno ze tří čtvrtin (2026-09-03)
+
+Ze čtyř případů níže zbývá **jeden**, a to způsobem, před kterým ten odstavec
+sám varoval: pravidlem, ne ručním smazáním čtyř řádků.
+
+| případ | stav k 2026-09-03 |
+|---|---|
+| `nadacevia.cz` (1) | **pryč** — „Nabídka programů" je rozcestník, chytá ho `NOT_A_CALL` |
+| `vdv.cz` (1) | **pryč** — nábor hodnotitelů, chytá ho `NOT_A_CALL` |
+| `nadacecez.cz` (1) | **problém to nikdy nebyl** — je to řádná výzva s termíny (Zaměstnanecké granty 2026, 1. 3. – 31. 3.). Ověřeno v datech, ne odhadnuto |
+| `nadace-agrofert.cz` (1) | **zbývá** — záznam je homepage nadace |
+
+Obě odstraněné byly zároveň jediné záznamy svých doménových zdrojů, takže
+počet zdrojů klesl 136 → 134 a dvojí identita u nich zanikla celá.
+
+**Proč `nadace-agrofert.cz` zůstává:** není to rozcestník ani nábor, je to
+homepage s titulkem konkrétního fondu („Nadace AGROFERT — Fond na Podporu
+rodičů samoživitelů"). Chce to pravidlo na DUPLICITU ORGANIZACE, ne na druh
+stránky — a to je jiná úloha. Ruční smazání by se při příštím sběru vrátilo.
+
+**Zamítnuté pravidlo (ať se nezkouší znovu):** „titulek je jméno organizace"
+(tvar `Nadace X`). Naměřeno na celém katalogu — trefí 4 záznamy a **všechny
+čtyři jsou řádné programy**: „Nadace ČEZ – Program Stromy", „Nadace OKD
+obcím", „Nadační fond Karlovarského kraje", „Nadační fond Hyundai (Nadace
+OSF)". Nadace svoje programy běžně pojmenovávají po sobě. Zůstává jako
+`PROPUSTIT` v `tests/test_notacall.py`.
+
+<details>
+<summary>Původní zápis z 2026-09-02 (pro kontext)</summary>
+
+## ⚠ Čtyři organizace mají v datech dvojí identitu (2026-09-02, neopraveno)
+
+| krátké id | doménové id | co je v tom doménovém |
+|---|---|---|
+| `nadacevia` (24) | `nadacevia.cz` (1) | rozcestník „Nabídka programů" |
+| `nadacecez` (16) | `nadacecez.cz` (1) | vypadá jako řádná výzva |
+| `nadace-agrofert` (7) | `nadace-agrofert.cz` (1) | homepage nadace |
+| `vdv` (5) | `vdv.cz` (1) | výzva pro HODNOTITELE, ne pro žadatele |
+
+Dvě z těch čtyř nejsou výzvy (rozcestník a homepage), jedna míří na jinou
+cílovou skupinu. `fix_dataset.py` má sekci A2 přesně na tenhle vzor
+(`VARIANT_DEDUP`), ale ta maže jen při SHODĚ TITULKŮ — a tady se tituly liší,
+protože jde o jiné stránky téhož webu.
+
+**Proč to nechávám otevřené:** správná oprava není smazat čtyři řádky, ale
+poznat, že záznam je rozcestník. Pravidlo „URL je kořen webu" NEPLATÍ —
+naměřeno, sedne na 153 záznamů a 148 z nich jsou řádné programy KHK (viz
+oddíl výš). Rozhodovat to bez pravidla znamená ruční zásah, který se při
+příštím sběru vrátí.
+
+</details>
+
+---
+
+## ✅ Obnova 2026-09-03 — třída B objevena, 28 „extraktorů" odhaleno
+
+**+77 záznamů** (3448 → 3525), z toho 75 z EU Funding & Tenders portálu.
+
+### Co se ukázalo
+
+`refresh_run.py` znal jednu cestu bez modelu (harvest → strukturní ingest, 14
+zdrojů). Cesta číslo dvě — harvest → `build_extract_input` →
+`scripts/extractors/<slug>.py` → `ingest_rich` — byla popsaná v `docs/REFRESH.md`,
+ale v žádném registru. Ověřeno živě na `opd`: 12 výzev, nula účasti modelu.
+
+Přibylo `EXTRACT_SOURCES` a `--tier extract`.
+
+### A hned nato ta nepříjemnější půlka
+
+Ze 42 souborů `scripts/extractors/*.py` jich **jen 15 vstup opravdu čte**. Zbytek má
+výsledek napsaný natvrdo — přepis jedné extrakce z 2026‑06/07 do literálů.
+
+Nebezpečné je, že se to nepozná: spustí se, vytiskne „wrote N grants", skončí
+nulou. A protože `ingest_rich` páruje obsah se zdrojem podle **pořadí**
+vstupních souborů, dostane po každé změně listingu záznam **cizí odkaz**:
+
+| titulek (z června) | odkaz (z dnešního harvestu) |
+|---|---|
+| Výzva č. 31_22_019 – Nákup nízkoemisních vozidel | `/vyzva-c.-31_22_002-budovani-kapacit-detskych-skupin` |
+| Dotace … Bílá stuha | `/dotace-na-podporu-rodiny-pro-nestatni-neziskove-organizace` |
+
+Prvním během to stihlo zapsat 7 záznamů a orazítkovat 350 dalších jako ověřené
+dnes. Vráceno, razítka odebrána, zdroje vedeny v `refresh_run.TRANSCRIBED`.
+**Cesta ven je pro ně tatáž jako pro třídu C — model.**
+
+### Uklizeno při tom
+
+- **8 harvesterů mělo `--seeds` povinný a jeho soubor gitignorovaný** → po
+  čerstvém klonu nespustitelné. `.gitignore` má teď třetí výjimku (vstup je
+  kód, ne data); čtyři chybějící soubory zrekonstruovány z katalogu.
+- **Brána „známé stáří" se ptala špatně.** Počítala razítka všech zdrojů, takže
+  vyřazení nedůvěryhodného zdroje hlásila jako ztrátu. Ptá se teď jen na zdroje
+  z registru.
+- **`pages.yml` běžel na každý push** a publikoval web, který má GitHub Pages
+  vypnuté (`/pages` i stránka vrací 404) — 49 s a `fetch-depth: 0` nad 2GB
+  historií. Teď jen `workflow_dispatch`; zapnutí Pages je jedno kliknutí
+  vlastníka repa.
+
+### Zbývá u tří zdrojů
+
+| zdroj | co je | čí to je |
+|---|---|---|
+| `sfpi` | `sfpi.cz/wp-json/wp/v2/pages` → **404**, WP REST API zrušeno | zdroj |
+| `eeagrants` | harvest neskončil do 30 min | k prověření |
+| `kr-jihomoravsky` | úřední deska za přihlášením (**401**) | zdroj |

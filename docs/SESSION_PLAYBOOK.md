@@ -3,16 +3,21 @@
 Operační příručka „JAK" (na rozdíl od `REMAINING.md` = „CO"). Přečti TENHLE soubor + `REMAINING.md`
 + `CLAUDE.md` na začátku každé session, ať neztratíš kontext a postup.
 
+> Srovnáno se skutečností 2026‑11‑12: oddíly 0, 4 a 5 a spojování výstupu se vstupem. Recept (§1),
+> pravidla kvality (§2) a pasti (§3) jsou z léta 2026 a platí.
+
 ---
 
 ## 0. Cíl & zlatá pravidla
 
-**Cíl:** kompletní, konkurenceschopná česká grantová databáze (7 vrstev pokrytí — viz vize-tabulka
-v `REMAINING.md`). Aktuálně **3372 záznamů / 133 poskytovatelů** na větvi `coverage-expansion-next`.
+**Cíl:** úplný a věrohodný katalog českých dotačních výzev pro produkt Grantio. Aktuální počty neopisuj
+sem: měří je `docs/QUALITY.md` (12. 11. 2026: 4 242 záznamů, 136 zdrojů).
 
 **ZLATÁ PRAVIDLA (neporušuj):**
-1. **NIKDY nemerguj do `main`** bez explicitního pokynu uživatele. Je to JEHO větev. Pracuj na
-   `coverage-expansion-next`.
+1. **Jediná větev je `main`** a commituje se do ní jen po zelené bráně (`validate_release.py`).
+   **Zápis do databáze produktu (`publish_db.py`) je zásah do běžícího produktu:** nejdřív
+   `--dry-run` a porovnání po zdrojích, zapisuje vlastník nebo s jeho souhlasem
+   (`the-machine-app/docs/tech/PROVOZ.md` §3).
 2. **NEHALUCINUJ.** Co není v textu zdroje, nevyplňuj. `amount=null`, když částka není uvedená
    (bývá jen v PDF/zadávací dokumentaci). Nevymýšlej deadline. Nezakládej fiktivní záznamy
    (když zdroj nemá přímé dotace = MD → zdokumentuj a jdi dál, žádné fake záznamy).
@@ -31,11 +36,12 @@ v `REMAINING.md`). Aktuálně **3372 záznamů / 133 poskytovatelů** na větvi 
 2. HARVEST   scripts/<src>.py → data/<src>_documents.jsonl
              tvar: {url, host, title, body_text, attachments:[{url,label}], n_attachments}
 3. INPUT     python scripts/build_extract_input.py data/<src>_documents.jsonl --source <src> --out-dir data/<src>_in --force-type grant
-4. VRSTVA 2  scripts/extractors/<src>.py  → data/<src>_out/grant_NN.json   (JOIN je podle BASENAME = stejný index jako _in!)
-             skip nějaký záznam = NEzapisuj jeho out soubor.
+4. VRSTVA 2  scripts/extractors/<src>.py  → data/<src>_out/grant_NN.json
+             Výstup patří k ADRESE, ne k číslu souboru (od 2026-11-08): každý výstup nese `_source_id`
+             (= `id` vstupu) a `ingest_rich` cizí výstup odmítne. Rozcestník, který výzvou není,
+             se označí `{"_source_id": …, "_skip": "…"}` (docs/REFRESH.md).
 5. INGEST    python scripts/ingest_rich.py --out-dir data/<src>_out --src data/<src>_in --existing data/opportunities.jsonl --out data/opportunities.jsonl --harvest-file data/<src>_documents.jsonl --today <YYYY-MM-DD>
-6. TAIL      consolidate.py → fix_dataset.py --today <dnes> → build_app.py
-             → cp data/grants_app.html docs/grants_app.html → export_api.py (→ docs/opportunities.json)
+6. TAIL      python scripts/refresh_run.py --tail-only   (přepočet → brána → export → kvalita; bez sítě)
 7. KONFIG    fix_dataset PROVIDER_TYPE (slug→typ) · routing.yaml sources (host→harvester) ·
              platform_map.json final[host].grant=true · CLAUDE.md harvester řádek · REMAINING.md
 8. VERIFY+   ověř (status / provider type / citace / kraj) → `python scripts/validate_release.py`
@@ -94,7 +100,8 @@ v `REMAINING.md`). Aktuálně **3372 záznamů / 133 poskytovatelů** na větvi 
   v note u ec.europa.eu předčasně ukončilo YAML double-quoted string → `routing.py` padal od eu_ft commitu.
   Po editaci YAML/JSON/PY s českým textem VŽDY parse-test (`python -c "import yaml; yaml.safe_load(open(...))"`)
   nebo `py_compile`/`ast.parse`. Smoke-test celého repa: `py_compile` všech `scripts/*.py` + `scripts/extractors/*.py`.
-- **ingest JOIN = basename** `grant_NN.json`; out musí mít stejné indexy jako in; přeskočení = nezapsat soubor.
+- **Výstup vrstvy 2 se páruje podle `_source_id`** (adresa vstupu), ne podle čísla souboru; do
+  2026‑11‑08 to bylo podle čísla a po přidání výzvy na web dostala každá další data své sousedky.
 - **Velké downloady** (build_extract_input s desítkami příloh) pusť na pozadí (`run_in_background`);
   **foreground `sleep` je blokovaný** — nečekej sleepem, čekej na notifikaci.
 - **Gitignored:** `data/` celé (`*_documents.jsonl`, `opportunities.jsonl`, `<src>_out/`, doc-store…)
@@ -104,29 +111,25 @@ v `REMAINING.md`). Aktuálně **3372 záznamů / 133 poskytovatelů** na větvi 
 
 ---
 
-## 4. Deploy & export (po každém běhu)
+## 4. Export a zápis (po každé obnově)
 
 - **Jeden katalog:** `data/opportunities.jsonl` = interní zdroj pravdy (řádek = záznam, verzovaný v gitu).
-  Všechno do něj upsertuje a všechno z něj čte. Žádné v1/v2 varianty.
-- `docs/grants_app.html` = appka (deploy `pages.yml` → větev `gh-pages`, per-branch). Data inline v HTML;
-  status se přepočítává KLIENTSKY. **Musíš cp z `data/grants_app.html` po build_app**, jinak je live stale.
-- `docs/opportunities.json` = publikovaná podoba katalogu (`scripts/export_api.py`, viz `docs/EXPORT.md`):
-  `{meta{schema_version,generated_at,count,status_rule}, grants[…]}`. Jen veřejná pole (BEZ `_*`,
-  `provenance`, `extra`, `foundation_id`), RAW `open_from`/`deadline`. Stabilní Pages URL:
-  `https://chocholous.github.io/regrantio/branches/<branch>/opportunities.json`.
-- `gen_pages_index.py` kopíruje `docs/opportunities.json` do site per branch.
+  Všechno do něj upsertuje a všechno z něj čte. Žádné varianty.
+- `docs/opportunities.json` = publikovaná podoba katalogu (`scripts/export_api.py`, kontrakt 1.3
+  v `docs/EXPORT.md`): jen kurátorovaná pole, RAW `open_from` a `deadline`, stav se počítá k dnešku
+  až u čtenáře. Vzniká v tailu obnovy až ZA branou.
+- **Do produktu** jde export přes `scripts/publish_db.py` (nejdřív `--dry-run`), ručně; postup
+  a porovnání po zdrojích je v `the-machine-app/docs/tech/PROVOZ.md` §3. Opakovaný `--dry-run`
+  po zápisu musí hlásit 0 změn.
+- Prohlížeč `docs/grants_app.html` (`build_app.py`) a GitHub Pages (`pages.yml`, jen ručně)
+  jsou pozůstatek z léta: Pages nejsou zapnuté a soubor je z 31. 7. Nic na nich nestojí.
 
 ---
 
 ## 5. Kde hledat / co dál
 
-- **`REMAINING.md`** = priority a mezery (P1 fondy ✓ · P2 ministerstva · **P2b agentury: NSA ✓ → SZIF/Úřad vlády další** ·
-  P3 EU OP · P4 nadace 17→40+ · P5 chybějící města · P6 Brusel · P7 mezinárodní). Vize-tabulka = stav vs cíl.
-- **`CLAUDE.md`** = architektura, příkazy, doc rozcestník.
-- **`docs/`** = platform_playbook, detection, coverage, data_reuse, apify_howto.
-- **Priorita k 2026-06-30 = PRODUCTION-READINESS (ne coverage).** Viz `docs/EXPORT.md` (publikovaný
-  export) + `docs/REFRESH.md` (update strategie) + `scripts/refresh.py` (checklist). Coverage (P-priority
-  níže) až po kvalitě. Úřad vlády HOTOVO (7 NNO programů); EU F&T HOTOVO (341). Zbylé coverage zdroje =
-  genuine blockery (SZIF WAF, OP TAK/dotaceeu WebForms, nadace ne-WP) — viz REMAINING tabulka.
-- **Reálný reprodukční gap:** jednorázový nadační batch `h19_*` (fondbudoucnosti/kellner/vdv/… bez
-  registrovaného harvesteru) — REFRESH.md §6. Dořešit per-web parsery nebo ponechat jako poslední stav.
+- **`REMAINING.md`** = co zbývá dnes a kdo má další krok.
+- **`docs/coverage.md`** (poslední oddíl) = co v katalogu chybí a cesta ke každé mezeře (MAS, SZIF, nadace…).
+- **`docs/QUALITY.md`** = měřená kvalita a stav každého zdroje; **`docs/REFRESH.md`** = třídy obnovy a pojistky.
+- **`CLAUDE.md`** = příkazy, pevná pravidla, rozcestník.
+- Starší stavové zápisy (červen až září 2026) jsou v `docs/archiv/REMAINING-do-2026-09.md`.

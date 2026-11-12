@@ -1,6 +1,6 @@
 # CLAUDE.md — regrantio
 
-Datový základ Grantia: sbírá dotační výzvy ze **135 zdrojů**, sjednocuje je do
+Datový základ Grantia: sbírá dotační výzvy ze **136 zdrojů**, sjednocuje je do
 jednoho katalogu a publikuje je **přímo do databáze produktu**. Neví nic
 o uživatelích, organizacích ani o produktu; hranice vede přes data, ne přes kód.
 
@@ -13,7 +13,7 @@ o uživatelích, organizacích ani o produktu; hranice vede přes data, ne přes
 | | |
 |---|---|
 | Katalog | `data/opportunities.jsonl` — **jediný zdroj pravdy, v gitu** (řádek = záznam, 12 polí včetně `provenance`, `extra`, `citations`) |
-| Export | `docs/opportunities.json` — kurátorovaná podoba katalogu, kontrakt 1.2 (`export_api.py`) |
+| Export | `docs/opportunities.json` — kurátorovaná podoba katalogu, kontrakt 1.3 (`export_api.py`) |
 | Inventář zdrojů | `data/sources.json` — jméno, typ, třída obnovy, harvester, počty, stáří (`sources_inventory.py`) |
 | Kvalita | `docs/QUALITY.md` + `data/quality.json` (`quality_report.py`) |
 | Jazyk | Python 3.13 ve venv, bez frameworku; `pyyaml`; Playwright jen pro objev SPA |
@@ -68,7 +68,7 @@ Třídy obnovy (`data/sources.json`, sloupec `refresh`):
 1. **Status se počítá v kódu, ne modelem** (`opportunities.py:compute_status`).
    Uložený `status` je snímek; produkt si ho přepočítá k dnešku.
 2. **Nehalucinovat.** `amount = null`, `deadline = null` zůstává null. Odvozené
-   hodnoty (`derive_deadlines`, kontrakt 1.2 `scope` / `deadline_kind` /
+   hodnoty (`derive_deadlines`, kontrakt 1.3 `scope` / `deadline_kind` / `early_close` /
    rodiny ročníků) jsou DOKLADOVANÉ a mimo `content_hash`.
 3. **Jen jeden proces píše `opportunities.jsonl`.** Ingesty sekvenčně.
 4. **Katalog je v gitu, data ne.** Export se v gitu commituje s obnovou
@@ -85,12 +85,12 @@ Třídy obnovy (`data/sources.json`, sloupec `refresh`):
 ```
 scripts/            harvestery (1 web nebo 1 rodina CMS = 1 skript), ingesty, tail
 scripts/extractors/ deterministické parsery vrstvy 2 (třída B)
-scripts/enrich.py   odvozená pole kontraktu 1.2 · dedup.py rodiny ročníků
+scripts/enrich.py   odvozená pole kontraktu 1.3 · dedup.py rodiny ročníků
 workflows/          definice pro nástroj Workflow v Claude Code (extract_wf.js = prompt vrstvy 2)
 prompts/            prompty vrstvy 2 a vytěžené záludnosti (pitfalls.md)
 data/               katalog (v gitu), seeds, jména zdrojů, inventář, kvalita; zbytek gitignored
 docs/               EXPORT (kontrakt) · REFRESH (obnova) · QUALITY (měření) · SESSION_PLAYBOOK · rodiny CMS
-tests/              test_core · test_identity · test_notacall · test_fix · test_publish · test_publish_db · test_enrich
+tests/              test_core · test_enrich · test_fix · test_identity · test_notacall · test_pairing · test_publish · test_publish_db · test_sources · test_vismo_yearless (201 testů)
 ```
 
 ## Rozcestník
@@ -98,11 +98,11 @@ tests/              test_core · test_identity · test_notacall · test_fix · t
 | Téma | Soubor |
 |---|---|
 | Recept, architektura, data na disku | [`README.md`](README.md) |
-| Kontrakt exportu (1.2) | [`docs/EXPORT.md`](docs/EXPORT.md) |
+| Kontrakt exportu (1.3) | [`docs/EXPORT.md`](docs/EXPORT.md) |
 | Obnova: třídy, kadence, pojistky | [`docs/REFRESH.md`](docs/REFRESH.md) |
 | Kvalita dat, stav zdrojů | [`docs/QUALITY.md`](docs/QUALITY.md) |
 | **Co v katalogu chybí** (poskytovatelé, priority, cesta) | [`docs/coverage.md`](docs/coverage.md) poslední oddíl |
 | Jak pracovat, pasti | [`docs/SESSION_PLAYBOOK.md`](docs/SESSION_PLAYBOOK.md) |
-| Co zbývá, blokery | [`REMAINING.md`](REMAINING.md) |
+| Co zbývá a kdo má další krok | [`REMAINING.md`](REMAINING.md) |
 | Rodiny CMS, detekce | [`docs/platform_playbook.md`](docs/platform_playbook.md) · [`docs/detection.md`](docs/detection.md) |
 | Model dat | [`schema/opportunity_schema.md`](schema/opportunity_schema.md) |
