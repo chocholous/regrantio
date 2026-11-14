@@ -48,7 +48,10 @@ WORKFLOW = os.path.join(ROOT, "workflows", "extract_wf.js")
 # Výchozí model: Sonnet 5. Workflow měl `sonnet` (Haiku na bohatém schématu
 # malformoval), Opus 5 je přesnější, ale výzva má i 150 000 znaků příloh
 # a zdroj jich má stovky — volba je v ceně; přepíná `--model`.
-DEFAULT_MODEL = "claude-sonnet-5"
+DEFAULT_MODEL = "claude-sonnet-5-5"  # 2026-11-14: nástupce za stejnou cenu, totéž v aplikaci (D11)
+# Čtení výzvy je převod textu na strukturu, ne úvaha: střední úsilí stačí
+# a výchozí vysoké (u Sonnetu 5.5) by platilo přemýšlení, které výstup nezlepší.
+EFFORT = "medium"
 MAX_OUTPUT_TOKENS = 16000
 
 
@@ -99,13 +102,29 @@ def type_of(path: str) -> str:
     return "foundation_mission" if os.path.basename(path).startswith("mission_") else "grant"
 
 
+MAX_ATTACHMENT_CHARS = 120_000
+MAX_CONTEXT_CHARS = 20_000
+
+
+def _cut(text: str, limit: int) -> str:
+    if len(text) <= limit:
+        return text
+    return text[:limit] + f"\n\n[… zkráceno: dalších {len(text) - limit:,} znaků příloh se nečte]"
+
+
 def user_message(doc: dict, t: str, keys: list, shape: str) -> str:
-    """Totéž zadání jako ve workflow, jen dokument je v textu místo v souboru pro Read."""
+    """Totéž zadání jako ve workflow, jen dokument je v textu místo v souboru pro Read.
+
+    ⚠ PŘÍLOHY MAJÍ STROP (2026-11-14). První čtení se skutečným klíčem: jedna
+    stránka nadace s výročními zprávami 2007–2025 měla 283 tisíc tokenů (asi
+    0,57 $). Text stránky výzvy jde celý; přílohy a souvislosti do stropu, na
+    začátku bývají pravidla a vyhlášení, na konci archiv.
+    """
     parts = [f"# title\n{doc.get('title') or ''}", f"# body\n{doc.get('body') or ''}"]
     if doc.get("attachments_md"):
-        parts.append(f"# attachments_md\n{doc['attachments_md']}")
+        parts.append(f"# attachments_md\n{_cut(doc['attachments_md'], MAX_ATTACHMENT_CHARS)}")
     if doc.get("related_context"):
-        parts.append(f"# related_context\n{doc['related_context']}")
+        parts.append(f"# related_context\n{_cut(doc['related_context'], MAX_CONTEXT_CHARS)}")
     parts.append(
         f"Sestav JEDEN JSON objekt se VŠEMI klíči (chybějící hodnota = null nebo []): {', '.join(keys)}.\n"
         f"Tvar vnořených objektů (PŘESNĚ tyto klíče, nic nepřejmenovávej): {shape}. evidence={{nazev_pole: doslovná citace}}.\n"
@@ -134,6 +153,7 @@ def extract_one(client, model: str, path: str, out_dir: str, system: dict, keys:
         model=model,
         max_tokens=MAX_OUTPUT_TOKENS,
         thinking={"type": "adaptive"},
+        output_config={"effort": EFFORT},
         system=system[t],
         messages=[{"role": "user", "content": user_message(doc, t, keys[t], shape[t])}],
     ) as stream:

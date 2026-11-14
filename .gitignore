@@ -63,3 +63,6 @@ data/*.pre-refresh.bak
 
 # Otisk brány pro publish_db (místní, vzniká v tailu)
 data/.gate.json
+
+# Logy noční obnovy (scripts/obnova_noc.ps1)
+data/logs/
