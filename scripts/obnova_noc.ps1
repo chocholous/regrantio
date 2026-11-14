@@ -31,6 +31,8 @@ foreach ($line in Get-Content (Join-Path $root '.env') -Encoding UTF8) {
 	}
 }
 $env:PYTHONIOENCODING = 'utf-8'
+# Výstup Pythonu je UTF-8; bez tohohle ho PowerShell čte v kódové stránce konzole.
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 Write-Log 'obnova: start'
 & python -X utf8 scripts/refresh_run.py --tier all --budget-min 150 --model-limit 15 2>&1 |
