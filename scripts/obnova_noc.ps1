@@ -7,7 +7,7 @@
 #      nic se nevypisuje ani neukládá jinam
 #   2. refresh_run --tier all: třídy A, B, C (model) i P; časový rozpočet
 #      a strop dokumentů na zdroj drží náklad i délku běhu
-#   3. jen když obnova i brána prošly: publish_db (zapíše jen export, který
+#   3. publish_db vždy, ale zapíše jen export, který prošel bránou (zapíše jen export, který
 #      prošel bránou; pojistky proti propadu a hromadnému stažení)
 #   4. commit a push dat pod identitou regrantio-refresh
 #
@@ -38,10 +38,11 @@ Write-Log 'obnova: start'
 & python -X utf8 scripts/refresh_run.py --tier all --budget-min 150 --model-limit 15 2>&1 |
 	Out-File -FilePath $log -Append -Encoding utf8
 $refresh = $LASTEXITCODE
-if ($refresh -ne 0) {
-	Write-Log "obnova skončila kódem $refresh; do databáze se nezapisuje"
-	exit $refresh
-}
+# Nenulový kód znamená i jen jeden nedostupný zdroj ze 136; o zápisu proto
+# nerozhoduje on, ale brána: publish_db zapíše jen export, jehož otisk vstupu
+# prošel bránou (data/.gate.json). Když tail selže, zůstane starý export
+# a jeho zápis nic nezmění.
+if ($refresh -ne 0) { Write-Log "obnova skončila kódem $refresh (některý zdroj nebo krok selhal, viz log)" }
 
 Write-Log 'zápis do databáze'
 & python -X utf8 scripts/publish_db.py 2>&1 | Out-File -FilePath $log -Append -Encoding utf8
