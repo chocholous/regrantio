@@ -187,6 +187,39 @@ def test_dokumenty_bez_popisu_se_vynechaji():
     assert docs[1]["role"] == "ostatni"
 
 
+# Audit 14. 11.: export neměl adresu u žádného z 2 575 dokumentů, i když sběr
+# je stáhl (`provenance.documents`). Grantio AI tak nepřečetla pravidla žádné výzvy.
+def test_dokument_od_modelu_dostane_adresu_podle_nazvu():
+    g = _grant(extra={"dokumenty": [{"popis": "Specifická pravidla pro žadatele a příjemce, verze 3", "role": "pravidla_podminky"}]},
+               provenance={"documents": [
+                   {"url": "https://mpsv.gov.cz/cms/documents/a1/Harmonogram%20vyzvy.pdf", "txt_path": None},
+                   {"url": "https://mpsv.gov.cz/cms/documents/b2/Specificka%20pravidla%20pro%20zadatele%20a%20prijemce%20verze%203.pdf", "txt_path": None}]})
+    docs = enrich.documents(g)
+    assert docs[0]["url"].endswith("verze%203.pdf")
+    assert docs[0]["role"] == "pravidla_podminky"
+
+
+def test_stazeny_dokument_navic_se_prida_s_nazvem_a_druhem():
+    g = _grant(extra={"dokumenty": []},
+               provenance={"documents": [{"url": "https://kraj.cz/files/Vzor_smlouvy_o_poskytnuti_dotace.docx", "txt_path": None}]})
+    docs = enrich.documents(g)
+    assert docs == [{"popis": "Vzor smlouvy o poskytnuti dotace", "role": "vzor_smlouvy",
+                     "url": "https://kraj.cz/files/Vzor_smlouvy_o_poskytnuti_dotace.docx"}]
+
+
+def test_jiny_rok_v_nazvu_je_jiny_dokument():
+    g = _grant(extra={"dokumenty": [{"popis": "Projekty podpořené v roce 2019", "role": "ostatni"}]},
+               provenance={"documents": [{"url": "https://mk.cz/projekty-podporene-v-roce-2017", "txt_path": None}]})
+    docs = enrich.documents(g)
+    assert "url" not in docs[0]
+
+
+def test_dokument_bez_jmena_a_textu_se_neprida():
+    g = _grant(extra={"dokumenty": []},
+               provenance={"documents": [{"url": "https://hodonin.eu/assets/File.ashx?id_dokumenty=1", "txt_path": None}]})
+    assert enrich.documents(g) == []
+
+
 # ---------------------------------------------------------------- early_close
 def _step(veta, deadline="2026-09-30"):
     return _grant(deadline=deadline, open_from="2026-06-01", extra={"dalsi_datumy": [{"datum": None, "popis": veta}]})

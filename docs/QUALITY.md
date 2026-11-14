@@ -27,7 +27,7 @@ Změřeno k **2026-11-14** skriptem `scripts/quality_report.py`. Čísla u živ�
 | jak podat | 81.6 % (1482) | 89.8 % (3786) |
 | zdrojový dokument | 84.3 % (1530) | 88.1 % (3714) |
 | kontakt | 10.6 % (192) | 13.7 % (577) |
-| dokumenty | 11.5 % (208) | 15.7 % (664) |
+| dokumenty | 20.6 % (375) | 26.7 % (1124) |
 | číslo výzvy | 36.5 % (662) | 45.8 % (1930) |
 
 ## Čerstvost živých záznamů

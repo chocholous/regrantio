@@ -27,6 +27,7 @@ mívají".
 Kontrakt polí je popsaný v `docs/EXPORT.md` §2b.
 """
 import hashlib
+import os
 import re
 import unicodedata
 
@@ -399,10 +400,72 @@ def contact(rec):
 _DOC_ROLES = ("pravidla_podminky", "vyzva", "formular", "vzor_smlouvy", "priloha", "metodika", "ostatni")
 
 
+_DOC_EXT = re.compile(r"\.(pdf|docx?|xlsx?|odt|ods|zip|rtf|txt|pptx?)$", re.IGNORECASE)
+_DOC_NAMELESS = re.compile(r"^(file\.ashx|download|soubor|file|document|dokument|attachment|[0-9a-f-]{12,}|\d+)$", re.IGNORECASE)
+_DOC_ROLE_WORDS = (
+    ("vzor_smlouvy", re.compile(r"smlouv", re.IGNORECASE)),
+    ("formular", re.compile(r"formul|žádost o|zadost o|tiskopis", re.IGNORECASE)),
+    ("pravidla_podminky", re.compile(r"pravidl|podmínk|podmink|zásad|zasad", re.IGNORECASE)),
+    ("metodika", re.compile(r"metodi|pokyn|příručk|prirucka|návod|navod", re.IGNORECASE)),
+    ("priloha", re.compile(r"příloh|priloh", re.IGNORECASE)),
+    ("vyzva", re.compile(r"výzv|vyzv|vyhlášen|vyhlasen", re.IGNORECASE)),
+)
+
+
+def _doc_name(url):
+    """Čitelné jméno dokumentu z adresy (`name=`, poslední část cesty), jinak None."""
+    from urllib.parse import parse_qs, unquote, urlsplit
+    parts = urlsplit(url)
+    query = parse_qs(parts.query)
+    raw = (query.get("name") or query.get("filename") or [None])[0] or parts.path.rsplit("/", 1)[-1]
+    name = _DOC_EXT.sub("", unquote(raw or "").replace("+", " ")).replace("_", " ").strip()
+    if not name or _DOC_NAMELESS.match(name) or name.lower().endswith(".ashx") or len(name) < 4:
+        return None
+    return name[:200]
+
+
+def _doc_first_line(txt_path):
+    """První smysluplný řádek staženého textu dokumentu (titul), jinak None."""
+    if not txt_path:
+        return None
+    path = os.path.join(*re.split(r"[\\/]", txt_path))
+    try:
+        with open(path, encoding="utf-8", errors="ignore") as fh:
+            head = fh.read(3000)
+    except OSError:
+        return None
+    for line in head.splitlines():
+        line = " ".join(line.split())
+        if 8 <= len(line) <= 160 and sum(ch.isalpha() for ch in line) >= 6:
+            return line
+    return None
+
+
+def _doc_words(text):
+    return {w for w in re.findall(r"\w+", (text or "").lower()) if len(w) >= 3}
+
+
+def _doc_years(text):
+    return set(re.findall(r"\b(?:19|20)\d\d\b", text or ""))
+
+
+def _doc_role(name):
+    for role, rx in _DOC_ROLE_WORDS:
+        if rx.search(name or ""):
+            return role
+    return "ostatni"
+
+
 def documents(rec):
     """Dokumenty, které zdroj u výzvy jmenuje: `[{popis, role, url?}]`.
 
-    Většina má jen popis (jméno souboru z listingu), url jen kde ho zdroj dal.
+    Seznam jmen čte model z textu stránky (`extra.dokumenty`), adresu v textu
+    nevidí. Sběr ale stažené dokumenty i s adresou zapsal do
+    `provenance.documents`. ⚠ DO 2026-11-14 SE TY DVA SEZNAMY NESPOJILY: v
+    exportu neměl adresu ani jeden z 2 575 dokumentů, takže Grantio AI nemohla
+    přečíst pravidla žádné výzvy (audit 14. 11.). Teď dostane jméno od modelu
+    adresu dokumentu, jehož název se s ním shoduje, a stažené dokumenty, které
+    model nejmenoval, se přidají s názvem z adresy nebo z prvního řádku textu.
     Prázdný seznam se nepublikuje jako null, ale jako `[]` — „zdroj žádné
     nejmenuje" je informace.
     """
@@ -421,6 +484,42 @@ def documents(rec):
             if isinstance(url, str) and url.startswith("http"):
                 doc["url"] = url
             out.append(doc)
+
+    prov = (rec.get("provenance") or {}).get("documents") if isinstance(rec.get("provenance"), dict) else None
+    fetched, seen = [], {d["url"] for d in out if d.get("url")}
+    for d in prov if isinstance(prov, list) else []:
+        url = d.get("url") if isinstance(d, dict) else None
+        if not isinstance(url, str) or not url.startswith("http") or url in seen:
+            continue
+        seen.add(url)
+        fetched.append({"url": url, "name": _doc_name(url) or _doc_first_line(d.get("txt_path"))})
+
+    used = set()
+    for doc in out:
+        if doc.get("url"):
+            continue
+        words = _doc_words(doc["popis"])
+        best, best_score = None, 0.0
+        for k, f in enumerate(fetched):
+            if k in used or not f["name"]:
+                continue
+            other = _doc_words(f["name"])
+            # Jiný rok v názvu je jiný dokument („podpořené v roce 2019“ ≠ 2017).
+            years, other_years = _doc_years(doc["popis"]), _doc_years(f["name"])
+            if years and other_years and not (years & other_years):
+                continue
+            shared = len(words & other)
+            score = shared / max(1, len(words | other))
+            if (shared >= 2 or score >= 0.5) and score > best_score:
+                best, best_score = k, score
+        if best is not None:
+            used.add(best)
+            doc["url"] = fetched[best]["url"]
+
+    for k, f in enumerate(fetched):
+        if k in used or not f["name"]:
+            continue
+        out.append({"popis": f["name"], "role": _doc_role(f["name"]), "url": f["url"]})
     return out[:20]
 
 
