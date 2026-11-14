@@ -129,9 +129,21 @@ NOT_A_CALL = re.compile(
     r"|^\s*(vyúčtování|finanční\s+vypořádání)\s+(výzv|dotac|program|projekt)"
     r"|udělení\s+podpory\s+\d+\s+projekt"
     r"|\b(poskytne|umožní|podpoří|rozdělí|start\s+pro)\b[^\n]{0,40}?\b\d+\s+(nových\s+|dalších\s+)?"
-    r"([\w-]+\s+)?(společných\s+)?projekt",
+    r"([\w-]+\s+)?(společných\s+)?projekt"
+    # 2026-11-14 (audit, 7 zásahů v živé nabídce, 0 výzev): obecné stránky
+    # resortu („Zásady pro poskytování dotací“ bez ročníku, „Dotační řízení“,
+    # komise), archivy, vyhodnocení programů a pokyny k dočerpání peněz.
+    # Zásady S ROČNÍKEM zůstávají: bývají to pravidla programu obce na rok.
+    r"|^\s*zásady\s+pro\s+poskytování\s+(účelových\s+)?dotací\s*$"
+    r"|^\s*dotační\s+řízení\s*$|^\s*grantová\s+komise\b"
+    r"|[-–—]\s*archiv\s*$|\bjejich\s+vyhodnocení\b"
+    r"|\bdočerpání\s+finančních\s+prostředků\b",
     re.IGNORECASE,
 )
+
+# Zrušená výzva: poskytovatel ji ponechá na webu s „zruseno“ v adrese
+# (Czechaid, 4 živé záznamy vedle platných, 2026-11-14).
+CANCELLED_URL = re.compile(r"/zru[sš]eno[-_]", re.IGNORECASE)
 
 # KÓD PROGRAMU V TITULKU DOTIS ZÁZNAMU — „Program obnovy venkova (26POVU1)".
 # Je to klíč hlubokého odkazu `/grantProgram/:memo`; viz sekce A5 v `main()`.
@@ -152,6 +164,12 @@ DROP_STRAY = [
     # modelu podle pořadí (viz `ingest_rich`, `_source_id`). Sedm takových
     # záznamů; kód je v adrese i v názvu, takže nesoulad je jednoznačný.
     lambda r: r.get("source") == "sfa" and _sfa_code_mismatch(r),
+    # Pozůstatky přepsaných extraktorů SFŽP z června (audit 14. 11.): výzvy
+    # 1/2024 a 2/2024 FN už nejsou mezi aktivními na webu fondu a 2/2016 PU
+    # píše „příjem žádostí ukončen“; bez lhůty se tvářily jako živé.
+    lambda r: r.get("source") == "sfzp" and any(
+        s in (r.get("source_url") or "") for s in ("/vyzva-1-2024-fn/", "/vyzva-2-2024-fn/", "/vyzva-22016-pu/")
+    ),
     # Úřední deska Jihomoravského kraje (2026-11-10): od 1. 9. za přihlášením
     # a výpis nesl data SEJMUTÍ z desky místo lhůt (programy „otevřené“ do
     # 2029), smlouvy a oznámení o pozastavení sběru. Kraj teď čte jeho dotační
@@ -461,10 +479,32 @@ def main():
 
     # ---- A1) oznámení výsledků nejsou výzvy (viz NOT_A_CALL) ----
     def _oznameni(r):
-        return r.get("kind") == "grant" and bool(NOT_A_CALL.search(r.get("title") or ""))
+        return r.get("kind") == "grant" and (
+            bool(NOT_A_CALL.search(r.get("title") or ""))
+            or bool(CANCELLED_URL.search(r.get("source_url") or ""))
+        )
 
     notcall_dropped = [r for r in recs if _oznameni(r)]
     recs = [r for r in recs if not _oznameni(r)]
+
+    # ---- A1b) táž výzva ze dvou zdrojů (stejná adresa) ----
+    # Agregátor (nadace_spa) a web nadace nesly táž výzva dvakrát, jednou
+    # „otevřená“, jednou „bez lhůty“ (audit 14. 11.). Zůstává záznam, který
+    # zná lhůtu, při shodě ten s delším textem.
+    by_url = collections.defaultdict(list)
+    for r in recs:
+        u = (r.get("source_url") or "").strip().rstrip("/").lower()
+        if r.get("kind") == "grant" and u:
+            by_url[u].append(r)
+    url_dup_dropped = []
+    for group in by_url.values():
+        if len({x.get("source") for x in group}) < 2:
+            continue
+        keep = max(group, key=lambda x: (bool(x.get("deadline")), len(x.get("focus_area") or "") + len(x.get("eligible_applicants") or "")))
+        url_dup_dropped.extend(x for x in group if x is not keep and x.get("source") != keep.get("source"))
+    if url_dup_dropped:
+        drop_ids = {id(x) for x in url_dup_dropped}
+        recs = [r for r in recs if id(r) not in drop_ids]
 
     # ---- A5) DOTIS: odkaz na program, ne na rozcestník portálu ----
     #
@@ -752,6 +792,10 @@ def main():
     for s, c in dd.most_common():
         print(f"  DROP {s}: {c} záznamů")
     print(f"  celkem smazáno: {len(dropped)}")
+    if url_dup_dropped:
+        print(f"\n=== A1b) táž výzva ze dvou zdrojů: −{len(url_dup_dropped)} ===")
+        for r in url_dup_dropped:
+            print(f"  −  {(r.get('source') or '?')[:24]:24}  {(r.get('title') or '')[:64]}")
     if notcall_dropped:
         print(f"\n=== A1) oznámení výsledků (ne výzvy): −{len(notcall_dropped)} ===")
         for r in notcall_dropped:

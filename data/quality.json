@@ -1,105 +1,105 @@
 {
 	"today": "2026-11-14",
-	"records": 4242,
-	"grants": 4217,
-	"live": 1816,
-	"sources": 136,
+	"records": 4224,
+	"grants": 4199,
+	"live": 1801,
+	"sources": 135,
 	"status": {
 		"open": 520,
-		"closed": 2401,
+		"closed": 2398,
 		"announced": 378,
-		"unknown": 918
+		"unknown": 903
 	},
 	"scope_live": {
+		"national": 299,
 		"local": 505,
-		"national": 312,
-		"regional": 563,
+		"regional": 561,
 		"international": 9,
 		"eu_central": 427
 	},
 	"deadline_kind_live": {
+		"rolling": 57,
 		"fixed": 875,
-		"unknown": 730,
-		"rolling": 58,
-		"recurring": 153
+		"unknown": 717,
+		"recurring": 152
 	},
 	"fields": {
 		"deadline": {
 			"live": 898,
-			"live_pct": 49.4,
-			"all": 3299,
-			"all_pct": 78.2
+			"live_pct": 49.9,
+			"all": 3296,
+			"all_pct": 78.5
 		},
 		"amount": {
 			"live": 78,
 			"live_pct": 4.3,
-			"all": 265,
+			"all": 264,
 			"all_pct": 6.3
 		},
 		"eligible_applicants": {
-			"live": 1218,
-			"live_pct": 67.1,
-			"all": 2592,
-			"all_pct": 61.5
+			"live": 1207,
+			"live_pct": 67.0,
+			"all": 2580,
+			"all_pct": 61.4
 		},
 		"typ_zadatele": {
-			"live": 757,
-			"live_pct": 41.7,
-			"all": 1647,
-			"all_pct": 39.1
+			"live": 745,
+			"live_pct": 41.4,
+			"all": 1634,
+			"all_pct": 38.9
 		},
 		"oblast": {
-			"live": 1283,
-			"live_pct": 70.6,
-			"all": 3519,
+			"live": 1268,
+			"live_pct": 70.4,
+			"all": 3501,
 			"all_pct": 83.4
 		},
 		"kraj_nebo_celostatni": {
-			"live": 1785,
+			"live": 1770,
 			"live_pct": 98.3,
-			"all": 4175,
+			"all": 4157,
 			"all_pct": 99.0
 		},
 		"how_to_apply": {
-			"live": 1482,
-			"live_pct": 81.6,
-			"all": 3786,
-			"all_pct": 89.8
+			"live": 1473,
+			"live_pct": 81.8,
+			"all": 3774,
+			"all_pct": 89.9
 		},
 		"source_doc": {
-			"live": 1530,
-			"live_pct": 84.3,
-			"all": 3714,
-			"all_pct": 88.1
+			"live": 1522,
+			"live_pct": 84.5,
+			"all": 3703,
+			"all_pct": 88.2
 		},
 		"contact": {
 			"live": 192,
-			"live_pct": 10.6,
+			"live_pct": 10.7,
 			"all": 577,
 			"all_pct": 13.7
 		},
 		"documents": {
-			"live": 375,
-			"live_pct": 20.6,
-			"all": 1124,
-			"all_pct": 26.7
+			"live": 364,
+			"live_pct": 20.2,
+			"all": 1112,
+			"all_pct": 26.5
 		},
 		"call_number": {
-			"live": 662,
-			"live_pct": 36.5,
-			"all": 1930,
-			"all_pct": 45.8
+			"live": 659,
+			"live_pct": 36.6,
+			"all": 1927,
+			"all_pct": 45.9
 		}
 	},
 	"freshness_live": {
-		"do_7": 1336,
+		"do_7": 1327,
 		"do_30": 34,
 		"starsi": 20,
-		"nevime": 426
+		"nevime": 420
 	},
 	"citations": {
-		"total": 17668,
-		"located": 8994,
+		"total": 17581,
+		"located": 8946,
 		"located_pct": 50.9
 	},
 	"provenance_live": {
@@ -120,69 +120,69 @@
 			"cited_pct": 62.2
 		},
 		"eligible_applicants": {
-			"present": 1218,
+			"present": 1207,
 			"parsed": 385,
-			"model": 833,
+			"model": 822,
 			"derived": 0,
-			"cited": 207,
-			"cited_pct": 17.0
+			"cited": 201,
+			"cited_pct": 16.7
 		},
 		"focus_area": {
-			"present": 1707,
+			"present": 1694,
 			"parsed": 639,
-			"model": 1068,
+			"model": 1055,
 			"derived": 0,
-			"cited": 282,
-			"cited_pct": 16.5
+			"cited": 277,
+			"cited_pct": 16.4
 		},
 		"oblast": {
-			"present": 1283,
+			"present": 1268,
 			"parsed": 174,
-			"model": 1109,
+			"model": 1094,
 			"derived": 0,
-			"cited": 219,
-			"cited_pct": 17.1
+			"cited": 215,
+			"cited_pct": 17.0
 		},
 		"open_from": {
-			"present": 905,
+			"present": 901,
 			"parsed": 169,
-			"model": 736,
+			"model": 732,
 			"derived": 0,
-			"cited": 49,
-			"cited_pct": 5.4
+			"cited": 45,
+			"cited_pct": 5.0
 		},
 		"region": {
-			"present": 1785,
+			"present": 1770,
 			"parsed": 704,
-			"model": 1081,
+			"model": 1066,
 			"derived": 0,
-			"cited": 228,
+			"cited": 227,
 			"cited_pct": 12.8
 		},
 		"typ_zadatele": {
-			"present": 757,
+			"present": 745,
 			"parsed": 369,
-			"model": 388,
+			"model": 376,
 			"derived": 0,
-			"cited": 68,
+			"cited": 67,
 			"cited_pct": 9.0
 		}
 	},
 	"families": {
-		"families": 380,
-		"variants": 435,
-		"recurring": 330
+		"families": 377,
+		"variants": 433,
+		"recurring": 329
 	},
 	"sources_by_state": {
-		"ok": 122,
+		"ok": 121,
 		"neovereno": 8,
 		"zmrazeny": 2,
 		"bez_cesty": 3,
 		"starne": 1
 	},
 	"live_by_source_state": {
-		"ok": 1742,
-		"neovereno": 69,
+		"ok": 1732,
+		"neovereno": 64,
 		"zmrazeny": 3,
 		"bez_cesty": 0,
 		"starne": 2
@@ -204,8 +204,8 @@
 			"name": "Česká rozvojová agentura",
 			"type": "statni_agentura",
 			"refresh": "B",
-			"records": 13,
-			"live": 8,
+			"records": 9,
+			"live": 4,
 			"last_fetched": "2026-11-08",
 			"days": 6,
 			"state": "ok"
@@ -228,8 +228,8 @@
 			"refresh": "A",
 			"records": 27,
 			"live": 26,
-			"last_fetched": "2026-11-08",
-			"days": 6,
+			"last_fetched": "2026-11-14",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -261,8 +261,8 @@
 			"refresh": "A",
 			"records": 15,
 			"live": 14,
-			"last_fetched": "2026-11-08",
-			"days": 6,
+			"last_fetched": "2026-11-14",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -272,8 +272,8 @@
 			"refresh": "A",
 			"records": 29,
 			"live": 16,
-			"last_fetched": "2026-11-08",
-			"days": 6,
+			"last_fetched": "2026-11-14",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -283,8 +283,8 @@
 			"refresh": "A",
 			"records": 7,
 			"live": 5,
-			"last_fetched": "2026-11-08",
-			"days": 6,
+			"last_fetched": "2026-11-14",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -294,8 +294,8 @@
 			"refresh": "A",
 			"records": 12,
 			"live": 11,
-			"last_fetched": "2026-11-08",
-			"days": 6,
+			"last_fetched": "2026-11-14",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -316,8 +316,8 @@
 			"refresh": "A",
 			"records": 29,
 			"live": 15,
-			"last_fetched": "2026-11-08",
-			"days": 6,
+			"last_fetched": "2026-11-14",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -371,8 +371,8 @@
 			"refresh": "A",
 			"records": 10,
 			"live": 9,
-			"last_fetched": "2026-11-08",
-			"days": 6,
+			"last_fetched": "2026-11-14",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -382,8 +382,8 @@
 			"refresh": "A",
 			"records": 11,
 			"live": 7,
-			"last_fetched": "2026-11-08",
-			"days": 6,
+			"last_fetched": "2026-11-14",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -393,8 +393,8 @@
 			"refresh": "A",
 			"records": 16,
 			"live": 13,
-			"last_fetched": "2026-11-08",
-			"days": 6,
+			"last_fetched": "2026-11-14",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -404,8 +404,8 @@
 			"refresh": "A",
 			"records": 10,
 			"live": 7,
-			"last_fetched": "2026-11-08",
-			"days": 6,
+			"last_fetched": "2026-11-14",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -415,8 +415,8 @@
 			"refresh": "A",
 			"records": 9,
 			"live": 8,
-			"last_fetched": "2026-11-08",
-			"days": 6,
+			"last_fetched": "2026-11-14",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -426,8 +426,8 @@
 			"refresh": "A",
 			"records": 35,
 			"live": 33,
-			"last_fetched": "2026-11-08",
-			"days": 6,
+			"last_fetched": "2026-11-14",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -437,8 +437,8 @@
 			"refresh": "A",
 			"records": 1,
 			"live": 0,
-			"last_fetched": "2026-11-08",
-			"days": 6,
+			"last_fetched": "2026-11-14",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -448,8 +448,8 @@
 			"refresh": "A",
 			"records": 3,
 			"live": 0,
-			"last_fetched": "2026-11-08",
-			"days": 6,
+			"last_fetched": "2026-11-14",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -459,8 +459,8 @@
 			"refresh": "A",
 			"records": 4,
 			"live": 3,
-			"last_fetched": "2026-11-08",
-			"days": 6,
+			"last_fetched": "2026-11-14",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -470,8 +470,8 @@
 			"refresh": "A",
 			"records": 13,
 			"live": 11,
-			"last_fetched": "2026-11-08",
-			"days": 6,
+			"last_fetched": "2026-11-14",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -481,8 +481,8 @@
 			"refresh": "A",
 			"records": 90,
 			"live": 80,
-			"last_fetched": "2026-11-08",
-			"days": 6,
+			"last_fetched": "2026-11-14",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -822,8 +822,8 @@
 			"refresh": "A",
 			"records": 10,
 			"live": 6,
-			"last_fetched": "2026-11-08",
-			"days": 6,
+			"last_fetched": "2026-11-14",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -833,8 +833,8 @@
 			"refresh": "C",
 			"records": 2,
 			"live": 1,
-			"last_fetched": "2026-11-09",
-			"days": 5,
+			"last_fetched": "2026-11-14",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -855,8 +855,8 @@
 			"refresh": "A",
 			"records": 4,
 			"live": 0,
-			"last_fetched": "2026-11-08",
-			"days": 6,
+			"last_fetched": "2026-11-14",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -866,8 +866,8 @@
 			"refresh": "A",
 			"records": 6,
 			"live": 3,
-			"last_fetched": "2026-11-08",
-			"days": 6,
+			"last_fetched": "2026-11-14",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -930,8 +930,8 @@
 			"name": "Ministerstvo kultury",
 			"type": "ministerstvo",
 			"refresh": "C",
-			"records": 28,
-			"live": 14,
+			"records": 23,
+			"live": 9,
 			"last_fetched": null,
 			"days": null,
 			"state": "neovereno"
@@ -996,8 +996,8 @@
 			"name": "Moravskoslezský kraj",
 			"type": "samosprava_kraj",
 			"refresh": "A",
-			"records": 115,
-			"live": 30,
+			"records": 111,
+			"live": 28,
 			"last_fetched": "2026-11-08",
 			"days": 6,
 			"state": "ok"
@@ -1106,8 +1106,8 @@
 			"name": "Nadace (OSF, Vodafone, Abakus, LPR, CLF)",
 			"type": "nadace",
 			"refresh": "B",
-			"records": 17,
-			"live": 14,
+			"records": 16,
+			"live": 13,
 			"last_fetched": "2026-11-08",
 			"days": 6,
 			"state": "ok"
@@ -1122,17 +1122,6 @@
 			"last_fetched": null,
 			"days": null,
 			"state": "neovereno"
-		},
-		{
-			"slug": "nadacecez.cz",
-			"name": "Nadace ČEZ",
-			"type": "nadace",
-			"refresh": "P",
-			"records": 1,
-			"live": 0,
-			"last_fetched": "2026-11-09",
-			"days": 5,
-			"state": "ok"
 		},
 		{
 			"slug": "nadacecs",
@@ -1218,8 +1207,8 @@
 			"refresh": "A",
 			"records": 1,
 			"live": 1,
-			"last_fetched": "2026-11-08",
-			"days": 6,
+			"last_fetched": "2026-11-14",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1372,8 +1361,8 @@
 			"refresh": "A",
 			"records": 4,
 			"live": 2,
-			"last_fetched": "2026-11-08",
-			"days": 6,
+			"last_fetched": "2026-11-14",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1438,8 +1427,8 @@
 			"refresh": "A",
 			"records": 2,
 			"live": 1,
-			"last_fetched": "2026-11-08",
-			"days": 6,
+			"last_fetched": "2026-11-14",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1513,8 +1502,8 @@
 			"name": "Státní fond životního prostředí",
 			"type": "statni_fond",
 			"refresh": "C",
-			"records": 23,
-			"live": 12,
+			"records": 20,
+			"live": 9,
 			"last_fetched": "2026-11-09",
 			"days": 5,
 			"state": "ok"
@@ -1570,8 +1559,8 @@
 			"refresh": "A",
 			"records": 3,
 			"live": 2,
-			"last_fetched": "2026-11-08",
-			"days": 6,
+			"last_fetched": "2026-11-14",
+			"days": 0,
 			"state": "ok"
 		},
 		{

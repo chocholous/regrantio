@@ -58,6 +58,13 @@ CHYTIT = [
     # Pokyny k vyúčtování proběhlé výzvy (MŠMT, 2026-11-09; v doporučení škole).
     "Vyúčtování Výzvy Podpora přípravy sportovních talentů ve školách",
     "Finanční vypořádání dotací za rok 2025",
+    # Obecné stránky resortu, archivy, vyhodnocení a dočerpání (2026-11-14).
+    "Zásady pro poskytování dotací",
+    "Dotační řízení",
+    "Grantová komise SOCNS",
+    "Podpora projektů spolků a pobočných spolků - archiv",
+    "Dotační programy Ministerstva kultury a jejich vyhodnocení",
+    "Stanovení termínu a způsobu dočerpání finančních prostředků v rámci dotačního Programu",
 ]
 
 PROPUSTIT = [
@@ -88,6 +95,9 @@ PROPUSTIT = [
     "Program podpory projektů NNO na rok 2027",
     "Partnerství obcí a spolků",
     "Výzva k předkládání projektů – výsledky hodnocení budou zveřejněny do 30 dnů",
+    # Zásady S ROČNÍKEM jsou pravidla programu obce na rok, tedy výzva.
+    "Zásady pro poskytování účelových dotací z rozpočtu SMO-MOb Poruba na rok 2026",
+    "Archivace a digitalizace fondů muzeí 2027",
     "Dotace na energie včetně vyúčtování záloh",
 ]
 
