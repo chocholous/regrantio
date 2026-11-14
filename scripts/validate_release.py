@@ -538,6 +538,31 @@ def check_one_round_per_year():
     print(f"    ({len(doubled)} programů s více otevřenými ročníky v témže roce, práh {MAX_SAME_YEAR_ROUNDS})")
 
 
+def file_sha256(path):
+    import hashlib
+    h = hashlib.sha256()
+    with open(path, "rb") as fh:
+        for block in iter(lambda: fh.read(1 << 20), b""):
+            h.update(block)
+    return h.hexdigest()
+
+
+GATE_STAMP = os.path.join(ROOT, "data", ".gate.json")
+
+
+def write_gate_stamp():
+    """Otisk kanonického katalogu, který brána právě pustila (2026-11-14).
+
+    `publish_db.py` zapíše do databáze jen export, který vznikl z TÉHOŽ
+    souboru (`meta.input_sha256` v exportu). Ruční `export_api.py` nad
+    neprověřenými daty tak do produkce neprojde.
+    """
+    stamp = {"input_sha256": file_sha256(os.path.join(ROOT, "data", "opportunities.jsonl")),
+             "at": datetime.datetime.now(datetime.timezone.utc).isoformat()}
+    with open(GATE_STAMP, "w", encoding="utf-8") as fh:
+        json.dump(stamp, fh)
+
+
 def main():
     print("# VALIDATE RELEASE\n")
     check("compile all .py", compile_all)
@@ -558,6 +583,7 @@ def main():
         print(f"FAIL — {len(errors)} chyb")
         sys.exit(1)
     print("OK — všechny kontroly prošly")
+    write_gate_stamp()
 
 
 if __name__ == "__main__":

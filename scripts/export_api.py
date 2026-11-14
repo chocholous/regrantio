@@ -102,6 +102,15 @@ def apply_early_close(g, today=None):
     g["field_provenance"] = prov
 
 
+def input_sha256(path):
+    import hashlib
+    h = hashlib.sha256()
+    with open(path, "rb") as fh:
+        for block in iter(lambda: fh.read(1 << 20), b""):
+            h.update(block)
+    return h.hexdigest()
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--in", dest="inp", default="data/opportunities.jsonl")
@@ -166,6 +175,8 @@ def main():
             "generated_date": now.date().isoformat(),
             "count": len(grants),
             "source": "regrantio pipeline",
+            # Otisk vstupu: publish_db ho porovná s otiskem, který prošel bránou.
+            "input_sha256": input_sha256(a.inp),
             "content_hash_fields": HASH_FIELDS,
             # status je build-time snapshot; pro freshness přepočítej z open_from/deadline:
             "status_rule": "open if today<=deadline (deadline 'průběžně'/null→open/unknown); "

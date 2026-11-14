@@ -60,3 +60,6 @@ data/*.pre-refresh.bak
 
 # Prohlížeč dat je build (`scripts/build_app.py`), 16 MB na každou obnovu; Pages jsou vypnuté (2026-09-14).
 /docs/grants_app.html
+
+# Otisk brány pro publish_db (místní, vzniká v tailu)
+data/.gate.json

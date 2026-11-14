@@ -29,6 +29,19 @@ def _g(**kw):
 
 
 # ---------------------------------------------------------------- identita
+def test_export_mimo_branu_do_produkce_nejde():
+    """Audit 14. 11.: publish_db bral jakýkoli export, i ručně vyrobený bez brány."""
+    import json, os, tempfile
+    d = tempfile.mkdtemp()
+    stamp = os.path.join(d, "gate.json")
+    assert "otisk vstupu" in P.gate_problem({}, stamp)
+    assert "chybí otisk brány" in P.gate_problem({"input_sha256": "abc"}, stamp)
+    with open(stamp, "w", encoding="utf-8") as fh:
+        json.dump({"input_sha256": "abc"}, fh)
+    assert "nesedí" in P.gate_problem({"input_sha256": "xyz"}, stamp)
+    assert P.gate_problem({"input_sha256": "abc"}, stamp) is None
+
+
 def test_bez_identity_zaznam_neprojde():
     """Zahazuje se JEN chybějící identita — nic jiného."""
     for chybi in ("id", "source", "source_url"):

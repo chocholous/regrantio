@@ -334,6 +334,24 @@ def eligibility(row):
     }
 
 
+GATE_STAMP = os.path.join(ROOT, "data", ".gate.json")
+
+
+def gate_problem(meta, stamp_path=GATE_STAMP):
+    """Proč export nesmí do produkce, nebo None. Viz `validate_release.write_gate_stamp`."""
+    want = meta.get("input_sha256")
+    if not want:
+        return "export nemá otisk vstupu (meta.input_sha256): vznikl starší verzí exportu"
+    try:
+        with open(stamp_path, encoding="utf-8") as fh:
+            stamp = json.load(fh)
+    except (OSError, ValueError):
+        return "chybí otisk brány (data/.gate.json): brána neproběhla nebo neprošla"
+    if stamp.get("input_sha256") != want:
+        return "export nevznikl z dat, která prošla bránou (otisky nesedí)"
+    return None
+
+
 def change_worth_recording(before, after):
     """Ne každý přepis je událost — řádek vzniká u posunu LHŮTY, ČÁSTKY nebo OPRÁVNĚNOSTI.
 
@@ -478,6 +496,18 @@ def main():
 
     print(f"· Zdroj: {os.path.relpath(a.inp, ROOT)}")
     print(f"· Kontrakt {meta['schema_version']}, data z pipeline {meta.get('generated_at')}")
+
+    # ⚠ JEN EXPORT, KTERÝ PROŠEL BRÁNOU (2026-11-14). Brána (`validate_release`)
+    # zapíše otisk kanonického souboru, který pustila; export nese otisk
+    # souboru, ze kterého vznikl. Nesedí-li, export vznikl mimo bránu (ruční
+    # `export_api.py`, změněná data po kontrole) a do produkce nejde.
+    gate = gate_problem(meta)
+    if gate:
+        print(f"✖ {gate}", file=sys.stderr)
+        if not a.force:
+            print("✖ Pusť `refresh_run.py --tail-only` (brána a export), pak publikuj znovu.")
+            return 1
+        print("⚠ --force: publikuju export, který bránou neprošel.")
 
     # --- 2. PŘELOŽIT ----------------------------------------------------------
     rows, rejected = [], []
@@ -645,13 +675,28 @@ def main():
             r["withdrawn_at"] = None   # návrat záznamu zpět mezi živé
             payload.append(r)
 
-        written = 0
+        # ⚠ ZMĚNY K OZNÁMENÍ HNED ZA SVOU DÁVKOU (2026-11-14). Dřív se zapisovaly
+        # až po všech dávkách: pád uprostřed nechal výzvy přepsané, ale jejich
+        # změny (posunutá lhůta, částka) ztracené, a opakovaný běh je už viděl
+        # jako „beze změny“. Teď má každá zapsaná výzva i svůj záznam změny.
+        by_grant = {}
+        for c in changes:
+            by_grant.setdefault(c["grant_id"], []).append(c)
+        written = recorded = 0
         for i in range(0, len(payload), CHUNK):
-            db.upsert("catalog_grant", payload[i:i + CHUNK])
-            written += len(payload[i:i + CHUNK])
+            part = payload[i:i + CHUNK]
+            db.upsert("catalog_grant", part)
+            part_changes = [c for r in part for c in by_grant.get(r["id"], [])]
+            if part_changes:
+                db.upsert("catalog_grant_change", part_changes)
+                recorded += len(part_changes)
+            written += len(part)
             print(f"  zapsáno {written} / {len(payload)}", end="\r")
         if payload:
             print(f"  zapsáno {written} / {len(payload)}")
+        # Všechny dosavadní změny patří zapsaným řádkům a jsou uložené; dál
+        # přibudou jen změny ze stažení.
+        changes = []
 
         # ⚠ STAŽENÍ JE OZNAČENÍ, NE SMAZÁNÍ.
         if to_withdraw:
@@ -672,7 +717,7 @@ def main():
 
         finish("ok")
         print(f"\n✓ Hotovo. Běh #{run_id}: +{len(to_insert)} ~{len(to_update)} "
-              f"−{len(to_withdraw)}, {len(changes)} změn k oznámení.")
+              f"−{len(to_withdraw)}, {recorded + len(changes)} změn k oznámení.")
         return 0
     except Exception as e:  # noqa: BLE001
         finish("failed", str(e)[:400])
