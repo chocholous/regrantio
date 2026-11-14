@@ -1,4 +1,4 @@
-# NOČNÍ OBNOVA KATALOGU (Plánovač úloh Windows, rozhodnutí vlastníka 2026-11-14)
+﻿# NOČNÍ OBNOVA KATALOGU (Plánovač úloh Windows, rozhodnutí vlastníka 2026-11-14)
 # =============================================================================
 # Běží na počítači vlastníka, dokud se obnova před spuštěním pro zákazníky
 # nepřesune na server (GRANTIO.md §6.4). Pořadí:
