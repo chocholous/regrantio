@@ -305,7 +305,7 @@
 		"refresh": "B",
 		"harvester": "dotaceeu.py",
 		"records": 21,
-		"live": 13,
+		"live": 12,
 		"last_fetched": "2026-11-10"
 	},
 	"eagri": {
@@ -349,7 +349,7 @@
 		"refresh": "B",
 		"harvester": "eu_ft.py",
 		"records": 779,
-		"live": 430,
+		"live": 427,
 		"last_fetched": "2026-11-08"
 	},
 	"fondbudoucnosti": {
@@ -1108,7 +1108,7 @@
 		"refresh": "A",
 		"harvester": "opava_harvest.py",
 		"records": 14,
-		"live": 3,
+		"live": 2,
 		"last_fetched": "2026-11-08"
 	},
 	"opd": {

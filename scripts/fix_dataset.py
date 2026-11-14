@@ -336,6 +336,29 @@ def is_rolling_word(s):
     return re.sub(r"[^a-záčďéěíňóřšťúůýž]", "", str(s).lower()) in ("průběžně", "prubezne", "rolling", "průběžne")
 
 
+# Výzvy jen pro vymezená území: integrované nástroje (ITI, IPRÚ), komunitně
+# vedený rozvoj (CLLD, území MAS) a Spravedlivá transformace (tři kraje).
+# Holé „MAS“ ne: výzvy, kde žádá sama MAS, platí celostátně.
+TERRITORIAL = re.compile(r"\b(?:ITI|IPR[UÚ]|CLLD|JTF|OP ?ST)\b|(?i:spravedliv\w* transformac)")
+# Zdroje, jejichž výzvy jsou územně vymezené vždy (číslo výzvy „… OP ST“
+# vzniká až v exportu, kanonický záznam ho nemá).
+TERRITORIAL_SOURCES = {"opst"}
+
+
+def territorial(rec):
+    """Platí výzva jen na vymezeném území, ač ji vyhlašuje celostátní poskytovatel?
+
+    ⚠ 2026-11-14 (audit): celostátní příznak se odvozuje z typu poskytovatele
+    (ministerstvo, fond → celá republika) a ingest IROP ho dává rovnou. Výzvy
+    ITI, CLLD a OP ST tak byly „celostátní“ a aplikace obci kdekoli psala, že
+    výzva platí i pro ni (17 otevřených ITI, 8 CLLD).
+    """
+    if rec.get("source") in TERRITORIAL_SOURCES:
+        return True
+    text = " ".join(str(rec.get(k) or "") for k in ("title", "call_number"))
+    return bool(TERRITORIAL.search(text))
+
+
 def load(path):
     return [json.loads(l) for l in open(path, encoding="utf-8") if l.strip()]
 
@@ -711,9 +734,17 @@ def main():
             reg["kraj"] = learned_kraj[src]
             reg["_conf"] = reg.get("_conf") or "high"
             kraj_filled += 1
-        elif pt in NATIONAL and not reg.get("celostatni"):
+        elif pt in NATIONAL and not reg.get("celostatni") and not territorial(r):
             reg["celostatni"] = True
             celost_filled += 1
+    # Územně vymezené výzvy celostátní nejsou, ať to tvrdil ingest, nebo odvození výš.
+    territorial_cleared = 0
+    for r in recs:
+        reg = (r.get("facets") or {}).get("region")
+        if r.get("kind") == "grant" and isinstance(reg, dict) and reg.get("celostatni") and territorial(r):
+            reg["celostatni"] = False
+            reg["_conf"] = "low"
+            territorial_cleared += 1
 
     # ---- report ----
     print("=== A) ÚSTÍ / duplicitní zdroje ===")
@@ -765,6 +796,7 @@ def main():
 
     print(f"\n=== D) region.kraj ===")
     print(f"  samospráva kraj doplněn z hostu: +{kraj_filled} · národní celostatni=true: +{celost_filled}")
+    print(f"  územně vymezené (ITI, IPRÚ, CLLD, OP ST) bez celostatni: {territorial_cleared}")
 
     # ---- E) eligible_applicants je string | null (kontrakt EXPORT.md) ----
     # Strukturní ingesty krajů tam dávaly seznam; produkt ho vypisoval jako

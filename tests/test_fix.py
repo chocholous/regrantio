@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(
 from datetime import date  # noqa: E402
 
 from fix_dataset import (  # noqa: E402
-    amount_per_applicant, clean_text, fondvysociny_types, is_rolling_word, round_from_listing)
+    amount_per_applicant, clean_text, fondvysociny_types, is_rolling_word, round_from_listing, territorial)
 from ingest_rich import _num  # noqa: E402
 
 
@@ -165,6 +165,19 @@ def test_oddil_bez_roku_nic_netvrdi():
 def test_prubezna_lhuta_se_nemeni():
     got = round_from_listing("2026-11-01", "průběžně", date(2017, 9, 15), "Dotační programy rok 2018")
     assert got == ("2017-11-01", "průběžně")
+
+def test_uzemne_vymezene_vyzvy_nejsou_celostatni():
+    # Audit 14. 11.: ITI, CLLD a OP ST byly „celostátní“ podle typu poskytovatele.
+    assert territorial({"title": "20. výzva IROP - Mateřské školy - SC 4.1 (ITI)"})
+    assert territorial({"title": "48. výzva IROP - Vzdělávání - SC 5.1 (CLLD)"})
+    assert territorial({"title": "118. výzva OP ST – AI ve výuce"})
+    assert territorial({"title": "Výzva č. OPST PP-1/2021"})
+    assert territorial({"title": "Integrovaný plán rozvoje území (IPRÚ)"})
+    assert territorial({"title": "Podpora v rámci Spravedlivé transformace regionů"})
+    assert territorial({"title": "119. výzva – Základní umělecké školy", "source": "opst"})
+    assert not territorial({"title": "Výzva pro MAS na podporu strategií komunitně vedeného místního rozvoje"})
+    assert not territorial({"title": "Pomoc obcím s rozvojem cyklostezek"})
+    assert not territorial({"title": "Podpora sportu", "call_number": "MŠMT-12/2026"})
 
 
 if __name__ == "__main__":
