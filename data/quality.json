@@ -55,10 +55,10 @@
 			"all_pct": 83.4
 		},
 		"kraj_nebo_celostatni": {
-			"live": 1770,
-			"live_pct": 98.3,
-			"all": 4157,
-			"all_pct": 99.0
+			"live": 1766,
+			"live_pct": 98.1,
+			"all": 4153,
+			"all_pct": 98.9
 		},
 		"how_to_apply": {
 			"live": 1473,
@@ -152,12 +152,12 @@
 			"cited_pct": 5.0
 		},
 		"region": {
-			"present": 1770,
+			"present": 1766,
 			"parsed": 704,
-			"model": 1066,
+			"model": 1062,
 			"derived": 0,
 			"cited": 227,
-			"cited_pct": 12.8
+			"cited_pct": 12.9
 		},
 		"typ_zadatele": {
 			"present": 745,

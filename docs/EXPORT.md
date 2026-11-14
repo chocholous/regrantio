@@ -72,7 +72,7 @@ nemá ukazovat člověku — do 2026‑09‑11 ho produkt vypisoval jako poskyto
   `statni_agentura`, `nadace`, `firemni_nadace`, `nadacni_fond`, `zahranicni_fond`, `evropska_komise`
 - `zdroj_financovani` (array): `narodni_rozpocet`, `eu_fondy`, `eu_primy`, `npo`, `ehp_norsko`, …
 - `oblast`, `typ_zadatele`, `cilova_skupina` (arrays)
-- `region` (object): `{kraj: string|null, celostatni: bool}`
+- `region` (object): `{kraj: string|null, celostatni: bool}` a od 14. 11. 2026 volitelně `vymezene_uzemi: true` = výzva platí jen na vymezeném území (ITI, IPRÚ, CLLD, OP ST, národní park, krasové oblasti, oblasti po povodních); bez známého kraje ho produkt nebere jako celostátní
 - `velikost_podniku` (array, NEPOVINNÁ, 2026‑10‑03): velikosti podniku, které výzva připouští,
   `mikro` (< 10 zaměstnanců), `maly` (< 50), `stredni` (< 250), `velky`. Jen u výzev pro
   podnikatele a jen tam, kde to věta žadatele, název nebo zaměření výslovně říká („malé

@@ -361,6 +361,10 @@ TERRITORIAL = re.compile(r"\b(?:ITI|IPR[UÚ]|CLLD|JTF|OP ?ST)\b|(?i:spravedliv\w
 # Zdroje, jejichž výzvy jsou územně vymezené vždy (číslo výzvy „… OP ST“
 # vzniká až v exportu, kanonický záznam ho nemá).
 TERRITORIAL_SOURCES = {"opst"}
+DEFINED_AREA = re.compile(
+    r"národní(ho|m)?\s+park|krasov\w*\s+oblast|(zasažen|postižen)\w*\s+(povodn|záplav)",
+    re.IGNORECASE,
+)
 
 
 def territorial(rec):
@@ -374,7 +378,13 @@ def territorial(rec):
     if rec.get("source") in TERRITORIAL_SOURCES:
         return True
     text = " ".join(str(rec.get(k) or "") for k in ("title", "call_number"))
-    return bool(TERRITORIAL.search(text))
+    if TERRITORIAL.search(text):
+        return True
+    # Území pojmenované v názvu nebo v okruhu žadatelů (2026-11-14, nezávislý
+    # hodnotitel shody): národní park, krasové oblasti, oblasti zasažené
+    # povodněmi. Obec mimo ně dostávala výzvu jako „celostátní“.
+    area = " ".join(str(rec.get(k) or "") for k in ("title", "eligible_applicants"))
+    return bool(DEFINED_AREA.search(area))
 
 
 def load(path):
@@ -781,10 +791,14 @@ def main():
     territorial_cleared = 0
     for r in recs:
         reg = (r.get("facets") or {}).get("region")
-        if r.get("kind") == "grant" and isinstance(reg, dict) and reg.get("celostatni") and territorial(r):
-            reg["celostatni"] = False
-            reg["_conf"] = "low"
-            territorial_cleared += 1
+        if r.get("kind") == "grant" and isinstance(reg, dict) and territorial(r):
+            # Příznak pro aplikaci: bez známého kraje „ověřte, zda do území
+            # patříte“ a výzva nejde do doporučení (kontrakt: region.vymezene_uzemi).
+            reg["vymezene_uzemi"] = True
+            if reg.get("celostatni"):
+                reg["celostatni"] = False
+                reg["_conf"] = "low"
+                territorial_cleared += 1
 
     # ---- report ----
     print("=== A) ÚSTÍ / duplicitní zdroje ===")

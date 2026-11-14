@@ -23,7 +23,7 @@ Změřeno k **2026-11-14** skriptem `scripts/quality_report.py`. Čísla u živ�
 | kdo smí žádat (text) | 67.0 % (1207) | 61.4 % (2580) |
 | typ žadatele (faseta) | 41.4 % (745) | 38.9 % (1634) |
 | oblast | 70.4 % (1268) | 83.4 % (3501) |
-| území | 98.3 % (1770) | 99.0 % (4157) |
+| území | 98.1 % (1766) | 98.9 % (4153) |
 | jak podat | 81.8 % (1473) | 89.9 % (3774) |
 | zdrojový dokument | 84.5 % (1522) | 88.2 % (3703) |
 | kontakt | 10.7 % (192) | 13.7 % (577) |
@@ -51,7 +51,7 @@ Citací celkem 17581, ve zdroji dohledaných **8946 (50.9 %)**. Nedohledaná cit
 | focus_area | 1694 | 639 | 1055 | 0 | 16.4 % |
 | oblast | 1268 | 174 | 1094 | 0 | 17.0 % |
 | open_from | 901 | 169 | 732 | 0 | 5.0 % |
-| region | 1770 | 704 | 1066 | 0 | 12.8 % |
+| region | 1766 | 704 | 1062 | 0 | 12.9 % |
 | typ_zadatele | 745 | 369 | 376 | 0 | 9.0 % |
 
 ## Rodiny ročníků
