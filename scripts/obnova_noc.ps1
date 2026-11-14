@@ -7,8 +7,8 @@
 #      nic se nevypisuje ani neukládá jinam
 #   2. refresh_run --tier all: třídy A, B, C (model) i P; časový rozpočet
 #      a strop dokumentů na zdroj drží náklad i délku běhu
-#   3. publish_db vždy, ale zapíše jen export, který prošel bránou (zapíše jen export, který
-#      prošel bránou; pojistky proti propadu a hromadnému stažení)
+#   3. publish_db vždy, ale zapíše jen export, který prošel bránou; pojistky
+#      proti propadu a hromadnému stažení
 #   4. commit a push dat pod identitou regrantio-refresh
 #
 # Log: data/logs/obnova-RRRR-MM-DD.log (UTF-8, mimo git).
