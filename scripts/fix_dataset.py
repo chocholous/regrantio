@@ -159,6 +159,9 @@ DROP_STRAY = [
     # že jde o přehled; konkrétní programy z nich katalog má zvlášť.
     lambda r: r.get("source") == "mkcr" and (r.get("title") or "").startswith("Žádosti o dotace — Ministerstvo kultury"),
     lambda r: r.get("source") == "olkraj.cz" and (r.get("title") or "").startswith("Informace k dotačním programům"),
+    # NROS čte od 15. 11. sběrač kalendáře (`nros.py`); jediný dřívější záznam
+    # ze třídy P je dvojník „Správný start: 3. kolo (2025)“ na jiné adrese.
+    lambda r: r.get("source") == "nros.cz" and (r.get("title") or "").startswith("3. kolo grantového programu Správný start"),
     # Výzva SFAV s kódem v adrese (`…/vyzvy/4#2026-D-6-4-44`), jejíž název nese
     # JINÝ kód, má data sousední výzvy (2026-11-08): pozůstatek párování výstupů
     # modelu podle pořadí (viz `ingest_rich`, `_source_id`). Sedm takových

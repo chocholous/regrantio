@@ -1061,10 +1061,10 @@
 		"homepage": "https://www.nros.cz",
 		"note": null,
 		"type": "nadace",
-		"refresh": "P",
-		"harvester": "refresh_pages.py",
-		"records": 1,
-		"live": 0,
+		"refresh": "A",
+		"harvester": "nros.py",
+		"records": 11,
+		"live": 8,
 		"last_fetched": "2026-11-15"
 	},
 	"nsa": {

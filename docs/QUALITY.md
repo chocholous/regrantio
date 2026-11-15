@@ -6,63 +6,63 @@ Změřeno k **2026-11-15** skriptem `scripts/quality_report.py`. Čísla u živ�
 
 | | |
 |---|---:|
-| záznamů celkem | 4496 |
-| z toho výzev | 4471 |
-| **živých k dnešku** | **1878** |
+| záznamů celkem | 4506 |
+| z toho výzev | 4481 |
+| **živých k dnešku** | **1886** |
 | zdrojů | 136 |
-| stav | open 552 · announced 377 · unknown 949 · closed 2593 |
-| dosah živých | místní 517 · krajský 605 · celostátní 310 · mezinárodní 10 · EU centrální 436 |
-| druh lhůty u živých | jedna lhůta 906 · průběžně 57 · opakovaně 165 · neuvedeno 750 |
+| stav | open 552 · announced 377 · unknown 957 · closed 2595 |
+| dosah živých | místní 517 · krajský 608 · celostátní 315 · mezinárodní 10 · EU centrální 436 |
+| druh lhůty u živých | jedna lhůta 906 · průběžně 57 · opakovaně 167 · neuvedeno 756 |
 
 ## Vyplněnost polí
 
 | pole | živé | archiv |
 |---|---:|---:|
-| lhůta | 49.5 % (929) | 78.8 % (3522) |
-| částka pro žadatele | 4.4 % (83) | 9.2 % (411) |
-| kdo smí žádat (text) | 65.8 % (1235) | 62.5 % (2796) |
-| typ žadatele (faseta) | 40.7 % (764) | 40.1 % (1795) |
-| oblast | 69.4 % (1303) | 83.2 % (3721) |
-| území | 97.7 % (1835) | 98.8 % (4417) |
-| jak podat | 82.4 % (1548) | 90.9 % (4063) |
-| zdrojový dokument | 83.7 % (1571) | 88.3 % (3946) |
-| kontakt | 11.0 % (206) | 13.3 % (593) |
-| dokumenty | 20.7 % (389) | 30.5 % (1363) |
-| číslo výzvy | 36.7 % (689) | 43.8 % (1958) |
+| lhůta | 49.3 % (929) | 78.6 % (3524) |
+| částka pro žadatele | 4.8 % (91) | 9.4 % (421) |
+| kdo smí žádat (text) | 65.9 % (1243) | 62.6 % (2806) |
+| typ žadatele (faseta) | 40.9 % (772) | 40.3 % (1805) |
+| oblast | 69.5 % (1310) | 83.2 % (3730) |
+| území | 97.7 % (1843) | 98.8 % (4427) |
+| jak podat | 82.5 % (1556) | 90.9 % (4073) |
+| zdrojový dokument | 83.7 % (1579) | 88.3 % (3956) |
+| kontakt | 10.9 % (206) | 13.2 % (592) |
+| dokumenty | 20.6 % (389) | 30.4 % (1362) |
+| číslo výzvy | 36.5 % (689) | 43.7 % (1958) |
 
 ## Čerstvost živých záznamů
 
 | ověřeno u zdroje | záznamů |
 |---|---:|
-| do 7 dnů | 1434 |
+| do 7 dnů | 1442 |
 | do 30 dnů | 7 |
 | starší | 19 |
 | nevíme (bez razítka) | 418 |
 
 ## Doložitelnost
 
-Citací celkem 17924, ve zdroji dohledaných **9488 (52.9 %)**. Nedohledaná citace nedokládá nic; produkt u takového pole původ neukazuje jako doložený.
+Citací celkem 17913, ve zdroji dohledaných **9488 (53.0 %)**. Nedohledaná citace nedokládá nic; produkt u takového pole původ neukazuje jako doložený.
 
 | pole (živé) | má hodnotu | parser | model | dopočet | doloženo citací |
 |---|---:|---:|---:|---:|---:|
-| amount | 83 | 17 | 66 | 0 | 60.2 % |
+| amount | 91 | 25 | 66 | 0 | 54.9 % |
 | deadline | 929 | 155 | 767 | 7 | 63.5 % |
-| eligible_applicants | 1235 | 391 | 844 | 0 | 17.0 % |
-| focus_area | 1770 | 681 | 1089 | 0 | 16.4 % |
-| oblast | 1303 | 176 | 1127 | 0 | 17.7 % |
-| open_from | 932 | 169 | 763 | 0 | 6.9 % |
-| region | 1835 | 748 | 1087 | 0 | 12.5 % |
-| typ_zadatele | 764 | 375 | 389 | 0 | 9.6 % |
+| eligible_applicants | 1243 | 399 | 844 | 0 | 16.9 % |
+| focus_area | 1778 | 689 | 1089 | 0 | 16.3 % |
+| oblast | 1310 | 183 | 1127 | 0 | 17.6 % |
+| open_from | 939 | 176 | 763 | 0 | 6.8 % |
+| region | 1843 | 756 | 1087 | 0 | 12.5 % |
+| typ_zadatele | 772 | 383 | 389 | 0 | 9.5 % |
 
 ## Rodiny ročníků
 
-448 programů má víc než jeden záznam; 399 z nich se vyhlašuje opakovaně (dva a víc ročníků); 510 starších ročníků nese `variant_of`.
+450 programů má víc než jeden záznam; 401 z nich se vyhlašuje opakovaně (dva a víc ročníků); 513 starších ročníků nese `variant_of`.
 
 ## Zdroje
 
 | stav | zdrojů | živých záznamů |
 |---|---:|---:|
-| ok (ověřeno do 21 dnů) | 123 | 1810 |
+| ok (ověřeno do 21 dnů) | 123 | 1818 |
 | stárne (nad 21 dnů) | 1 | 2 |
 | má cestu, nikdy neověřeno | 7 | 63 |
 | bez zapsané cesty k obnově | 3 | 0 |
@@ -115,6 +115,7 @@ Citací celkem 17924, ve zdroji dohledaných **9488 (52.9 %)**. Nedohledaná cit
 | Státní fond životního prostředí (`sfzp`) | statni_fond | C | 20 | 9 | 2026-11-09 | ok |
 | Pardubický kraj (`dotace.pardubickykraj.cz`) | samosprava_kraj | A | 117 | 8 | 2026-11-15 | ok |
 | Praha 2 (`dotace.praha2.cz`) | samosprava_obec | A | 9 | 8 | 2026-11-15 | ok |
+| Nadace rozvoje občanské společnosti (`nros.cz`) | nadace | A | 11 | 8 | 2026-11-15 | ok |
 | OP TAK (MPO) (`optak`) | ministerstvo | B | 61 | 8 | 2026-11-15 | ok |
 | Praha 11 (`dotace.praha11.cz`) | samosprava_obec | A | 11 | 7 | 2026-11-15 | ok |
 | Praha 14 (`dotace.praha14.cz`) | samosprava_obec | A | 10 | 7 | 2026-11-15 | ok |
@@ -196,7 +197,6 @@ Citací celkem 17924, ve zdroji dohledaných **9488 (52.9 %)**. Nedohledaná cit
 | Město Litvínov (`mulitvinov.cz`) | samosprava_obec | A | 1 | 0 | 2026-11-15 | ok |
 | Nadace O2 (`nadaceo2.cz`) | nadace | P | 1 | 0 | 2026-11-15 | ok |
 | Nadace táta a máma (`nadacetm`) |  | ? | 1 | 0 |  | bez_cesty |
-| Nadace rozvoje občanské společnosti (`nros.cz`) | nadace | P | 1 | 0 | 2026-11-15 | ok |
 | Nadace OSF (`osf`) |  | B | 1 | 0 | 2026-11-15 | ok |
 | Nadace Partnerství (`partnerstvi`) |  | C | 1 | 0 | 2026-11-15 | ok |
 | Státní fond kultury (`sfk`) | statni_fond | C | 1 | 0 | 2026-11-15 | ok |

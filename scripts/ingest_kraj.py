@@ -71,7 +71,13 @@ def main():
         platform = H.get("platform", "kraj_html")
         uroven = H.get("uroven", "kraj")           # "kraj" | "obec" (statutární/krajská města)
         obec = H.get("obec")                        # název města (jen pro uroven=obec)
-        if uroven == "obec":
+        if uroven == "nadace":
+            # Nadace s kalendářem výzev (NROS, 2026-11-15): celostátní, z vlastních zdrojů;
+            # výzvu omezenou na kraj sběrač označí `kraj` u programu.
+            poskyt, zdroj = "nadace", "vlastni_zdroje"
+            region = {"nazev": None, "obec": None, "okres": None, "kraj": None,
+                      "celostatni": True, "_conf": "high"}
+        elif uroven == "obec":
             poskyt, zdroj = "samosprava_obec", "obecni"
             region = {"nazev": obec or kraj, "obec": obec, "okres": None, "kraj": kraj,
                       "celostatni": False, "_conf": "high"}
@@ -105,7 +111,7 @@ def main():
                 "title": nazev, "focus_area": popis or None, "open_from": of, "deadline": dl,
                 "status": st, "status_confidence": conf, "amount": _num(p.get("max_czk")),
                 "eligible_applicants": eligible, "required_attachments": [],
-                "how_to_apply": f"Žádost přes dotační portál {source}", "source_doc": p.get("url"), "id": gid,
+                "how_to_apply": f"Žádost podle pravidel výzvy na {source}" if uroven == "nadace" else f"Žádost přes dotační portál {source}", "source_doc": p.get("url"), "id": gid,
                 "facets": {
                     # Sběrač, který je umí přečíst deterministicky, je předá
                     # (Plzeňský kraj, 2026-11-14); jinak je doplní vrstva 2.
@@ -115,7 +121,7 @@ def main():
                     "rezim_prijmu": None, "delka": None, "zpusob_podani": ["elektronicky_portal"],
                     "cilova_skupina": [], "mira_podpory_pct": None, "spoluucast": None,
                     "vyse_alokace_czk": _num(p.get("alokace_czk")), "vyse_max_zadatel_czk": _num(p.get("max_czk")),
-                    "region": dict(region),
+                    "region": {**region, "kraj": p["kraj"], "celostatni": False} if p.get("kraj") else dict(region),
                 },
                 "provenance": {"layer": 1, "harvester": platform, "platform": platform,
                                "harvest_url": p.get("url"), "harvest_file": inp, "documents": []},

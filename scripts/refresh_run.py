@@ -133,6 +133,13 @@ SOURCES = {
         ["ingest_kraj.py", "data/h_kraj_jihocesky.json"],
         "html",
     ),
+    # NROS (2026-11-15): grantový kalendář nadace (Pomozte dětem, Správný start
+    # s Nadačním fondem Tesco); bloky se štítky, bez modelu. Dřív třída P.
+    "nros.cz": (
+        ["nros.py"], "data/h_nros.json",
+        ["ingest_kraj.py", "data/h_nros.json"],
+        "html",
+    ),
     "olkraj.cz": (
         ["olomoucky_harvest.py"], "data/h_kraj_olomoucky.json",
         ["ingest_kraj.py", "data/h_kraj_olomoucky.json"],
@@ -443,7 +450,7 @@ MODEL_SOURCES = {
 PAGE_SOURCES = (
     "fondbudoucnosti", "fondpaliativnipece", "kellner", "krasapomoci", "mv", "mzp",
     "nadace-agrofert", "nadace-agrofert.cz", "nadacecez.cz", "nadacecs", "nadaceo2.cz",
-    "nadaceokd", "nadacevodafone.cz", "nasedite", "nros.cz", "socialninadacnifond", "vdv",
+    "nadaceokd", "nadacevodafone.cz", "nasedite", "socialninadacnifond", "vdv",
 )
 
 
