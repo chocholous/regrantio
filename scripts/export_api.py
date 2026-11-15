@@ -128,7 +128,9 @@ def main():
         # Chybí u záznamů, kterých se od zavedení razítka nedotkla žádná obnova; ven jde
         # rovnou jako null, protože „nevíme" je pravdivější než vymyšlené datum.
         prov = r.get("provenance") or {}
-        r = {**r, "fetched_at": prov.get("fetched_at"), "provider": SOURCE_NAMES.get(r.get("source"))}
+        # Poskytovatel ze záznamu má přednost: zdroj `mas` sdružuje 186 místních akčních
+        # skupin a jméno té, která výzvu vyhlásila, doplní `fix_dataset.mas_scope`.
+        r = {**r, "fetched_at": prov.get("fetched_at"), "provider": r.get("provider") or SOURCE_NAMES.get(r.get("source"))}
         g = {k: r[k] for k in PUBLIC if k in r}
         # ⚠ KONTRAKT: `eligible_applicants` je string | null (EXPORT.md). Strukturní
         # ingesty krajů (lbc, stredoceskykraj, pardubice, ostrava…) tam dávaly SEZNAM

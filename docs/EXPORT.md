@@ -69,10 +69,10 @@ nemá ukazovat člověku — do 2026‑09‑11 ho produkt vypisoval jako poskyto
 
 **`facets`** (kanonizované hodnoty, detail v `schema/opportunity_schema.md`):
 - `typ_poskytovatele` (string): `ministerstvo`, `samosprava_kraj`, `samosprava_obec`, `statni_fond`,
-  `statni_agentura`, `nadace`, `firemni_nadace`, `nadacni_fond`, `zahranicni_fond`, `evropska_komise`
+  `statni_agentura`, `nadace`, `firemni_nadace`, `nadacni_fond`, `zahranicni_fond`, `evropska_komise`, `mistni_akcni_skupina`
 - `zdroj_financovani` (array): `narodni_rozpocet`, `eu_fondy`, `eu_primy`, `npo`, `ehp_norsko`, …
 - `oblast`, `typ_zadatele`, `cilova_skupina` (arrays)
-- `region` (object): `{kraj: string|null, celostatni: bool}` a od 14. 11. 2026 volitelně `vymezene_uzemi: true` = výzva platí jen na vymezeném území (ITI, IPRÚ, CLLD, OP ST, národní park, krasové oblasti, oblasti po povodních); bez známého kraje ho produkt nebere jako celostátní
+- `region` (object): `{kraj: string|null, celostatni: bool}` a od 14. 11. 2026 volitelně `vymezene_uzemi: true` = výzva platí jen na vymezeném území (ITI, IPRÚ, CLLD, OP ST, národní park, krasové oblasti, oblasti po povodních); bez známého kraje ho produkt nebere jako celostátní. Od 15. 11. 2026 u výzev místních akčních skupin (zdroj `mas`) navíc `mas` (jméno MAS) a `obce: [{kod, nazev}]` = území výzvy jako výčet obcí podle ČSÚ; `kraj` je vyplněný, jen když MAS leží v jediném kraji. Poskytovatel (`provider`) je u nich jméno MAS, `typ_poskytovatele` = `mistni_akcni_skupina`
 - `velikost_podniku` (array, NEPOVINNÁ, 2026‑10‑03): velikosti podniku, které výzva připouští,
   `mikro` (< 10 zaměstnanců), `maly` (< 50), `stredni` (< 250), `velky`. Jen u výzev pro
   podnikatele a jen tam, kde to věta žadatele, název nebo zaměření výslovně říká („malé

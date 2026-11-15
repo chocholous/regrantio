@@ -1,171 +1,171 @@
 {
 	"today": "2026-11-15",
-	"records": 4474,
-	"grants": 4449,
-	"live": 1859,
-	"sources": 135,
+	"records": 4496,
+	"grants": 4471,
+	"live": 1878,
+	"sources": 136,
 	"status": {
-		"open": 534,
-		"announced": 376,
-		"closed": 2590,
+		"open": 552,
+		"closed": 2593,
+		"announced": 377,
 		"unknown": 949
 	},
 	"scope_live": {
-		"regional": 594,
-		"national": 302,
+		"national": 310,
+		"regional": 605,
 		"local": 517,
 		"international": 10,
 		"eu_central": 436
 	},
 	"deadline_kind_live": {
-		"fixed": 887,
+		"fixed": 906,
 		"unknown": 750,
 		"rolling": 57,
 		"recurring": 165
 	},
 	"fields": {
 		"deadline": {
-			"live": 910,
-			"live_pct": 49.0,
-			"all": 3500,
-			"all_pct": 78.7
+			"live": 929,
+			"live_pct": 49.5,
+			"all": 3522,
+			"all_pct": 78.8
 		},
 		"amount": {
-			"live": 78,
-			"live_pct": 4.2,
-			"all": 406,
-			"all_pct": 9.1
+			"live": 83,
+			"live_pct": 4.4,
+			"all": 411,
+			"all_pct": 9.2
 		},
 		"eligible_applicants": {
-			"live": 1225,
-			"live_pct": 65.9,
-			"all": 2783,
-			"all_pct": 62.6
+			"live": 1235,
+			"live_pct": 65.8,
+			"all": 2796,
+			"all_pct": 62.5
 		},
 		"typ_zadatele": {
-			"live": 753,
-			"live_pct": 40.5,
-			"all": 1781,
-			"all_pct": 40.0
+			"live": 764,
+			"live_pct": 40.7,
+			"all": 1795,
+			"all_pct": 40.1
 		},
 		"oblast": {
-			"live": 1284,
-			"live_pct": 69.1,
-			"all": 3699,
-			"all_pct": 83.1
+			"live": 1303,
+			"live_pct": 69.4,
+			"all": 3721,
+			"all_pct": 83.2
 		},
 		"kraj_nebo_celostatni": {
-			"live": 1824,
-			"live_pct": 98.1,
-			"all": 4403,
-			"all_pct": 99.0
+			"live": 1835,
+			"live_pct": 97.7,
+			"all": 4417,
+			"all_pct": 98.8
 		},
 		"how_to_apply": {
-			"live": 1532,
+			"live": 1548,
 			"live_pct": 82.4,
-			"all": 4044,
+			"all": 4063,
 			"all_pct": 90.9
 		},
 		"source_doc": {
-			"live": 1557,
-			"live_pct": 83.8,
-			"all": 3930,
+			"live": 1571,
+			"live_pct": 83.7,
+			"all": 3946,
 			"all_pct": 88.3
 		},
 		"contact": {
-			"live": 192,
-			"live_pct": 10.3,
-			"all": 577,
-			"all_pct": 13.0
+			"live": 206,
+			"live_pct": 11.0,
+			"all": 593,
+			"all_pct": 13.3
 		},
 		"documents": {
-			"live": 370,
-			"live_pct": 19.9,
-			"all": 1341,
-			"all_pct": 30.1
+			"live": 389,
+			"live_pct": 20.7,
+			"all": 1363,
+			"all_pct": 30.5
 		},
 		"call_number": {
-			"live": 671,
-			"live_pct": 36.1,
-			"all": 1937,
-			"all_pct": 43.5
+			"live": 689,
+			"live_pct": 36.7,
+			"all": 1958,
+			"all_pct": 43.8
 		}
 	},
 	"freshness_live": {
-		"do_7": 1415,
+		"do_7": 1434,
 		"do_30": 7,
 		"starsi": 19,
 		"nevime": 418
 	},
 	"citations": {
-		"total": 17588,
-		"located": 9160,
-		"located_pct": 52.1
+		"total": 17924,
+		"located": 9488,
+		"located_pct": 52.9
 	},
 	"provenance_live": {
 		"amount": {
-			"present": 78,
+			"present": 83,
 			"parsed": 17,
-			"model": 61,
+			"model": 66,
 			"derived": 0,
-			"cited": 45,
-			"cited_pct": 57.7
+			"cited": 50,
+			"cited_pct": 60.2
 		},
 		"deadline": {
-			"present": 910,
+			"present": 929,
 			"parsed": 155,
-			"model": 748,
+			"model": 767,
 			"derived": 7,
-			"cited": 571,
-			"cited_pct": 62.7
+			"cited": 590,
+			"cited_pct": 63.5
 		},
 		"eligible_applicants": {
-			"present": 1225,
+			"present": 1235,
 			"parsed": 391,
-			"model": 834,
+			"model": 844,
 			"derived": 0,
-			"cited": 201,
-			"cited_pct": 16.4
+			"cited": 210,
+			"cited_pct": 17.0
 		},
 		"focus_area": {
-			"present": 1751,
+			"present": 1770,
 			"parsed": 681,
-			"model": 1070,
+			"model": 1089,
 			"derived": 0,
-			"cited": 277,
-			"cited_pct": 15.8
+			"cited": 290,
+			"cited_pct": 16.4
 		},
 		"oblast": {
-			"present": 1284,
+			"present": 1303,
 			"parsed": 176,
-			"model": 1108,
+			"model": 1127,
 			"derived": 0,
-			"cited": 215,
-			"cited_pct": 16.7
+			"cited": 230,
+			"cited_pct": 17.7
 		},
 		"open_from": {
-			"present": 913,
+			"present": 932,
 			"parsed": 169,
-			"model": 744,
+			"model": 763,
 			"derived": 0,
-			"cited": 45,
-			"cited_pct": 4.9
+			"cited": 64,
+			"cited_pct": 6.9
 		},
 		"region": {
-			"present": 1824,
+			"present": 1835,
 			"parsed": 748,
-			"model": 1076,
+			"model": 1087,
 			"derived": 0,
-			"cited": 227,
-			"cited_pct": 12.4
+			"cited": 230,
+			"cited_pct": 12.5
 		},
 		"typ_zadatele": {
-			"present": 753,
+			"present": 764,
 			"parsed": 375,
-			"model": 378,
+			"model": 389,
 			"derived": 0,
-			"cited": 67,
-			"cited_pct": 8.9
+			"cited": 73,
+			"cited_pct": 9.6
 		}
 	},
 	"families": {
@@ -174,14 +174,14 @@
 		"recurring": 399
 	},
 	"sources_by_state": {
-		"ok": 122,
+		"ok": 123,
 		"zmrazeny": 2,
 		"neovereno": 7,
 		"bez_cesty": 3,
 		"starne": 1
 	},
 	"live_by_source_state": {
-		"ok": 1791,
+		"ok": 1810,
 		"zmrazeny": 3,
 		"neovereno": 63,
 		"bez_cesty": 0,
@@ -866,6 +866,17 @@
 			"refresh": "A",
 			"records": 6,
 			"live": 3,
+			"last_fetched": "2026-11-15",
+			"days": 0,
+			"state": "ok"
+		},
+		{
+			"slug": "mas",
+			"name": "Místní akční skupina",
+			"type": "mistni_akcni_skupina",
+			"refresh": "C",
+			"records": 22,
+			"live": 19,
 			"last_fetched": "2026-11-15",
 			"days": 0,
 			"state": "ok"

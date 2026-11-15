@@ -372,6 +372,61 @@ DEFINED_AREA = re.compile(
 )
 
 
+MAS_SEEDS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "mas_seeds.json")
+
+
+def load_mas_seeds(path=MAS_SEEDS):
+    try:
+        return json.load(open(path, encoding="utf-8"))
+    except FileNotFoundError:
+        return []
+
+
+def _bare_host(url):
+    m = re.match(r"https?://([^/]+)", url or "")
+    return m.group(1).lower().removeprefix("www.") if m else ""
+
+
+def mas_scope(recs, seeds):
+    """Výzva MAS platí jen v obcích MAS (2026-11-15, zdroj `mas`).
+
+    MAS se pozná podle domény adresy výzvy (výzva leží na webu MAS). Záznam
+    dostane jméno MAS jako poskytovatele a region = výčet obcí z ČSÚ:
+    `{nazev: MAS, mas: MAS, obce: [{kod, nazev}], kraj: jediný kraj nebo None,
+    vymezene_uzemi: True}`. Aplikace podle `obce` pozná, jestli žadatel v území
+    je; bez obce v profilu řekne „ověřte“. Vrací počet záznamů."""
+    by_host = collections.defaultdict(list)
+    for m in seeds:
+        if m.get("web"):
+            by_host[_bare_host(m["web"])].append(m)
+
+    def path(url):
+        return re.sub(r"^https?://[^/]+", "", url or "").rstrip("/").lower()
+
+    def owner(url):
+        """MAS, jejíž web je nejdelší předponou adresy: MAS Krajina srdce a její městská
+        pobočka pro Tábor sdílí doménu, pobočka má podstránku (15. 11.)."""
+        fits = [m for m in by_host.get(_bare_host(url), []) if path(url).startswith(path(m["web"]))]
+        return max(fits, key=lambda m: len(path(m["web"])), default=None)
+
+    n = 0
+    for r in recs:
+        if r.get("source") != "mas" or r.get("kind") != "grant":
+            continue
+        mas = owner(r.get("source_url"))
+        if not mas:
+            continue
+        f = r.setdefault("facets", {})
+        f["typ_poskytovatele"] = "mistni_akcni_skupina"
+        f["region"] = {"nazev": mas["mas"], "obec": None, "okres": None,
+                       "kraj": mas["kraje"][0] if len(mas["kraje"]) == 1 else None,
+                       "celostatni": False, "vymezene_uzemi": True, "_conf": "high",
+                       "mas": mas["mas"], "obce": mas["obce"]}
+        r["provider"] = mas["mas"]
+        n += 1
+    return n
+
+
 def superseded_by_key(group):
     """Záznamy se stejnou adresou: které nahradil záznam téhož zdroje se stálým klíčem (A1c).
     Jen zdroj, který klíč deklaruje; jiný zdroj se stejnou adresou řeší A1b."""
@@ -819,6 +874,7 @@ def main():
                 reg["celostatni"] = False
                 reg["_conf"] = "low"
                 territorial_cleared += 1
+    mas_scoped = mas_scope(recs, load_mas_seeds())
 
     # ---- report ----
     print("=== A) ÚSTÍ / duplicitní zdroje ===")

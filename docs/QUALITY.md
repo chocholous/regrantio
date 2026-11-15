@@ -6,53 +6,53 @@ Změřeno k **2026-11-15** skriptem `scripts/quality_report.py`. Čísla u živ�
 
 | | |
 |---|---:|
-| záznamů celkem | 4474 |
-| z toho výzev | 4449 |
-| **živých k dnešku** | **1859** |
-| zdrojů | 135 |
-| stav | open 534 · announced 376 · unknown 949 · closed 2590 |
-| dosah živých | místní 517 · krajský 594 · celostátní 302 · mezinárodní 10 · EU centrální 436 |
-| druh lhůty u živých | jedna lhůta 887 · průběžně 57 · opakovaně 165 · neuvedeno 750 |
+| záznamů celkem | 4496 |
+| z toho výzev | 4471 |
+| **živých k dnešku** | **1878** |
+| zdrojů | 136 |
+| stav | open 552 · announced 377 · unknown 949 · closed 2593 |
+| dosah živých | místní 517 · krajský 605 · celostátní 310 · mezinárodní 10 · EU centrální 436 |
+| druh lhůty u živých | jedna lhůta 906 · průběžně 57 · opakovaně 165 · neuvedeno 750 |
 
 ## Vyplněnost polí
 
 | pole | živé | archiv |
 |---|---:|---:|
-| lhůta | 49.0 % (910) | 78.7 % (3500) |
-| částka pro žadatele | 4.2 % (78) | 9.1 % (406) |
-| kdo smí žádat (text) | 65.9 % (1225) | 62.6 % (2783) |
-| typ žadatele (faseta) | 40.5 % (753) | 40.0 % (1781) |
-| oblast | 69.1 % (1284) | 83.1 % (3699) |
-| území | 98.1 % (1824) | 99.0 % (4403) |
-| jak podat | 82.4 % (1532) | 90.9 % (4044) |
-| zdrojový dokument | 83.8 % (1557) | 88.3 % (3930) |
-| kontakt | 10.3 % (192) | 13.0 % (577) |
-| dokumenty | 19.9 % (370) | 30.1 % (1341) |
-| číslo výzvy | 36.1 % (671) | 43.5 % (1937) |
+| lhůta | 49.5 % (929) | 78.8 % (3522) |
+| částka pro žadatele | 4.4 % (83) | 9.2 % (411) |
+| kdo smí žádat (text) | 65.8 % (1235) | 62.5 % (2796) |
+| typ žadatele (faseta) | 40.7 % (764) | 40.1 % (1795) |
+| oblast | 69.4 % (1303) | 83.2 % (3721) |
+| území | 97.7 % (1835) | 98.8 % (4417) |
+| jak podat | 82.4 % (1548) | 90.9 % (4063) |
+| zdrojový dokument | 83.7 % (1571) | 88.3 % (3946) |
+| kontakt | 11.0 % (206) | 13.3 % (593) |
+| dokumenty | 20.7 % (389) | 30.5 % (1363) |
+| číslo výzvy | 36.7 % (689) | 43.8 % (1958) |
 
 ## Čerstvost živých záznamů
 
 | ověřeno u zdroje | záznamů |
 |---|---:|
-| do 7 dnů | 1415 |
+| do 7 dnů | 1434 |
 | do 30 dnů | 7 |
 | starší | 19 |
 | nevíme (bez razítka) | 418 |
 
 ## Doložitelnost
 
-Citací celkem 17588, ve zdroji dohledaných **9160 (52.1 %)**. Nedohledaná citace nedokládá nic; produkt u takového pole původ neukazuje jako doložený.
+Citací celkem 17924, ve zdroji dohledaných **9488 (52.9 %)**. Nedohledaná citace nedokládá nic; produkt u takového pole původ neukazuje jako doložený.
 
 | pole (živé) | má hodnotu | parser | model | dopočet | doloženo citací |
 |---|---:|---:|---:|---:|---:|
-| amount | 78 | 17 | 61 | 0 | 57.7 % |
-| deadline | 910 | 155 | 748 | 7 | 62.7 % |
-| eligible_applicants | 1225 | 391 | 834 | 0 | 16.4 % |
-| focus_area | 1751 | 681 | 1070 | 0 | 15.8 % |
-| oblast | 1284 | 176 | 1108 | 0 | 16.7 % |
-| open_from | 913 | 169 | 744 | 0 | 4.9 % |
-| region | 1824 | 748 | 1076 | 0 | 12.4 % |
-| typ_zadatele | 753 | 375 | 378 | 0 | 8.9 % |
+| amount | 83 | 17 | 66 | 0 | 60.2 % |
+| deadline | 929 | 155 | 767 | 7 | 63.5 % |
+| eligible_applicants | 1235 | 391 | 844 | 0 | 17.0 % |
+| focus_area | 1770 | 681 | 1089 | 0 | 16.4 % |
+| oblast | 1303 | 176 | 1127 | 0 | 17.7 % |
+| open_from | 932 | 169 | 763 | 0 | 6.9 % |
+| region | 1835 | 748 | 1087 | 0 | 12.5 % |
+| typ_zadatele | 764 | 375 | 389 | 0 | 9.6 % |
 
 ## Rodiny ročníků
 
@@ -62,7 +62,7 @@ Citací celkem 17588, ve zdroji dohledaných **9160 (52.1 %)**. Nedohledaná cit
 
 | stav | zdrojů | živých záznamů |
 |---|---:|---:|
-| ok (ověřeno do 21 dnů) | 122 | 1791 |
+| ok (ověřeno do 21 dnů) | 123 | 1810 |
 | stárne (nad 21 dnů) | 1 | 2 |
 | má cestu, nikdy neověřeno | 7 | 63 |
 | bez zapsané cesty k obnově | 3 | 0 |
@@ -88,6 +88,7 @@ Citací celkem 17588, ve zdroji dohledaných **9160 (52.1 %)**. Nedohledaná cit
 | Město Tábor (`taborcz.eu`) | samosprava_obec | A | 21 | 21 | 2026-11-15 | ok |
 | Město Hodonín (`hodonin.eu`) | samosprava_obec | A | 105 | 20 | 2026-11-15 | ok |
 | Ústecký kraj (`kr-ustecky.cz`) | samosprava_kraj | A | 115 | 20 | 2026-11-15 | ok |
+| Místní akční skupina (`mas`) | mistni_akcni_skupina | C | 22 | 19 | 2026-11-15 | ok |
 | Ministerstvo školství, mládeže a tělovýchovy (`msmt`) | ministerstvo | B | 32 | 19 | 2026-11-15 | ok |
 | Město Hradec Králové (`dotace.mmhk.cz`) | samosprava_obec | A | 33 | 17 | 2026-11-15 | ok |
 | Město Brno (`dotace.brno.cz`) | samosprava_obec | A | 51 | 16 | 2026-11-15 | ok |

@@ -424,7 +424,10 @@ def _seeds(slug):
 MODEL_SOURCES = {
     slug: [f"{slug}.py", *_seeds(slug)]
     for slug in ("albert", "eagri", "gacr", "hlavka", "leontinka", "mmr", "mpo", "mpsv",
-                 "nadace_adra", "partnerstvi", "sfa", "sfdi", "sfk", "sfzp", "sirius", "veronica", "vinarskyfond")
+                 "nadace_adra", "partnerstvi", "sfa", "sfdi", "sfk", "sfzp", "sirius", "veronica", "vinarskyfond",
+                 # Místní akční skupiny (2026-11-15): výzvy z webů 186 MAS, `mas_seeds.json`
+                 # z `mas_list.py` (NS MAS + ČSÚ). Území výzvy = obce MAS (`fix_dataset`).
+                 "mas")
 }
 
 

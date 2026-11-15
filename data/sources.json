@@ -682,6 +682,17 @@
 		"live": 3,
 		"last_fetched": "2026-11-15"
 	},
+	"mas": {
+		"name": "Místní akční skupina",
+		"homepage": "https://www.maskrajinasrdce.cz",
+		"note": null,
+		"type": "mistni_akcni_skupina",
+		"refresh": "C",
+		"harvester": "mas.py",
+		"records": 22,
+		"live": 19,
+		"last_fetched": "2026-11-15"
+	},
 	"mb-net.cz": {
 		"name": "Město Mladá Boleslav",
 		"homepage": "https://www.mb-net.cz",
