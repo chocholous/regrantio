@@ -6,53 +6,53 @@ Změřeno k **2026-11-15** skriptem `scripts/quality_report.py`. Čísla u živ�
 
 | | |
 |---|---:|
-| záznamů celkem | 4506 |
-| z toho výzev | 4481 |
-| **živých k dnešku** | **1886** |
+| záznamů celkem | 4509 |
+| z toho výzev | 4484 |
+| **živých k dnešku** | **1889** |
 | zdrojů | 136 |
-| stav | open 552 · announced 377 · unknown 957 · closed 2595 |
-| dosah živých | místní 517 · krajský 608 · celostátní 315 · mezinárodní 10 · EU centrální 436 |
-| druh lhůty u živých | jedna lhůta 906 · průběžně 57 · opakovaně 167 · neuvedeno 756 |
+| stav | open 554 · announced 378 · unknown 957 · closed 2595 |
+| dosah živých | místní 517 · krajský 611 · celostátní 315 · mezinárodní 10 · EU centrální 436 |
+| druh lhůty u živých | jedna lhůta 909 · průběžně 57 · opakovaně 167 · neuvedeno 756 |
 
 ## Vyplněnost polí
 
 | pole | živé | archiv |
 |---|---:|---:|
-| lhůta | 49.3 % (929) | 78.6 % (3524) |
+| lhůta | 49.3 % (932) | 78.7 % (3527) |
 | částka pro žadatele | 4.8 % (91) | 9.4 % (421) |
-| kdo smí žádat (text) | 65.9 % (1243) | 62.6 % (2806) |
-| typ žadatele (faseta) | 40.9 % (772) | 40.3 % (1805) |
-| oblast | 69.5 % (1310) | 83.2 % (3730) |
-| území | 97.7 % (1843) | 98.8 % (4427) |
-| jak podat | 82.5 % (1556) | 90.9 % (4073) |
-| zdrojový dokument | 83.7 % (1579) | 88.3 % (3956) |
-| kontakt | 10.9 % (206) | 13.2 % (592) |
-| dokumenty | 20.6 % (389) | 30.4 % (1362) |
-| číslo výzvy | 36.5 % (689) | 43.7 % (1958) |
+| kdo smí žádat (text) | 65.9 % (1244) | 62.6 % (2807) |
+| typ žadatele (faseta) | 40.9 % (773) | 40.3 % (1806) |
+| oblast | 69.5 % (1313) | 83.3 % (3733) |
+| území | 97.7 % (1846) | 98.8 % (4430) |
+| jak podat | 82.5 % (1558) | 90.9 % (4075) |
+| zdrojový dokument | 83.7 % (1582) | 88.3 % (3959) |
+| kontakt | 11.0 % (207) | 13.2 % (593) |
+| dokumenty | 20.8 % (392) | 30.4 % (1365) |
+| číslo výzvy | 36.6 % (692) | 43.7 % (1961) |
 
 ## Čerstvost živých záznamů
 
 | ověřeno u zdroje | záznamů |
 |---|---:|
-| do 7 dnů | 1442 |
+| do 7 dnů | 1445 |
 | do 30 dnů | 7 |
 | starší | 19 |
 | nevíme (bez razítka) | 418 |
 
 ## Doložitelnost
 
-Citací celkem 17913, ve zdroji dohledaných **9488 (53.0 %)**. Nedohledaná citace nedokládá nic; produkt u takového pole původ neukazuje jako doložený.
+Citací celkem 17960, ve zdroji dohledaných **9534 (53.1 %)**. Nedohledaná citace nedokládá nic; produkt u takového pole původ neukazuje jako doložený.
 
 | pole (živé) | má hodnotu | parser | model | dopočet | doloženo citací |
 |---|---:|---:|---:|---:|---:|
 | amount | 91 | 25 | 66 | 0 | 54.9 % |
-| deadline | 929 | 155 | 767 | 7 | 63.5 % |
-| eligible_applicants | 1243 | 399 | 844 | 0 | 16.9 % |
-| focus_area | 1778 | 689 | 1089 | 0 | 16.3 % |
-| oblast | 1310 | 183 | 1127 | 0 | 17.6 % |
-| open_from | 939 | 176 | 763 | 0 | 6.8 % |
-| region | 1843 | 756 | 1087 | 0 | 12.5 % |
-| typ_zadatele | 772 | 383 | 389 | 0 | 9.5 % |
+| deadline | 932 | 155 | 770 | 7 | 63.6 % |
+| eligible_applicants | 1244 | 399 | 845 | 0 | 17.0 % |
+| focus_area | 1781 | 689 | 1092 | 0 | 16.5 % |
+| oblast | 1313 | 183 | 1130 | 0 | 17.7 % |
+| open_from | 942 | 176 | 766 | 0 | 7.1 % |
+| region | 1846 | 756 | 1090 | 0 | 12.5 % |
+| typ_zadatele | 773 | 383 | 390 | 0 | 9.6 % |
 
 ## Rodiny ročníků
 
@@ -62,7 +62,7 @@ Citací celkem 17913, ve zdroji dohledaných **9488 (53.0 %)**. Nedohledaná cit
 
 | stav | zdrojů | živých záznamů |
 |---|---:|---:|
-| ok (ověřeno do 21 dnů) | 123 | 1818 |
+| ok (ověřeno do 21 dnů) | 123 | 1821 |
 | stárne (nad 21 dnů) | 1 | 2 |
 | má cestu, nikdy neověřeno | 7 | 63 |
 | bez zapsané cesty k obnově | 3 | 0 |
@@ -85,10 +85,10 @@ Citací celkem 17913, ve zdroji dohledaných **9488 (53.0 %)**. Nedohledaná cit
 | Moravskoslezský kraj (`msk.cz`) | samosprava_kraj | A | 111 | 28 | 2026-11-15 | ok |
 | Obec Chýně (`dotace.chyne.cz`) | samosprava_obec | A | 27 | 26 | 2026-11-15 | ok |
 | Karlovarský kraj (`kr-karlovarsky.cz`) | samosprava_kraj | A | 86 | 23 | 2026-11-15 | ok |
+| Místní akční skupina (`mas`) | mistni_akcni_skupina | C | 25 | 22 | 2026-11-15 | ok |
 | Město Tábor (`taborcz.eu`) | samosprava_obec | A | 21 | 21 | 2026-11-15 | ok |
 | Město Hodonín (`hodonin.eu`) | samosprava_obec | A | 105 | 20 | 2026-11-15 | ok |
 | Ústecký kraj (`kr-ustecky.cz`) | samosprava_kraj | A | 115 | 20 | 2026-11-15 | ok |
-| Místní akční skupina (`mas`) | mistni_akcni_skupina | C | 22 | 19 | 2026-11-15 | ok |
 | Ministerstvo školství, mládeže a tělovýchovy (`msmt`) | ministerstvo | B | 32 | 19 | 2026-11-15 | ok |
 | Město Hradec Králové (`dotace.mmhk.cz`) | samosprava_obec | A | 33 | 17 | 2026-11-15 | ok |
 | Město Brno (`dotace.brno.cz`) | samosprava_obec | A | 51 | 16 | 2026-11-15 | ok |

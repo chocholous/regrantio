@@ -179,16 +179,28 @@ def one_mas(mas, today):
                 continue
             indexes += [u for u in index_pages(hub_url, hub_page) if u not in indexes] or [hub_url]
         indexes = indexes[:MAX_INDEX]
-    for idx in indexes:
-        time.sleep(PAUSE)
-        try:
-            idx_url, idx_page = fetch(idx)
-        except Exception:  # noqa: BLE001
-            continue
-        stats["index"] += 1
-        calls = [u for t, u in links(idx_url, idx_page)
-                 if u != idx_url and SINGLE.search(f"{t} {u}") and not OLD.search(f"{t} {u}")
-                 and not NOT_A_CALL.search(t)][:MAX_CALLS]
+
+    def call_links(base, html_page):
+        return [u for t, u in links(base, html_page)
+                if u != base and SINGLE.search(f"{t} {u}") and not OLD.search(f"{t} {u}")
+                and not NOT_A_CALL.search(t)][:MAX_CALLS]
+
+    # Výzva jen v novinkách úvodní stránky (MAS Zlatá cesta, 15. 11.: „3. Výzva MAS –
+    # IROP – HASIČI“ otevřená, v rozcestníku výzev ještě nebyla). Bere se jako první rozcestník.
+    for idx in [home] + indexes:
+        if idx == home:
+            idx_url, idx_page = home, page
+            calls = call_links(home, page)
+            if not calls:
+                continue
+        else:
+            time.sleep(PAUSE)
+            try:
+                idx_url, idx_page = fetch(idx)
+            except Exception:  # noqa: BLE001
+                continue
+            stats["index"] += 1
+            calls = call_links(idx_url, idx_page)
         for url in calls:
             if url in seen:
                 continue

@@ -689,8 +689,8 @@
 		"type": "mistni_akcni_skupina",
 		"refresh": "C",
 		"harvester": "mas.py",
-		"records": 22,
-		"live": 19,
+		"records": 25,
+		"live": 22,
 		"last_fetched": "2026-11-15"
 	},
 	"mb-net.cz": {

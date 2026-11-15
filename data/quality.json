@@ -1,34 +1,34 @@
 {
 	"today": "2026-11-15",
-	"records": 4506,
-	"grants": 4481,
-	"live": 1886,
+	"records": 4509,
+	"grants": 4484,
+	"live": 1889,
 	"sources": 136,
 	"status": {
-		"open": 552,
+		"open": 554,
 		"closed": 2595,
-		"announced": 377,
+		"announced": 378,
 		"unknown": 957
 	},
 	"scope_live": {
 		"national": 315,
-		"regional": 608,
+		"regional": 611,
 		"local": 517,
 		"international": 10,
 		"eu_central": 436
 	},
 	"deadline_kind_live": {
-		"fixed": 906,
+		"fixed": 909,
 		"unknown": 756,
 		"rolling": 57,
 		"recurring": 167
 	},
 	"fields": {
 		"deadline": {
-			"live": 929,
+			"live": 932,
 			"live_pct": 49.3,
-			"all": 3524,
-			"all_pct": 78.6
+			"all": 3527,
+			"all_pct": 78.7
 		},
 		"amount": {
 			"live": 91,
@@ -37,70 +37,70 @@
 			"all_pct": 9.4
 		},
 		"eligible_applicants": {
-			"live": 1243,
+			"live": 1244,
 			"live_pct": 65.9,
-			"all": 2806,
+			"all": 2807,
 			"all_pct": 62.6
 		},
 		"typ_zadatele": {
-			"live": 772,
+			"live": 773,
 			"live_pct": 40.9,
-			"all": 1805,
+			"all": 1806,
 			"all_pct": 40.3
 		},
 		"oblast": {
-			"live": 1310,
+			"live": 1313,
 			"live_pct": 69.5,
-			"all": 3730,
-			"all_pct": 83.2
+			"all": 3733,
+			"all_pct": 83.3
 		},
 		"kraj_nebo_celostatni": {
-			"live": 1843,
+			"live": 1846,
 			"live_pct": 97.7,
-			"all": 4427,
+			"all": 4430,
 			"all_pct": 98.8
 		},
 		"how_to_apply": {
-			"live": 1556,
+			"live": 1558,
 			"live_pct": 82.5,
-			"all": 4073,
+			"all": 4075,
 			"all_pct": 90.9
 		},
 		"source_doc": {
-			"live": 1579,
+			"live": 1582,
 			"live_pct": 83.7,
-			"all": 3956,
+			"all": 3959,
 			"all_pct": 88.3
 		},
 		"contact": {
-			"live": 206,
-			"live_pct": 10.9,
-			"all": 592,
+			"live": 207,
+			"live_pct": 11.0,
+			"all": 593,
 			"all_pct": 13.2
 		},
 		"documents": {
-			"live": 389,
-			"live_pct": 20.6,
-			"all": 1362,
+			"live": 392,
+			"live_pct": 20.8,
+			"all": 1365,
 			"all_pct": 30.4
 		},
 		"call_number": {
-			"live": 689,
-			"live_pct": 36.5,
-			"all": 1958,
+			"live": 692,
+			"live_pct": 36.6,
+			"all": 1961,
 			"all_pct": 43.7
 		}
 	},
 	"freshness_live": {
-		"do_7": 1442,
+		"do_7": 1445,
 		"do_30": 7,
 		"starsi": 19,
 		"nevime": 418
 	},
 	"citations": {
-		"total": 17913,
-		"located": 9488,
-		"located_pct": 53.0
+		"total": 17960,
+		"located": 9534,
+		"located_pct": 53.1
 	},
 	"provenance_live": {
 		"amount": {
@@ -112,60 +112,60 @@
 			"cited_pct": 54.9
 		},
 		"deadline": {
-			"present": 929,
+			"present": 932,
 			"parsed": 155,
-			"model": 767,
+			"model": 770,
 			"derived": 7,
-			"cited": 590,
-			"cited_pct": 63.5
+			"cited": 593,
+			"cited_pct": 63.6
 		},
 		"eligible_applicants": {
-			"present": 1243,
+			"present": 1244,
 			"parsed": 399,
-			"model": 844,
+			"model": 845,
 			"derived": 0,
-			"cited": 210,
-			"cited_pct": 16.9
+			"cited": 211,
+			"cited_pct": 17.0
 		},
 		"focus_area": {
-			"present": 1778,
+			"present": 1781,
 			"parsed": 689,
-			"model": 1089,
+			"model": 1092,
 			"derived": 0,
-			"cited": 290,
-			"cited_pct": 16.3
+			"cited": 293,
+			"cited_pct": 16.5
 		},
 		"oblast": {
-			"present": 1310,
+			"present": 1313,
 			"parsed": 183,
-			"model": 1127,
+			"model": 1130,
 			"derived": 0,
-			"cited": 230,
-			"cited_pct": 17.6
+			"cited": 233,
+			"cited_pct": 17.7
 		},
 		"open_from": {
-			"present": 939,
+			"present": 942,
 			"parsed": 176,
-			"model": 763,
+			"model": 766,
 			"derived": 0,
-			"cited": 64,
-			"cited_pct": 6.8
+			"cited": 67,
+			"cited_pct": 7.1
 		},
 		"region": {
-			"present": 1843,
+			"present": 1846,
 			"parsed": 756,
-			"model": 1087,
+			"model": 1090,
 			"derived": 0,
 			"cited": 230,
 			"cited_pct": 12.5
 		},
 		"typ_zadatele": {
-			"present": 772,
+			"present": 773,
 			"parsed": 383,
-			"model": 389,
+			"model": 390,
 			"derived": 0,
-			"cited": 73,
-			"cited_pct": 9.5
+			"cited": 74,
+			"cited_pct": 9.6
 		}
 	},
 	"families": {
@@ -181,7 +181,7 @@
 		"starne": 1
 	},
 	"live_by_source_state": {
-		"ok": 1818,
+		"ok": 1821,
 		"zmrazeny": 3,
 		"neovereno": 63,
 		"bez_cesty": 0,
@@ -875,8 +875,8 @@
 			"name": "Místní akční skupina",
 			"type": "mistni_akcni_skupina",
 			"refresh": "C",
-			"records": 22,
-			"live": 19,
+			"records": 25,
+			"live": 22,
 			"last_fetched": "2026-11-15",
 			"days": 0,
 			"state": "ok"
