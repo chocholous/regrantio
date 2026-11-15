@@ -1,106 +1,106 @@
 {
 	"today": "2026-11-15",
-	"records": 4387,
-	"grants": 4362,
-	"live": 1836,
+	"records": 4474,
+	"grants": 4449,
+	"live": 1859,
 	"sources": 135,
 	"status": {
-		"unknown": 926,
-		"closed": 2526,
 		"open": 534,
-		"announced": 376
+		"announced": 376,
+		"closed": 2590,
+		"unknown": 949
 	},
 	"scope_live": {
+		"regional": 594,
 		"national": 302,
 		"local": 517,
-		"regional": 571,
 		"international": 10,
 		"eu_central": 436
 	},
 	"deadline_kind_live": {
-		"unknown": 728,
-		"rolling": 57,
 		"fixed": 887,
-		"recurring": 164
+		"unknown": 750,
+		"rolling": 57,
+		"recurring": 165
 	},
 	"fields": {
 		"deadline": {
 			"live": 910,
-			"live_pct": 49.6,
-			"all": 3436,
-			"all_pct": 78.8
+			"live_pct": 49.0,
+			"all": 3500,
+			"all_pct": 78.7
 		},
 		"amount": {
 			"live": 78,
 			"live_pct": 4.2,
-			"all": 405,
-			"all_pct": 9.3
+			"all": 406,
+			"all_pct": 9.1
 		},
 		"eligible_applicants": {
 			"live": 1225,
-			"live_pct": 66.7,
-			"all": 2752,
-			"all_pct": 63.1
+			"live_pct": 65.9,
+			"all": 2783,
+			"all_pct": 62.6
 		},
 		"typ_zadatele": {
 			"live": 753,
-			"live_pct": 41.0,
-			"all": 1749,
-			"all_pct": 40.1
+			"live_pct": 40.5,
+			"all": 1781,
+			"all_pct": 40.0
 		},
 		"oblast": {
-			"live": 1283,
-			"live_pct": 69.9,
-			"all": 3641,
-			"all_pct": 83.5
+			"live": 1284,
+			"live_pct": 69.1,
+			"all": 3699,
+			"all_pct": 83.1
 		},
 		"kraj_nebo_celostatni": {
-			"live": 1801,
+			"live": 1824,
 			"live_pct": 98.1,
-			"all": 4316,
-			"all_pct": 98.9
+			"all": 4403,
+			"all_pct": 99.0
 		},
 		"how_to_apply": {
-			"live": 1509,
-			"live_pct": 82.2,
-			"all": 3957,
-			"all_pct": 90.7
+			"live": 1532,
+			"live_pct": 82.4,
+			"all": 4044,
+			"all_pct": 90.9
 		},
 		"source_doc": {
 			"live": 1557,
-			"live_pct": 84.8,
-			"all": 3866,
-			"all_pct": 88.6
+			"live_pct": 83.8,
+			"all": 3930,
+			"all_pct": 88.3
 		},
 		"contact": {
 			"live": 192,
-			"live_pct": 10.5,
+			"live_pct": 10.3,
 			"all": 577,
-			"all_pct": 13.2
+			"all_pct": 13.0
 		},
 		"documents": {
-			"live": 368,
-			"live_pct": 20.0,
-			"all": 1272,
-			"all_pct": 29.2
+			"live": 370,
+			"live_pct": 19.9,
+			"all": 1341,
+			"all_pct": 30.1
 		},
 		"call_number": {
 			"live": 671,
-			"live_pct": 36.5,
+			"live_pct": 36.1,
 			"all": 1937,
-			"all_pct": 44.4
+			"all_pct": 43.5
 		}
 	},
 	"freshness_live": {
-		"do_7": 1391,
+		"do_7": 1415,
 		"do_30": 7,
-		"starsi": 20,
+		"starsi": 19,
 		"nevime": 418
 	},
 	"citations": {
-		"total": 17603,
+		"total": 17588,
 		"located": 9160,
-		"located_pct": 52.0
+		"located_pct": 52.1
 	},
 	"provenance_live": {
 		"amount": {
@@ -128,20 +128,20 @@
 			"cited_pct": 16.4
 		},
 		"focus_area": {
-			"present": 1726,
-			"parsed": 656,
+			"present": 1751,
+			"parsed": 681,
 			"model": 1070,
 			"derived": 0,
 			"cited": 277,
-			"cited_pct": 16.0
+			"cited_pct": 15.8
 		},
 		"oblast": {
-			"present": 1283,
-			"parsed": 174,
-			"model": 1109,
+			"present": 1284,
+			"parsed": 176,
+			"model": 1108,
 			"derived": 0,
 			"cited": 215,
-			"cited_pct": 16.8
+			"cited_pct": 16.7
 		},
 		"open_from": {
 			"present": 913,
@@ -152,12 +152,12 @@
 			"cited_pct": 4.9
 		},
 		"region": {
-			"present": 1801,
-			"parsed": 724,
-			"model": 1077,
+			"present": 1824,
+			"parsed": 748,
+			"model": 1076,
 			"derived": 0,
 			"cited": 227,
-			"cited_pct": 12.6
+			"cited_pct": 12.4
 		},
 		"typ_zadatele": {
 			"present": 753,
@@ -169,9 +169,9 @@
 		}
 	},
 	"families": {
-		"families": 443,
-		"variants": 504,
-		"recurring": 394
+		"families": 448,
+		"variants": 510,
+		"recurring": 399
 	},
 	"sources_by_state": {
 		"ok": 122,
@@ -181,7 +181,7 @@
 		"starne": 1
 	},
 	"live_by_source_state": {
-		"ok": 1768,
+		"ok": 1791,
 		"zmrazeny": 3,
 		"neovereno": 63,
 		"bez_cesty": 0,
@@ -358,7 +358,7 @@
 			"name": "Plzeňský kraj",
 			"type": "samosprava_kraj",
 			"refresh": "A",
-			"records": 158,
+			"records": 159,
 			"live": 1,
 			"last_fetched": "2026-11-15",
 			"days": 0,
@@ -787,8 +787,8 @@
 			"name": "Jihočeský kraj",
 			"type": "samosprava_kraj",
 			"refresh": "A",
-			"records": 12,
-			"live": 6,
+			"records": 37,
+			"live": 29,
 			"last_fetched": "2026-11-15",
 			"days": 0,
 			"state": "ok"
@@ -1260,7 +1260,7 @@
 			"name": "Olomoucký kraj",
 			"type": "samosprava_kraj",
 			"refresh": "A",
-			"records": 11,
+			"records": 72,
 			"live": 4,
 			"last_fetched": "2026-11-15",
 			"days": 0,

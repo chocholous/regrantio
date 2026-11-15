@@ -20,7 +20,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(
 from datetime import date  # noqa: E402
 
 from fix_dataset import (  # noqa: E402
-    amount_per_applicant, clean_text, fondvysociny_types, is_rolling_word, round_from_listing, territorial)
+    amount_per_applicant, clean_text, fondvysociny_types, is_rolling_word, round_from_listing,
+    superseded_by_key, territorial)
 from ingest_rich import _num  # noqa: E402
 
 
@@ -165,6 +166,16 @@ def test_oddil_bez_roku_nic_netvrdi():
 def test_prubezna_lhuta_se_nemeni():
     got = round_from_listing("2026-11-01", "průběžně", date(2017, 9, 15), "Dotační programy rok 2018")
     assert got == ("2017-11-01", "průběžně")
+
+def test_zaznam_s_klicem_nahradi_starsi_tehoz_zdroje():
+    old = {"source": "olkraj.cz", "title": "Program na podporu JSDH 2026", "extra": {}}
+    new = {"source": "olkraj.cz", "title": "Dotace na pořízení dopravních prostředků pro JSDH",
+           "extra": {"klic": "olk-2026-13_02_02"}}
+    other = {"source": "agregator.cz", "title": "JSDH", "extra": {}}
+    assert superseded_by_key([old, new, other]) == [old]
+    # Bez klíče nic: sdílená adresa výpisu může nést různé výzvy.
+    assert superseded_by_key([old, dict(old, title="Jiná výzva")]) == []
+
 
 def test_uzemne_vymezene_vyzvy_nejsou_celostatni():
     # Audit 14. 11.: ITI, CLLD a OP ST byly „celostátní“ podle typu poskytovatele.

@@ -17,7 +17,8 @@ KONTRAKT (co musí harvester per kraj vyprodukovat — JSON):
       "popis": "...",                        # krátký popis (focus_area), může být null
       "eligible": "obce 2000-5000 obyvatel", # text oprávněnosti, může být null
       "kod": "RP30-25"|null,
-      "url": "https://..."                   # odkaz na program
+      "url": "https://...",                  # odkaz na program
+      "klic": "jck-2027-podpora-kultury"     # VOLITELNĚ: stálá identita napříč názvem/adresou
     }, ...
   ]
 }
@@ -92,7 +93,13 @@ def main():
             eligible = p.get("eligible")
             if isinstance(eligible, list):  # kontrakt: string | null, ne seznam (fix_dataset E)
                 eligible = ", ".join(str(x).strip() for x in eligible if str(x).strip()) or None
-            gid = canon_key("grant", nazev, p.get("url") or source + "/" + (p.get("kod") or nazev[:30]))
+            # `klic` = stálá identita programu, když se mění název i adresa (Jihočeský kraj:
+            # řádek tabulky plánovaných programů → později vyhlášená výzva, 2026-11-15).
+            # Bez něj by upsert nechal vedle sebe plánovaný i vyhlášený záznam.
+            if p.get("klic"):
+                gid = canon_key("grant", nazev, "https://" + source + "/", uid=p["klic"])
+            else:
+                gid = canon_key("grant", nazev, p.get("url") or source + "/" + (p.get("kod") or nazev[:30]))
             rec = {
                 "kind": "grant", "source": source, "source_url": p.get("url"),
                 "title": nazev, "focus_area": popis or None, "open_from": of, "deadline": dl,
@@ -114,7 +121,9 @@ def main():
                                "harvest_url": p.get("url"), "harvest_file": inp, "documents": []},
                 # `dokumenty` = [{popis, role, url}] od sběrače (přílohy titulu);
                 # export je převezme jako čitelné dokumenty (`enrich.documents`).
-                "extra": {k: v for k in ("kod", "dokumenty") if (v := p.get(k))},
+                # `klic` zůstává i v záznamu: podle něj `fix_dataset` (A1c) pozná starší
+                # záznam téhož programu bez klíče, který nahradil.
+                "extra": {k: v for k in ("kod", "dokumenty", "klic") if (v := p.get(k))},
                 "citations": [],
             }
             recs.append(rec)

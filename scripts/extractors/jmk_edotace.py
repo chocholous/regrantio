@@ -35,7 +35,7 @@ DT = re.compile(r"(\d{1,2})\.(\d{1,2})\.(20\d\d)")
 
 TYP = [
     (r"\bobc[eíi]\b|\bobec\b|svazk\w* obc|městsk\w+ část|\bměst[ao]\b", "obec_verejny_subjekt"),
-    (r"spolk|spolkov\w+ rejstřík|obecně prospěšn|zapsan\w+ ústav|nadac|nadačn|nestátn\w* nezisk|nezisk\w+ organizac|církevn\w+ právnick", "neziskovka"),
+    (r"spolk|spolek|spolkov\w+ rejstřík|obecně prospěšn|zapsan\w+ ústav|nadac|nadačn|nestátn\w* nezisk|nezisk\w+ organizac|církevn\w+ právnick", "neziskovka"),
     (r"podnikaj\w+ právnick|obchodn\w+ společnost|podnikatel|provozuj\w+ prodejn", "firma"),
     (r"podnikaj\w+ (?:\w+ (?:nebo|či|a) )?fyzick|fyzick\w+ osob\w+ podnikaj|OSVČ", "osvc_podnikatel"),
     (r"příspěvkov\w+ organizac", "prispevkova_organizace"),

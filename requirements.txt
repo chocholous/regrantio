@@ -21,3 +21,7 @@ truststore==0.10.4   # NATIVNÍ ověření TLS operačním systémem (scripts/ht
 #
 # SYSTÉMOVÉ nástroje (ne přes pip): pdftotext z balíku poppler pro velká PDF,
 # volitelně soffice (LibreOffice) pro tabulkové formáty.
+#
+# VOLITELNĚ: pymupdf==2.0 čte tabulku programových dotací Jihočeského kraje
+# (scripts/jihocesky_harvest.py, buňky podle čar tabulky). Bez něj se tabulka
+# přeskočí s varováním a zbytek sběru běží.

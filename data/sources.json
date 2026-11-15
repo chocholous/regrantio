@@ -172,7 +172,7 @@
 		"type": "samosprava_kraj",
 		"refresh": "A",
 		"harvester": "plzen_kraj_harvest.py",
-		"records": 158,
+		"records": 159,
 		"live": 1,
 		"last_fetched": "2026-11-15"
 	},
@@ -601,8 +601,8 @@
 		"type": "samosprava_kraj",
 		"refresh": "A",
 		"harvester": "jihocesky_harvest.py",
-		"records": 12,
-		"live": 6,
+		"records": 37,
+		"live": 29,
 		"last_fetched": "2026-11-15"
 	},
 	"krasapomoci": {
@@ -1074,7 +1074,7 @@
 		"type": "samosprava_kraj",
 		"refresh": "A",
 		"harvester": "olomoucky_harvest.py",
-		"records": 11,
+		"records": 72,
 		"live": 4,
 		"last_fetched": "2026-11-15"
 	},

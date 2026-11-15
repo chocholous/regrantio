@@ -372,6 +372,14 @@ DEFINED_AREA = re.compile(
 )
 
 
+def superseded_by_key(group):
+    """Záznamy se stejnou adresou: které nahradil záznam téhož zdroje se stálým klíčem (A1c).
+    Jen zdroj, který klíč deklaruje; jiný zdroj se stejnou adresou řeší A1b."""
+    keyed = [x for x in group if (x.get("extra") or {}).get("klic")]
+    sources = {x.get("source") for x in keyed}
+    return [x for x in group if not (x.get("extra") or {}).get("klic") and x.get("source") in sources]
+
+
 def territorial(rec):
     """Platí výzva jen na vymezeném území, ač ji vyhlašuje celostátní poskytovatel?
 
@@ -517,6 +525,13 @@ def main():
             continue
         keep = max(group, key=lambda x: (bool(x.get("deadline")), len(x.get("focus_area") or "") + len(x.get("eligible_applicants") or "")))
         url_dup_dropped.extend(x for x in group if x is not keep and x.get("source") != keep.get("source"))
+    # ---- A1c) týž program v jednom zdroji: záznam se stálým klíčem nahradil starší ----
+    # Sběrač, který zavede stálý klíč (`extra.klic`, ingest_kraj), dá programu nové id.
+    # Starší záznam téhož programu (stejná adresa, id z názvu) by v katalogu zůstal
+    # vedle (upsert nemaže). Jen kde zdroj klíč deklaruje; jinde sdílená adresa
+    # výpisu znamená různé výzvy (Olomoucký kraj 2026-11-15).
+    for group in by_url.values():
+        url_dup_dropped.extend(superseded_by_key(group))
     if url_dup_dropped:
         drop_ids = {id(x) for x in url_dup_dropped}
         recs = [r for r in recs if id(r) not in drop_ids]
@@ -812,7 +827,7 @@ def main():
         print(f"  DROP {s}: {c} záznamů")
     print(f"  celkem smazáno: {len(dropped)}")
     if url_dup_dropped:
-        print(f"\n=== A1b) táž výzva ze dvou zdrojů: −{len(url_dup_dropped)} ===")
+        print(f"\n=== A1b/A1c) táž výzva dvakrát (dva zdroje, nebo starší záznam bez klíče): −{len(url_dup_dropped)} ===")
         for r in url_dup_dropped:
             print(f"  −  {(r.get('source') or '?')[:24]:24}  {(r.get('title') or '')[:64]}")
     if notcall_dropped:
