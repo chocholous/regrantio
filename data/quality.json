@@ -1,106 +1,106 @@
 {
 	"today": "2026-11-15",
-	"records": 4375,
-	"grants": 4350,
-	"live": 1822,
+	"records": 4387,
+	"grants": 4362,
+	"live": 1836,
 	"sources": 135,
 	"status": {
-		"open": 526,
-		"closed": 2528,
-		"announced": 372,
-		"unknown": 924
+		"unknown": 926,
+		"closed": 2526,
+		"open": 534,
+		"announced": 376
 	},
 	"scope_live": {
-		"national": 299,
+		"national": 302,
 		"local": 517,
-		"regional": 570,
-		"international": 9,
-		"eu_central": 427
+		"regional": 571,
+		"international": 10,
+		"eu_central": 436
 	},
 	"deadline_kind_live": {
+		"unknown": 728,
 		"rolling": 57,
-		"fixed": 875,
-		"unknown": 726,
+		"fixed": 887,
 		"recurring": 164
 	},
 	"fields": {
 		"deadline": {
-			"live": 898,
-			"live_pct": 49.3,
-			"all": 3426,
+			"live": 910,
+			"live_pct": 49.6,
+			"all": 3436,
 			"all_pct": 78.8
 		},
 		"amount": {
 			"live": 78,
-			"live_pct": 4.3,
+			"live_pct": 4.2,
 			"all": 405,
 			"all_pct": 9.3
 		},
 		"eligible_applicants": {
-			"live": 1213,
-			"live_pct": 66.6,
-			"all": 2742,
-			"all_pct": 63.0
+			"live": 1225,
+			"live_pct": 66.7,
+			"all": 2752,
+			"all_pct": 63.1
 		},
 		"typ_zadatele": {
-			"live": 751,
-			"live_pct": 41.2,
-			"all": 1748,
-			"all_pct": 40.2
+			"live": 753,
+			"live_pct": 41.0,
+			"all": 1749,
+			"all_pct": 40.1
 		},
 		"oblast": {
-			"live": 1269,
-			"live_pct": 69.6,
-			"all": 3629,
-			"all_pct": 83.4
+			"live": 1283,
+			"live_pct": 69.9,
+			"all": 3641,
+			"all_pct": 83.5
 		},
 		"kraj_nebo_celostatni": {
-			"live": 1787,
+			"live": 1801,
 			"live_pct": 98.1,
-			"all": 4304,
+			"all": 4316,
 			"all_pct": 98.9
 		},
 		"how_to_apply": {
-			"live": 1495,
-			"live_pct": 82.1,
-			"all": 3945,
+			"live": 1509,
+			"live_pct": 82.2,
+			"all": 3957,
 			"all_pct": 90.7
 		},
 		"source_doc": {
-			"live": 1543,
-			"live_pct": 84.7,
-			"all": 3854,
+			"live": 1557,
+			"live_pct": 84.8,
+			"all": 3866,
 			"all_pct": 88.6
 		},
 		"contact": {
 			"live": 192,
 			"live_pct": 10.5,
 			"all": 577,
-			"all_pct": 13.3
+			"all_pct": 13.2
 		},
 		"documents": {
-			"live": 366,
-			"live_pct": 20.1,
-			"all": 1269,
+			"live": 368,
+			"live_pct": 20.0,
+			"all": 1272,
 			"all_pct": 29.2
 		},
 		"call_number": {
-			"live": 660,
-			"live_pct": 36.2,
-			"all": 1927,
-			"all_pct": 44.3
+			"live": 671,
+			"live_pct": 36.5,
+			"all": 1937,
+			"all_pct": 44.4
 		}
 	},
 	"freshness_live": {
-		"do_7": 1367,
-		"do_30": 16,
+		"do_7": 1391,
+		"do_30": 7,
 		"starsi": 20,
-		"nevime": 419
+		"nevime": 418
 	},
 	"citations": {
-		"total": 17581,
-		"located": 8946,
-		"located_pct": 50.9
+		"total": 17603,
+		"located": 9160,
+		"located_pct": 52.0
 	},
 	"provenance_live": {
 		"amount": {
@@ -112,66 +112,66 @@
 			"cited_pct": 57.7
 		},
 		"deadline": {
-			"present": 898,
+			"present": 910,
 			"parsed": 155,
-			"model": 736,
+			"model": 748,
 			"derived": 7,
-			"cited": 559,
-			"cited_pct": 62.2
+			"cited": 571,
+			"cited_pct": 62.7
 		},
 		"eligible_applicants": {
-			"present": 1213,
+			"present": 1225,
 			"parsed": 391,
-			"model": 822,
+			"model": 834,
 			"derived": 0,
 			"cited": 201,
-			"cited_pct": 16.6
+			"cited_pct": 16.4
 		},
 		"focus_area": {
-			"present": 1712,
+			"present": 1726,
 			"parsed": 656,
-			"model": 1056,
+			"model": 1070,
 			"derived": 0,
 			"cited": 277,
-			"cited_pct": 16.2
+			"cited_pct": 16.0
 		},
 		"oblast": {
-			"present": 1269,
+			"present": 1283,
 			"parsed": 174,
-			"model": 1095,
+			"model": 1109,
 			"derived": 0,
 			"cited": 215,
-			"cited_pct": 16.9
+			"cited_pct": 16.8
 		},
 		"open_from": {
-			"present": 902,
+			"present": 913,
 			"parsed": 169,
-			"model": 733,
+			"model": 744,
 			"derived": 0,
 			"cited": 45,
-			"cited_pct": 5.0
+			"cited_pct": 4.9
 		},
 		"region": {
-			"present": 1787,
+			"present": 1801,
 			"parsed": 724,
-			"model": 1063,
+			"model": 1077,
 			"derived": 0,
 			"cited": 227,
-			"cited_pct": 12.7
+			"cited_pct": 12.6
 		},
 		"typ_zadatele": {
-			"present": 751,
+			"present": 753,
 			"parsed": 375,
-			"model": 376,
+			"model": 378,
 			"derived": 0,
 			"cited": 67,
 			"cited_pct": 8.9
 		}
 	},
 	"families": {
-		"families": 442,
+		"families": 443,
 		"variants": 504,
-		"recurring": 393
+		"recurring": 394
 	},
 	"sources_by_state": {
 		"ok": 122,
@@ -181,7 +181,7 @@
 		"starne": 1
 	},
 	"live_by_source_state": {
-		"ok": 1754,
+		"ok": 1768,
 		"zmrazeny": 3,
 		"neovereno": 63,
 		"bez_cesty": 0,
@@ -195,8 +195,8 @@
 			"refresh": "C",
 			"records": 3,
 			"live": 0,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -206,8 +206,8 @@
 			"refresh": "B",
 			"records": 9,
 			"live": 4,
-			"last_fetched": "2026-11-08",
-			"days": 7,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -492,8 +492,8 @@
 			"refresh": "B",
 			"records": 21,
 			"live": 12,
-			"last_fetched": "2026-11-10",
-			"days": 5,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -503,8 +503,8 @@
 			"refresh": "C",
 			"records": 9,
 			"live": 6,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -525,8 +525,8 @@
 			"refresh": "B",
 			"records": 234,
 			"live": 14,
-			"last_fetched": "2026-11-08",
-			"days": 7,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -534,10 +534,10 @@
 			"name": "Evropská komise (Funding & Tenders)",
 			"type": "evropska_komise",
 			"refresh": "B",
-			"records": 779,
-			"live": 427,
-			"last_fetched": "2026-11-08",
-			"days": 7,
+			"records": 787,
+			"live": 436,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -547,8 +547,8 @@
 			"refresh": "P",
 			"records": 23,
 			"live": 7,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -558,8 +558,8 @@
 			"refresh": "P",
 			"records": 9,
 			"live": 0,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -591,8 +591,8 @@
 			"refresh": "C",
 			"records": 16,
 			"live": 3,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -635,8 +635,8 @@
 			"refresh": "C",
 			"records": 4,
 			"live": 1,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -679,8 +679,8 @@
 			"refresh": "B",
 			"records": 6,
 			"live": 4,
-			"last_fetched": "2026-11-08",
-			"days": 7,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -689,9 +689,9 @@
 			"type": "zahranicni_fond",
 			"refresh": "B",
 			"records": 6,
-			"live": 5,
-			"last_fetched": "2026-11-08",
-			"days": 7,
+			"live": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -723,8 +723,8 @@
 			"refresh": "B",
 			"records": 3,
 			"live": 2,
-			"last_fetched": "2026-11-10",
-			"days": 5,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -734,8 +734,8 @@
 			"refresh": "A",
 			"records": 15,
 			"live": 3,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -745,8 +745,8 @@
 			"refresh": "P",
 			"records": 4,
 			"live": 3,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -800,8 +800,8 @@
 			"refresh": "P",
 			"records": 2,
 			"live": 0,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -833,8 +833,8 @@
 			"refresh": "C",
 			"records": 2,
 			"live": 1,
-			"last_fetched": "2026-11-14",
-			"days": 1,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -965,8 +965,8 @@
 			"refresh": "C",
 			"records": 19,
 			"live": 7,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -976,8 +976,8 @@
 			"refresh": "C",
 			"records": 8,
 			"live": 6,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -987,8 +987,8 @@
 			"refresh": "C",
 			"records": 11,
 			"live": 0,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1007,10 +1007,10 @@
 			"name": "Ministerstvo školství, mládeže a tělovýchovy",
 			"type": "ministerstvo",
 			"refresh": "B",
-			"records": 30,
-			"live": 17,
-			"last_fetched": "2026-11-08",
-			"days": 7,
+			"records": 32,
+			"live": 19,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1053,8 +1053,8 @@
 			"refresh": "P",
 			"records": 7,
 			"live": 2,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1075,8 +1075,8 @@
 			"refresh": "P",
 			"records": 8,
 			"live": 2,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1086,8 +1086,8 @@
 			"refresh": "P",
 			"records": 5,
 			"live": 2,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1097,8 +1097,8 @@
 			"refresh": "C",
 			"records": 3,
 			"live": 2,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1108,8 +1108,8 @@
 			"refresh": "B",
 			"records": 16,
 			"live": 13,
-			"last_fetched": "2026-11-08",
-			"days": 7,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1130,8 +1130,8 @@
 			"refresh": "P",
 			"records": 2,
 			"live": 1,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1141,8 +1141,8 @@
 			"refresh": "P",
 			"records": 1,
 			"live": 0,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1152,8 +1152,8 @@
 			"refresh": "P",
 			"records": 3,
 			"live": 2,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1174,8 +1174,8 @@
 			"refresh": "B",
 			"records": 27,
 			"live": 7,
-			"last_fetched": "2026-11-08",
-			"days": 7,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1185,8 +1185,8 @@
 			"refresh": "P",
 			"records": 1,
 			"live": 1,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1196,8 +1196,8 @@
 			"refresh": "P",
 			"records": 3,
 			"live": 2,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1218,8 +1218,8 @@
 			"refresh": "B",
 			"records": 10,
 			"live": 10,
-			"last_fetched": "2026-11-08",
-			"days": 7,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1229,8 +1229,8 @@
 			"refresh": "B",
 			"records": 9,
 			"live": 9,
-			"last_fetched": "2026-11-08",
-			"days": 7,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1240,8 +1240,8 @@
 			"refresh": "P",
 			"records": 1,
 			"live": 0,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1251,8 +1251,8 @@
 			"refresh": "B",
 			"records": 21,
 			"live": 1,
-			"last_fetched": "2026-11-08",
-			"days": 7,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1295,8 +1295,8 @@
 			"refresh": "B",
 			"records": 12,
 			"live": 5,
-			"last_fetched": "2026-11-08",
-			"days": 7,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1306,8 +1306,8 @@
 			"refresh": "B",
 			"records": 8,
 			"live": 7,
-			"last_fetched": "2026-11-08",
-			"days": 7,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1315,10 +1315,10 @@
 			"name": "OP Spravedlivá transformace (MŽP)",
 			"type": "ministerstvo",
 			"refresh": "B",
-			"records": 105,
-			"live": 8,
-			"last_fetched": "2026-11-08",
-			"days": 7,
+			"records": 106,
+			"live": 9,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1328,8 +1328,8 @@
 			"refresh": "B",
 			"records": 61,
 			"live": 8,
-			"last_fetched": "2026-11-08",
-			"days": 7,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1339,8 +1339,8 @@
 			"refresh": "B",
 			"records": 107,
 			"live": 6,
-			"last_fetched": "2026-11-08",
-			"days": 7,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1350,8 +1350,8 @@
 			"refresh": "B",
 			"records": 1,
 			"live": 0,
-			"last_fetched": "2026-11-08",
-			"days": 7,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1394,8 +1394,8 @@
 			"refresh": "C",
 			"records": 1,
 			"live": 0,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1405,8 +1405,8 @@
 			"refresh": "B",
 			"records": 12,
 			"live": 7,
-			"last_fetched": "2026-11-08",
-			"days": 7,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1449,8 +1449,8 @@
 			"refresh": "A",
 			"records": 5,
 			"live": 3,
-			"last_fetched": "2026-11-08",
-			"days": 7,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1460,8 +1460,8 @@
 			"refresh": "C",
 			"records": 8,
 			"live": 5,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1471,8 +1471,8 @@
 			"refresh": "C",
 			"records": 8,
 			"live": 4,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1482,8 +1482,8 @@
 			"refresh": "C",
 			"records": 1,
 			"live": 0,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1515,8 +1515,8 @@
 			"refresh": "C",
 			"records": 1,
 			"live": 0,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1526,8 +1526,8 @@
 			"refresh": "P",
 			"records": 10,
 			"live": 6,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1548,8 +1548,8 @@
 			"refresh": "A",
 			"records": 99,
 			"live": 45,
-			"last_fetched": "2026-11-08",
-			"days": 7,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1579,10 +1579,10 @@
 			"name": "Technologická agentura ČR",
 			"type": "statni_agentura",
 			"refresh": "B",
-			"records": 25,
-			"live": 5,
-			"last_fetched": "2026-11-08",
-			"days": 7,
+			"records": 26,
+			"live": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1592,8 +1592,8 @@
 			"refresh": "A",
 			"records": 7,
 			"live": 3,
-			"last_fetched": "2026-11-08",
-			"days": 7,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1603,8 +1603,8 @@
 			"refresh": "A",
 			"records": 6,
 			"live": 5,
-			"last_fetched": "2026-11-08",
-			"days": 7,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1625,8 +1625,8 @@
 			"refresh": "C",
 			"records": 1,
 			"live": 0,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1636,8 +1636,8 @@
 			"refresh": "C",
 			"records": 5,
 			"live": 0,
-			"last_fetched": "2026-11-09",
-			"days": 6,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1647,8 +1647,8 @@
 			"refresh": "B",
 			"records": 7,
 			"live": 0,
-			"last_fetched": "2026-11-08",
-			"days": 7,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		},
 		{
@@ -1669,8 +1669,8 @@
 			"refresh": "A",
 			"records": 18,
 			"live": 10,
-			"last_fetched": "2026-11-08",
-			"days": 7,
+			"last_fetched": "2026-11-15",
+			"days": 0,
 			"state": "ok"
 		}
 	]

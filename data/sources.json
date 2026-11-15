@@ -9,7 +9,7 @@
 		"harvester": "albert.py",
 		"records": 3,
 		"live": 0,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"czechaid": {
 		"name": "Česká rozvojová agentura",
@@ -20,7 +20,7 @@
 		"harvester": "czechaid_harvest.py",
 		"records": 9,
 		"live": 4,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"dotace.brno.cz": {
 		"name": "Město Brno",
@@ -306,7 +306,7 @@
 		"harvester": "dotaceeu.py",
 		"records": 21,
 		"live": 12,
-		"last_fetched": "2026-11-10"
+		"last_fetched": "2026-11-15"
 	},
 	"eagri": {
 		"name": "Ministerstvo zemědělství",
@@ -317,7 +317,7 @@
 		"harvester": "eagri.py",
 		"records": 9,
 		"live": 6,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"eeagrants": {
 		"name": "EHP a Norské fondy",
@@ -339,7 +339,7 @@
 		"harvester": "esfcr_harvest.py",
 		"records": 234,
 		"live": 14,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"eu_ft": {
 		"name": "Evropská komise (Funding & Tenders)",
@@ -348,9 +348,9 @@
 		"type": "evropska_komise",
 		"refresh": "B",
 		"harvester": "eu_ft.py",
-		"records": 779,
-		"live": 427,
-		"last_fetched": "2026-11-08"
+		"records": 787,
+		"live": 436,
+		"last_fetched": "2026-11-15"
 	},
 	"fondbudoucnosti": {
 		"name": "Česko‑německý fond budoucnosti",
@@ -361,7 +361,7 @@
 		"harvester": "refresh_pages.py",
 		"records": 23,
 		"live": 7,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"fondpaliativnipece": {
 		"name": "Nadační fond pro rozvoj paliativní péče",
@@ -372,7 +372,7 @@
 		"harvester": "refresh_pages.py",
 		"records": 9,
 		"live": 0,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"fondvysociny.cz": {
 		"name": "Kraj Vysočina (Fond Vysočiny)",
@@ -405,7 +405,7 @@
 		"harvester": "gacr.py",
 		"records": 16,
 		"live": 3,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"granty.chomutov.cz": {
 		"name": "Město Chomutov",
@@ -449,7 +449,7 @@
 		"harvester": "hlavka.py",
 		"records": 4,
 		"live": 1,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"hodonin.eu": {
 		"name": "Město Hodonín",
@@ -493,7 +493,7 @@
 		"harvester": "interreg.py",
 		"records": 6,
 		"live": 4,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"intl_funds": {
 		"name": "Visegrad Fund / ERSTE Foundation",
@@ -503,8 +503,8 @@
 		"refresh": "B",
 		"harvester": "intl_funds.py",
 		"records": 6,
-		"live": 5,
-		"last_fetched": "2026-11-08"
+		"live": 6,
+		"last_fetched": "2026-11-15"
 	},
 	"irop.gov.cz": {
 		"name": "IROP (MMR)",
@@ -537,7 +537,7 @@
 		"harvester": "jmk_edotace.py",
 		"records": 3,
 		"live": 2,
-		"last_fetched": "2026-11-10"
+		"last_fetched": "2026-11-15"
 	},
 	"karvina.cz": {
 		"name": "Město Karviná",
@@ -548,7 +548,7 @@
 		"harvester": "karvina_harvest.py",
 		"records": 15,
 		"live": 3,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"kellner": {
 		"name": "Nadace The Kellner Family Foundation",
@@ -559,7 +559,7 @@
 		"harvester": "refresh_pages.py",
 		"records": 4,
 		"live": 3,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"kontobariery": {
 		"name": "Konto Bariéry",
@@ -614,7 +614,7 @@
 		"harvester": "refresh_pages.py",
 		"records": 2,
 		"live": 0,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"krnov.cz": {
 		"name": "Město Krnov",
@@ -647,7 +647,7 @@
 		"harvester": "leontinka.py",
 		"records": 2,
 		"live": 1,
-		"last_fetched": "2026-11-14"
+		"last_fetched": "2026-11-15"
 	},
 	"letnany.cz": {
 		"name": "Praha 18 (Letňany)",
@@ -779,7 +779,7 @@
 		"harvester": "mmr.py",
 		"records": 19,
 		"live": 7,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"mpo": {
 		"name": "Ministerstvo průmyslu a obchodu",
@@ -790,7 +790,7 @@
 		"harvester": "mpo.py",
 		"records": 8,
 		"live": 6,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"mpsv": {
 		"name": "Ministerstvo práce a sociálních věcí",
@@ -801,7 +801,7 @@
 		"harvester": "mpsv.py",
 		"records": 11,
 		"live": 0,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"msk.cz": {
 		"name": "Moravskoslezský kraj",
@@ -821,9 +821,9 @@
 		"type": "ministerstvo",
 		"refresh": "B",
 		"harvester": "msmt_harvest.py",
-		"records": 30,
-		"live": 17,
-		"last_fetched": "2026-11-08"
+		"records": 32,
+		"live": 19,
+		"last_fetched": "2026-11-15"
 	},
 	"mucl.cz": {
 		"name": "Město Česká Lípa",
@@ -867,7 +867,7 @@
 		"harvester": "refresh_pages.py",
 		"records": 7,
 		"live": 2,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"mzcr": {
 		"name": "Ministerstvo zdravotnictví",
@@ -889,7 +889,7 @@
 		"harvester": "refresh_pages.py",
 		"records": 8,
 		"live": 2,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"nadace-agrofert": {
 		"name": "Nadace Agrofert",
@@ -900,7 +900,7 @@
 		"harvester": "refresh_pages.py",
 		"records": 5,
 		"live": 2,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"nadace_adra": {
 		"name": "Nadace ADRA",
@@ -911,7 +911,7 @@
 		"harvester": "nadace_adra.py",
 		"records": 3,
 		"live": 2,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"nadace_spa": {
 		"name": "Nadace (OSF, Vodafone, Abakus, LPR, CLF)",
@@ -922,7 +922,7 @@
 		"harvester": "nadace_spa.py",
 		"records": 16,
 		"live": 13,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"nadacecez": {
 		"name": "Nadace ČEZ",
@@ -944,7 +944,7 @@
 		"harvester": "refresh_pages.py",
 		"records": 2,
 		"live": 1,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"nadaceo2.cz": {
 		"name": "Nadace O2",
@@ -955,7 +955,7 @@
 		"harvester": "refresh_pages.py",
 		"records": 1,
 		"live": 0,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"nadaceokd": {
 		"name": "Nadace OKD",
@@ -966,7 +966,7 @@
 		"harvester": "refresh_pages.py",
 		"records": 3,
 		"live": 2,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"nadacetm": {
 		"name": "Nadace táta a máma",
@@ -988,7 +988,7 @@
 		"harvester": "nadacevia.py",
 		"records": 27,
 		"live": 7,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"nadacevodafone.cz": {
 		"name": "Nadace Vodafone",
@@ -999,7 +999,7 @@
 		"harvester": "refresh_pages.py",
 		"records": 1,
 		"live": 1,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"nasedite": {
 		"name": "Nadace Naše dítě",
@@ -1010,7 +1010,7 @@
 		"harvester": "refresh_pages.py",
 		"records": 3,
 		"live": 2,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"novemestonm.dsw2.otevrenamesta.cz": {
 		"name": "Město Nové Město nad Metují",
@@ -1032,7 +1032,7 @@
 		"harvester": "npzp.py",
 		"records": 10,
 		"live": 10,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"nrb": {
 		"name": "Národní rozvojová banka",
@@ -1043,7 +1043,7 @@
 		"harvester": "harvest_site.py",
 		"records": 9,
 		"live": 9,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"nros.cz": {
 		"name": "Nadace rozvoje občanské společnosti",
@@ -1054,7 +1054,7 @@
 		"harvester": "refresh_pages.py",
 		"records": 1,
 		"live": 0,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"nsa": {
 		"name": "Národní sportovní agentura",
@@ -1065,7 +1065,7 @@
 		"harvester": "nsa.py",
 		"records": 21,
 		"live": 1,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"olkraj.cz": {
 		"name": "Olomoucký kraj",
@@ -1109,7 +1109,7 @@
 		"harvester": "opd.py",
 		"records": 12,
 		"live": 5,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"opjak": {
 		"name": "OP Jan Amos Komenský (MŠMT)",
@@ -1120,7 +1120,7 @@
 		"harvester": "opjak.py",
 		"records": 8,
 		"live": 7,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"opst": {
 		"name": "OP Spravedlivá transformace (MŽP)",
@@ -1129,9 +1129,9 @@
 		"type": "ministerstvo",
 		"refresh": "B",
 		"harvester": "opst.py",
-		"records": 105,
-		"live": 8,
-		"last_fetched": "2026-11-08"
+		"records": 106,
+		"live": 9,
+		"last_fetched": "2026-11-15"
 	},
 	"optak": {
 		"name": "OP TAK (MPO)",
@@ -1142,7 +1142,7 @@
 		"harvester": "harvest_site.py",
 		"records": 61,
 		"live": 8,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"opzp": {
 		"name": "OP Životní prostředí (SFŽP)",
@@ -1153,7 +1153,7 @@
 		"harvester": "opzp.py",
 		"records": 107,
 		"live": 6,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"osf": {
 		"name": "Nadace OSF",
@@ -1164,7 +1164,7 @@
 		"harvester": "osf.py",
 		"records": 1,
 		"live": 0,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"ostrava.dsw2.otevrenamesta.cz": {
 		"name": "Město Ostrava",
@@ -1208,7 +1208,7 @@
 		"harvester": "partnerstvi.py",
 		"records": 1,
 		"live": 0,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"plone_ostrava": {
 		"name": "Městské obvody Ostravy",
@@ -1219,7 +1219,7 @@
 		"harvester": "plone_ostrava.py",
 		"records": 12,
 		"live": 7,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"praha.eu": {
 		"name": "Hlavní město Praha",
@@ -1263,7 +1263,7 @@
 		"harvester": "prostejov_harvest.py",
 		"records": 5,
 		"live": 3,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"sfa": {
 		"name": "Státní fond audiovize",
@@ -1274,7 +1274,7 @@
 		"harvester": "sfa.py",
 		"records": 8,
 		"live": 5,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"sfdi": {
 		"name": "Státní fond dopravní infrastruktury",
@@ -1285,7 +1285,7 @@
 		"harvester": "sfdi.py",
 		"records": 8,
 		"live": 4,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"sfk": {
 		"name": "Státní fond kultury",
@@ -1296,7 +1296,7 @@
 		"harvester": "sfk.py",
 		"records": 1,
 		"live": 0,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"sfpi": {
 		"name": "Státní fond podpory investic",
@@ -1329,7 +1329,7 @@
 		"harvester": "sirius.py",
 		"records": 1,
 		"live": 0,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"socialninadacnifond": {
 		"name": "Sociální nadační fond Praha",
@@ -1340,7 +1340,7 @@
 		"harvester": "refresh_pages.py",
 		"records": 10,
 		"live": 6,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"sokolov.cz": {
 		"name": "Město Sokolov",
@@ -1362,7 +1362,7 @@
 		"harvester": "stredocesky_harvest.py",
 		"records": 99,
 		"live": 45,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"stredoceskykraj.dsw2.otevrenamesta.cz": {
 		"name": "Středočeský kraj",
@@ -1393,9 +1393,9 @@
 		"type": "statni_agentura",
 		"refresh": "B",
 		"harvester": "tacr.py",
-		"records": 25,
-		"live": 5,
-		"last_fetched": "2026-11-08"
+		"records": 26,
+		"live": 6,
+		"last_fetched": "2026-11-15"
 	},
 	"teplice.cz": {
 		"name": "Město Teplice",
@@ -1406,7 +1406,7 @@
 		"harvester": "teplice_harvest.py",
 		"records": 7,
 		"live": 3,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"trinecko.cz": {
 		"name": "Město Třinec",
@@ -1417,7 +1417,7 @@
 		"harvester": "trinec_harvest.py",
 		"records": 6,
 		"live": 5,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"vdv": {
 		"name": "Výbor dobré vůle – Nadace Olgy Havlové",
@@ -1439,7 +1439,7 @@
 		"harvester": "veronica.py",
 		"records": 1,
 		"live": 0,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"vinarskyfond": {
 		"name": "Vinařský fond",
@@ -1450,7 +1450,7 @@
 		"harvester": "vinarskyfond.py",
 		"records": 5,
 		"live": 0,
-		"last_fetched": "2026-11-09"
+		"last_fetched": "2026-11-15"
 	},
 	"vlada": {
 		"name": "Úřad vlády ČR",
@@ -1461,7 +1461,7 @@
 		"harvester": "vlada.py",
 		"records": 7,
 		"live": 0,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"voracek": {
 		"name": "Nadace Jakuba Voráčka",
@@ -1483,6 +1483,6 @@
 		"harvester": "zlinsky_harvest.py",
 		"records": 18,
 		"live": 10,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	}
 }
