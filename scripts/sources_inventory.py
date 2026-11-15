@@ -104,7 +104,7 @@ HARVESTER_ALIASES = {
     "pardubice.eu": "pardubice_mesto_harvest.py",
     "pardubickykraj.cz": "pardubicky_harvest.py",
     "dotace.plzen.eu": "plzen_mesto_harvest.py",
-    "dotace.plzensky-kraj.cz": "plzen_mesto_harvest.py",
+    "dotace.plzensky-kraj.cz": "plzen_kraj_harvest.py",
     "granty.liberec.cz": "liberec_mesto_harvest.py",
     "frydekmistek.cz": "fm_harvest.py",
     "opava-city.cz": "opava_harvest.py",

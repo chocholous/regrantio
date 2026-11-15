@@ -100,7 +100,9 @@ def main():
                 "eligible_applicants": eligible, "required_attachments": [],
                 "how_to_apply": f"Žádost přes dotační portál {source}", "source_doc": p.get("url"), "id": gid,
                 "facets": {
-                    "oblast": [], "typ_zadatele": [],     # ← LLM vrstva 2 (ne keyword)
+                    # Sběrač, který je umí přečíst deterministicky, je předá
+                    # (Plzeňský kraj, 2026-11-14); jinak je doplní vrstva 2.
+                    "oblast": list(p.get("oblast") or []), "typ_zadatele": list(p.get("typ_zadatele") or []),
                     "sektor_zadatele": [], "typ_poskytovatele": poskyt,
                     "forma_podpory": ["dotace"], "zdroj_financovani": [zdroj],
                     "rezim_prijmu": None, "delka": None, "zpusob_podani": ["elektronicky_portal"],
@@ -110,7 +112,9 @@ def main():
                 },
                 "provenance": {"layer": 1, "harvester": platform, "platform": platform,
                                "harvest_url": p.get("url"), "harvest_file": inp, "documents": []},
-                "extra": {k: v for k in ("kod",) if (v := p.get(k))},
+                # `dokumenty` = [{popis, role, url}] od sběrače (přílohy titulu);
+                # export je převezme jako čitelné dokumenty (`enrich.documents`).
+                "extra": {k: v for k in ("kod", "dokumenty") if (v := p.get(k))},
                 "citations": [],
             }
             recs.append(rec)

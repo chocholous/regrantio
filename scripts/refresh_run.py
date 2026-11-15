@@ -98,6 +98,14 @@ SOURCES = {
         ["ingest_kraj.py", "data/h_kraj_pardubicky.json"],
         "html",
     ),
+    # Plzeňský kraj, portál eDotace (2026-11-14): dřív třída C bez jediného
+    # ověření a 1 živý záznam z 20. Výpis je JSON (jqGrid), detail štítkované
+    # HTML; letošní a loňský ročník, typ žadatele, částky a přílohy bez modelu.
+    "dotace.plzensky-kraj.cz": (
+        ["plzen_kraj_harvest.py"], "data/h_kraj_plzen.json",
+        ["ingest_kraj.py", "data/h_kraj_plzen.json"],
+        "html",
+    ),
     "kr-ustecky.cz": (
         ["ustecky_harvest.py"], "data/h_kraj_ustecky.json",
         ["ingest_kraj.py", "data/h_kraj_ustecky.json"],

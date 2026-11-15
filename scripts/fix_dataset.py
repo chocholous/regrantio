@@ -164,6 +164,11 @@ DROP_STRAY = [
     # modelu podle pořadí (viz `ingest_rich`, `_source_id`). Sedm takových
     # záznamů; kód je v adrese i v názvu, takže nesoulad je jednoznačný.
     lambda r: r.get("source") == "sfa" and _sfa_code_mismatch(r),
+    # Plzeňský kraj z modelové cesty (`edotace_plzen`, 20 záznamů): od 14. 11.
+    # ho čte strukturní sběrač `plzen_kraj_harvest.py` týchž adres; staré
+    # záznamy s jinými identifikátory by byly duplicity.
+    lambda r: r.get("source") == "dotace.plzensky-kraj.cz"
+    and (r.get("provenance") or {}).get("platform") == "edotace_plzen",
     # Pozůstatky přepsaných extraktorů SFŽP z června (audit 14. 11.): výzvy
     # 1/2024 a 2/2024 FN už nejsou mezi aktivními na webu fondu a 2/2016 PU
     # píše „příjem žádostí ukončen“; bez lhůty se tvářily jako živé.

@@ -30,8 +30,8 @@
 		"refresh": "A",
 		"harvester": "brno_harvest.py",
 		"records": 51,
-		"live": 8,
-		"last_fetched": "2026-11-08"
+		"live": 16,
+		"last_fetched": "2026-11-15"
 	},
 	"dotace.chyne.cz": {
 		"name": "Obec Chýně",
@@ -42,7 +42,7 @@
 		"harvester": "dsw2.py",
 		"records": 27,
 		"live": 26,
-		"last_fetched": "2026-11-14"
+		"last_fetched": "2026-11-15"
 	},
 	"dotace.khk.cz": {
 		"name": "Královéhradecký kraj",
@@ -53,7 +53,7 @@
 		"harvester": "dotis_harvest.py",
 		"records": 206,
 		"live": 84,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"dotace.kraj-lbc.cz": {
 		"name": "Liberecký kraj",
@@ -64,7 +64,7 @@
 		"harvester": "liberecky_harvest.py",
 		"records": 138,
 		"live": 44,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"dotace.medlanky.cz": {
 		"name": "Brno‑Medlánky",
@@ -75,7 +75,7 @@
 		"harvester": "dsw2.py",
 		"records": 15,
 		"live": 14,
-		"last_fetched": "2026-11-14"
+		"last_fetched": "2026-11-15"
 	},
 	"dotace.melnik.cz": {
 		"name": "Město Mělník",
@@ -86,7 +86,7 @@
 		"harvester": "vismo.py",
 		"records": 29,
 		"live": 16,
-		"last_fetched": "2026-11-14"
+		"last_fetched": "2026-11-15"
 	},
 	"dotace.mestobystrice.cz": {
 		"name": "Město Bystřice",
@@ -97,7 +97,7 @@
 		"harvester": "dsw2.py",
 		"records": 7,
 		"live": 5,
-		"last_fetched": "2026-11-14"
+		"last_fetched": "2026-11-15"
 	},
 	"dotace.mestodobris.cz": {
 		"name": "Město Dobříš",
@@ -108,7 +108,7 @@
 		"harvester": "dsw2.py",
 		"records": 12,
 		"live": 11,
-		"last_fetched": "2026-11-14"
+		"last_fetched": "2026-11-15"
 	},
 	"dotace.mmhk.cz": {
 		"name": "Město Hradec Králové",
@@ -117,9 +117,9 @@
 		"type": "samosprava_obec",
 		"refresh": "A",
 		"harvester": "hk_mesto_harvest.py",
-		"records": 32,
-		"live": 16,
-		"last_fetched": "2026-11-08"
+		"records": 33,
+		"live": 17,
+		"last_fetched": "2026-11-15"
 	},
 	"dotace.nmnm.cz": {
 		"name": "Město Nové Město na Moravě",
@@ -130,7 +130,7 @@
 		"harvester": "dsw2.py",
 		"records": 29,
 		"live": 15,
-		"last_fetched": "2026-11-14"
+		"last_fetched": "2026-11-15"
 	},
 	"dotace.ostrava.cz": {
 		"name": "Město Ostrava",
@@ -141,7 +141,7 @@
 		"harvester": "ostrava_harvest.py",
 		"records": 46,
 		"live": 34,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"dotace.pardubickykraj.cz": {
 		"name": "Pardubický kraj",
@@ -150,9 +150,9 @@
 		"type": "samosprava_kraj",
 		"refresh": "A",
 		"harvester": "pardubicky_harvest.py",
-		"records": 115,
+		"records": 117,
 		"live": 8,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"dotace.plzen.eu": {
 		"name": "Město Plzeň",
@@ -161,20 +161,20 @@
 		"type": "samosprava_obec",
 		"refresh": "A",
 		"harvester": "plzen_mesto_harvest.py",
-		"records": 30,
-		"live": 11,
-		"last_fetched": "2026-11-08"
+		"records": 31,
+		"live": 13,
+		"last_fetched": "2026-11-15"
 	},
 	"dotace.plzensky-kraj.cz": {
 		"name": "Plzeňský kraj",
 		"homepage": "https://dotace.plzensky-kraj.cz",
 		"note": null,
 		"type": "samosprava_kraj",
-		"refresh": "C",
-		"harvester": "plzen_mesto_harvest.py",
-		"records": 20,
+		"refresh": "A",
+		"harvester": "plzen_kraj_harvest.py",
+		"records": 158,
 		"live": 1,
-		"last_fetched": null
+		"last_fetched": "2026-11-15"
 	},
 	"dotace.policenm.cz": {
 		"name": "Město Police nad Metují",
@@ -185,7 +185,7 @@
 		"harvester": "dsw2.py",
 		"records": 10,
 		"live": 9,
-		"last_fetched": "2026-11-14"
+		"last_fetched": "2026-11-15"
 	},
 	"dotace.praha11.cz": {
 		"name": "Praha 11",
@@ -196,7 +196,7 @@
 		"harvester": "dsw2.py",
 		"records": 11,
 		"live": 7,
-		"last_fetched": "2026-11-14"
+		"last_fetched": "2026-11-15"
 	},
 	"dotace.praha12.cz": {
 		"name": "Praha 12",
@@ -207,7 +207,7 @@
 		"harvester": "dsw2.py",
 		"records": 16,
 		"live": 13,
-		"last_fetched": "2026-11-14"
+		"last_fetched": "2026-11-15"
 	},
 	"dotace.praha14.cz": {
 		"name": "Praha 14",
@@ -218,7 +218,7 @@
 		"harvester": "dsw2.py",
 		"records": 10,
 		"live": 7,
-		"last_fetched": "2026-11-14"
+		"last_fetched": "2026-11-15"
 	},
 	"dotace.praha2.cz": {
 		"name": "Praha 2",
@@ -229,7 +229,7 @@
 		"harvester": "dsw2.py",
 		"records": 9,
 		"live": 8,
-		"last_fetched": "2026-11-14"
+		"last_fetched": "2026-11-15"
 	},
 	"dotace.praha3.cz": {
 		"name": "Praha 3",
@@ -240,7 +240,7 @@
 		"harvester": "dsw2.py",
 		"records": 35,
 		"live": 33,
-		"last_fetched": "2026-11-14"
+		"last_fetched": "2026-11-15"
 	},
 	"dotace.praha4.cz": {
 		"name": "Praha 4",
@@ -251,7 +251,7 @@
 		"harvester": "dsw2.py",
 		"records": 1,
 		"live": 0,
-		"last_fetched": "2026-11-14"
+		"last_fetched": "2026-11-15"
 	},
 	"dotace.praha8.cz": {
 		"name": "Praha 8",
@@ -262,7 +262,7 @@
 		"harvester": "dsw2.py",
 		"records": 3,
 		"live": 0,
-		"last_fetched": "2026-11-14"
+		"last_fetched": "2026-11-15"
 	},
 	"dotace.stepanov.cz": {
 		"name": "Obec Štěpánov",
@@ -273,7 +273,7 @@
 		"harvester": "dsw2.py",
 		"records": 4,
 		"live": 3,
-		"last_fetched": "2026-11-14"
+		"last_fetched": "2026-11-15"
 	},
 	"dotace.tisnov.cz": {
 		"name": "Město Tišnov",
@@ -284,7 +284,7 @@
 		"harvester": "dsw2.py",
 		"records": 13,
 		"live": 11,
-		"last_fetched": "2026-11-14"
+		"last_fetched": "2026-11-15"
 	},
 	"dotace.usti-nad-labem.cz": {
 		"name": "Město Ústí nad Labem",
@@ -295,7 +295,7 @@
 		"harvester": "dsw2.py",
 		"records": 90,
 		"live": 80,
-		"last_fetched": "2026-11-14"
+		"last_fetched": "2026-11-15"
 	},
 	"dotaceeu.cz": {
 		"name": "Dotace EU (MMR)",
@@ -381,9 +381,9 @@
 		"type": "samosprava_kraj",
 		"refresh": "A",
 		"harvester": "fondvysociny_harvest.py",
-		"records": 316,
-		"live": 234,
-		"last_fetched": "2026-11-08"
+		"records": 322,
+		"live": 240,
+		"last_fetched": "2026-11-15"
 	},
 	"frydekmistek.cz": {
 		"name": "Město Frýdek‑Místek",
@@ -394,7 +394,7 @@
 		"harvester": "fm_harvest.py",
 		"records": 21,
 		"live": 10,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"gacr": {
 		"name": "Grantová agentura ČR",
@@ -416,7 +416,7 @@
 		"harvester": "chomutov_harvest.py",
 		"records": 17,
 		"live": 14,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"granty.liberec.cz": {
 		"name": "Město Liberec",
@@ -427,7 +427,7 @@
 		"harvester": "liberec_mesto_harvest.py",
 		"records": 7,
 		"live": 2,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"havirov-city.cz": {
 		"name": "Město Havířov",
@@ -438,7 +438,7 @@
 		"harvester": "havirov_harvest.py",
 		"records": 11,
 		"live": 11,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"hlavka": {
 		"name": "Nadání Josefa, Marie a Zdeňky Hlávkových",
@@ -460,7 +460,7 @@
 		"harvester": "vismo.py",
 		"records": 105,
 		"live": 20,
-		"last_fetched": "2026-11-12"
+		"last_fetched": "2026-11-15"
 	},
 	"hradeckralove.org": {
 		"name": "Město Hradec Králové",
@@ -471,7 +471,7 @@
 		"harvester": "vismo.py",
 		"records": 4,
 		"live": 4,
-		"last_fetched": "2026-11-10"
+		"last_fetched": "2026-11-15"
 	},
 	"hzs": {
 		"name": "Hasičský záchranný sbor ČR (MV)",
@@ -515,7 +515,7 @@
 		"harvester": "kentico_irop.py",
 		"records": 120,
 		"live": 55,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"jihlava.cz": {
 		"name": "Město Jihlava",
@@ -526,7 +526,7 @@
 		"harvester": "jihlava_harvest.py",
 		"records": 11,
 		"live": 3,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"jmk_edotace": {
 		"name": "Jihomoravský kraj",
@@ -581,7 +581,7 @@
 		"harvester": "karlovarsky_harvest.py",
 		"records": 86,
 		"live": 23,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"kr-ustecky.cz": {
 		"name": "Ústecký kraj",
@@ -590,9 +590,9 @@
 		"type": "samosprava_kraj",
 		"refresh": "A",
 		"harvester": "ustecky_harvest.py",
-		"records": 113,
-		"live": 18,
-		"last_fetched": "2026-11-08"
+		"records": 115,
+		"live": 20,
+		"last_fetched": "2026-11-15"
 	},
 	"kraj-jihocesky.cz": {
 		"name": "Jihočeský kraj",
@@ -601,9 +601,9 @@
 		"type": "samosprava_kraj",
 		"refresh": "A",
 		"harvester": "jihocesky_harvest.py",
-		"records": 11,
-		"live": 5,
-		"last_fetched": "2026-11-08"
+		"records": 12,
+		"live": 6,
+		"last_fetched": "2026-11-15"
 	},
 	"krasapomoci": {
 		"name": "Nadační fond Krása pomoci",
@@ -625,7 +625,7 @@
 		"harvester": "vismo.py",
 		"records": 3,
 		"live": 1,
-		"last_fetched": "2026-11-10"
+		"last_fetched": "2026-11-15"
 	},
 	"kromeriz.dsw2.otevrenamesta.cz": {
 		"name": "Město Kroměříž",
@@ -636,7 +636,7 @@
 		"harvester": "dsw2.py",
 		"records": 10,
 		"live": 6,
-		"last_fetched": "2026-11-14"
+		"last_fetched": "2026-11-15"
 	},
 	"leontinka": {
 		"name": "Nadace Leontinka",
@@ -669,7 +669,7 @@
 		"harvester": "dsw2.py",
 		"records": 4,
 		"live": 0,
-		"last_fetched": "2026-11-14"
+		"last_fetched": "2026-11-15"
 	},
 	"loket.dsw2.otevrenamesta.cz": {
 		"name": "Město Loket",
@@ -680,7 +680,7 @@
 		"harvester": "dsw2.py",
 		"records": 6,
 		"live": 3,
-		"last_fetched": "2026-11-14"
+		"last_fetched": "2026-11-15"
 	},
 	"mb-net.cz": {
 		"name": "Město Mladá Boleslav",
@@ -691,7 +691,7 @@
 		"harvester": "mb_harvest.py",
 		"records": 4,
 		"live": 1,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"mesto-most.cz": {
 		"name": "Město Most",
@@ -702,7 +702,7 @@
 		"harvester": "vismo.py",
 		"records": 10,
 		"live": 0,
-		"last_fetched": "2026-11-10"
+		"last_fetched": "2026-11-15"
 	},
 	"mestojablonec.cz": {
 		"name": "Město Jablonec nad Nisou",
@@ -713,7 +713,7 @@
 		"harvester": "jablonec_harvest.py",
 		"records": 14,
 		"live": 5,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"mestokladno.cz": {
 		"name": "Město Kladno",
@@ -724,7 +724,7 @@
 		"harvester": "kladno_harvest.py",
 		"records": 7,
 		"live": 7,
-		"last_fetched": "2026-11-10"
+		"last_fetched": "2026-11-15"
 	},
 	"mk": {
 		"name": "Ministerstvo kultury",
@@ -757,7 +757,7 @@
 		"harvester": "decin_harvest.py",
 		"records": 19,
 		"live": 11,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"mmkv.cz": {
 		"name": "Město Karlovy Vary",
@@ -768,7 +768,7 @@
 		"harvester": "kv_mesto_harvest.py",
 		"records": 8,
 		"live": 5,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"mmr": {
 		"name": "Ministerstvo pro místní rozvoj",
@@ -812,7 +812,7 @@
 		"harvester": "msk_harvest.py",
 		"records": 111,
 		"live": 28,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"msmt": {
 		"name": "Ministerstvo školství, mládeže a tělovýchovy",
@@ -834,7 +834,7 @@
 		"harvester": "ceskalipa_harvest.py",
 		"records": 14,
 		"live": 6,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"mukolin.cz": {
 		"name": "Město Kolín",
@@ -845,7 +845,7 @@
 		"harvester": "vismo.py",
 		"records": 10,
 		"live": 2,
-		"last_fetched": "2026-11-10"
+		"last_fetched": "2026-11-15"
 	},
 	"mulitvinov.cz": {
 		"name": "Město Litvínov",
@@ -856,7 +856,7 @@
 		"harvester": "vismo.py",
 		"records": 1,
 		"live": 0,
-		"last_fetched": "2026-11-10"
+		"last_fetched": "2026-11-15"
 	},
 	"mv": {
 		"name": "Ministerstvo vnitra",
@@ -1021,7 +1021,7 @@
 		"harvester": "dsw2.py",
 		"records": 1,
 		"live": 1,
-		"last_fetched": "2026-11-14"
+		"last_fetched": "2026-11-15"
 	},
 	"npzp": {
 		"name": "Národní program Životní prostředí",
@@ -1076,7 +1076,7 @@
 		"harvester": "olomoucky_harvest.py",
 		"records": 11,
 		"live": 4,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"olomouc.eu": {
 		"name": "Město Olomouc",
@@ -1087,7 +1087,7 @@
 		"harvester": "olomouc_mesto_harvest.py",
 		"records": 23,
 		"live": 4,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"opava-city.cz": {
 		"name": "Město Opava",
@@ -1098,7 +1098,7 @@
 		"harvester": "opava_harvest.py",
 		"records": 14,
 		"live": 2,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"opd": {
 		"name": "OP Doprava (MD)",
@@ -1175,7 +1175,7 @@
 		"harvester": "dsw2.py",
 		"records": 4,
 		"live": 2,
-		"last_fetched": "2026-11-14"
+		"last_fetched": "2026-11-15"
 	},
 	"pardubice.eu": {
 		"name": "Město Pardubice",
@@ -1185,8 +1185,8 @@
 		"refresh": "A",
 		"harvester": "pardubice_mesto_harvest.py",
 		"records": 12,
-		"live": 4,
-		"last_fetched": "2026-11-08"
+		"live": 5,
+		"last_fetched": "2026-11-15"
 	},
 	"pardubickykraj.cz": {
 		"name": "Pardubický kraj",
@@ -1230,7 +1230,7 @@
 		"harvester": "praha_harvest.py",
 		"records": 39,
 		"live": 38,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"praha6.dsw2.otevrenamesta.cz": {
 		"name": "Praha 6",
@@ -1241,7 +1241,7 @@
 		"harvester": "dsw2.py",
 		"records": 2,
 		"live": 1,
-		"last_fetched": "2026-11-14"
+		"last_fetched": "2026-11-15"
 	},
 	"prerov.eu": {
 		"name": "Město Přerov",
@@ -1252,7 +1252,7 @@
 		"harvester": "prerov_harvest.py",
 		"records": 10,
 		"live": 3,
-		"last_fetched": "2026-11-08"
+		"last_fetched": "2026-11-15"
 	},
 	"prostejov.eu": {
 		"name": "Město Prostějov",
@@ -1351,7 +1351,7 @@
 		"harvester": "vismo.py",
 		"records": 3,
 		"live": 1,
-		"last_fetched": "2026-11-10"
+		"last_fetched": "2026-11-15"
 	},
 	"stredoceskykraj.cz": {
 		"name": "Středočeský kraj",
@@ -1373,7 +1373,7 @@
 		"harvester": "dsw2.py",
 		"records": 3,
 		"live": 2,
-		"last_fetched": "2026-11-14"
+		"last_fetched": "2026-11-15"
 	},
 	"taborcz.eu": {
 		"name": "Město Tábor",
@@ -1384,7 +1384,7 @@
 		"harvester": "vismo.py",
 		"records": 21,
 		"live": 21,
-		"last_fetched": "2026-11-10"
+		"last_fetched": "2026-11-15"
 	},
 	"tacr": {
 		"name": "Technologická agentura ČR",
